@@ -1,4 +1,5 @@
 # expense-ledger-web
+The website for Expense Ledger application
 
 ## Transaction structure
 * Source wallet: Complex

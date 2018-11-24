@@ -1,14 +1,5 @@
-const HttpStatus = {
-  Ok: 200,
-  BadRequest: 400,
-  InternalServerError: 500
-};
-
-interface Response {
-  status: Number;
-  data: any;
-  error?: Error;
-}
+import Response from './Model/Response';
+import * as Constants from './Constants';
 
 /**
  * @param {any} axiosMethod pass axios method eg. axios.post.
@@ -20,14 +11,16 @@ export async function callAxios(axiosMethod: any, url: string): Promise<Response
     return {
       status: Number.parseInt(response.status),
       data: response.data,
+      success: response.success,
       error: undefined
     }
   }
   catch(err) {
     console.log(err);
     return {
-      status: HttpStatus.InternalServerError,
+      status: Constants.httpStatus.InternalServerError,
       data: null,
+      success: false,
       error: err
     }
   }

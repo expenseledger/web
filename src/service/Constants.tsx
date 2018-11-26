@@ -1,5 +1,9 @@
 export const httpStatus = {
-  Ok: 200,
-  BadRequest: 400,
-  InternalServerError: 500
+  ok: 200,
+  badRequest: 400,
+  internalServerError: 500
 };
+
+export const walletType = {
+  cash: "CASH"
+}

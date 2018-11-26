@@ -5,9 +5,9 @@ import * as Constants from './Constants';
  * @param {any} axiosMethod pass axios method eg. axios.post.
  * @param {string} url url
  */
-export async function callAxios(axiosMethod: any, url: string): Promise<Response> {
+export async function callAxios(axiosMethod: any, url: String, content?: Object): Promise<Response> {
   try {
-    let response: any = await axiosMethod(url);
+    let response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
     return {
       status: Number.parseInt(response.status),
       data: response.data,
@@ -18,7 +18,7 @@ export async function callAxios(axiosMethod: any, url: string): Promise<Response
   catch(err) {
     console.log(err);
     return {
-      status: Constants.httpStatus.InternalServerError,
+      status: Constants.httpStatus.internalServerError,
       data: null,
       success: false,
       error: err

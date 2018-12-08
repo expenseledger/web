@@ -7,21 +7,23 @@ class Layout extends React.Component {
         return (
             <Aux>
                 {this.props.children}
-                <nav className='level'>
-                    <div className='level-left'>
-                        <div className='level-item'>
-                            <p>Icon</p>
+                <div>
+                    <nav className='level is-mobile'>
+                        <div className='level-left'>
+                            <div className='level-item'>
+                                <p>Icon</p>
+                            </div>
+                            <div className='level-item'>
+                                <p>Wallet balance with currency</p>
+                            </div>
                         </div>
-                        <div className='level-item'>
-                            <p>Wallet balance with currency</p>
+                        <div className='level-item-right'>
+                            <div className='level-item'>
+                                <p>Right icon</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className='level-item-right'>
-                        <div className='level-item'>
-                            <p>Right icon</p>
-                        </div>
-                    </div>
-                </nav>
+                    </nav>
+                </div>
             </Aux>
         );
     }

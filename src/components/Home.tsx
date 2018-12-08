@@ -34,7 +34,7 @@ class Home extends React.Component {
               </div>
               <div className="field">
                 <div className="control">
-                  <textarea className="textarea is-rounded" placeholder="Note"/>
+                  <textarea className="textarea" placeholder="Note"/>
                 </div>
               </div>
             </div> 

@@ -1,25 +1,48 @@
 import 'bulma/css/bulma.css';
 import * as React from 'react';
+import * as CategoryService from '../service/CategoryService';
 
 class Home extends React.Component {
+  public state = {
+    categories: []
+  }
+
+  public async componentDidMount() {
+    const categories = await CategoryService.getAllCategories();
+
+    this.setState({
+      categories
+    })
+  }
+
+  public renderCategory(): JSX.Element[] {
+    const toReturn: JSX.Element[] = [];
+    let tCategories: JSX.Element[] = [];
+    let index: number = 0;
+
+    if(this.state.categories.length === 0) {
+      return toReturn;
+    }
+
+    for(const cat of this.state.categories) {
+      if(index % 2 === 0 && index > 0) {
+        toReturn.push(<div className="columns is-mobile">{ tCategories }</div>)
+        tCategories = [];
+      }
+
+      tCategories.push(cat);
+      index++
+    }
+    return toReturn;
+  }
+
   public render() {
     return (
       <div className='container is-fluid'>
         <p style={{textAlign: 'center'}}>Add Transaction</p>
         <p style={{textAlign: 'center'}}>Category</p>
         <div className='container has-text-centered'>
-          <div className='columns is-mobile'>
-            <div className='column'>1</div>
-            <div className='column'>2</div>
-          </div>
-          <div className='columns is-mobile'>
-            <div className='column'>3</div>
-            <div className='column'>4</div>
-          </div>
-          <div className='columns is-mobile'>
-            <div className='column'>5</div>
-            <div className='column'>6</div>
-          </div>
+          { this.renderCategory() }
           <div className='columns'>
             <div className='column'>
               <div className="field">

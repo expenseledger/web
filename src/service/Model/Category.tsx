@@ -1,7 +1,7 @@
 export default class Category {
-  name: String
+  public name: string
 
-  constructor(name: String) {
+  constructor(name: string) {
     this.name = name
   }
 }

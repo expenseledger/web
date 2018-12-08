@@ -23,8 +23,8 @@ export async function getAllWallet(): Promise<Wallet[]> {
   return toReturn;
 }
 
-export async function getWallet(name: String): Promise<Wallet | undefined> {
-  const response: Response = await Utils.callAxios(axios.post, walletUrl + '/list', { name: name });
+export async function getWallet(name: string): Promise<Wallet | undefined> {
+  const response: Response = await Utils.callAxios(axios.post, walletUrl + '/list', { name });
 
   if(response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(`getWallet failed, status: ${ response.status }, ${ response.error ? response.error.message : '' }`);

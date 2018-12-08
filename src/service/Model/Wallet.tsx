@@ -1,9 +1,9 @@
 export default class Wallet {
-  name: String;
-  type: String;
-  balance: Number;
+  public name: string;
+  public type: string;
+  public balance: number;
 
-  constructor(name: String, type: String, balance: Number = 0) {
+  constructor(name: string, type: string, balance: number = 0) {
     this.name = name;
     this.type = type;
     this.balance = balance;

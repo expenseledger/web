@@ -1,6 +1,6 @@
 export default class Response {
-  status: Number;
-  data: any;
-  success: Boolean;
-  error?: Error;
+  public status: number;
+  public data: any;
+  public success: boolean;
+  public error?: Error;
 }

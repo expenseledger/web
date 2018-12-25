@@ -29,7 +29,7 @@ class Home extends React.Component {
     }
 
     for(const cat of this.state.categories) {
-      if(index % 2 === 0 && index > 0) {
+      if(index > 0 && index % 2 === 0) {
         toReturn.push(<div className="columns is-mobile">{ tCategories }</div>)
         tCategories = [];
       }

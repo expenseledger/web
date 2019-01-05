@@ -18,17 +18,19 @@ export async function getAllWallet(): Promise<Wallet[]> {
 
   const items: any[] = response.data.items; 
 
-  toReturn = items.map(item => new Wallet(item.name, item.type, item.balance));
+  if(items) {
+    toReturn = items.map(item => new Wallet(item.name, item.type, item.balance));
+  }
 
   return toReturn;
 }
 
-export async function getWallet(name: string): Promise<Wallet | undefined> {
+export async function getWallet(name: string): Promise<Wallet | null> {
   const response: Response = await Utils.callAxios(axios.post, walletUrl + '/list', { name });
 
   if(response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(`getWallet failed, status: ${ response.status }, ${ response.error ? response.error.message : '' }`);
-    return undefined;
+    return null;
   }
 
   return new Wallet(response.data.name, response.data.type, response.data.balance);

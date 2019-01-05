@@ -1,4 +1,3 @@
-import "bulma/css/bulma.css";
 import * as React from "react";
 import * as CategoryService from "../service/CategoryService";
 import * as TransactionService from "../service/TransactionService";
@@ -29,7 +28,7 @@ class Home extends React.Component<any, IHomeState> {
     })
   }
 
-  public renderCategory(): JSX.Element[] {
+  public renderCategory = (): JSX.Element[] => {
     const toReturn: JSX.Element[] = [];
     let tCategories: JSX.Element[] = [];
     let index: number = 1;
@@ -53,7 +52,6 @@ class Home extends React.Component<any, IHomeState> {
       toReturn.push(<div key={ index } className="columns is-mobile">{ tCategories }</div>);
     }
 
-    console.log(toReturn);
     return toReturn;
   }
 

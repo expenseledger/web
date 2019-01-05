@@ -10,7 +10,7 @@ export async function callAxios(axiosMethod: any, url: string, content?: object)
     const response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
     return {
       data: response.data.data,
-      error: undefined,
+      error: null,
       status: Number.parseInt(response.status, 10),
       success: response.data.success
     }
@@ -18,7 +18,7 @@ export async function callAxios(axiosMethod: any, url: string, content?: object)
   catch(err) {
     console.log(err);
     return {
-      data: undefined,
+      data: null,
       error: err,
       status: Constants.httpStatus.internalServerError,
       success: false

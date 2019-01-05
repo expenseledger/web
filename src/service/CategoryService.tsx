@@ -18,7 +18,9 @@ export async function getAllCategories(): Promise<Category[]> {
 
   const items: any[] = response.data.items; 
 
-  toReturn = items.map(item => new Category(item.name));
+  if(items) {
+    toReturn = items.map(item => new Category(item.name));
+  }
 
   return toReturn;
 }

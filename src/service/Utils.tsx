@@ -9,16 +9,16 @@ export async function callAxios(axiosMethod: any, url: string, content?: object)
   try {
     const response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
     return {
-      data: response.data,
+      data: response.data.data,
       error: undefined,
       status: Number.parseInt(response.status, 10),
-      success: response.success
+      success: response.data.success
     }
   }
   catch(err) {
     console.log(err);
     return {
-      data: null,
+      data: undefined,
       error: err,
       status: Constants.httpStatus.internalServerError,
       success: false

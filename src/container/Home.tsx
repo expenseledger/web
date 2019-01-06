@@ -13,7 +13,6 @@ interface IHomeState {
   categories: Category[];
   type: string
   wallets: WalletModel[] | null
-  
 }
 
 class Home extends React.Component<any, IHomeState> {

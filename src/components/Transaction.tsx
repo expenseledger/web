@@ -25,7 +25,7 @@ class Transaction extends React.Component<ITransactionProps, any> {
     }
 
     for(const cat of this.props.categories) {
-      tCategories.push(<div className="column">{ cat.name }</div>);
+      tCategories.push(<div key={ cat.name } className="column">{ cat.name }</div>);
 
       if(index % 2 === 0) {
         toReturn.push(<div key={ index } className="columns is-mobile">{ tCategories }</div>)

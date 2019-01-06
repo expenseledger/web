@@ -1,31 +1,18 @@
 import * as React from "react";
-import * as CategoryService from "../service/CategoryService";
 import * as TransactionService from "../service/TransactionService";
 import AddTransactionRequest from "src/service/Model/Request/AddTransactionRequest";
 import Category from 'src/service/Model/Category';
 
-interface ITransactionState {
-  categories: Category[];
+interface ITransactionProps {
+  categories: Category[]
 }
 
-class Transaction extends React.Component<any, ITransactionState> {
+class Transaction extends React.Component<ITransactionProps, any> {
   public addTransactionRequest: AddTransactionRequest
 
   constructor(props: any) {
     super(props);
-
-    this.state = {
-      categories: [],
-    }
     this.addTransactionRequest = new AddTransactionRequest();
-  }
- 
-  public async componentDidMount() {
-    const categories = await CategoryService.getAllCategories();
-
-    this.setState({
-      categories
-    })
   }
 
   public renderCategory = (): JSX.Element[] => {
@@ -33,11 +20,11 @@ class Transaction extends React.Component<any, ITransactionState> {
     let tCategories: JSX.Element[] = [];
     let index: number = 1;
 
-    if(this.state.categories.length === 0) {
+    if(this.props.categories.length === 0) {
       return toReturn;
     }
 
-    for(const cat of this.state.categories) {
+    for(const cat of this.props.categories) {
       tCategories.push(<div className="column">{ cat.name }</div>);
 
       if(index % 2 === 0) {
@@ -45,7 +32,7 @@ class Transaction extends React.Component<any, ITransactionState> {
         tCategories = [];
       }
 
-      index++
+      index++;
     }
 
     if(tCategories.length > 0) {

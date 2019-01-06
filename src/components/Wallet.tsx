@@ -1,65 +1,23 @@
-import * as React from "react";
-import * as WalletService from "../service/WalletService";
+import * as React from 'react';
 import WalletModel from '../service/Model/Wallet';
 
-interface IWalletState {
+interface IWalletProps {
   balance: number
   type: string
   wallets: WalletModel[] | null
+  walletOnChangeHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
-class Wallet extends React.Component<any, IWalletState> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      balance: 0,
-      type: '',
-      wallets: null
-    }
-  }
-
-  public async componentDidMount() {
-    await this.loadAllWallet();
-  }
-
-  /**
-   * loadAllWallet
-   */
-  public loadAllWallet = async (): Promise<void> => {
-    const wallets: WalletModel[] = await WalletService.getAllWallet();
-
-    this.setState({
-      wallets
-    })
-  }
-
-  public walletOnChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void =>
-  {
-    const wallets: WalletModel[] | null = this.state.wallets;
-
-    if(!wallets) {
-      return; 
-    }
-
-    const selectedWallet: WalletModel | undefined = wallets.find(x => x.name === e.target.value);
-    const balance: number = selectedWallet ? selectedWallet.balance : 0;
-    const type: string = selectedWallet ? selectedWallet.type : '';
-
-    this.setState({
-      balance,
-      type
-    });
-  }
-
+class Wallet extends React.Component<IWalletProps, any> {
   public renderWallet = (): JSX.Element => {
     let toReturn: JSX.Element[] = [];
-    const wallets = this.state.wallets;
+    const wallets = this.props.wallets;
 
     if(wallets) {
       toReturn = wallets.map((wallet, idx) => <option key={ idx }>{ wallet.name }</option>);
     }
 
-    return (<select onChange={ this.walletOnChangeHandler }>{ toReturn }</select>);
+    return (<select onChange={ this.props.walletOnChangeHandler }>{ toReturn }</select>);
   }
 
   public render() {
@@ -67,10 +25,10 @@ class Wallet extends React.Component<any, IWalletState> {
       <nav className='level is-mobile'>
         <div className='level-left'>
           <div className='level-item'>
-            <p>{ this.state.type }</p>
+            <p>{ this.props.type }</p>
           </div>
           <div className='level-item'>
-            <p>{ this.state.balance }</p>
+            <p>{ this.props.balance }</p>
           </div>
           <div className='level-item'>
             { this.renderWallet() }

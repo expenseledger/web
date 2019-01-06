@@ -1,13 +1,13 @@
 import * as React from 'react';
-import Home from '../components/Home';
-import Layout from '../hoc/Layout/Layout';
+import Home from './Home';
+import Transaction from '../components/Transaction';
 
 class App extends React.Component {
   public render() {
     return (
-      <Layout>
-        <Home/>
-      </Layout>
+      <Home>
+        <Transaction/>
+      </Home>
     );
   }
 }

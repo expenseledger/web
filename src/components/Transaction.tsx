@@ -4,11 +4,11 @@ import * as TransactionService from "../service/TransactionService";
 import AddTransactionRequest from "src/service/Model/Request/AddTransactionRequest";
 import Category from 'src/service/Model/Category';
 
-interface IHomeState {
+interface ITransactionState {
   categories: Category[];
 }
 
-class Home extends React.Component<any, IHomeState> {
+class Transaction extends React.Component<any, ITransactionState> {
   public addTransactionRequest: AddTransactionRequest
 
   constructor(props: any) {
@@ -107,4 +107,4 @@ class Home extends React.Component<any, IHomeState> {
   }
 }
 
-export default Home;
+export default Transaction;

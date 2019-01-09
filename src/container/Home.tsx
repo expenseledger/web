@@ -40,6 +40,8 @@ class Home extends React.Component<any, IHomeState> {
       return;
     }
 
+    console.log('wallets', wallets);
+
     this.setState({
       balance: wallets[0].balance,
       categories,
@@ -60,6 +62,8 @@ class Home extends React.Component<any, IHomeState> {
     const selectedWallet: WalletModel | undefined = wallets.find(x => x.name === e.target.value);
     const balance: number = selectedWallet ? selectedWallet.balance : 0;
     const type: string = selectedWallet ? selectedWallet.type : '';
+
+    console.log(balance, type);
 
     this.setState({
       balance,

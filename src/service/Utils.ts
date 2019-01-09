@@ -5,7 +5,7 @@ import * as Constants from './Constants';
  * @param {any} axiosMethod pass axios method eg. axios.post.
  * @param {string} url url
  */
-export async function callAxios(axiosMethod: any, url: string, content?: object): Promise<Response> {
+export async function callAxios<TResponse>(axiosMethod: any, url: string, content?: object): Promise<Response<TResponse>> {
   try {
     const response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
     return {

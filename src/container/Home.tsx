@@ -40,8 +40,6 @@ class Home extends React.Component<any, IHomeState> {
       return;
     }
 
-    console.log('wallets', wallets);
-
     this.setState({
       balance: wallets[0].balance,
       categories,

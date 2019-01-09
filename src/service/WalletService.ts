@@ -4,7 +4,7 @@ import Response from './Model/Response';
 import * as Constants from './Constants';
 import * as Utils from './Utils';
 import * as config from './serviceConfig.json';
-import ArryaResponseWrapper from './Model/ArryaResponseWrapper';
+import ArryaResponseWrapper from './Model/ArrayResponseWrapper';
 
 const walletUrl = config.serverUrl + '/wallet';
 

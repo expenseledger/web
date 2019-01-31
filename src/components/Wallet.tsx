@@ -1,5 +1,5 @@
-import * as React from 'react';
-import WalletModel from '../service/Model/Wallet';
+import * as React from "react";
+import WalletModel from "../service/Model/Wallet";
 
 interface IWalletProps {
   balance: number
@@ -17,25 +17,25 @@ class Wallet extends React.Component<IWalletProps, any> {
       toReturn = wallets.map((wallet, idx) => <option key={ idx }>{ wallet.name }</option>);
     }
 
-    return (<select onChange={ this.props.walletOnChangeHandler }>{ toReturn }</select>);
+    return (<div className="select is-small"><select onChange={ this.props.walletOnChangeHandler }>{ toReturn }</select></div>);
   }
 
   public render() {
     return (
-      <nav className='level is-mobile'>
-        <div className='level-left'>
-          <div className='level-item'>
+      <nav className="level is-mobile">
+        <div className="level-left">
+          <div className="level-item">
             <p>{ this.props.type }</p>
           </div>
-          <div className='level-item'>
+          <div className="level-item">
             <p>{ this.props.balance }</p>
           </div>
-          <div className='level-item'>
+          <div className="level-item">
             { this.renderWallet() }
           </div>
         </div>
-        <div className='level-item-right'>
-          <div className='level-item'>
+        <div className="level-item-right">
+          <div className="level-item">
             <p>Right icon</p>
           </div>
         </div>

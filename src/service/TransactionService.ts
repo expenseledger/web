@@ -1,18 +1,45 @@
-import axios from 'axios';
-import AddTransactionRequest from './Model/Request/AddTransactionRequest';
-import * as Utils from './Utils';
+import axios from "axios";
+import * as Utils from "./Utils";
+import AddExpenseRequest from "./Model/Request/AddExpenseRequest";
+import AddExpenseResponse from "./Model/Response/AddExpenseResponse";
+import * as config from "./serviceConfig.json";
+import * as Constants from "./Constants"; 
+import AddIncomeRequest from './Model/Request/AddIncomeRequest';
+import AddIncomeResponse from './Model/Response/AddIncomeResponse';
+import AddTransferRequest from './Model/Request/AddTransferRequest';
+import AddTransferResponse from './Model/Response/AddTransferResponse';
 
-/**
- * @param {AddTransactionRequest} request add transaction request
- */
-export async function addTransaction(request: AddTransactionRequest): Promise<boolean> {
-  const response = await Utils.callAxios(axios.post, "", request);
+const transactionUrl = config.serverUrl + "/transaction";
 
-  if(response.success) {
-    return true;
+export async function addExpense(request: AddExpenseRequest): Promise<any | null> {
+  const response = await Utils.callAxios<AddExpenseRequest, AddExpenseResponse>(axios.post, transactionUrl + "/createExpense", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddExpense failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
   }
-  else {
-    console.log(`addTransaction failed, ${ response.error ? response.error : "" }`);
-    return false;
+  
+  return response.data;
+}
+
+export async function addIncome(request: AddIncomeRequest): Promise<any | null> {
+  const response = await Utils.callAxios<AddIncomeRequest, AddIncomeResponse>(axios.post, transactionUrl + "/createIncome", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddIncome failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
   }
+  
+  return response.data;
+}
+
+export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse | null> {
+  const response = await Utils.callAxios<AddTransferRequest, AddTransferResponse>(axios.post, transactionUrl + "/createIncome", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddTransfer failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
+  }
+  
+  return response.data;
 }

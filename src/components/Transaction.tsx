@@ -1,18 +1,40 @@
 import * as React from "react";
 import * as TransactionService from "../service/TransactionService";
+import { transactionType } from "../service/Constants";
 import AddTransactionRequest from "src/service/Model/Request/AddTransactionRequest";
-import Category from 'src/service/Model/Category';
+import Category from "src/service/Model/Category";
+import Wallet from "../service/Model/Wallet";
+import AddExpenseRequest from 'src/service/Model/Request/AddExpenseRequest';
+import AddIncomeRequest from 'src/service/Model/Request/AddIncomeRequest';
 
 interface ITransactionProps {
-  categories: Category[]
+  categories: Category[];
+  selectedWallet: Wallet;
+  balanceHandler: (balance: number) => void;
 }
 
-class Transaction extends React.Component<ITransactionProps, any> {
-  public addTransactionRequest: AddTransactionRequest
+interface ITransactionState {
+  selectedCategoryIdx: number;
+  selectedTransactionType: string;
+}
+
+class Transaction extends React.Component<ITransactionProps, ITransactionState> {
+  public addTransactionDto: AddTransactionRequest;
 
   constructor(props: any) {
     super(props);
-    this.addTransactionRequest = new AddTransactionRequest();
+    this.state = {
+      selectedCategoryIdx: 0,
+      selectedTransactionType: transactionType.expense
+    }
+    this.addTransactionDto = new AddTransactionRequest();
+  }
+
+  public categoryOnClickHander = (categoryIdx: number): void => 
+  {
+    this.setState({
+      selectedCategoryIdx: categoryIdx
+    });
   }
 
   public renderCategory = (): JSX.Element[] => {
@@ -25,8 +47,10 @@ class Transaction extends React.Component<ITransactionProps, any> {
     }
 
     for(const cat of this.props.categories) {
-      tCategories.push(<div key={ cat.name } className="column">{ cat.name }</div>);
-
+      tCategories.push((
+        <div className="column" key={ cat.name }>
+          <a key={ index } className={"button is-primary" + (index - 1 !== this.state.selectedCategoryIdx ? " is-outlined" : "") } onClick={this.categoryOnClickHander.bind(this, index - 1)}>{ cat.name }</a>
+        </div>));
       if(index % 2 === 0) {
         toReturn.push(<div key={ index } className="columns is-mobile">{ tCategories }</div>)
         tCategories = [];
@@ -43,29 +67,69 @@ class Transaction extends React.Component<ITransactionProps, any> {
   }
 
   public inputHandler = (event: any) => {
-    this.addTransactionRequest[event.target.name] = event.target.value;
+    this.addTransactionDto[event.target.name] = event.target.value;
+    console.log(this.addTransactionDto);
   }
 
-  public addTransactionHandler = async () => {
-    const response = await TransactionService.addTransaction(this.addTransactionRequest);
+  public transactionTypeSeclectHandler = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    this.setState({
+      selectedTransactionType: event.target.value
+    })
+  }
 
-    if(response) {
-      alert('Add transaction success');
+  public addTransactionHandler = async () => {  
+    if(this.state.selectedTransactionType === transactionType.expense) {
+      const addExpenseRequest: AddExpenseRequest = {
+        amount: this.addTransactionDto.amount,
+        category: this.props.categories[this.state.selectedCategoryIdx].name,
+        from: this.props.selectedWallet.name
+      }
+      const response = await TransactionService.addExpense(addExpenseRequest);
+      if(response) {
+        this.props.balanceHandler(response.src_wallet.balance);
+        alert("Add expense success");
+      }
+      else {
+        alert("Add expense failed");
+      }
     }
-    else {
-      alert('Add transaction failed');
+    else if(this.state.selectedTransactionType === transactionType.income) {
+      const addIncomeRequest: AddIncomeRequest = {
+        amount: this.addTransactionDto.amount,
+        category: this.props.categories[this.state.selectedCategoryIdx].name,
+        to: this.props.selectedWallet.name
+      }
+      const response = await TransactionService.addIncome(addIncomeRequest);
+      if(response) {
+        this.props.balanceHandler(response.dst_wallet.balance);
+        alert("Add income success");
+      }
+      else {
+        alert("Add income failed");
+      }
     }
+  
+    
   }
 
   public render() {
     return (
       <div className="container is-fluid">
-        <p style={{textAlign: "center"}}>Add Transaction</p>
-        <p style={{textAlign: "center"}}>Category</p>
+        <h3 className="title is-3" style={{textAlign: "center"}}>Add Transaction</h3>
+        <h4 className="title is-4" style={{textAlign: "center"}}>Category</h4>
         <div className="container has-text-centered">
-          { ...this.renderCategory() }
+          { this.renderCategory() }
           <div className="columns">
             <div className="column">
+              <div className="field">
+                <div className="control select">
+                  <select onChange={this.transactionTypeSeclectHandler}>
+                    <option>{transactionType.expense}</option>
+                    <option>{transactionType.income}</option>
+                    <option>{transactionType.transfer}</option>
+                  </select>
+                </div>
+              </div>
               <div className="field">
                 <div className="control">
                   <input className="input is-rounded" name="amount" type="text" placeholder="Amount" onChange={ this.inputHandler }/>

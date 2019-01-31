@@ -1,29 +1,32 @@
-import 'bulma/css/bulma.css';
-import * as React from 'react';
-import Aux from '../hoc/Aux/Aux';
-import Transaction from '../components/Transaction';
-import Wallet from '../components/Wallet';
-import WalletModel from '../service/Model/Wallet';
+import "bulma/css/bulma.css";
+import * as React from "react";
+import Aux from "../hoc/Aux/Aux";
+import Transaction from "../components/Transaction";
+import Wallet from "../components/Wallet";
+import WalletModel from "../service/Model/Wallet";
 import * as CategoryService from "../service/CategoryService";
 import * as WalletService from "../service/WalletService";
-import Category from 'src/service/Model/Category';
+import Category from "src/service/Model/Category";
 
 interface IHomeState {
-  balance: number
+  balance: number;
   categories: Category[];
-  type: string
-  wallets: WalletModel[] | null
+  type: string;
+  wallets: WalletModel[];
 }
 
 class Home extends React.Component<any, IHomeState> {
+  private selectedWalletIdx: number;
+
   constructor(props: any) {
     super(props);
     this.state = {
       balance: 0,
       categories: [],
-      type: '',
-      wallets: null
+      type: "",
+      wallets: []
     }
+    this.selectedWalletIdx = 0;
   }
 
   public componentDidMount() {
@@ -51,17 +54,16 @@ class Home extends React.Component<any, IHomeState> {
 
   public walletOnChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>): void =>
   {
-    const wallets: WalletModel[] | null = this.state.wallets;
+    const wallets: WalletModel[] = this.state.wallets;
 
     if(!wallets) {
       return; 
     }
 
-    const selectedWallet: WalletModel | undefined = wallets.find(x => x.name === e.target.value);
+    this.selectedWalletIdx = wallets.findIndex(x => x.name === e.target.value); 
+    const selectedWallet = wallets[this.selectedWalletIdx];
     const balance: number = selectedWallet ? selectedWallet.balance : 0;
-    const type: string = selectedWallet ? selectedWallet.type : '';
-
-    console.log(balance, type);
+    const type: string = selectedWallet ? selectedWallet.type : "";
 
     this.setState({
       balance,
@@ -69,16 +71,31 @@ class Home extends React.Component<any, IHomeState> {
     });
   }
 
+  public balanceHandler = (balance: number): void => {
+    const wallets = [...this.state.wallets];
+
+    wallets[this.selectedWalletIdx].balance = balance; 
+
+    this.setState({
+      balance,
+      wallets
+    });
+  }
+
   public render() {
+    const selectedWallet = this.state.wallets[this.selectedWalletIdx];
+
     return (
       <Aux>
         <Transaction 
-          categories={ this.state.categories } />
+          categories={ this.state.categories } 
+          selectedWallet={ selectedWallet }
+          balanceHandler={ this.balanceHandler } />
         <Wallet 
           balance={ this.state.balance } 
           type={ this.state.type }
           walletOnChangeHandler={ this.walletOnChangeHandler } 
-          wallets={ this.state.wallets } />      
+          wallets={ this.state.wallets } />
       </Aux>
     );
   }

@@ -7,3 +7,9 @@ export const httpStatus = {
 export const walletType = {
   cash: "CASH"
 }
+
+export const transactionType = {
+  expense: "Expense",
+  income: "Income",
+  transfer: "Transfer"
+}

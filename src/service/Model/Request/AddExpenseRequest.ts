@@ -1,20 +1,14 @@
-export default class AddExpenseRequest {
+export default interface IAddExpenseRequest {
   /**
    * wallet's name
    */
-  public from: string;
+  from: string;
   /**
    * amount you expense
    */
-  public amount: number;
+  amount: number;
   /**
    * category name
    */
-  public category: string;
-
-  constructor(from: string, amount: number, category: string) {
-    this.from = from;
-    this.amount = amount;
-    this.category = category;
-  }
+  category: string;
 }

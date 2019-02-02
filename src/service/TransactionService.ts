@@ -33,7 +33,10 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
     return null;
   }
   
-  return response.data;
+  return {
+    dstWallet: response.data.dst_wallet,
+    transaction: response.data.transaction
+  };
 }
 
 export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse | null> {
@@ -44,5 +47,9 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
     return null;
   }
   
-  return response.data;
+  return {
+    dstWallet: response.data.dst_wallet,
+    srcWallet: response.data.src_wallet,
+    transaction: response.data.transaction
+  };
 }

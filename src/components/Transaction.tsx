@@ -86,7 +86,7 @@ class Transaction extends React.Component<ITransactionProps, ITransactionState> 
       }
       const response = await TransactionService.addExpense(addExpenseRequest);
       if(response) {
-        this.props.balanceHandler(response.src_wallet.balance);
+        this.props.balanceHandler(response.srcWallet.balance);
         alert("Add expense success");
       }
       else {
@@ -101,7 +101,7 @@ class Transaction extends React.Component<ITransactionProps, ITransactionState> 
       }
       const response = await TransactionService.addIncome(addIncomeRequest);
       if(response) {
-        this.props.balanceHandler(response.dst_wallet.balance);
+        this.props.balanceHandler(response.dstWallet.balance);
         alert("Add income success");
       }
       else {

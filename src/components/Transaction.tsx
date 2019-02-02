@@ -169,6 +169,7 @@ class Transaction extends React.Component<
                     className="input is-rounded"
                     name="date"
                     type="date"
+                    value={new Date().toISOString().slice(0, 10)}
                     onChange={this.inputHandler}
                   />
                 </div>

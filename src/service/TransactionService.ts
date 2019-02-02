@@ -1,0 +1,45 @@
+import axios from "axios";
+import * as Utils from "./Utils";
+import AddExpenseRequest from "./Model/Request/AddExpenseRequest";
+import AddExpenseResponse from "./Model/Response/AddExpenseResponse";
+import * as config from "./serviceConfig.json";
+import * as Constants from "./Constants"; 
+import AddIncomeRequest from './Model/Request/AddIncomeRequest';
+import AddIncomeResponse from './Model/Response/AddIncomeResponse';
+import AddTransferRequest from './Model/Request/AddTransferRequest';
+import AddTransferResponse from './Model/Response/AddTransferResponse';
+
+const transactionUrl = config.serverUrl + "/transaction";
+
+export async function addExpense(request: AddExpenseRequest): Promise<any | null> {
+  const response = await Utils.callAxios<AddExpenseRequest, AddExpenseResponse>(axios.post, transactionUrl + "/createExpense", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddExpense failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
+  }
+  
+  return response.data;
+}
+
+export async function addIncome(request: AddIncomeRequest): Promise<any | null> {
+  const response = await Utils.callAxios<AddIncomeRequest, AddIncomeResponse>(axios.post, transactionUrl + "/createIncome", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddIncome failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
+  }
+  
+  return response.data;
+}
+
+export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse | null> {
+  const response = await Utils.callAxios<AddTransferRequest, AddTransferResponse>(axios.post, transactionUrl + "/createIncome", request);
+
+  if(response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(`AddTransfer failed, status: ${ response.status }, ${ response.error ? response.error.message : "" }`);
+    return null;
+  }
+  
+  return response.data;
+}

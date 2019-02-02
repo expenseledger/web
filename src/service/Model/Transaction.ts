@@ -1,10 +1,10 @@
-export default class Transaction {
-  public id: number;
-  public srcWallet: string;
-  public dstWallet: string;
-  public amount: number;
-  public type: string;
-  public category: string;
-  public description: string;
-  public date: Date;
+export default interface ITransaction {
+  id: number;
+  srcWallet: string;
+  dstWallet: string;
+  amount: number;
+  type: string;
+  category: string;
+  description: string;
+  date: Date;
 }

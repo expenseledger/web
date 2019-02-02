@@ -1,53 +1,31 @@
-import Response from './Model/Response';
-import * as Constants from './Constants';
-
-/**
- * @param {any} axiosMethod pass axios method eg. axios.post.
- * @param {string} url url
- * @deprecated will obsolete soon
- */
-export async function callAxiosOld<TResponse>(axiosMethod: any, url: string, content?: object): Promise<Response<TResponse>> {
-  try {
-    const response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
-    return {
-      data: response.data.data,
-      error: null,
-      status: Number.parseInt(response.status, 10),
-      success: response.data.success
-    }
-  }
-  catch(err) {
-    console.log(err);
-    return {
-      data: null,
-      error: err,
-      status: Constants.httpStatus.internalServerError,
-      success: false
-    }
-  }
-}
+import Response from "./Model/Response";
 
 /**
  * @param {any} axiosMethod pass axios method eg. axios.post.
  * @param {string} url url
  */
-export async function callAxios<TRequest, TResponse>(axiosMethod: any, url: string, content?: TRequest): Promise<Response<TResponse>> {
+export async function callAxios(
+  axiosMethod: any,
+  url: string,
+  content?: object
+): Promise<Response> {
   try {
-    const response: any = content ? await axiosMethod(url, content) :  await axiosMethod(url);
+    const { data, status } = content
+      ? await axiosMethod(url, content)
+      : await axiosMethod(url);
+
     return {
-      data: response.data.data,
+      data: data.data,
       error: null,
-      status: Number.parseInt(response.status, 10),
-      success: response.data.success
-    }
-  }
-  catch(err) {
-    console.log(err);
+      status: Number.parseInt(status, 10),
+      success: data.success
+    };
+  } catch (err) {
     return {
       data: null,
       error: err,
-      status: Constants.httpStatus.internalServerError,
+      status: err.response.status,
       success: false
-    }
+    };
   }
 }

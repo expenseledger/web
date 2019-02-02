@@ -1,8 +1,8 @@
-import Wallet from '../Wallet';
-import Transaction from '../Transaction';
+import Transaction from "../Transaction";
+import Wallet from "../Wallet";
 
-export default class AddTransferResponse {
-  public dstWallet: Wallet;
-  public srcWallet: Wallet;
-  public transaction: Transaction;
+export default interface IAddTransferResponse {
+  dstWallet: Wallet;
+  srcWallet: Wallet;
+  transaction: Transaction;
 }

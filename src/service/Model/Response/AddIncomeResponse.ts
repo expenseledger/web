@@ -1,7 +1,7 @@
-import Wallet from '../Wallet';
-import Transaction from '../Transaction';
+import Transaction from "../Transaction";
+import Wallet from "../Wallet";
 
-export default class AddIncomeResponse {
-  public dstWallet: Wallet;
-  public transaction: Transaction;
+export default interface IAddIncomeResponse {
+  dstWallet: Wallet;
+  transaction: Transaction;
 }

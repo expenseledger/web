@@ -107,9 +107,7 @@ class Transaction extends React.Component<ITransactionProps, ITransactionState> 
       else {
         alert("Add income failed");
       }
-    }
-  
-    
+    } 
   }
 
   public render() {

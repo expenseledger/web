@@ -2,9 +2,8 @@ import axios from 'axios';
 import Wallet from './Model/Wallet';
 import * as Constants from './Constants';
 import * as Utils from './Utils';
-import * as config from './serviceConfig.json';
 
-const walletUrl = config.serverUrl + '/wallet';
+const walletUrl = process.env.REACT_APP_SERVER_URL + '/wallet';
 
 export async function getAllWallet(): Promise<Wallet[]> {
   let toReturn: Wallet[] = new Array(0);

@@ -2,10 +2,9 @@ import axios from 'axios';
 import Category from './Model/Category';
 import * as Constants from './Constants';
 import * as Utils from './Utils';
-import * as config from './serviceConfig.json';
 import * as _ from 'lodash';
 
-const categoryUrl = config.serverUrl + '/category';
+const categoryUrl = process.env.REACT_APP_SERVER_URL + '/category';
 
 export async function getAllCategories(): Promise<Category[]> {
   let toReturn: Category[] = new Array(0);

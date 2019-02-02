@@ -2,14 +2,13 @@ import axios from "axios";
 import * as Utils from "./Utils";
 import AddExpenseRequest from "./Model/Request/AddExpenseRequest";
 import AddExpenseResponse from "./Model/Response/AddExpenseResponse";
-import * as config from "./serviceConfig.json";
 import * as Constants from "./Constants"; 
 import AddIncomeRequest from './Model/Request/AddIncomeRequest';
 import AddIncomeResponse from './Model/Response/AddIncomeResponse';
 import AddTransferRequest from './Model/Request/AddTransferRequest';
 import AddTransferResponse from './Model/Response/AddTransferResponse';
 
-const transactionUrl = config.serverUrl + "/transaction";
+const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse | null> {
   const response = await Utils.callAxios(axios.post, transactionUrl + "/createExpense", request);

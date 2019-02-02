@@ -1,14 +1,8 @@
-export default class AddIncomeRequest {
+export default interface IAddIncomeRequest {
   /**
    * name of wallet
    */
-  public to: string;
-  public amount: number;
-  public category: string;
-
-  constructor(to: string, amount: number, category: string) {
-    this.to = to;
-    this.amount = amount;
-    this.category = category;
-  }
+  to: string;
+  amount: number;
+  category: string;
 }

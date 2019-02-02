@@ -1,6 +1,6 @@
-export default class AddTransferRequest {
-  public from: string;
-  public to: string;
-  public amount: number;
-  public category: string;
+export default interface IAddTransferRequest {
+  from: string;
+  to: string;
+  amount: number;
+  category: string;
 }

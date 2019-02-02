@@ -1,25 +1,21 @@
-import axios from 'axios';
-import Category from './Model/Category';
-import * as Constants from './Constants';
-import * as Utils from './Utils';
-import * as _ from 'lodash';
+import axios from "axios";
+import * as Constants from "./Constants";
+import Category from "./Model/Category";
+import * as Utils from "./Utils";
 
-const categoryUrl = process.env.REACT_APP_SERVER_URL + '/category';
+const categoryUrl = process.env.REACT_APP_SERVER_URL + "/category";
 
 export async function getAllCategories(): Promise<Category[]> {
   let toReturn: Category[] = new Array(0);
-  const response = await Utils.callAxios(axios.post, categoryUrl + '/list');
+  const response = await Utils.callAxios(axios.post, categoryUrl + "/list");
 
-  if(response.status !== Constants.httpStatus.ok || !response.success) {
-    console.log(`getAllCategories failed, status: ${ response.status }, ${ response.error ? response.error.message : '' }`);
+  if (response.status !== Constants.httpStatus.ok || !response.success) {
     return toReturn;
   }
 
-  if(response.data) {
-    toReturn = response.data.items
+  if (response.data) {
+    toReturn = response.data.items;
   }
 
   return toReturn;
 }
-
-

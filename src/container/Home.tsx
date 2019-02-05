@@ -9,24 +9,19 @@ import WalletModel from "../service/Model/Wallet";
 import * as WalletService from "../service/WalletService";
 
 interface IHomeState {
-  balance: number;
   categories: Category[];
-  type: string;
   wallets: WalletModel[];
+  currentWalletIdx: number;
 }
 
 class Home extends React.Component<any, IHomeState> {
-  private selectedWalletIdx: number;
-
   constructor(props: any) {
     super(props);
     this.state = {
-      balance: 0,
       categories: [],
-      type: "",
+      currentWalletIdx: 0,
       wallets: []
     };
-    this.selectedWalletIdx = 0;
   }
 
   public componentDidMount() {
@@ -54,14 +49,12 @@ class Home extends React.Component<any, IHomeState> {
     }
 
     this.setState({
-      balance: wallets[0].balance,
       categories,
-      type: wallets[0].type,
       wallets
     });
   };
 
-  public walletOnChangeHandler = (
+  public selectWalletHandler = (
     e: React.ChangeEvent<HTMLSelectElement>
   ): void => {
     const wallets: WalletModel[] = this.state.wallets;
@@ -70,42 +63,34 @@ class Home extends React.Component<any, IHomeState> {
       return;
     }
 
-    this.selectedWalletIdx = wallets.findIndex(x => x.name === e.target.value);
-    const selectedWallet = wallets[this.selectedWalletIdx];
-    const balance: number = selectedWallet ? selectedWallet.balance : 0;
-    const type: string = selectedWallet ? selectedWallet.type : "";
-
     this.setState({
-      balance,
-      type
+      currentWalletIdx: wallets.findIndex(x => x.name === e.target.value)
     });
   };
 
-  public balanceHandler = (balance: number): void => {
+  public updateWallet = (wallet: WalletModel): void => {
     const wallets = [...this.state.wallets];
+    const walletChangedIdx = wallets.findIndex(x => x.name === wallet.name);
 
-    wallets[this.selectedWalletIdx].balance = balance;
-
+    wallets[walletChangedIdx] = wallet;
     this.setState({
-      balance,
       wallets
-    });
-  };
+    })
+  }
 
   public render() {
-    const selectedWallet = this.state.wallets[this.selectedWalletIdx];
+    const currentWallet = this.state.wallets[this.state.currentWalletIdx];
 
     return (
       <Aux>
         <Transaction
           categories={this.state.categories}
-          selectedWallet={selectedWallet}
-          balanceHandler={this.balanceHandler}
+          currentWallet={currentWallet}
+          updateWallet={this.updateWallet}
         />
         <Wallet
-          balance={this.state.balance}
-          type={this.state.type}
-          walletOnChangeHandler={this.walletOnChangeHandler}
+          currentWalletIdx={this.state.currentWalletIdx}
+          walletOnChangeHandler={this.selectWalletHandler}
           wallets={this.state.wallets}
         />
       </Aux>

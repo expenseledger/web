@@ -9,8 +9,8 @@ import * as TransactionService from "../service/TransactionService";
 
 interface ITransactionProps {
   categories: Category[];
-  selectedWallet: Wallet;
-  balanceHandler: (balance: number) => void;
+  currentWallet: Wallet;
+  updateWallet: (wallet: Wallet) => void;
 }
 
 interface ITransactionState {
@@ -105,11 +105,11 @@ class Transaction extends React.Component<
       const addExpenseRequest: AddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
-        from: this.props.selectedWallet.name
+        from: this.props.currentWallet.name
       };
       const response = await TransactionService.addExpense(addExpenseRequest);
       if (response) {
-        this.props.balanceHandler(response.srcWallet.balance);
+        this.props.updateWallet(response.srcWallet);
         alert("Add expense success");
       } else {
         alert("Add expense failed");
@@ -118,11 +118,11 @@ class Transaction extends React.Component<
       const addIncomeRequest: AddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
-        to: this.props.selectedWallet.name
+        to: this.props.currentWallet.name
       };
       const response = await TransactionService.addIncome(addIncomeRequest);
       if (response) {
-        this.props.balanceHandler(response.dstWallet.balance);
+        this.props.updateWallet(response.dstWallet);
         alert("Add income success");
       } else {
         alert("Add income failed");

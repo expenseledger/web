@@ -87,6 +87,7 @@ class Home extends React.Component<any, IHomeState> {
           categories={this.state.categories}
           currentWallet={currentWallet}
           updateWallet={this.updateWallet}
+          wallets={this.state.wallets}
         />
         <Wallet
           currentWalletIdx={this.state.currentWalletIdx}

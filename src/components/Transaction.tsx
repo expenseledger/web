@@ -3,6 +3,7 @@ import AddTransactionDto from "src/service/Model/AddTransactionDto";
 import Category from "src/service/Model/Category";
 import AddExpenseRequest from "src/service/Model/Request/AddExpenseRequest";
 import AddIncomeRequest from "src/service/Model/Request/AddIncomeRequest";
+import AddTransferRequest from "src/service/Model/Request/AddTransferRequest";
 import { transactionType } from "../service/Constants";
 import Wallet from "../service/Model/Wallet";
 import * as TransactionService from "../service/TransactionService";
@@ -10,6 +11,7 @@ import * as TransactionService from "../service/TransactionService";
 interface ITransactionProps {
   categories: Category[];
   currentWallet: Wallet;
+  wallets: Wallet[];
   updateWallet: (wallet: Wallet) => void;
 }
 
@@ -21,8 +23,9 @@ interface ITransactionState {
 class Transaction extends React.Component<
   ITransactionProps,
   ITransactionState
-> {
+  > {
   public addTransactionDto: AddTransactionDto;
+  public dstTransferWalletName: string
 
   constructor(props: any) {
     super(props);
@@ -30,7 +33,14 @@ class Transaction extends React.Component<
       selectedCategoryIdx: 0,
       selectedTransactionType: transactionType.expense
     };
-    this.addTransactionDto = new AddTransactionDto();
+    this.addTransactionDto = {
+      amount: 0,
+      date: new Date(),
+      note: '',
+      wallet: ''
+    };
+
+    this.dstTransferWalletName = '';
   }
 
   public categoryOnClickHander = (categoryIdx: number): void => {
@@ -100,6 +110,10 @@ class Transaction extends React.Component<
     });
   };
 
+  public dstTransferWalletHandler = (event: any) => {
+    this.dstTransferWalletName = event.target.value;
+  }
+
   public addTransactionHandler = async () => {
     if (this.state.selectedTransactionType === transactionType.expense) {
       const addExpenseRequest: AddExpenseRequest = {
@@ -127,8 +141,36 @@ class Transaction extends React.Component<
       } else {
         alert("Add income failed");
       }
+    } else if (this.state.selectedTransactionType === transactionType.transfer) {
+      const addTransferRequest: AddTransferRequest = {
+        amount: this.addTransactionDto.amount,
+        category: this.props.categories[this.state.selectedCategoryIdx].name,
+        from: this.props.currentWallet.name,
+        to: this.dstTransferWalletName,
+      }
+      const response = await TransactionService.addTransfer(addTransferRequest);
+      if (response) {
+        this.props.updateWallet(response.dstWallet);
+        this.props.updateWallet(response.srcWallet);
+        alert("Add transfer success");
+      } else {
+        alert("Add transfer failed");
+      }
     }
   };
+
+  public renderDstTransferWallet = (): JSX.Element => {
+    let toReturn: JSX.Element[] = [];
+    let wallets = this.props.wallets;
+
+    if (wallets && wallets.length > 0) {
+      wallets = wallets.filter(wallet => wallet.name !== this.props.currentWallet.name);
+      toReturn = wallets.map((wallet, idx) => <option key={idx}>{wallet.name}</option>);
+      this.dstTransferWalletName = wallets[0].name;
+    }
+
+    return (<select onChange={this.dstTransferWalletHandler}>{toReturn}</select>);
+  }
 
   public render() {
     return (
@@ -152,6 +194,17 @@ class Transaction extends React.Component<
                   </select>
                 </div>
               </div>
+              {
+                this.state.selectedTransactionType === transactionType.transfer
+                  ?
+                  <div className="field">
+                    <span>To </span>
+                    <div className="control select">
+                      {this.renderDstTransferWallet()}
+                    </div>
+                  </div>
+                  : null
+              }
               <div className="field">
                 <div className="control">
                   <input

@@ -1,0 +1,7 @@
+{
+  "appId": "io.expledger.app",
+  "appName": "ExpenseLedger",
+  "bundledWebRuntime": false,
+  "webDir": "build",
+  "linuxAndroidStudioPath": "/usr/bin/android-studio"
+}

@@ -2,9 +2,8 @@ import * as React from "react";
 import WalletModel from "../service/Model/Wallet";
 
 interface IWalletProps {
-  balance: number
-  type: string
-  wallets: WalletModel[] | null
+  currentWalletIdx: number
+  wallets: WalletModel[]
   walletOnChangeHandler: (event: React.ChangeEvent<HTMLSelectElement>) => void
 }
 
@@ -25,10 +24,10 @@ class Wallet extends React.Component<IWalletProps, any> {
       <nav className="level is-mobile">
         <div className="level-left">
           <div className="level-item">
-            <p>{ this.props.type }</p>
+            <p>{this.props.wallets.length > 0 ? this.props.wallets[this.props.currentWalletIdx].type : null}</p>
           </div>
           <div className="level-item">
-            <p>{ this.props.balance }</p>
+            <p>{this.props.wallets.length > 0 ? this.props.wallets[this.props.currentWalletIdx].balance : null}</p>
           </div>
           <div className="level-item">
             { this.renderWallet() }

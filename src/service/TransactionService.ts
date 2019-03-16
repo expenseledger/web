@@ -24,7 +24,7 @@ export async function addExpense(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddExpense failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;
@@ -48,7 +48,7 @@ export async function addIncome(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddIncome failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;
@@ -65,14 +65,14 @@ export async function addTransfer(
 ): Promise<AddTransferResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
-    transactionUrl + "/createIncome",
+    transactionUrl + "/createTransfer",
     request
   );
 
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddTransfer failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;

@@ -1,6 +1,6 @@
-export default class IAddTransactionDto {
-  public amount: number;
-  public date: Date;
-  public note: string;
-  public wallet: string;
+export default interface IAddTransactionDto {
+  amount: number;
+  date: Date;
+  note: string;
+  wallet: string;
 }

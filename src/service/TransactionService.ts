@@ -3,13 +3,16 @@ import * as Constants from "./Constants";
 import {
   IAddExpenseRequest,
   IAddIncomeRequest,
-  IAddTransferRequest
+  IAddTransferRequest,
+  IListTransactionsRequest
 } from "./Model/Requests";
 import {
   IAddExpenseResponse,
   IAddIncomeResponse,
-  IAddTransferResponse
+  IAddTransferResponse,
+  IListTransactionsResponse
 } from "./Model/Responses";
+import Transaction from "./Model/Transaction";
 import * as Utils from "./Utils";
 
 const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
@@ -36,7 +39,7 @@ export async function addExpense(
 
   return {
     srcWallet: response.data.src_wallet,
-    transaction: response.data.transaction
+    transaction: mapJsonToTransaction(response.data.transaction)
   };
 }
 
@@ -60,7 +63,7 @@ export async function addIncome(
 
   return {
     dstWallet: response.data.dst_wallet,
-    transaction: response.data.transaction
+    transaction: mapJsonToTransaction(response.data.transaction)
   };
 }
 
@@ -85,6 +88,43 @@ export async function addTransfer(
   return {
     dstWallet: response.data.dst_wallet,
     srcWallet: response.data.src_wallet,
-    transaction: response.data.transaction
+    transaction: mapJsonToTransaction(response.data.transaction)
+  };
+}
+
+export async function listTransactions(
+  request: IListTransactionsRequest
+): Promise<IListTransactionsResponse> {
+  const response = await Utils.callAxios(
+    axios.post,
+    transactionUrl + "/list",
+    request
+  );
+
+  if (response.status !== Constants.httpStatus.ok || !response.success) {
+    console.log(
+      `ListTransactions failed, status: ${response.status}, ${
+        response.error ? response.error.message : ""
+      }`
+    );
+    throw new Error(response.error ? response.error.message : "UNKNOWN");
+  }
+
+  return {
+    length: response.data.length,
+    items: response.data.items.map(mapJsonToTransaction)
+  };
+}
+
+function mapJsonToTransaction(json: any): Transaction {
+  return {
+    id: json.id,
+    srcWallet: json.src_wallet,
+    dstWallet: json.dst_wallet,
+    amount: json.amount,
+    type: json.type,
+    category: json.category,
+    description: json.description,
+    date: json.date
   };
 }

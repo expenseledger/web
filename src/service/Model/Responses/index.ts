@@ -16,3 +16,8 @@ export interface IAddTransferResponse {
   srcWallet: Wallet;
   transaction: Transaction;
 }
+
+export interface IListTransactionsResponse {
+  length: number;
+  items: Transaction[];
+}

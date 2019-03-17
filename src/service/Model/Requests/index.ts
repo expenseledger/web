@@ -1,18 +1,22 @@
-export interface IAddExpenseRequest {
-  from: string;
+interface IAddTransactionRequest {
   amount: number;
   category: string;
+  description?: string;
+  date?: Date;
+}
+export interface IAddExpenseRequest extends IAddTransactionRequest {
+  from: string;
 }
 
-export interface IAddIncomeRequest {
+export interface IAddIncomeRequest extends IAddTransactionRequest {
   to: string;
-  amount: number;
-  category: string;
 }
 
-export interface IAddTransferRequest {
+export interface IAddTransferRequest extends IAddTransactionRequest {
   from: string;
   to: string;
-  amount: number;
-  category: string;
+}
+
+export interface IListTransactionsRequest {
+  wallet: string;
 }

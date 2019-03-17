@@ -1,9 +1,7 @@
-import "bulma/css/bulma.css";
 import * as React from "react";
 import Category from "src/service/Model/Category";
 import Transaction from "../components/Transaction";
 import Wallet from "../components/Wallet";
-import Aux from "../hoc/Aux/Aux";
 import * as CategoryService from "../service/CategoryService";
 import WalletModel from "../service/Model/Wallet";
 import * as WalletService from "../service/WalletService";
@@ -82,7 +80,7 @@ class Home extends React.Component<any, IHomeState> {
     const currentWallet = this.state.wallets[this.state.currentWalletIdx];
 
     return (
-      <Aux>
+      <React.Fragment>
         <Transaction
           categories={this.state.categories}
           currentWallet={currentWallet}
@@ -94,7 +92,7 @@ class Home extends React.Component<any, IHomeState> {
           walletOnChangeHandler={this.selectWalletHandler}
           wallets={this.state.wallets}
         />
-      </Aux>
+      </React.Fragment>
     );
   }
 }

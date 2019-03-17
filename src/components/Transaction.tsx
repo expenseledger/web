@@ -4,7 +4,7 @@ import Category from "src/service/Model/Category";
 import AddExpenseRequest from "src/service/Model/Request/AddExpenseRequest";
 import AddIncomeRequest from "src/service/Model/Request/AddIncomeRequest";
 import AddTransferRequest from "src/service/Model/Request/AddTransferRequest";
-import { transactionType } from "../service/Constants";
+import { TransactionType } from "../service/Constants";
 import Wallet from "../service/Model/Wallet";
 import * as TransactionService from "../service/TransactionService";
 
@@ -17,30 +17,30 @@ interface ITransactionProps {
 
 interface ITransactionState {
   selectedCategoryIdx: number;
-  selectedTransactionType: string;
+  selectedTransactionType: TransactionType;
 }
 
 class Transaction extends React.Component<
   ITransactionProps,
   ITransactionState
-  > {
+> {
   public addTransactionDto: AddTransactionDto;
-  public dstTransferWalletName: string
+  public dstTransferWalletName: string;
 
   constructor(props: any) {
     super(props);
     this.state = {
       selectedCategoryIdx: 0,
-      selectedTransactionType: transactionType.expense
+      selectedTransactionType: "Expense"
     };
     this.addTransactionDto = {
       amount: 0,
       date: new Date(),
-      note: '',
-      wallet: ''
+      note: "",
+      wallet: ""
     };
 
-    this.dstTransferWalletName = '';
+    this.dstTransferWalletName = "";
   }
 
   public categoryOnClickHander = (categoryIdx: number): void => {
@@ -106,16 +106,16 @@ class Transaction extends React.Component<
     event: React.ChangeEvent<HTMLSelectElement>
   ) => {
     this.setState({
-      selectedTransactionType: event.target.value
+      selectedTransactionType: event.target.value as TransactionType
     });
   };
 
   public dstTransferWalletHandler = (event: any) => {
     this.dstTransferWalletName = event.target.value;
-  }
+  };
 
   public addTransactionHandler = async () => {
-    if (this.state.selectedTransactionType === transactionType.expense) {
+    if (this.state.selectedTransactionType === "Expense") {
       const addExpenseRequest: AddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
@@ -128,7 +128,7 @@ class Transaction extends React.Component<
       } else {
         alert("Add expense failed");
       }
-    } else if (this.state.selectedTransactionType === transactionType.income) {
+    } else if (this.state.selectedTransactionType === "Income") {
       const addIncomeRequest: AddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
@@ -141,13 +141,13 @@ class Transaction extends React.Component<
       } else {
         alert("Add income failed");
       }
-    } else if (this.state.selectedTransactionType === transactionType.transfer) {
+    } else if (this.state.selectedTransactionType === "Transfer") {
       const addTransferRequest: AddTransferRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,
-        to: this.dstTransferWalletName,
-      }
+        to: this.dstTransferWalletName
+      };
       const response = await TransactionService.addTransfer(addTransferRequest);
       if (response) {
         this.props.updateWallet(response.dstWallet);
@@ -164,13 +164,17 @@ class Transaction extends React.Component<
     let wallets = this.props.wallets;
 
     if (wallets && wallets.length > 0) {
-      wallets = wallets.filter(wallet => wallet.name !== this.props.currentWallet.name);
-      toReturn = wallets.map((wallet, idx) => <option key={idx}>{wallet.name}</option>);
+      wallets = wallets.filter(
+        wallet => wallet.name !== this.props.currentWallet.name
+      );
+      toReturn = wallets.map((wallet, idx) => (
+        <option key={idx}>{wallet.name}</option>
+      ));
       this.dstTransferWalletName = wallets[0].name;
     }
 
-    return (<select onChange={this.dstTransferWalletHandler}>{toReturn}</select>);
-  }
+    return <select onChange={this.dstTransferWalletHandler}>{toReturn}</select>;
+  };
 
   public render() {
     return (
@@ -188,23 +192,20 @@ class Transaction extends React.Component<
               <div className="field">
                 <div className="control select">
                   <select onChange={this.transactionTypeSeclectHandler}>
-                    <option>{transactionType.expense}</option>
-                    <option>{transactionType.income}</option>
-                    <option>{transactionType.transfer}</option>
+                    <option>{"Expense"}</option>
+                    <option>{"Income"}</option>
+                    <option>{"Transfer"}</option>
                   </select>
                 </div>
               </div>
-              {
-                this.state.selectedTransactionType === transactionType.transfer
-                  ?
-                  <div className="field">
-                    <span>To </span>
-                    <div className="control select">
-                      {this.renderDstTransferWallet()}
-                    </div>
+              {this.state.selectedTransactionType === "Transfer" ? (
+                <div className="field">
+                  <span>To </span>
+                  <div className="control select">
+                    {this.renderDstTransferWallet()}
                   </div>
-                  : null
-              }
+                </div>
+              ) : null}
               <div className="field">
                 <div className="control">
                   <input

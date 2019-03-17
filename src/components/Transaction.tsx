@@ -31,7 +31,7 @@ class Transaction extends React.Component<
     super(props);
     this.state = {
       selectedCategoryIdx: 0,
-      selectedTransactionType: "Expense"
+      selectedTransactionType: "EXPENSE"
     };
     this.addTransactionDto = {
       amount: 0,
@@ -115,7 +115,7 @@ class Transaction extends React.Component<
   };
 
   public addTransactionHandler = async () => {
-    if (this.state.selectedTransactionType === "Expense") {
+    if (this.state.selectedTransactionType === "EXPENSE") {
       const addExpenseRequest: AddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
@@ -128,7 +128,7 @@ class Transaction extends React.Component<
       } else {
         alert("Add expense failed");
       }
-    } else if (this.state.selectedTransactionType === "Income") {
+    } else if (this.state.selectedTransactionType === "INCOME") {
       const addIncomeRequest: AddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
@@ -141,7 +141,7 @@ class Transaction extends React.Component<
       } else {
         alert("Add income failed");
       }
-    } else if (this.state.selectedTransactionType === "Transfer") {
+    } else if (this.state.selectedTransactionType === "TRANSFER") {
       const addTransferRequest: AddTransferRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
@@ -192,13 +192,13 @@ class Transaction extends React.Component<
               <div className="field">
                 <div className="control select">
                   <select onChange={this.transactionTypeSeclectHandler}>
-                    <option>{"Expense"}</option>
-                    <option>{"Income"}</option>
-                    <option>{"Transfer"}</option>
+                    <option>{"EXPENSE"}</option>
+                    <option>{"INCOME"}</option>
+                    <option>{"TRANSFER"}</option>
                   </select>
                 </div>
               </div>
-              {this.state.selectedTransactionType === "Transfer" ? (
+              {this.state.selectedTransactionType === "TRANSFER" ? (
                 <div className="field">
                   <span>To </span>
                   <div className="control select">

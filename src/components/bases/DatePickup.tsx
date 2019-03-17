@@ -1,12 +1,20 @@
-import * as React from 'react';
+import moment from "moment";
+import * as React from "react";
 
 interface IDatePickupProps {
     name: string;
     value?: string;
-    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    updateValue: (value: string) => void;
 }
 
 const datePickup = (props: IDatePickupProps) => {
+    const [value, setValue] = React.useState(moment().format('L'));
+
+    function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+        setValue(e.target.value);
+        props.updateValue(value);
+    }
+
     return (
         <div className="field">
             <div className="control">
@@ -14,7 +22,7 @@ const datePickup = (props: IDatePickupProps) => {
                     className="input is-rounded"
                     name={props.name}
                     type="date"
-                    onChange={props.onChange}
+                    onChange={onChangeHandler}
                     value={props.value ? props.value : new Date().toISOString().slice(0, 10)}
                 />
             </div>

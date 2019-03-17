@@ -29,4 +29,4 @@ const textBox = (props: ITextBoxProps) => {
     );
 }
 
-export { textBox };
+export default textBox;

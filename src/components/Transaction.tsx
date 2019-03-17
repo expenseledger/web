@@ -1,7 +1,7 @@
 import * as React from "react";
-import AddTransactionDto from "src/service/Model/AddTransactionDto";
-import Category from "src/service/Model/Category";
 import { TransactionType } from "../service/Constants";
+import AddTransactionDto from "../service/Model/AddTransactionDto";
+import Category from "../service/Model/Category";
 import {
   IAddExpenseRequest,
   IAddIncomeRequest,
@@ -121,7 +121,8 @@ class Transaction extends React.Component<
       const addExpenseRequest: IAddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
-        from: this.props.currentWallet.name
+        from: this.props.currentWallet.name,
+        description: this.addTransactionDto.note
       };
       const response = await TransactionService.addExpense(addExpenseRequest);
       if (response) {
@@ -134,7 +135,8 @@ class Transaction extends React.Component<
       const addIncomeRequest: IAddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
-        to: this.props.currentWallet.name
+        to: this.props.currentWallet.name,
+        description: this.addTransactionDto.note
       };
       const response = await TransactionService.addIncome(addIncomeRequest);
       if (response) {
@@ -148,7 +150,8 @@ class Transaction extends React.Component<
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,
-        to: this.dstTransferWalletName
+        to: this.dstTransferWalletName,
+        description: this.addTransactionDto.note
       };
       const response = await TransactionService.addTransfer(addTransferRequest);
       if (response) {

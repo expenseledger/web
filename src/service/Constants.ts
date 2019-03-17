@@ -6,4 +6,4 @@ export const httpStatus = {
 
 export type WalletType = "CASH";
 
-export type TransactionType = "Expense" | "Income" | "Transfer";
+export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";

@@ -1,10 +1,12 @@
 import * as React from "react";
 import AddTransactionDto from "src/service/Model/AddTransactionDto";
 import Category from "src/service/Model/Category";
-import AddExpenseRequest from "src/service/Model/Request/AddExpenseRequest";
-import AddIncomeRequest from "src/service/Model/Request/AddIncomeRequest";
-import AddTransferRequest from "src/service/Model/Request/AddTransferRequest";
 import { TransactionType } from "../service/Constants";
+import {
+  IAddExpenseRequest,
+  IAddIncomeRequest,
+  IAddTransferRequest
+} from "../service/Model/Requests";
 import Wallet from "../service/Model/Wallet";
 import * as TransactionService from "../service/TransactionService";
 
@@ -31,7 +33,7 @@ class Transaction extends React.Component<
     super(props);
     this.state = {
       selectedCategoryIdx: 0,
-      selectedTransactionType: "Expense"
+      selectedTransactionType: "EXPENSE"
     };
     this.addTransactionDto = {
       amount: 0,
@@ -115,8 +117,8 @@ class Transaction extends React.Component<
   };
 
   public addTransactionHandler = async () => {
-    if (this.state.selectedTransactionType === "Expense") {
-      const addExpenseRequest: AddExpenseRequest = {
+    if (this.state.selectedTransactionType === "EXPENSE") {
+      const addExpenseRequest: IAddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name
@@ -128,8 +130,8 @@ class Transaction extends React.Component<
       } else {
         alert("Add expense failed");
       }
-    } else if (this.state.selectedTransactionType === "Income") {
-      const addIncomeRequest: AddIncomeRequest = {
+    } else if (this.state.selectedTransactionType === "INCOME") {
+      const addIncomeRequest: IAddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         to: this.props.currentWallet.name
@@ -141,8 +143,8 @@ class Transaction extends React.Component<
       } else {
         alert("Add income failed");
       }
-    } else if (this.state.selectedTransactionType === "Transfer") {
-      const addTransferRequest: AddTransferRequest = {
+    } else if (this.state.selectedTransactionType === "TRANSFER") {
+      const addTransferRequest: IAddTransferRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,
@@ -192,13 +194,13 @@ class Transaction extends React.Component<
               <div className="field">
                 <div className="control select">
                   <select onChange={this.transactionTypeSeclectHandler}>
-                    <option>{"Expense"}</option>
-                    <option>{"Income"}</option>
-                    <option>{"Transfer"}</option>
+                    <option>{"EXPENSE"}</option>
+                    <option>{"INCOME"}</option>
+                    <option>{"TRANSFER"}</option>
                   </select>
                 </div>
               </div>
-              {this.state.selectedTransactionType === "Transfer" ? (
+              {this.state.selectedTransactionType === "TRANSFER" ? (
                 <div className="field">
                   <span>To </span>
                   <div className="control select">

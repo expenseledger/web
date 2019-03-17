@@ -16,3 +16,7 @@ export interface IAddTransferRequest {
   amount: number;
   category: string;
 }
+
+export interface IListTransactionsRequest {
+  wallet: string;
+}

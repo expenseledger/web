@@ -29,3 +29,7 @@ export async function callAxios(
     };
   }
 }
+
+export function combineClassName(classNames: object) {
+  return Object.values(classNames).reduce((toReturn, className) => toReturn + " " + className, '');
+}

@@ -94,7 +94,7 @@ export async function addTransfer(
 
 export async function listTransactions(
   request: IListTransactionsRequest
-): Promise<IListTransactionsResponse | null> {
+): Promise<IListTransactionsResponse> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/list",
@@ -107,7 +107,7 @@ export async function listTransactions(
         response.error ? response.error.message : ""
       }`
     );
-    return null;
+    throw new Error(response.error ? response.error.message : "UNKNOWN");
   }
 
   return {

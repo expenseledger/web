@@ -1,9 +1,9 @@
 import * as React from "react";
-import { TransactionList } from "./TransactionList";
+import { Home } from "./Home";
 
 class App extends React.Component {
   public render() {
-    return <TransactionList wallet="Cash" />;
+    return <Home />;
   }
 }
 

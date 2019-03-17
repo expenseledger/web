@@ -12,7 +12,7 @@ interface IHomeState {
   currentWalletIdx: number;
 }
 
-class Home extends React.Component<any, IHomeState> {
+export class Home extends React.Component<any, IHomeState> {
   constructor(props: any) {
     super(props);
     this.state = {
@@ -73,8 +73,8 @@ class Home extends React.Component<any, IHomeState> {
     wallets[walletChangedIdx] = wallet;
     this.setState({
       wallets
-    })
-  }
+    });
+  };
 
   public render() {
     const currentWallet = this.state.wallets[this.state.currentWalletIdx];

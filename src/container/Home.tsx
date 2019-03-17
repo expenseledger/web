@@ -1,4 +1,3 @@
-import "bulma/css/bulma.css";
 import * as React from "react";
 import Category from "src/service/Model/Category";
 import Transaction from "../components/Transaction";

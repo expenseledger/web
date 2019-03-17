@@ -1,10 +1,12 @@
 import * as React from "react";
 import AddTransactionDto from "src/service/Model/AddTransactionDto";
 import Category from "src/service/Model/Category";
-import AddExpenseRequest from "src/service/Model/Request/AddExpenseRequest";
-import AddIncomeRequest from "src/service/Model/Request/AddIncomeRequest";
-import AddTransferRequest from "src/service/Model/Request/AddTransferRequest";
 import { TransactionType } from "../service/Constants";
+import {
+  IAddExpenseRequest,
+  IAddIncomeRequest,
+  IAddTransferRequest
+} from "../service/Model/Requests";
 import Wallet from "../service/Model/Wallet";
 import * as TransactionService from "../service/TransactionService";
 
@@ -116,7 +118,7 @@ class Transaction extends React.Component<
 
   public addTransactionHandler = async () => {
     if (this.state.selectedTransactionType === "EXPENSE") {
-      const addExpenseRequest: AddExpenseRequest = {
+      const addExpenseRequest: IAddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name
@@ -129,7 +131,7 @@ class Transaction extends React.Component<
         alert("Add expense failed");
       }
     } else if (this.state.selectedTransactionType === "INCOME") {
-      const addIncomeRequest: AddIncomeRequest = {
+      const addIncomeRequest: IAddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         to: this.props.currentWallet.name
@@ -142,7 +144,7 @@ class Transaction extends React.Component<
         alert("Add income failed");
       }
     } else if (this.state.selectedTransactionType === "TRANSFER") {
-      const addTransferRequest: AddTransferRequest = {
+      const addTransferRequest: IAddTransferRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,

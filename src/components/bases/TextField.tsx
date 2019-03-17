@@ -1,15 +1,15 @@
 import * as React from 'react';
 
-interface ITextBoxProps {
+interface ITextFieldProps {
     name: string;
     placeholder?: string;
     updateValue: (value: string) => void;
 }
 
-const textBox = (props: ITextBoxProps) => {
+const textField = (props: ITextFieldProps) => {
     const [value, setValue] = React.useState('');
 
-    function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+    function onChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
         setValue(e.target.value);
         props.updateValue(value);
     }
@@ -17,10 +17,9 @@ const textBox = (props: ITextBoxProps) => {
     return (
         <div className="field">
             <div className="control">
-                <input
+                <textarea
                     className="input is-rounded"
                     name={props.name}
-                    type="text"
                     placeholder={props.placeholder}
                     onChange={onChangeHandler}
                 />
@@ -29,4 +28,4 @@ const textBox = (props: ITextBoxProps) => {
     );
 }
 
-export { textBox };
+export default textField;

@@ -1,13 +1,13 @@
 import moment from "moment";
 import * as React from "react";
 
-interface IDatePickupProps {
+interface IDateBoxProps {
     name: string;
     value?: string;
     updateValue: (value: string) => void;
 }
 
-const datePickup = (props: IDatePickupProps) => {
+const dateBox = (props: IDateBoxProps) => {
     const [value, setValue] = React.useState(moment().format('L'));
 
     function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
@@ -30,4 +30,4 @@ const datePickup = (props: IDatePickupProps) => {
     );
 }
 
-export default datePickup;
+export default dateBox;

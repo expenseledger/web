@@ -1,11 +1,15 @@
-import * as React from 'react';
-import Wallet from '../service/Model/Wallet';
+import * as React from "react";
+import * as CategoryService from "../service/CategoryService";
+import Category from "../service/Model/Category";
+import Wallet from "../service/Model/Wallet";
 import * as WalletService from "../service/WalletService";
-import Dropdown from './bases/Dropdown';
-import TextBox from './bases/TextBox';
+import Button from "./bases/Button";
+import Dropdown from "./bases/Dropdown";
+import TextBox from "./bases/TextBox";
 
 interface IHomeState {
     wallets: Wallet[];
+    categories: Category[];
 }
 
 class Home extends React.Component<any, IHomeState> {
@@ -14,13 +18,15 @@ class Home extends React.Component<any, IHomeState> {
     constructor(props: any) {
         super(props);
         this.state = {
-            wallets: []
+            wallets: [],
+            categories: []
         };
         this.selectedValue = {};
     }
 
     public componentDidMount() {
         this.fetchAllWallet();
+        this.fetchAllCategory();
     }
 
     public render() {
@@ -41,11 +47,11 @@ class Home extends React.Component<any, IHomeState> {
                     <TextBox updateValue={this.updateExpense} name="expnese" />
                 </div>
                 <div>
-                    Category
+                    <Dropdown options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
                 <div>
-                    <button>Add</button>
-                    <button>More</button>
+                    <Button value="Add" />
+                    <Button value="More" />
                 </div>
             </React.Fragment>
         );
@@ -54,6 +60,12 @@ class Home extends React.Component<any, IHomeState> {
     private updateSelectedWallet(value: string) {
         this.selectedValue = {
             wallet: value
+        };
+    }
+
+    private updateSelectedCategory(value: string) {
+        this.selectedValue = {
+            category: value
         };
     }
 
@@ -68,6 +80,13 @@ class Home extends React.Component<any, IHomeState> {
         this.setState({
             wallets
         });
+    }
+
+    private async fetchAllCategory() {
+        const categories = await CategoryService.getAllCategories();
+        this.setState({
+            categories
+        })
     }
 }
 

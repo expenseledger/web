@@ -4,7 +4,7 @@ import { combineClassName } from '../../service/Utils'
 interface IButtonProps {
     value: string;
     outlined?: boolean;
-    onClickHandler: (e: React.MouseEvent) => void;
+    onClickHandler?: (e: React.MouseEvent) => void;
 }
 
 const button = (props: IButtonProps) => {

@@ -6,15 +6,8 @@ interface IDropdownProps {
 }
 
 const dropdown = (props: IDropdownProps) => {
-    const [value, setValue] = React.useState(props.options[0]);
-
-    if (props.options.length !== 0) {
-        props.updateSelectedValue(props.options[0]);
-    }
-
     function onChangeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
-        setValue(e.target.value);
-        props.updateSelectedValue(value);
+        props.updateSelectedValue(e.target.value);
     }
 
     return (

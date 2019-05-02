@@ -1,11 +1,14 @@
+import moment from "moment";
 import * as React from "react";
 import * as CategoryService from "../service/CategoryService";
 import ICategory from "../service/Model/Category";
 import IWallet from "../service/Model/Wallet";
 import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
+import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
+import "./Home.scss";
 
 interface IHomeState {
     wallets: IWallet[];
@@ -16,7 +19,8 @@ interface IHomeState {
 interface ICurrentValue {
     wallet?: IWallet;
     category?: ICategory;
-    expense: number
+    expense: number;
+    date: string;
 }
 
 class Home extends React.Component<any, IHomeState> {
@@ -34,7 +38,8 @@ class Home extends React.Component<any, IHomeState> {
                 category: {
                     name: "",
                 },
-                expense: 0
+                expense: 0,
+                date: moment().format('YYYY-MM-DD'),
             },
         };
     }
@@ -46,30 +51,40 @@ class Home extends React.Component<any, IHomeState> {
 
     public render() {
         return (
-            <React.Fragment>
-                <div>
-                    Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0}
+            <div className="content">
+                <div className="balance">
+                    <span className="balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0}</span>
                 </div>
-                <div>
+                <div className="transaction">
                     <Dropdown options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
                     <a>Transaction</a>
                 </div>
-                <div>
-                    Date
+                <div className="date">
+                    <span>Date</span>
+                    <DateBox name="date" updateValue={this.updateSelectedDate} />
                 </div>
-                <div>
+                <div className="expense">
                     <span>Expense: </span>
                     <TextBox updateValue={this.updateExpense} name="expnese" />
                 </div>
-                <div>
+                <div className="category">
                     <Dropdown options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
                 <div>
                     <Button value="Add" />
                     <Button value="More" />
                 </div>
-            </React.Fragment>
+            </div>
         );
+    }
+
+    private updateSelectedDate = (value: string) => {
+        const currentValue = { ...this.state.currentValue };
+
+        currentValue.date = value;
+        this.setState({
+            currentValue
+        });
     }
 
     private updateSelectedWallet = (value: string) => {

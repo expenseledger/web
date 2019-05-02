@@ -1,0 +1,9 @@
+.content {
+    text-align: center;
+    width: 300px;
+}
+.balance {
+    &__text {
+        color: blue;
+    }
+}

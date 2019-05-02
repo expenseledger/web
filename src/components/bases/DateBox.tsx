@@ -8,7 +8,7 @@ interface IDateBoxProps {
 }
 
 const dateBox = (props: IDateBoxProps) => {
-    const [value, setValue] = React.useState(moment().format('L'));
+    const [value, setValue] = React.useState(moment().format('YYYY-MM-DD'));
 
     function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
         setValue(e.target.value);
@@ -23,7 +23,7 @@ const dateBox = (props: IDateBoxProps) => {
                     name={props.name}
                     type="date"
                     onChange={onChangeHandler}
-                    value={props.value ? props.value : new Date().toISOString().slice(0, 10)}
+                    value={value}
                 />
             </div>
         </div>

@@ -1,4 +1,5 @@
-import * as React from 'react';
+import * as React from "react";
+import { useInput } from "../../service/Utils";
 
 interface ITextFieldProps {
     name: string;
@@ -7,12 +8,7 @@ interface ITextFieldProps {
 }
 
 const textField = (props: ITextFieldProps) => {
-    const [value, setValue] = React.useState('');
-
-    function onChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setValue(e.target.value);
-        props.updateValue(value);
-    }
+    const { bind } = useInput("", props.updateValue);
 
     return (
         <div className="field">
@@ -21,7 +17,7 @@ const textField = (props: ITextFieldProps) => {
                     className="input is-rounded"
                     name={props.name}
                     placeholder={props.placeholder}
-                    onChange={onChangeHandler}
+                    {...bind}
                 />
             </div>
         </div>

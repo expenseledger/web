@@ -1,4 +1,4 @@
-export default interface IWallet {
+export default interface Wallet {
   name: string;
   type: string;
   balance: number;

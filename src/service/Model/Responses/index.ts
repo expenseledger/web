@@ -1,23 +1,23 @@
 import Transaction from "../Transaction";
 import Wallet from "../Wallet";
 
-export interface IAddExpenseResponse {
+export interface AddExpenseResponse {
   srcWallet: Wallet;
   transaction: Transaction;
 }
 
-export interface IAddIncomeResponse {
+export interface AddIncomeResponse {
   dstWallet: Wallet;
   transaction: Transaction;
 }
 
-export interface IAddTransferResponse {
+export interface AddTransferResponse {
   dstWallet: Wallet;
   srcWallet: Wallet;
   transaction: Transaction;
 }
 
-export interface IListTransactionsResponse {
+export interface ListTransactionsResponse {
   length: number;
   items: Transaction[];
 }

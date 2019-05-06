@@ -1,3 +1,3 @@
-export default interface ICategory {
+export default interface Category {
   name: string
 }

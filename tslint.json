@@ -20,6 +20,7 @@
       true,
       "double",
       "jsx-double"
-    ]
+    ],
+    "interface-name": false
   }
 }

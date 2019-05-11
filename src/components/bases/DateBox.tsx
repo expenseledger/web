@@ -1,5 +1,6 @@
 import moment from "moment";
 import * as React from "react";
+import { useInput } from "../../service/Utils";
 
 interface IDateBoxProps {
     name: string;
@@ -7,13 +8,8 @@ interface IDateBoxProps {
     updateValue: (value: string) => void;
 }
 
-const dateBox = (props: IDateBoxProps) => {
-    const [value, setValue] = React.useState(moment().format('YYYY-MM-DD'));
-
-    function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setValue(e.target.value);
-        props.updateValue(value);
-    }
+const DateBox = (props: IDateBoxProps) => {
+    const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
 
     return (
         <div className="field">
@@ -22,12 +18,11 @@ const dateBox = (props: IDateBoxProps) => {
                     className="input is-rounded"
                     name={props.name}
                     type="date"
-                    onChange={onChangeHandler}
-                    value={value}
+                    {...bind}
                 />
             </div>
         </div>
     );
 }
 
-export default dateBox;
+export default DateBox;

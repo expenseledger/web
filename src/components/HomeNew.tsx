@@ -39,7 +39,7 @@ class Home extends React.Component<any, IHomeState> {
                     name: "",
                 },
                 expense: 0,
-                date: moment().format('YYYY-MM-DD'),
+                date: moment().format("YYYY-MM-DD"),
             },
         };
     }

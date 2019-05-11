@@ -12,7 +12,7 @@ interface ITransactionItemProps {
 }
 
 export function TransactionCard(props: ITransactionItemProps) {
-  const date = moment(props.date);
+  const date = moment.default(props.date);
   return (
     <div>
       <p>{props.type}</p>

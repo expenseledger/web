@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { combineClassName } from '../../service/Utils'
+import * as React from "react";
+import { combineClassName } from "../../service/Utils"
 
 interface IButtonProps {
     value: string;

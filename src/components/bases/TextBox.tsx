@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React from "react";
+import { useInput } from "../../service/Utils";
 
 interface ITextBoxProps {
     name: string;
@@ -6,13 +7,8 @@ interface ITextBoxProps {
     updateValue: (value: string) => void;
 }
 
-const textBox = (props: ITextBoxProps) => {
-    const [value, setValue] = React.useState('');
-
-    function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
-        setValue(e.target.value);
-        props.updateValue(value);
-    }
+const TextBox = (props: ITextBoxProps) => {
+    const { bind } = useInput("", props.updateValue);
 
     return (
         <div className="field">
@@ -22,11 +18,11 @@ const textBox = (props: ITextBoxProps) => {
                     name={props.name}
                     type="text"
                     placeholder={props.placeholder}
-                    onChange={onChangeHandler}
+                    {...bind}
                 />
             </div>
         </div>
     );
 }
 
-export default textBox;
+export default TextBox;

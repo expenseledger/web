@@ -5,13 +5,15 @@ interface IButtonProps {
     value: string;
     outlined?: boolean;
     onClickHandler?: (e: React.MouseEvent) => void;
+    className?: string;
 }
 
 const button = (props: IButtonProps) => {
     const classNames = combineClassName([
         "button",
         "is-primary",
-        props.outlined ? "is-outlined" : null
+        !!props.outlined ? "is-outlined" : null,
+        !!props.className ? props.className : null,
     ]);
 
     return (

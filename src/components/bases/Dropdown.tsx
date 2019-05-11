@@ -1,8 +1,10 @@
 import * as React from "react";
+import { combineClassName } from "../../service/Utils";
 
 interface IDropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
+    className?: string;
 }
 
 const dropdown = (props: IDropdownProps) => {
@@ -10,8 +12,13 @@ const dropdown = (props: IDropdownProps) => {
         props.updateSelectedValue(e.target.value);
     }
 
+    const classNames = combineClassName([
+        "field",
+        !!props.className ? props.className : null,
+    ]);
+
     return (
-        <div className="field">
+        <div className={classNames}>
             <div className="control select">
                 <select onChange={onChangeHandler}>
                     {

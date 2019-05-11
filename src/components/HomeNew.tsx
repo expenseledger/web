@@ -52,27 +52,27 @@ class Home extends React.Component<any, IHomeState> {
     public render() {
         return (
             <div className="content">
-                <div className="balance">
-                    <span className="balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0}</span>
+                <div className="content__balance">
+                    <span className="content__balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0}</span>
                 </div>
-                <div className="transaction">
+                <div className="content__transaction">
                     <Dropdown options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
                     <a>Transaction</a>
                 </div>
-                <div className="date">
-                    <span>Date</span>
-                    <DateBox name="date" updateValue={this.updateSelectedDate} />
+                <div className="content__date">
+                    <span className="content__date__text">Date</span>
+                    <DateBox className="content__date__box" name="date" updateValue={this.updateSelectedDate} />
                 </div>
-                <div className="expense">
-                    <span>Expense: </span>
-                    <TextBox updateValue={this.updateExpense} name="expnese" />
+                <div className="content__expense">
+                    <span className="content__expense__text">Expense: </span>
+                    <TextBox className="content__expense__box" updateValue={this.updateExpense} name="expnese" />
                 </div>
-                <div className="category">
+                <div className="content__category">
                     <Dropdown options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
-                <div>
-                    <Button value="Add" />
-                    <Button value="More" />
+                <div className="content__button">
+                    <Button className="content__button__add" value="Add" />
+                    <Button className="content__button__more" value="More" />
                 </div>
             </div>
         );

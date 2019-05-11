@@ -3,29 +3,29 @@ import { TransactionType } from "../service/Constants";
 import AddTransactionDto from "../service/Model/AddTransactionDto";
 import Category from "../service/Model/Category";
 import {
-  IAddExpenseRequest,
-  IAddIncomeRequest,
-  IAddTransferRequest
+  AddExpenseRequest,
+  AddIncomeRequest,
+  AddTransferRequest
 } from "../service/Model/Requests";
 import Wallet from "../service/Model/Wallet";
 import * as TransactionService from "../service/TransactionService";
 
-interface ITransactionProps {
+interface TransactionProps {
   categories: Category[];
   currentWallet: Wallet;
   wallets: Wallet[];
   updateWallet: (wallet: Wallet) => void;
 }
 
-interface ITransactionState {
+interface TransactionState {
   selectedCategoryIdx: number;
   selectedTransactionType: TransactionType;
 }
 
 class Transaction extends React.Component<
-  ITransactionProps,
-  ITransactionState
-> {
+  TransactionProps,
+  TransactionState
+  > {
   public addTransactionDto: AddTransactionDto;
   public dstTransferWalletName: string;
 
@@ -118,7 +118,7 @@ class Transaction extends React.Component<
 
   public addTransactionHandler = async () => {
     if (this.state.selectedTransactionType === "EXPENSE") {
-      const addExpenseRequest: IAddExpenseRequest = {
+      const addExpenseRequest: AddExpenseRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,
@@ -132,7 +132,7 @@ class Transaction extends React.Component<
         alert("Add expense failed");
       }
     } else if (this.state.selectedTransactionType === "INCOME") {
-      const addIncomeRequest: IAddIncomeRequest = {
+      const addIncomeRequest: AddIncomeRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         to: this.props.currentWallet.name,
@@ -146,7 +146,7 @@ class Transaction extends React.Component<
         alert("Add income failed");
       }
     } else if (this.state.selectedTransactionType === "TRANSFER") {
-      const addTransferRequest: IAddTransferRequest = {
+      const addTransferRequest: AddTransferRequest = {
         amount: this.addTransactionDto.amount,
         category: this.props.categories[this.state.selectedCategoryIdx].name,
         from: this.props.currentWallet.name,

@@ -7,7 +7,7 @@ interface ITextFieldProps {
     updateValue: (value: string) => void;
 }
 
-const textField = (props: ITextFieldProps) => {
+const TextField = (props: ITextFieldProps) => {
     const { bind } = useInput("", props.updateValue);
 
     return (
@@ -24,4 +24,4 @@ const textField = (props: ITextFieldProps) => {
     );
 }
 
-export default textField;
+export default TextField;

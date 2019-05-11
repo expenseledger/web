@@ -3,4 +3,5 @@ export default interface AddTransactionDto {
   date: Date;
   note: string;
   wallet: string;
+  [key: string]: string | number | Date;
 }

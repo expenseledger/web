@@ -8,7 +8,7 @@ interface IDateBoxProps {
     updateValue: (value: string) => void;
 }
 
-const dateBox = (props: IDateBoxProps) => {
+const DateBox = (props: IDateBoxProps) => {
     const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
 
     return (
@@ -25,4 +25,4 @@ const dateBox = (props: IDateBoxProps) => {
     );
 }
 
-export default dateBox;
+export default DateBox;

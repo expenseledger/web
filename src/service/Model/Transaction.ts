@@ -11,4 +11,4 @@ export interface Transaction {
   date: Date;
 }
 
-export default ITransaction;
+export default Transaction;

@@ -1,8 +1,8 @@
 import * as React from "react";
-import Category from "src/service/Model/Category";
 import Transaction from "../components/Transaction";
 import Wallet from "../components/Wallet";
 import * as CategoryService from "../service/CategoryService";
+import Category from "../service/Model/Category";
 import WalletModel from "../service/Model/Wallet";
 import * as WalletService from "../service/WalletService";
 

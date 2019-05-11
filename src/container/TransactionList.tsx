@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 
-import { TransactionCard } from "src/components/TransactionCard";
-import { ITransaction } from "../service/Model/Transaction";
+import { TransactionCard } from "../components/TransactionCard";
+import { Transaction } from "../service/Model/Transaction";
 import { listTransactions } from "../service/TransactionService";
 
 interface ITransactionListProps {
@@ -10,7 +10,7 @@ interface ITransactionListProps {
 }
 
 export function TransactionList(props: ITransactionListProps) {
-  const [transactions, setTransactions] = useState([] as ITransaction[]);
+  const [transactions, setTransactions] = useState([] as Transaction[]);
   useEffect(() => {
     listTransactions({ wallet: props.wallet }).then(response => {
       setTransactions(response.items);

@@ -1,16 +1,16 @@
 import axios from "axios";
 import * as Constants from "./Constants";
 import {
-  IAddExpenseRequest,
-  IAddIncomeRequest,
-  IAddTransferRequest,
-  IListTransactionsRequest
+  AddExpenseRequest,
+  AddIncomeRequest,
+  AddTransferRequest,
+  ListTransactionsRequest
 } from "./Model/Requests";
 import {
-  IAddExpenseResponse,
-  IAddIncomeResponse,
-  IAddTransferResponse,
-  IListTransactionsResponse
+  AddExpenseResponse,
+  AddIncomeResponse,
+  AddTransferResponse,
+  ListTransactionsResponse
 } from "./Model/Responses";
 import Transaction from "./Model/Transaction";
 import * as Utils from "./Utils";
@@ -18,8 +18,8 @@ import * as Utils from "./Utils";
 const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
 
 export async function addExpense(
-  request: IAddExpenseRequest
-): Promise<IAddExpenseResponse | null> {
+  request: AddExpenseRequest
+): Promise<AddExpenseResponse | null> {
   console.log("request", request);
 
   const response = await Utils.callAxios(
@@ -31,7 +31,7 @@ export async function addExpense(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddExpense failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;
@@ -44,8 +44,8 @@ export async function addExpense(
 }
 
 export async function addIncome(
-  request: IAddIncomeRequest
-): Promise<IAddIncomeResponse | null> {
+  request: AddIncomeRequest
+): Promise<AddIncomeResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/createIncome",
@@ -55,7 +55,7 @@ export async function addIncome(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddIncome failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;
@@ -68,8 +68,8 @@ export async function addIncome(
 }
 
 export async function addTransfer(
-  request: IAddTransferRequest
-): Promise<IAddTransferResponse | null> {
+  request: AddTransferRequest
+): Promise<AddTransferResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/createTransfer",
@@ -79,7 +79,7 @@ export async function addTransfer(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `AddTransfer failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     return null;
@@ -93,8 +93,8 @@ export async function addTransfer(
 }
 
 export async function listTransactions(
-  request: IListTransactionsRequest
-): Promise<IListTransactionsResponse> {
+  request: ListTransactionsRequest
+): Promise<ListTransactionsResponse> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/list",
@@ -104,7 +104,7 @@ export async function listTransactions(
   if (response.status !== Constants.httpStatus.ok || !response.success) {
     console.log(
       `ListTransactions failed, status: ${response.status}, ${
-        response.error ? response.error.message : ""
+      response.error ? response.error.message : ""
       }`
     );
     throw new Error(response.error ? response.error.message : "UNKNOWN");

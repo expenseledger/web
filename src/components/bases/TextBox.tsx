@@ -7,7 +7,7 @@ interface ITextBoxProps {
     updateValue: (value: string) => void;
 }
 
-const textBox = (props: ITextBoxProps) => {
+const TextBox = (props: ITextBoxProps) => {
     const { bind } = useInput("", props.updateValue);
 
     return (
@@ -25,4 +25,4 @@ const textBox = (props: ITextBoxProps) => {
     );
 }
 
-export default textBox;
+export default TextBox;

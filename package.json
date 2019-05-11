@@ -18,7 +18,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scriptsy eject"
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "@types/axios": "^0.14.0",

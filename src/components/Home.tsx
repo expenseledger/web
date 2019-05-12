@@ -57,22 +57,22 @@ class Home extends React.Component<any, IHomeState> {
         return (
             <div className="content">
                 <div className="content__balance">
-                    <span className="content__balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0}</span>
+                    <span className="content__balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0} THB</span>
                 </div>
                 <div className="content__transaction">
                     <Dropdown options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
                     <a>Transaction</a>
                 </div>
                 <div className="content__date">
-                    <span className="content__date__text">Date: </span>
+                    <span className="content__date__text">Date </span>
                     <DateBox className="content__date__box" name="date" updateValue={this.updateSelectedDate} />
                 </div>
                 <div className="content__expense">
-                    <span className="content__expense__text">Expense: </span>
+                    <span className="content__expense__text">Amount(THB) </span>
                     <TextBox className="content__expense__box" updateValue={this.updateExpense} name="expnese" />
                 </div>
                 <div className="content__category">
-                    <span className="content__category__text">Category: </span>
+                    <span className="content__category__text">Category </span>
                     <Dropdown className="content__category__dropdown" options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
                 <div className="content__button">

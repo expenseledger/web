@@ -1,5 +1,6 @@
 import moment from "moment";
 import * as React from "react";
+import { Link } from "react-router-dom";
 import * as CategoryService from "../service/CategoryService";
 import Category from "../service/Model/Category";
 import { AddExpenseRequest } from "../service/Model/Requests";
@@ -61,7 +62,12 @@ class Home extends React.Component<any, IHomeState> {
                 </div>
                 <div className="content__transaction">
                     <Dropdown options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
-                    <a>Transaction</a>
+                    <Link to={{
+                        pathname: "/transactionList",
+                        state: {
+                            wallet: this.state.currentValue.wallet
+                        }
+                    }}>Transaction</Link>
                 </div>
                 <div className="content__date">
                     <span className="content__date__text">Date </span>

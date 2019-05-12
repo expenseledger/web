@@ -1,24 +1,31 @@
+$line-margin: 5px 0 0 0;
+
 .content {
-    max-width: 500px;
-    text-align: center;
+    max-width: 400px;
     margin: auto;
+    padding-left: 10px;
 
     &__balance {
-        &__text {
-            color: blue;
-        }
+        margin: $line-margin;
     }
 
     &__expense {
+        margin: $line-margin;
+
         &__box {
-            width: 200px;
             display: inline-block;
+            width: 200px;
+        }
+
+        &__text {
+            display: inline-block;
+            width: 100px;
         }
 
     }
 
     &__date {
-        vertical-align: middle;
+        margin: $line-margin;
 
         &__box {
             display: inline-block;
@@ -26,25 +33,39 @@
         }
 
         &__text {
-            margin: 5px;
+            display: inline-block;
+            width: 100px;
         }
     }
 
     &__transaction {
         display: inline-block;
+        margin: $line-margin;
     }
 
     &__category {
-        margin: 5px;
+        margin: $line-margin;
+
+        &__text {
+            display: inline-block;
+            width: 100px;
+        }
+
+        &__dropdown {
+            display: inline-block;
+        }
     }
 
     &__button {
+        margin: $line-margin;
         &__add {
-            margin: 5px;
+            width: 100px;
+            margin: 0 5px 0 0;
         }
 
         &__more {
-            margin: 5px;
+            width: 100px;
+            margin: 0 5px 0 0;
         }
     }
 }

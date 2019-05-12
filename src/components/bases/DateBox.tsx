@@ -20,7 +20,7 @@ const DateBox = (props: IDateBoxProps) => {
         <div className={classNames}>
             <div className="control">
                 <input
-                    className="input is-rounded"
+                    className="input"
                     name={props.name}
                     type="date"
                     {...bind}

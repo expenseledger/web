@@ -60,7 +60,7 @@ class Home extends React.Component<any, IHomeState> {
                     <a>Transaction</a>
                 </div>
                 <div className="content__date">
-                    <span className="content__date__text">Date</span>
+                    <span className="content__date__text">Date: </span>
                     <DateBox className="content__date__box" name="date" updateValue={this.updateSelectedDate} />
                 </div>
                 <div className="content__expense">
@@ -68,7 +68,8 @@ class Home extends React.Component<any, IHomeState> {
                     <TextBox className="content__expense__box" updateValue={this.updateExpense} name="expnese" />
                 </div>
                 <div className="content__category">
-                    <Dropdown options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
+                    <span className="content__category__text">Category: </span>
+                    <Dropdown className="content__category__dropdown" options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
                 <div className="content__button">
                     <Button className="content__button__add" value="Add" />

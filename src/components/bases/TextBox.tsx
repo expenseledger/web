@@ -11,16 +11,15 @@ interface ITextBoxProps {
 const TextBox = (props: ITextBoxProps) => {
     const { bind } = useInput("", props.updateValue);
     const classNames = combineClassName([
-        "input",
-        "is-rounded",
+        "field",
         !!props.className ? props.className : null,
     ]);
 
     return (
-        <div className="field">
+        <div className={classNames}>
             <div className="control">
                 <input
-                    className={classNames}
+                    className="input"
                     name={props.name}
                     type="text"
                     placeholder={props.placeholder}

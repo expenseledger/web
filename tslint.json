@@ -22,6 +22,7 @@
       "jsx-double"
     ],
     "interface-name": false,
-    "trailing-comma": true
+    "trailing-comma": true,
+    "semicolon": true
   }
 }

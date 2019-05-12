@@ -17,11 +17,7 @@ import * as Utils from "./Utils";
 
 const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
 
-export async function addExpense(
-  request: AddExpenseRequest
-): Promise<AddExpenseResponse | null> {
-  console.log("request", request);
-
+export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/createExpense",
@@ -43,9 +39,7 @@ export async function addExpense(
   };
 }
 
-export async function addIncome(
-  request: AddIncomeRequest
-): Promise<AddIncomeResponse | null> {
+export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/createIncome",
@@ -67,9 +61,7 @@ export async function addIncome(
   };
 }
 
-export async function addTransfer(
-  request: AddTransferRequest
-): Promise<AddTransferResponse | null> {
+export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse | null> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/createTransfer",
@@ -92,9 +84,7 @@ export async function addTransfer(
   };
 }
 
-export async function listTransactions(
-  request: ListTransactionsRequest
-): Promise<ListTransactionsResponse> {
+export async function listTransactions(request: ListTransactionsRequest): Promise<ListTransactionsResponse> {
   const response = await Utils.callAxios(
     axios.post,
     transactionUrl + "/list",

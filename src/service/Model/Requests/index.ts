@@ -2,7 +2,7 @@ interface AddTransactionRequest {
   amount: number;
   category: string;
   description?: string;
-  date?: Date;
+  date?: string;
 }
 export interface AddExpenseRequest extends AddTransactionRequest {
   from: string;

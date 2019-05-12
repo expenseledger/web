@@ -1,8 +1,10 @@
 import moment from "moment";
 import * as React from "react";
 import * as CategoryService from "../service/CategoryService";
-import ICategory from "../service/Model/Category";
-import IWallet from "../service/Model/Wallet";
+import Category from "../service/Model/Category";
+import { AddExpenseRequest } from "../service/Model/Requests";
+import Wallet from "../service/Model/Wallet";
+import { addExpense } from "../service/TransactionService";
 import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -11,15 +13,15 @@ import TextBox from "./bases/TextBox";
 import "./Home.scss";
 
 interface IHomeState {
-    wallets: IWallet[];
-    categories: ICategory[];
+    wallets: Wallet[];
+    categories: Category[];
     currentValue: ICurrentValue;
 }
 
 interface ICurrentValue {
-    wallet?: IWallet;
-    category?: ICategory;
-    expense: number;
+    wallet?: Wallet;
+    category?: Category;
+    amount: number;
     date: string;
 }
 
@@ -38,10 +40,12 @@ class Home extends React.Component<any, IHomeState> {
                 category: {
                     name: "",
                 },
-                expense: 0,
+                amount: 0,
                 date: moment().format("YYYY-MM-DD"),
             },
         };
+
+        this.addTransaction = this.addTransaction.bind(this);
     }
 
     public componentDidMount() {
@@ -72,7 +76,7 @@ class Home extends React.Component<any, IHomeState> {
                     <Dropdown className="content__category__dropdown" options={this.state.categories.map(category => category.name)} updateSelectedValue={this.updateSelectedCategory} />
                 </div>
                 <div className="content__button">
-                    <Button className="content__button__add" value="Add" />
+                    <Button className="content__button__add" onClickHandler={this.addTransaction} value="Add" />
                     <Button className="content__button__more" value="More" />
                 </div>
             </div>
@@ -109,7 +113,7 @@ class Home extends React.Component<any, IHomeState> {
     private updateExpense = (value: string) => {
         const currentValue = { ...this.state.currentValue };
 
-        currentValue.expense = Number.parseFloat(value);
+        currentValue.amount = Number.parseFloat(value);
         this.setState({
             currentValue
         });
@@ -120,7 +124,7 @@ class Home extends React.Component<any, IHomeState> {
         const currentValue = { ...this.state.currentValue };
 
         if (wallets.length > 0) {
-            currentValue.wallet = wallets[0]
+            currentValue.wallet = wallets[0];
         }
 
         this.setState({
@@ -140,7 +144,36 @@ class Home extends React.Component<any, IHomeState> {
         this.setState({
             categories,
             currentValue
-        })
+        });
+    }
+
+    private async addTransaction() {
+        const { wallet, amount, date, category } = this.state.currentValue;
+        const request: AddExpenseRequest = {
+            amount,
+            category: !!category ? category.name : "",
+            from: !!wallet ? wallet.name : "",
+            description: "quick add appense",
+            date,
+        };
+
+        console.log(request);
+
+        const response = await addExpense(request);
+
+        if (!!response) {
+            const wallets = [...this.state.wallets];
+            const selectedWalletIdx = wallets.findIndex(x => x.name === response.srcWallet.name);
+
+            wallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            this.setState({
+                wallets
+            });
+
+            return alert("AddExpense sucess");
+        }
+
+        return alert("AddExpense is failed");
     }
 }
 

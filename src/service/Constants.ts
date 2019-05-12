@@ -1,15 +1,9 @@
 export const httpStatus = {
   badRequest: 400,
   internalServerError: 500,
-  ok: 200,
+  ok: 200
 };
 
-export const walletType = {
-  cash: "CASH"
-}
+export type WalletType = "CASH";
 
-export const transactionType = {
-  expense: "Expense",
-  income: "Income",
-  transfer: "Transfer"
-}
+export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";

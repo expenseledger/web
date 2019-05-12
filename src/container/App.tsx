@@ -1,11 +1,16 @@
-import * as React from 'react';
-import Home from './Home';
+import * as React from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Home from "../components/Home";
+import "./App.scss";
+import { TransactionList } from "./TransactionList";
 
 class App extends React.Component {
   public render() {
     return (
-     <Home />
-    );
+      <Router>
+        <Route path="/" exact={true} component={Home} />
+        <Route path="/transactionList" component={TransactionList} />
+      </Router>);
   }
 }
 

@@ -1,0 +1,82 @@
+$line-margin: 5px 0 0 0;
+
+.content {
+    max-width: 400px;
+    margin: auto;
+    padding-left: 10px;
+
+    &__balance {
+        margin: $line-margin;
+        font-weight: bold;
+    }
+
+    &__expense {
+        margin: $line-margin;
+
+        &__box {
+            display: inline-block;
+            width: 200px;
+        }
+
+        &__text {
+            display: inline-block;
+            width: 110px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
+
+    }
+
+    &__date {
+        margin: $line-margin;
+
+        &__box {
+            display: inline-block;
+            width: 200px
+        }
+
+        &__text {
+            display: inline-block;
+            width: 110px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
+    }
+
+    &__transaction {
+        display: inline-block;
+        margin: $line-margin;
+    }
+
+    &__category {
+        margin: $line-margin;
+
+        &__text {
+            display: inline-block;
+            width: 110px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
+
+        &__dropdown {
+            display: inline-block;
+        }
+    }
+
+    &__button {
+        margin: $line-margin;
+        &__add {
+            width: 100px;
+            margin: 0 5px 0 0;
+        }
+
+        &__more {
+            width: 100px;
+            margin: 0 5px 0 0;
+        }
+    }
+}
+

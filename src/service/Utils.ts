@@ -1,3 +1,4 @@
+import { useState } from "react";
 import Response from "./Model/Response";
 
 /**
@@ -27,5 +28,26 @@ export async function callAxios(
       status: err.response.status || 0,
       success: false
     };
+  }
+}
+
+export function combineClassName(classNames: object) {
+  return Object.values(classNames).reduce((toReturn, className) => toReturn + " " + className, "");
+}
+
+export function useInput(initialValue: string, updateValue: (v: string) => void) {
+  const [value, setValue] = useState(initialValue);
+
+  return {
+    value,
+    setValue,
+    reset: () => setValue(""),
+    bind: {
+      value,
+      onChange: (e: React.ChangeEvent<any>) => {
+        setValue(e.target.value);
+        updateValue(e.target.value);
+      }
+    }
   }
 }

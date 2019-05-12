@@ -1,4 +1,4 @@
-export default interface IResponse {
+export default interface Response {
   status: number;
   data: any | null;
   success: boolean;

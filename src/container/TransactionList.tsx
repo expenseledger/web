@@ -1,18 +1,18 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-
-import { TransactionCard } from "src/components/TransactionCard";
-import { ITransaction } from "../service/Model/Transaction";
+import { RouteComponentProps } from "react-router-dom";
+import { TransactionCard } from "../components/TransactionCard";
+import { Transaction } from "../service/Model/Transaction";
 import { listTransactions } from "../service/TransactionService";
 
-interface ITransactionListProps {
+interface ITransactionListProps extends RouteComponentProps {
   wallet: string;
 }
 
 export function TransactionList(props: ITransactionListProps) {
-  const [transactions, setTransactions] = useState([] as ITransaction[]);
+  const [transactions, setTransactions] = useState([] as Transaction[]);
   useEffect(() => {
-    listTransactions({ wallet: props.wallet }).then(response => {
+    listTransactions({ wallet: !!props.wallet ? props.wallet : props.location.state.wallet.name }).then(response => {
       setTransactions(response.items);
     });
   });

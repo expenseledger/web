@@ -1,31 +1,32 @@
-import * as React from 'react';
+import * as React from "react";
+import { combineClassName, useInput } from "../../service/Utils";
 
 interface ITextFieldProps {
     name: string;
     placeholder?: string;
     updateValue: (value: string) => void;
+    className?: string;
 }
 
-const textField = (props: ITextFieldProps) => {
-    const [value, setValue] = React.useState('');
-
-    function onChangeHandler(e: React.ChangeEvent<HTMLTextAreaElement>) {
-        setValue(e.target.value);
-        props.updateValue(value);
-    }
+const TextField = (props: ITextFieldProps) => {
+    const { bind } = useInput("", props.updateValue);
+    const classNames = combineClassName([
+        "field",
+        !!props.className ? props.className : null,
+    ]);
 
     return (
-        <div className="field">
+        <div className={classNames}>
             <div className="control">
                 <textarea
                     className="input is-rounded"
                     name={props.name}
                     placeholder={props.placeholder}
-                    onChange={onChangeHandler}
+                    {...bind}
                 />
             </div>
         </div>
     );
 }
 
-export default textField;
+export default TextField;

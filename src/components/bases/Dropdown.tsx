@@ -1,24 +1,24 @@
-import * as React from 'react';
+import * as React from "react";
+import { combineClassName } from "../../service/Utils";
 
 interface IDropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
+    className?: string;
 }
 
 const dropdown = (props: IDropdownProps) => {
-    const [value, setValue] = React.useState(props.options[0]);
-
-    if (props.options.length === 0) {
-        return null;
-    }
-
     function onChangeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
-        setValue(e.target.value);
-        props.updateSelectedValue(value);
+        props.updateSelectedValue(e.target.value);
     }
+
+    const classNames = combineClassName([
+        "field",
+        !!props.className ? props.className : null,
+    ]);
 
     return (
-        <div className="field">
+        <div className={classNames}>
             <div className="control select">
                 <select onChange={onChangeHandler}>
                     {

@@ -1,22 +1,22 @@
-interface IAddTransactionRequest {
+interface AddTransactionRequest {
   amount: number;
   category: string;
   description?: string;
-  date?: Date;
+  date?: string;
 }
-export interface IAddExpenseRequest extends IAddTransactionRequest {
+export interface AddExpenseRequest extends AddTransactionRequest {
   from: string;
 }
 
-export interface IAddIncomeRequest extends IAddTransactionRequest {
+export interface AddIncomeRequest extends AddTransactionRequest {
   to: string;
 }
 
-export interface IAddTransferRequest extends IAddTransactionRequest {
+export interface AddTransferRequest extends AddTransactionRequest {
   from: string;
   to: string;
 }
 
-export interface IListTransactionsRequest {
+export interface ListTransactionsRequest {
   wallet: string;
 }

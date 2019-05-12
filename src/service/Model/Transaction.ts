@@ -1,6 +1,6 @@
 import { TransactionType } from "../Constants";
 
-export interface ITransaction {
+export interface Transaction {
   id: number;
   srcWallet: string;
   dstWallet: string;
@@ -11,4 +11,4 @@ export interface ITransaction {
   date: Date;
 }
 
-export default ITransaction;
+export default Transaction;

@@ -5,14 +5,18 @@ import { TransactionCard } from "../components/TransactionCard";
 import { Transaction } from "../service/Model/Transaction";
 import { listTransactions } from "../service/TransactionService";
 
-interface ITransactionListProps extends RouteComponentProps {
+interface TransactionListProps extends RouteComponentProps {
   wallet: string;
 }
 
-export function TransactionList(props: ITransactionListProps) {
+interface TransactionListParam {
+  walletName: string;
+}
+
+export function TransactionList(props: TransactionListProps) {
   const [transactions, setTransactions] = useState([] as Transaction[]);
   useEffect(() => {
-    listTransactions({ wallet: !!props.wallet ? props.wallet : (props.match.params as any) }).then(response => {
+    listTransactions({ wallet: !!props.wallet ? props.wallet : (props.match.params as TransactionListParam).walletName }).then(response => {
       setTransactions(response.items);
     });
   });

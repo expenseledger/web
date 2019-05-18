@@ -13,7 +13,7 @@ const DateBox = (props: IDateBoxProps) => {
     const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : null,
+        !!props.className ? props.className : "",
     ]);
 
     return (
@@ -28,6 +28,6 @@ const DateBox = (props: IDateBoxProps) => {
             </div>
         </div>
     );
-}
+};
 
 export default DateBox;

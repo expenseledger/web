@@ -14,7 +14,7 @@ const dropdown = (props: IDropdownProps) => {
 
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : null,
+        !!props.className ? props.className : "",
     ]);
 
     return (
@@ -27,7 +27,7 @@ const dropdown = (props: IDropdownProps) => {
                 </select>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default dropdown;

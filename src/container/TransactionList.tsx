@@ -12,7 +12,7 @@ interface ITransactionListProps extends RouteComponentProps {
 export function TransactionList(props: ITransactionListProps) {
   const [transactions, setTransactions] = useState([] as Transaction[]);
   useEffect(() => {
-    listTransactions({ wallet: !!props.wallet ? props.wallet : props.location.state.wallet.name }).then(response => {
+    listTransactions({ wallet: !!props.wallet ? props.wallet : (props.match.params as any) }).then(response => {
       setTransactions(response.items);
     });
   });

@@ -97,7 +97,11 @@ export async function listTransactions(request: ListTransactionsRequest): Promis
       response.error ? response.error.message : ""
       }`
     );
-    throw new Error(response.error ? response.error.message : "UNKNOWN");
+
+    return {
+      length: 0,
+      items: [],
+    };
   }
 
   return {

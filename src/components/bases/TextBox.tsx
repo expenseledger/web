@@ -12,7 +12,7 @@ const TextBox = (props: ITextBoxProps) => {
     const { bind } = useInput("", props.updateValue);
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : null,
+        !!props.className ? props.className : "",
     ]);
 
     return (
@@ -28,6 +28,6 @@ const TextBox = (props: ITextBoxProps) => {
             </div>
         </div>
     );
-}
+};
 
 export default TextBox;

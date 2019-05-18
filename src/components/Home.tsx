@@ -59,14 +59,9 @@ class Home extends React.Component<any, IHomeState> {
             <div className="content">
                 <div className="content__balance">
                     <span className="content__balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0} THB</span>
-                </div>
-                <div className="content__transaction">
-                    <Dropdown options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
-                    <Link to={{
-                        pathname: "/transactionList",
-                        state: {
-                            wallet: this.state.currentValue.wallet
-                        }
+                    <Dropdown className="content__balance__dropdown" options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
+                    <Link className="content__balance__transaction__link" to={{
+                        pathname: `/transactionList/${!!this.state.currentValue.wallet ? this.state.currentValue.wallet.name : ""}`,
                     }}>Transaction</Link>
                 </div>
                 <div className="content__date">

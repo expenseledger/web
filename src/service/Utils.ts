@@ -32,7 +32,7 @@ export async function callAxios(
 }
 
 export function combineClassName(classNames: object) {
-  return Object.values(classNames).reduce((toReturn, className) => toReturn + " " + className, "");
+  return Object.values(classNames).reduce((toReturn, className) => toReturn + " " + className, "").trim();
 }
 
 export function useInput(initialValue: string, updateValue: (v: string) => void) {
@@ -49,5 +49,5 @@ export function useInput(initialValue: string, updateValue: (v: string) => void)
         updateValue(e.target.value);
       }
     }
-  }
+  };
 }

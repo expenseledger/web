@@ -9,7 +9,7 @@ class App extends React.Component {
     return (
       <Router>
         <Route path="/" exact={true} component={Home} />
-        <Route path="/transactionList" component={TransactionList} />
+        <Route path="/transactionList/:walletName" component={TransactionList} />
       </Router>);
   }
 }

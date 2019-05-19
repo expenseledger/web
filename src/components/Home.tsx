@@ -1,6 +1,7 @@
 import moment from "moment";
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { RouteComponentProps } from "react-router";
+import { Link, withRouter } from "react-router-dom";
 import * as CategoryService from "../service/CategoryService";
 import Category from "../service/Model/Category";
 import { AddExpenseRequest } from "../service/Model/Requests";
@@ -13,20 +14,20 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import "./Home.scss";
 
-interface IHomeState {
+export interface HomeState {
     wallets: Wallet[];
     categories: Category[];
-    currentValue: ICurrentValue;
+    currentValue: CurrentValue;
 }
 
-interface ICurrentValue {
+export interface CurrentValue {
     wallet?: Wallet;
     category?: Category;
     amount: number;
     date: string;
 }
 
-class Home extends React.Component<any, IHomeState> {
+class Home extends React.Component<RouteComponentProps, HomeState> {
     constructor(props: any) {
         super(props);
         this.state = {
@@ -45,8 +46,6 @@ class Home extends React.Component<any, IHomeState> {
                 date: moment().format("YYYY-MM-DD"),
             },
         };
-
-        this.addTransaction = this.addTransaction.bind(this);
     }
 
     public componentDidMount() {
@@ -78,7 +77,7 @@ class Home extends React.Component<any, IHomeState> {
                 </div>
                 <div className="content__button">
                     <Button className="content__button__add" onClickHandler={this.addTransaction} value="Add" />
-                    <Button className="content__button__more" value="More" />
+                    <Button className="content__button__more" onClickHandler={this.toMorePage} value="More" />
                 </div>
             </div>
         );
@@ -148,7 +147,7 @@ class Home extends React.Component<any, IHomeState> {
         });
     }
 
-    private async addTransaction() {
+    private addTransaction = async () => {
         const { wallet, amount, date, category } = this.state.currentValue;
         const request: AddExpenseRequest = {
             amount,
@@ -176,6 +175,12 @@ class Home extends React.Component<any, IHomeState> {
 
         return alert("AddExpense is failed");
     }
+
+    private toMorePage = () => {
+        this.props.history.push("/more", {
+            ...this.state
+        });
+    }
 }
 
-export default Home;
+export default withRouter(Home);

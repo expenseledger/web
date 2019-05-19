@@ -5,6 +5,7 @@ interface IDropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
+    default?: string;
 }
 
 const dropdown = (props: IDropdownProps) => {
@@ -17,12 +18,22 @@ const dropdown = (props: IDropdownProps) => {
         !!props.className ? props.className : "",
     ]);
 
+    function renderOptions(options: string[]): JSX.Element[] {
+        return options.map((option, idx) => {
+            if (props.default && props.default === option) {
+                return <option selected={true} key={idx}>{option}</option>;
+            }
+
+            return <option key={idx}>{option}</option>;
+        });
+    }
+
     return (
         <div className={classNames}>
             <div className="control select">
                 <select onChange={onChangeHandler}>
                     {
-                        props.options.map((option, idx) => <option key={idx}>{option}</option>)
+                        renderOptions(props.options)
                     }
                 </select>
             </div>

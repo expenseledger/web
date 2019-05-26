@@ -1,14 +1,14 @@
 import * as React from "react";
 import { combineClassName } from "../../service/Utils";
 
-interface IDropdownProps {
+interface DropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
     default?: string;
 }
 
-const dropdown = (props: IDropdownProps) => {
+const dropdown = (props: DropdownProps) => {
     function onChangeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
         props.updateSelectedValue(e.target.value);
     }

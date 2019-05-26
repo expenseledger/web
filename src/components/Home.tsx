@@ -20,7 +20,7 @@ export interface HomeState {
     currentValue: CurrentValue;
 }
 
-export interface CurrentValue {
+interface CurrentValue {
     wallet?: Wallet;
     category?: Category;
     amount: number;
@@ -57,10 +57,10 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         return (
             <div className="content">
                 <div className="content__balance">
-                    <span className="content__balance__text">Balance: {!!this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0} THB</span>
+                    <span className="content__balance__text">Balance: {this.state.currentValue.wallet ? this.state.currentValue.wallet.balance : 0} THB</span>
                     <Dropdown className="content__balance__dropdown" options={this.state.wallets.map(wallet => wallet.name)} updateSelectedValue={this.updateSelectedWallet} />
                     <Link className="content__balance__transaction__link" to={{
-                        pathname: `/transactionList/${!!this.state.currentValue.wallet ? this.state.currentValue.wallet.name : ""}`,
+                        pathname: `/transactionList/${this.state.currentValue.wallet ? this.state.currentValue.wallet.name : ""}`,
                     }}>Transaction</Link>
                 </div>
                 <div className="content__date">
@@ -151,8 +151,8 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         const { wallet, amount, date, category } = this.state.currentValue;
         const request: AddExpenseRequest = {
             amount,
-            category: !!category ? category.name : "",
-            from: !!wallet ? wallet.name : "",
+            category: category ? category.name : "",
+            from: wallet ? wallet.name : "",
             description: "quick add appense",
             date,
         };
@@ -161,7 +161,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         const response = await addExpense(request);
 
-        if (!!response) {
+        if (response) {
             const wallets = [...this.state.wallets];
             const selectedWalletIdx = wallets.findIndex(x => x.name === response.srcWallet.name);
 

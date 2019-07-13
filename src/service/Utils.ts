@@ -25,7 +25,7 @@ export async function callAxios(
     return {
       data: null,
       error: err,
-      status: err.response.status || 0,
+      status: (err.response && err.response.status) || 0,
       success: false
     };
   }

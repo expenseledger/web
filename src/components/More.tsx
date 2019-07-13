@@ -1,17 +1,21 @@
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
 import Category from "../service/Model/Category";
 import Wallet from "../service/Model/Wallet";
 import Button from "./bases/Button";
+import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
+import TextBox from "./bases/TextBox";
+import TextField from "./bases/TextField";
 import { HomeState } from "./Home";
 import "./More.scss";
-import TextField from "./bases/TextField";
-import DateBox from "./bases/DateBox";
-import TextBox from "./bases/TextBox";
 
 interface MoreState extends HomeState {
     currentValue: CurrentValue;
+    transactionTypeTabActive: boolean[];
 }
 
 interface CurrentValue {
@@ -33,13 +37,14 @@ class More extends React.Component<RouteComponentProps, MoreState> {
 
     public render() {
         return (
-            <div>
+            <div className="more__content">
+                <div>
+                    <Link to="/">
+                        <FontAwesomeIcon icon={faArrowLeft} />
+                    </Link>
+                </div>
                 <div className="tabs is-toggle">
-                    <ul>
-                        <li className="is-active"><a>Expense</a></li>
-                        <li><a>Income</a></li>
-                        <li><a>Transfer</a></li>
-                    </ul>
+                    {this.renderTransactoinTypeTab()}
                 </div>
                 <div>
                     <span>Category </span>
@@ -86,6 +91,25 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 </div>
             </div>
         );
+    }
+
+    private renderTransactoinTypeTab() {
+        const transactionTypes = ["Expense", "Income", "Transfer"];
+
+        return (
+            <ul>
+                {transactionTypes.map((t, idx) => <li className={this.state.transactionTypeTabActive[idx] ? "is-active" : ""} key={t} data-id={idx} onClick={this.transactionTypeTabOnClickHandler}><a>{t}</a></li>)}
+            </ul>
+        );
+    }
+
+    private transactionTypeTabOnClickHandler = (e: any) => {
+        const currentTabActive = [...this.state.transactionTypeTabActive];
+        const tabActive = currentTabActive.map((t, idx) => idx === Number.parseInt(e.currentTarget.dataset.id, 10) ? true : false);
+
+        this.setState({
+            transactionTypeTabActive: tabActive,
+        });
     }
 
     private updateSelectedCategory = (value: string) => {
@@ -154,6 +178,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 date: homeState.currentValue.date,
                 description: "",
             },
+            transactionTypeTabActive: [false, false, false]
         };
     }
 }

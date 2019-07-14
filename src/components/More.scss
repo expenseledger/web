@@ -1,4 +1,24 @@
 .more__content {
     max-width: 400px;
     margin: auto;
+
+    &__category {
+        &__title {
+            font-weight: bold;
+        }
+    }
+
+    &__transaction {
+        &__from {
+            &__title {
+                font-weight: bold;
+            }
+        }
+
+        &__to {
+            &__title {
+                font-weight: bold;
+            }
+        }
+    }
 }

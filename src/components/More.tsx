@@ -47,7 +47,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                     {this.renderTransactoinTypeTab()}
                 </div>
                 <div className="more__content__category">
-                    <span className="more__content__category__text">Category </span>
+                    <span className="more__content__category__title">Category </span>
                     <Dropdown
                         default={this.state.currentValue.category && this.state.currentValue.category.name}
                         options={this.state.categories.map(x => x.name)}

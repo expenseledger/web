@@ -74,16 +74,16 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                         />
                     </div>
                 </div>
-                <div>
-                    <span>Date</span>
+                <div className="more__content__date">
+                    <span className="more__content__date__title">Date</span>
                     <DateBox name="date" updateValue={this.updateSelectedDate} />
                 </div>
-                <div>
-                    <span>Amount</span>
+                <div className="more__content__amount">
+                    <span className="more__content__amount__title">Amount</span>
                     <TextBox className="content__expense__box" updateValue={this.updateExpense} name="expnese" />
                 </div>
-                <div>
-                    <span>Description</span>
+                <div className="more__content__description">
+                    <span className="more__content__description__title">Description</span>
                     <TextField name="description" updateValue={this.updateDescription} />
                 </div>
                 <div>

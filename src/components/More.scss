@@ -21,4 +21,22 @@
             }
         }
     }
+
+    &__date {
+        &__title {
+            font-weight: bold;
+        }
+    }
+
+    &__amount {
+        &__title {
+            font-weight: bold;
+        }
+    }
+
+    &__description {
+        &__title {
+            font-weight: bold;
+        }
+    }
 }

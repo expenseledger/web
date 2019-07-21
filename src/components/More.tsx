@@ -49,6 +49,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 <div className="more__content__category">
                     <span className="more__content__category__title">Category </span>
                     <Dropdown
+                        className="more__content__category__dropdown"
                         default={this.state.currentValue.category && this.state.currentValue.category.name}
                         options={this.state.categories.map(x => x.name)}
                         updateSelectedValue={this.updateSelectedCategory}
@@ -57,34 +58,36 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 <div className="more__content__transaction">
                     <div className="more__content__transaction__from">
                         <span className="more__content__transaction__from__title">From </span>
-                        <span className="more__content__transaction__from__balance"> {this.state.currentValue.fromWallet ? this.state.currentValue.fromWallet.balance : 0} THB</span>
                         <Dropdown
+                            className="more__content__transaction__from__dropdown"
                             default={this.state.currentValue.fromWallet && this.state.currentValue.fromWallet.name}
                             options={this.state.wallets.map(x => x.name)}
                             updateSelectedValue={this.updateSelectedFromWallet}
                         />
+                        <span className="more__content__transaction__from__balance"> {this.state.currentValue.fromWallet ? this.state.currentValue.fromWallet.balance : 0} THB</span>
                     </div>
                     <div className="more__content__transaction__to">
                         <span className="more__content__transaction__to__title">To </span>
-                        <span className="more__content__transaction__to__balance"> {this.state.currentValue.toWallet ? this.state.currentValue.toWallet.balance : 0} THB </span>
                         <Dropdown
+                            className="more__content__transaction__to__dropdown"
                             default={this.state.currentValue.toWallet && this.state.currentValue.toWallet.name}
                             options={this.state.wallets.map(x => x.name)}
                             updateSelectedValue={this.updateSelectedToWallet}
                         />
+                        <span className="more__content__transaction__to__balance"> {this.state.currentValue.toWallet ? this.state.currentValue.toWallet.balance : 0} THB </span>
                     </div>
                 </div>
                 <div className="more__content__date">
                     <span className="more__content__date__title">Date</span>
-                    <DateBox name="date" updateValue={this.updateSelectedDate} />
+                    <DateBox className="more__content__date__box" name="date" updateValue={this.updateSelectedDate} />
                 </div>
                 <div className="more__content__amount">
                     <span className="more__content__amount__title">Amount</span>
-                    <TextBox className="content__expense__box" updateValue={this.updateExpense} name="expnese" />
+                    <TextBox className="more__content__amount__box" updateValue={this.updateExpense} name="expnese" />
                 </div>
                 <div className="more__content__description">
                     <span className="more__content__description__title">Description</span>
-                    <TextField name="description" updateValue={this.updateDescription} />
+                    <TextField className="more__content__description__box" name="description" updateValue={this.updateDescription} />
                 </div>
                 <div>
                     <Button value="Add" />

@@ -6,6 +6,9 @@
         &__title {
             font-weight: bold;
         }
+        &__dropdown {
+            display: inline-block;
+        }
     }
 
     &__transaction {
@@ -13,11 +16,17 @@
             &__title {
                 font-weight: bold;
             }
+            &__dropdown {
+                display: inline-block;
+            }
         }
 
         &__to {
             &__title {
                 font-weight: bold;
+            }
+            &__dropdown {
+                display: inline-block;
             }
         }
     }
@@ -26,17 +35,30 @@
         &__title {
             font-weight: bold;
         }
+        &__box {
+            display: inline-block;
+            width: 200px;
+        }
     }
 
     &__amount {
         &__title {
             font-weight: bold;
         }
+        &__box {
+            display: inline-block;
+            width: 200px;
+        }
     }
 
     &__description {
         &__title {
             font-weight: bold;
+        }
+        &__box {
+            display: inline-block;
+            width: 200px;
+            height: 100px;
         }
     }
 }

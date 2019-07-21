@@ -1,8 +1,14 @@
+@import "_base.scss";
+
 $line-margin: 10px 0 0 0;
 
 .content {
     max-width: 400px;
     margin: auto;
+
+    @include mobile-portrait {
+        margin-left: 5px;
+    }
 
     &__balance {
         margin: $line-margin;
@@ -11,7 +17,7 @@ $line-margin: 10px 0 0 0;
         &__dropdown {
             display: inline-block;
         }
-        
+
         .field {
             margin: 0;
         }
@@ -44,7 +50,6 @@ $line-margin: 10px 0 0 0;
             top: 7px;
             font-weight: bold;
         }
-
     }
 
     &__date {
@@ -52,7 +57,7 @@ $line-margin: 10px 0 0 0;
 
         &__box {
             display: inline-block;
-            width: 200px
+            width: 200px;
         }
 
         &__text {
@@ -93,4 +98,3 @@ $line-margin: 10px 0 0 0;
         }
     }
 }
-

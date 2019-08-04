@@ -2,8 +2,10 @@
 
 @mixin title-center {
   position: relative;
+  display: inline-block;
   top: 7px;
   font-weight: bold;
+  width: 100px;
 }
 
 .more__content {
@@ -23,14 +25,11 @@
 
     &__dropdown {
       position: relative;
-      margin-left: 20px;
       display: inline-block;
     }
   }
 
   &__transaction {
-    @include line-margin();
-
     &__from {
       &__title {
         @include title-center();
@@ -39,12 +38,11 @@
       &__dropdown {
         position: relative;
         display: inline-block;
-        margin-left: 53px;
       }
 
       &__balance {
         @include title-center();
-        margin-left: 3px;
+        margin-left: 5px;
       }
     }
 
@@ -56,12 +54,11 @@
       &__dropdown {
         position: relative;
         display: inline-block;
-        margin-left: 75px;
       }
 
       &__balance {
         @include title-center();
-        margin-left: 3px;
+        margin-left: 5px;
       }
     }
   }
@@ -77,7 +74,6 @@
       position: relative;
       display: inline-block;
       width: 200px;
-      margin-left: 58px;
     }
   }
 
@@ -92,7 +88,6 @@
       position: relative;
       display: inline-block;
       width: 200px;
-      margin-left: 33px;
     }
   }
 
@@ -108,7 +103,6 @@
       display: inline-block;
       width: 200px;
       height: 100px;
-      margin-left: 2px;
     }
   }
 }

@@ -2,38 +2,42 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { TransactionCard } from "../components/TransactionCard";
-import { Transaction } from "../service/Model/Transaction";
+import { Transaction } from "../service/model/Transaction";
 import { listTransactions } from "../service/TransactionService";
 
 interface TransactionListProps extends RouteComponentProps {
-  wallet: string;
+    wallet: string;
 }
 
 interface TransactionListParam {
-  walletName: string;
+    walletName: string;
 }
 
 export function TransactionList(props: TransactionListProps) {
-  const [transactions, setTransactions] = useState([] as Transaction[]);
-  useEffect(() => {
-    listTransactions({ wallet: !!props.wallet ? props.wallet : (props.match.params as TransactionListParam).walletName }).then(response => {
-      setTransactions(response.items);
+    const [transactions, setTransactions] = useState([] as Transaction[]);
+    useEffect(() => {
+        listTransactions({
+            wallet: !!props.wallet
+                ? props.wallet
+                : (props.match.params as TransactionListParam).walletName
+        }).then(response => {
+            setTransactions(response.items);
+        });
     });
-  });
 
-  const cards = transactions.map((tx, index) => {
-    const { date, amount, type, category, description } = tx;
-    return (
-      <TransactionCard
-        date={date}
-        amount={amount}
-        type={type}
-        category={category}
-        description={description}
-        key={index}
-      />
-    );
-  });
+    const cards = transactions.map((tx, index) => {
+        const { date, amount, type, category, description } = tx;
+        return (
+            <TransactionCard
+                date={date}
+                amount={amount}
+                type={type}
+                category={category}
+                description={description}
+                key={index}
+            />
+        );
+    });
 
-  return <div>{cards}</div>;
+    return <div>{cards}</div>;
 }

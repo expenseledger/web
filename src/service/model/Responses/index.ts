@@ -2,22 +2,22 @@ import Transaction from "../Transaction";
 import Wallet from "../Wallet";
 
 export interface AddExpenseResponse {
-  srcWallet: Wallet;
-  transaction: Transaction;
+    srcWallet: Wallet;
+    transaction: Transaction;
 }
 
 export interface AddIncomeResponse {
-  dstWallet: Wallet;
-  transaction: Transaction;
+    dstWallet: Wallet;
+    transaction: Transaction;
 }
 
 export interface AddTransferResponse {
-  dstWallet: Wallet;
-  srcWallet: Wallet;
-  transaction: Transaction;
+    dstWallet: Wallet;
+    srcWallet: Wallet;
+    transaction: Transaction;
 }
 
 export interface ListTransactionsResponse {
-  length: number;
-  items: Transaction[];
+    length: number;
+    items: Transaction[];
 }

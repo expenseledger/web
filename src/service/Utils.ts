@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Response from "./Model/Response";
+import Response from "./model/Response";
 
 /**
  * @param {any} axiosMethod pass axios method eg. axios.post.
@@ -32,10 +32,15 @@ export async function callAxios(
 }
 
 export function combineClassName(classNames: object) {
-    return Object.values(classNames).reduce((toReturn, className) => toReturn + " " + className, "").trim();
+    return Object.values(classNames)
+        .reduce((toReturn, className) => toReturn + " " + className, "")
+        .trim();
 }
 
-export function useInput(initialValue: string, updateValue: (v: string) => void) {
+export function useInput(
+    initialValue: string,
+    updateValue: (v: string) => void
+) {
     const [value, setValue] = useState(initialValue);
 
     return {

@@ -1,5 +1,6 @@
 import * as React from "react";
 import { combineClassName } from "../../service/Utils";
+import PropTypes from "prop-types";
 
 interface DropdownProps {
     options: string[];
@@ -15,13 +16,13 @@ const dropdown = (props: DropdownProps) => {
 
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : "",
+        !!props.className ? props.className : ""
     ]);
 
     function renderOptions(options: string[]): JSX.Element[] {
         return options.map((option, idx) => {
             if (props.default && props.default === option) {
-                return <option selected={true} key={idx}>{option}</option>;
+                return <option key={idx}>{option}</option>;
             }
 
             return <option key={idx}>{option}</option>;
@@ -31,14 +32,22 @@ const dropdown = (props: DropdownProps) => {
     return (
         <div className={classNames}>
             <div className="control select">
-                <select onChange={onChangeHandler}>
-                    {
-                        renderOptions(props.options)
+                <select
+                    defaultValue={
+                        !!props.default ? props.default : props.options[0]
                     }
+                    onChange={onChangeHandler}
+                >
+                    {renderOptions(props.options)}
                 </select>
             </div>
         </div>
     );
+};
+
+dropdown.propType = {
+    options: PropTypes.arrayOf(PropTypes.string),
+    updateSelectedValue: PropTypes.func
 };
 
 export default dropdown;

@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link } from "react-router-dom";
-import Category from "../service/Model/Category";
-import Wallet from "../service/Model/Wallet";
+import Category from "../service/model/Category";
+import Wallet from "../service/model/Wallet";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -12,6 +12,17 @@ import TextBox from "./bases/TextBox";
 import TextField from "./bases/TextField";
 import { HomeState } from "./Home";
 import "./More.scss";
+import { TransactionType } from "../service/Constants";
+import {
+    AddExpenseRequest,
+    AddIncomeRequest,
+    AddTransferRequest
+} from "../service/model/Requests";
+import {
+    addExpense,
+    addIncome,
+    addTransfer
+} from "../service/TransactionService";
 
 interface MoreState extends HomeState {
     currentValue: CurrentValue;
@@ -29,6 +40,8 @@ interface CurrentValue {
 }
 
 class More extends React.Component<RouteComponentProps, MoreState> {
+    private transactionType: TransactionType = "EXPENSE";
+
     public constructor(props: any) {
         super(props);
 
@@ -61,48 +74,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                     />
                 </div>
                 <div className="more__content__transaction">
-                    <div className="more__content__transaction__from">
-                        <span className="more__content__transaction__from__title">
-                            From{" "}
-                        </span>
-                        <Dropdown
-                            className="more__content__transaction__from__dropdown"
-                            default={
-                                this.state.currentValue.fromWallet &&
-                                this.state.currentValue.fromWallet.name
-                            }
-                            options={this.state.wallets.map(x => x.name)}
-                            updateSelectedValue={this.updateSelectedFromWallet}
-                        />
-                        <span className="more__content__transaction__from__balance">
-                            {" "}
-                            {this.state.currentValue.fromWallet
-                                ? this.state.currentValue.fromWallet.balance
-                                : 0}{" "}
-                            THB
-                        </span>
-                    </div>
-                    <div className="more__content__transaction__to">
-                        <span className="more__content__transaction__to__title">
-                            To{" "}
-                        </span>
-                        <Dropdown
-                            className="more__content__transaction__to__dropdown"
-                            default={
-                                this.state.currentValue.toWallet &&
-                                this.state.currentValue.toWallet.name
-                            }
-                            options={this.state.wallets.map(x => x.name)}
-                            updateSelectedValue={this.updateSelectedToWallet}
-                        />
-                        <span className="more__content__transaction__to__balance">
-                            {" "}
-                            {this.state.currentValue.toWallet
-                                ? this.state.currentValue.toWallet.balance
-                                : 0}{" "}
-                            THB{" "}
-                        </span>
-                    </div>
+                    {this.renderTransaction()}
                 </div>
                 <div className="more__content__date">
                     <span className="more__content__date__title">Date</span>
@@ -131,9 +103,59 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                     />
                 </div>
                 <div>
-                    <Button value="Add" />
+                    <Button onClickHandler={this.addTransaction} value="Add" />
                 </div>
             </div>
+        );
+    }
+    private renderTransaction() {
+        const isTransfer = this.state.transactionTypeTabActive[2];
+
+        return (
+            <>
+                <div className="more__content__transaction__from">
+                    <span className="more__content__transaction__from__title">
+                        {isTransfer ? "From" : "Wallet"}
+                    </span>
+                    <Dropdown
+                        className="more__content__transaction__from__dropdown"
+                        default={
+                            this.state.currentValue.fromWallet &&
+                            this.state.currentValue.fromWallet.name
+                        }
+                        options={this.state.wallets.map(x => x.name)}
+                        updateSelectedValue={this.updateSelectedFromWallet}
+                    />
+                    <span className="more__content__transaction__from__balance">
+                        {this.state.currentValue.fromWallet
+                            ? this.state.currentValue.fromWallet.balance
+                            : 0}{" "}
+                        THB
+                    </span>
+                </div>
+                {isTransfer ? (
+                    <div className="more__content__transaction__to">
+                        <span className="more__content__transaction__to__title">
+                            To
+                        </span>
+                        <Dropdown
+                            className="more__content__transaction__to__dropdown"
+                            default={
+                                this.state.currentValue.toWallet &&
+                                this.state.currentValue.toWallet.name
+                            }
+                            options={this.state.wallets.map(x => x.name)}
+                            updateSelectedValue={this.updateSelectedToWallet}
+                        />
+                        <span className="more__content__transaction__to__balance">
+                            {this.state.currentValue.toWallet
+                                ? this.state.currentValue.toWallet.balance
+                                : 0}{" "}
+                            THB
+                        </span>
+                    </div>
+                ) : null}
+            </>
         );
     }
 
@@ -162,15 +184,30 @@ class More extends React.Component<RouteComponentProps, MoreState> {
 
     private transactionTypeTabOnClickHandler = (e: any) => {
         const currentTabActive = [...this.state.transactionTypeTabActive];
+        const currentTarget = e.currentTarget;
+        const currentTabIdx = Number.parseInt(currentTarget.dataset.id, 10);
         const tabActive = currentTabActive.map((t, idx) =>
-            idx === Number.parseInt(e.currentTarget.dataset.id, 10)
-                ? true
-                : false
+            idx === currentTabIdx ? true : false
         );
 
-        this.setState({
-            transactionTypeTabActive: tabActive
-        });
+        this.setState(
+            {
+                transactionTypeTabActive: tabActive
+            },
+            () => {
+                switch (currentTabIdx) {
+                    case 0:
+                        this.transactionType = "EXPENSE";
+                        break;
+                    case 1:
+                        this.transactionType = "INCOME";
+                        break;
+                    case 2:
+                        this.transactionType = "TRANSFER";
+                        break;
+                }
+            }
+        );
     };
 
     private updateSelectedCategory = (value: string) => {
@@ -243,8 +280,137 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 date: homeState.currentValue.date,
                 description: ""
             },
-            transactionTypeTabActive: [false, false, false]
+            transactionTypeTabActive: [true, false, false]
         };
+    }
+
+    private addTransaction = () => {
+        switch (this.transactionType) {
+            case "EXPENSE":
+                this.addExpense();
+                break;
+            case "INCOME":
+                this.addIncome();
+                break;
+            case "TRANSFER":
+                this.addTransfer();
+                break;
+        }
+    };
+
+    private async addExpense() {
+        const {
+            fromWallet,
+            category,
+            amount,
+            date,
+            description
+        } = this.state.currentValue;
+
+        var request: AddExpenseRequest = {
+            amount,
+            category: category ? category.name : "",
+            date,
+            description,
+            from: fromWallet ? fromWallet.name : ""
+        };
+
+        const response = await addExpense(request);
+
+        if (response) {
+            const wallets = [...this.state.wallets];
+            const selectedWalletIdx = wallets.findIndex(
+                x => x.name === response.srcWallet.name
+            );
+
+            wallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            this.setState({
+                wallets
+            });
+
+            return alert("AddExpense sucess");
+        }
+
+        return alert("AddExpense failed");
+    }
+
+    private async addIncome() {
+        const {
+            fromWallet,
+            category,
+            amount,
+            date,
+            description
+        } = this.state.currentValue;
+
+        var request: AddIncomeRequest = {
+            amount,
+            category: category ? category.name : "",
+            date,
+            description,
+            to: fromWallet ? fromWallet.name : ""
+        };
+
+        const response = await addIncome(request);
+
+        if (response) {
+            const wallets = [...this.state.wallets];
+            const selectedWalletIdx = wallets.findIndex(
+                x => x.name === response.dstWallet.name
+            );
+
+            wallets[selectedWalletIdx].balance = response.dstWallet.balance;
+            this.setState({
+                wallets
+            });
+
+            return alert("AddIncome sucess");
+        }
+
+        return alert("AddIncome failed");
+    }
+
+    private async addTransfer() {
+        const {
+            fromWallet,
+            toWallet,
+            category,
+            amount,
+            date,
+            description
+        } = this.state.currentValue;
+
+        var request: AddTransferRequest = {
+            amount,
+            category: category ? category.name : "",
+            date,
+            description,
+            to: toWallet ? toWallet.name : "",
+            from: fromWallet ? fromWallet.name : ""
+        };
+
+        const response = await addTransfer(request);
+
+        if (response) {
+            const wallets = [...this.state.wallets];
+            const fromWalletIdx = wallets.findIndex(
+                x => x.name === response.srcWallet.name
+            );
+            const toWalletIdx = wallets.findIndex(
+                x => x.name === response.dstWallet.name
+            );
+
+            wallets[fromWalletIdx].balance = response.srcWallet.balance;
+            wallets[toWalletIdx].balance = response.dstWallet.balance;
+
+            this.setState({
+                wallets
+            });
+
+            return alert("AddTransfer sucess");
+        }
+
+        return alert("AddTransfer failed");
     }
 }
 

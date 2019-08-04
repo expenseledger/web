@@ -2,14 +2,14 @@ import moment from "moment";
 import * as React from "react";
 import { combineClassName, useInput } from "../../service/Utils";
 
-interface IDateBoxProps {
+interface DateBoxProps {
     name: string;
     value?: string;
     updateValue: (value: string) => void;
     className?: string;
 }
 
-const DateBox = (props: IDateBoxProps) => {
+const DateBox = (props: DateBoxProps) => {
     const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
     const classNames = combineClassName([
         "field",

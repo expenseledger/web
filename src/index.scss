@@ -1,12 +1,14 @@
-
 html {
+    overflow-y: unset;
     min-height: 100%;
     background: linear-gradient(180deg, rgba(246, 237, 178, 0.6), rgba(245, 152, 168, 0.6));
 }
 
 body {
-    height: 100%;
     margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    height: 100%;
     background-repeat: no-repeat;
     background-attachment: scroll;
 }

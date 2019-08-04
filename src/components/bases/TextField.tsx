@@ -1,25 +1,31 @@
 import * as React from "react";
 import { combineClassName, useInput } from "../../service/Utils";
 
-interface ITextFieldProps {
+interface TextFieldProps {
     name: string;
     placeholder?: string;
     updateValue: (value: string) => void;
     className?: string;
 }
 
-const TextField = (props: ITextFieldProps) => {
+const TextField = (props: TextFieldProps) => {
     const { bind } = useInput("", props.updateValue);
+    const inputClass = !!props.className ? props.className : "";
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : "",
+        inputClass,
+    ]);
+
+    const textAreaClassName = combineClassName([
+        "input",
+        inputClass,
     ]);
 
     return (
         <div className={classNames}>
             <div className="control">
                 <textarea
-                    className="input is-rounded"
+                    className={textAreaClassName}
                     name={props.name}
                     placeholder={props.placeholder}
                     {...bind}

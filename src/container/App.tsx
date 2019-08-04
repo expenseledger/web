@@ -1,17 +1,18 @@
 import * as React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Home from "../components/Home";
-import "./App.scss";
+import More from "../components/More";
 import { TransactionList } from "./TransactionList";
 
 class App extends React.Component {
-  public render() {
-    return (
-      <Router>
-        <Route path="/" exact={true} component={Home} />
-        <Route path="/transactionList/:walletName" component={TransactionList} />
-      </Router>);
-  }
+    public render() {
+        return (
+            <Router>
+                <Route path="/" exact={true} component={Home} />
+                <Route path="/transactionList/:walletName" exact={true} component={TransactionList} />
+                <Route path="/more" exact={true} component={More} />
+            </Router>);
+    }
 }
 
 export default App;

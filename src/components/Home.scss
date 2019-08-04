@@ -1,97 +1,98 @@
-$line-margin: 10px 0 0 0;
+@import "_base.scss";
 
 .content {
-    max-width: 400px;
-    margin: auto;
-    padding-left: 10px;
+  max-width: 400px;
+  margin: auto;
 
-    &__balance {
-        margin: $line-margin;
-        font-weight: bold;
+  @include mobile-portrait {
+    margin-left: 5px;
+  }
 
-        &__dropdown {
-            display: inline-block;
-        }
-        
-        .field {
-            margin: 0;
-        }
+  &__balance {
+    @include line-margin();
+    font-weight: bold;
 
-        &__transaction__link {
-            display: inline-block;
-            position: relative;
-            top: 8px;
-            left: 10px;
-        }
-
-        &__text {
-            display: block;
-            margin-bottom: 10px;
-        }
+    &__dropdown {
+      display: inline-block;
     }
 
-    &__expense {
-        margin: $line-margin;
-
-        &__box {
-            display: inline-block;
-            width: 200px;
-        }
-
-        &__text {
-            display: inline-block;
-            width: 110px;
-            position: relative;
-            top: 7px;
-            font-weight: bold;
-        }
-
+    .field {
+      margin: 0;
     }
 
-    &__date {
-        margin: $line-margin;
-
-        &__box {
-            display: inline-block;
-            width: 200px
-        }
-
-        &__text {
-            display: inline-block;
-            width: 110px;
-            position: relative;
-            top: 7px;
-            font-weight: bold;
-        }
+    &__transaction__link {
+      display: inline-block;
+      position: relative;
+      top: 8px;
+      left: 10px;
     }
 
-    &__category {
-        margin: $line-margin;
+    &__text {
+      display: block;
+      margin-bottom: 10px;
+    }
+  }
 
-        &__text {
-            display: inline-block;
-            width: 110px;
-            position: relative;
-            top: 7px;
-            font-weight: bold;
-        }
+  &__expense {
+    @include line-margin();
 
-        &__dropdown {
-            display: inline-block;
-        }
+    &__box {
+      display: inline-block;
+      width: 200px;
     }
 
-    &__button {
-        margin: $line-margin;
-        &__add {
-            width: 100px;
-            margin: 0 10px 0 0;
-        }
-
-        &__more {
-            width: 100px;
-            margin: 0 10px 0 0;
-        }
+    &__text {
+      display: inline-block;
+      width: 110px;
+      position: relative;
+      top: 7px;
+      font-weight: bold;
     }
+  }
+
+  &__date {
+    @include line-margin();
+
+    &__box {
+      display: inline-block;
+      width: 200px;
+    }
+
+    &__text {
+      display: inline-block;
+      width: 110px;
+      position: relative;
+      top: 7px;
+      font-weight: bold;
+    }
+  }
+
+  &__category {
+    @include line-margin();
+
+    &__text {
+      display: inline-block;
+      width: 110px;
+      position: relative;
+      top: 7px;
+      font-weight: bold;
+    }
+
+    &__dropdown {
+      display: inline-block;
+    }
+  }
+
+  &__button {
+    @include line-margin();
+    &__add {
+      width: 100px;
+      margin: 0 10px 0 0;
+    }
+
+    &__more {
+      width: 100px;
+      margin: 0 10px 0 0;
+    }
+  }
 }
-

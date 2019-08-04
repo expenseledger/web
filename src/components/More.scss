@@ -42,7 +42,9 @@
 
       &__balance {
         @include title-center();
+        display: inline-block;
         margin-left: 5px;
+        width: 150px;
       }
     }
 
@@ -58,7 +60,9 @@
 
       &__balance {
         @include title-center();
+        display: inline-block;
         margin-left: 5px;
+        width: 150px;
       }
     }
   }

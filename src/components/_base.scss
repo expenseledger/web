@@ -1,13 +1,15 @@
-$line-margin: 10px 0 0 0;
+@mixin line-margin {
+  margin-bottom: 0.75em;
+}
 
 @mixin media($width) {
-    @media only screen and (max-width: $width) {
-        @content;
-    }
+  @media only screen and (max-width: $width) {
+    @content;
+  }
 }
 
 @mixin mobile-portrait {
-    @media (min-width: 320px) and (max-width: 480px) {
-        @content;
-    }
+  @media (min-width: 320px) and (max-width: 480px) {
+    @content;
+  }
 }

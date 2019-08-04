@@ -1,14 +1,14 @@
 import * as React from "react";
 import { combineClassName } from "../../service/Utils";
 
-interface IButtonProps {
+interface ButtonProps {
     value: string;
     outlined?: boolean;
     onClickHandler?: (e: React.MouseEvent) => void;
     className?: string;
 }
 
-const button = (props: IButtonProps) => {
+const button = (props: ButtonProps) => {
     const classNames = combineClassName([
         "button",
         "is-primary",

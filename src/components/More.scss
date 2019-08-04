@@ -39,11 +39,12 @@
       &__dropdown {
         position: relative;
         display: inline-block;
-        margin-left: 50px;
+        margin-left: 53px;
       }
 
       &__balance {
         @include title-center();
+        margin-left: 3px;
       }
     }
 
@@ -55,11 +56,12 @@
       &__dropdown {
         position: relative;
         display: inline-block;
-        margin-left: 70px;
+        margin-left: 75px;
       }
 
       &__balance {
         @include title-center();
+        margin-left: 3px;
       }
     }
   }

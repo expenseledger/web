@@ -1,64 +1,78 @@
+@import "_base.scss";
+
+@mixin title-center {
+  position: relative;
+  top: 7px;
+  font-weight: bold;
+}
+
 .more__content {
-    max-width: 400px;
-    margin: auto;
+  max-width: 400px;
+  margin: auto;
 
-    &__category {
-        &__title {
-            font-weight: bold;
-        }
-        &__dropdown {
-            display: inline-block;
-        }
+  @include mobile-portrait {
+    margin-left: 5px;
+  }
+
+  &__category {
+    &__title {
+      @include title-center();
+    }
+    &__dropdown {
+      position: relative;
+      margin-left: 10px;
+      display: inline-block;
+    }
+  }
+
+  &__transaction {
+    &__from {
+      &__title {
+        @include title-center();
+      }
+      &__dropdown {
+        display: inline-block;
+      }
     }
 
-    &__transaction {
-        &__from {
-            &__title {
-                font-weight: bold;
-            }
-            &__dropdown {
-                display: inline-block;
-            }
-        }
-
-        &__to {
-            &__title {
-                font-weight: bold;
-            }
-            &__dropdown {
-                display: inline-block;
-            }
-        }
+    &__to {
+      &__title {
+        @include title-center();
+      }
+      &__dropdown {
+        display: inline-block;
+      }
     }
+  }
 
-    &__date {
-        &__title {
-            font-weight: bold;
-        }
-        &__box {
-            display: inline-block;
-            width: 200px;
-        }
+  &__date {
+    &__title {
+      @include title-center();
     }
+    &__box {
+      display: inline-block;
+      width: 200px;
+    }
+  }
 
-    &__amount {
-        &__title {
-            font-weight: bold;
-        }
-        &__box {
-            display: inline-block;
-            width: 200px;
-        }
+  &__amount {
+    &__title {
+      @include title-center();
     }
+    &__box {
+      display: inline-block;
+      width: 200px;
+    }
+  }
 
-    &__description {
-        &__title {
-            font-weight: bold;
-        }
-        &__box {
-            display: inline-block;
-            width: 200px;
-            height: 100px;
-        }
+  &__description {
+    &__title {
+      @include title-center();
     }
+    &__box {
+      display: inline-block;
+      width: 200px;
+      height: 100px;
+    }
+  }
 }

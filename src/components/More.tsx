@@ -10,7 +10,6 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import TextField from "./bases/TextField";
-import { HomeState } from "./Home";
 import "./More.scss";
 import { TransactionType } from "../service/Constants";
 import {
@@ -24,7 +23,9 @@ import {
     addTransfer
 } from "../service/TransactionService";
 
-interface MoreState extends HomeState {
+interface MoreState {
+    wallets: Wallet[];
+    categories: Category[];
     currentValue: CurrentValue;
     transactionTypeTabActive: boolean[];
 }
@@ -268,7 +269,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
         });
     };
 
-    private initializeState(homeState: HomeState): MoreState {
+    private initializeState(homeState: any): MoreState {
         return {
             wallets: homeState.wallets,
             categories: homeState.categories,

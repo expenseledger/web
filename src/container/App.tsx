@@ -1,17 +1,27 @@
 import * as React from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
-import Home from "../components/Home";
-import More from "../components/More";
-import { TransactionList } from "./TransactionList";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Loading from "../components/bases/Loading";
+const TransactionList = React.lazy(() => import("./TransactionList"));
+const Home = React.lazy(() => import("../components/Home"));
+const More = React.lazy(() => import("../components/More"));
 
 class App extends React.Component {
     public render() {
         return (
             <Router>
-                <Route path="/" exact={true} component={Home} />
-                <Route path="/transactionList/:walletName" exact={true} component={TransactionList} />
-                <Route path="/more" exact={true} component={More} />
-            </Router>);
+                <React.Suspense fallback={<Loading />}>
+                    <Switch>
+                        <Route path="/" exact={true} component={Home} />
+                        <Route
+                            path="/transactionList/:walletName"
+                            exact={true}
+                            component={TransactionList}
+                        />
+                        <Route path="/more" exact={true} component={More} />
+                    </Switch>
+                </React.Suspense>
+            </Router>
+        );
     }
 }
 

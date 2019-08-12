@@ -24,7 +24,7 @@ export function TransactionList(props: TransactionListProps) {
         }).then(response => {
             setTransactions(response.items);
         });
-    }, [transactions, props.match.params, props.wallet]);
+    }, []);
 
     const cards = transactions.map((tx, index) => {
         const { date, amount, type, category, description } = tx;

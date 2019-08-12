@@ -15,6 +15,7 @@ interface TransactionListParam {
 
 export function TransactionList(props: TransactionListProps) {
     const [transactions, setTransactions] = useState([] as Transaction[]);
+
     useEffect(() => {
         listTransactions({
             wallet: !!props.wallet
@@ -23,7 +24,7 @@ export function TransactionList(props: TransactionListProps) {
         }).then(response => {
             setTransactions(response.items);
         });
-    });
+    }, []);
 
     const cards = transactions.map((tx, index) => {
         const { date, amount, type, category, description } = tx;
@@ -41,3 +42,5 @@ export function TransactionList(props: TransactionListProps) {
 
     return <div>{cards}</div>;
 }
+
+export default TransactionList;

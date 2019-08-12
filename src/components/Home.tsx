@@ -13,11 +13,13 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import "./Home.scss";
+import Loading from "./bases/Loading";
 
-export interface HomeState {
+interface HomeState {
     wallets: Wallet[];
     categories: Category[];
     currentValue: CurrentValue;
+    isLoading: boolean;
 }
 
 interface CurrentValue {
@@ -44,17 +46,23 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 },
                 amount: 0,
                 date: moment().format("YYYY-MM-DD")
-            }
+            },
+            isLoading: true
         };
     }
 
     public componentDidMount() {
-        this.fetchAllWallet();
-        this.fetchAllCategory();
+        Promise.all([this.fetchAllWallet(), this.fetchAllCategory()]).then(
+            () => {
+                this.setState({ isLoading: false });
+            }
+        );
     }
 
     public render() {
-        return (
+        return this.state.isLoading ? (
+            <Loading />
+        ) : (
             <div className="content">
                 <div className="content__balance">
                     <span className="content__balance__text">

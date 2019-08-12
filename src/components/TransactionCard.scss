@@ -1,0 +1,22 @@
+@import "_base.scss";
+
+.card {
+    &__box {
+        @include mobile-portrait {
+            margin: 10px;
+        }
+
+        max-width: 400px;
+        min-width: 300px;
+        margin: 10px auto;
+        border-radius: 5px;
+    }
+
+    &__content {
+        display: block;
+
+        &--bold {
+            font-weight: bold;
+        }
+    }
+}

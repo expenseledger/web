@@ -17,12 +17,15 @@ export function TransactionCard(props: TransactionItemProps) {
     return (
         <div className="card card__box">
             <header className="card-header">
-                <p className="card-header-title">{props.type}</p>
+                <p className="card-header-title">
+                    {date.format("DD/MM/YYYY")} - {props.type}
+                </p>
             </header>
             <div className="card-content">
                 <p className="content">
                     <span className="card__content">
-                        {date.format("DD/MM/YYYY")}: {props.amount} THB
+                        <span className="card__content--bold">Amount</span>:{" "}
+                        {props.amount} THB
                     </span>
                     <span className="card__content">
                         <span className="card__content--bold">Category</span>:{" "}

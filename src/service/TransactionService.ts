@@ -17,6 +17,19 @@ import * as Utils from "./Utils";
 
 const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
 
+function mapJsonToTransaction(json: any): Transaction {
+    return {
+        id: json.id,
+        srcWallet: json.src_wallet,
+        dstWallet: json.dst_wallet,
+        amount: json.amount,
+        type: json.type,
+        category: json.category,
+        description: json.description,
+        date: new Date(json.date)
+    };
+}
+
 export async function addExpense(
     request: AddExpenseRequest
 ): Promise<AddExpenseResponse | null> {
@@ -115,18 +128,5 @@ export async function listTransactions(
     return {
         length: response.data.length,
         items: response.data.items.map(mapJsonToTransaction)
-    };
-}
-
-function mapJsonToTransaction(json: any): Transaction {
-    return {
-        id: json.id,
-        srcWallet: json.src_wallet,
-        dstWallet: json.dst_wallet,
-        amount: json.amount,
-        type: json.type,
-        category: json.category,
-        description: json.description,
-        date: json.date
     };
 }

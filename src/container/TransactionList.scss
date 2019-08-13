@@ -1,0 +1,13 @@
+@import "../components/base";
+
+.transactionList {
+    &__backIcon {
+        @include mobile-portrait {
+            margin: 10px;
+        }
+
+        margin: 5px auto;
+        max-width: 400px;
+        min-width: 300px;
+    }
+}

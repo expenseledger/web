@@ -1,112 +1,116 @@
 @import "_base.scss";
 
 @mixin title-center {
-  position: relative;
-  display: inline-block;
-  top: 7px;
-  font-weight: bold;
-  width: 100px;
+    position: relative;
+    display: inline-block;
+    top: 7px;
+    font-weight: bold;
+    width: 100px;
 }
 
 .more__content {
-  max-width: 400px;
-  margin: auto;
+    max-width: 400px;
+    margin: auto;
 
-  @include mobile-portrait {
-    margin-left: 5px;
-  }
-
-  &__category {
-    @include line-margin();
-
-    &__title {
-      @include title-center();
-    }
-
-    &__dropdown {
-      position: relative;
-      display: inline-block;
-    }
-  }
-
-  &__transaction {
-    &__from {
-      &__title {
-        @include title-center();
-      }
-
-      &__dropdown {
-        position: relative;
-        display: inline-block;
-      }
-
-      &__balance {
-        @include title-center();
-        display: inline-block;
+    @include mobile-portrait {
         margin-left: 5px;
-        width: 150px;
-      }
     }
 
-    &__to {
-      &__title {
-        @include title-center();
-      }
-
-      &__dropdown {
-        position: relative;
-        display: inline-block;
-      }
-
-      &__balance {
-        @include title-center();
-        display: inline-block;
-        margin-left: 5px;
-        width: 150px;
-      }
-    }
-  }
-
-  &__date {
-    @include line-margin();
-
-    &__title {
-      @include title-center();
+    &__backIcon {
+        margin: 5px auto;
     }
 
-    &__box {
-      position: relative;
-      display: inline-block;
-      width: 200px;
-    }
-  }
+    &__category {
+        @include line-margin();
 
-  &__amount {
-    @include line-margin();
+        &__title {
+            @include title-center();
+        }
 
-    &__title {
-      @include title-center();
-    }
-
-    &__box {
-      position: relative;
-      display: inline-block;
-      width: 200px;
-    }
-  }
-
-  &__description {
-    @include line-margin();
-
-    &__title {
-      @include title-center();
+        &__dropdown {
+            position: relative;
+            display: inline-block;
+        }
     }
 
-    &__box {
-      position: relative;
-      display: inline-block;
-      width: 200px;
-      height: 100px;
+    &__transaction {
+        &__from {
+            &__title {
+                @include title-center();
+            }
+
+            &__dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            &__balance {
+                @include title-center();
+                display: inline-block;
+                margin-left: 5px;
+                width: 150px;
+            }
+        }
+
+        &__to {
+            &__title {
+                @include title-center();
+            }
+
+            &__dropdown {
+                position: relative;
+                display: inline-block;
+            }
+
+            &__balance {
+                @include title-center();
+                display: inline-block;
+                margin-left: 5px;
+                width: 150px;
+            }
+        }
     }
-  }
+
+    &__date {
+        @include line-margin();
+
+        &__title {
+            @include title-center();
+        }
+
+        &__box {
+            position: relative;
+            display: inline-block;
+            width: 200px;
+        }
+    }
+
+    &__amount {
+        @include line-margin();
+
+        &__title {
+            @include title-center();
+        }
+
+        &__box {
+            position: relative;
+            display: inline-block;
+            width: 200px;
+        }
+    }
+
+    &__description {
+        @include line-margin();
+
+        &__title {
+            @include title-center();
+        }
+
+        &__box {
+            position: relative;
+            display: inline-block;
+            width: 200px;
+            height: 100px;
+        }
+    }
 }

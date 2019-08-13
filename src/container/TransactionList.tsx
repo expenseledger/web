@@ -1,9 +1,14 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, Link } from "react-router-dom";
 import { TransactionCard } from "../components/TransactionCard";
 import { Transaction } from "../service/model/Transaction";
 import { listTransactions } from "../service/TransactionService";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+
+import "./TransactionList.scss";
+import Loading from "../components/bases/Loading";
 
 interface TransactionListProps extends RouteComponentProps {
     wallet: string;
@@ -14,7 +19,8 @@ interface TransactionListParam {
 }
 
 export function TransactionList(props: TransactionListProps) {
-    const [transactions, setTransactions] = useState([] as Transaction[]);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         listTransactions({
@@ -22,7 +28,9 @@ export function TransactionList(props: TransactionListProps) {
                 ? props.wallet
                 : (props.match.params as TransactionListParam).walletName
         }).then(response => {
-            setTransactions(response.items);
+            var sortedItems = response.items.reverse();
+            setTransactions(sortedItems);
+            setIsLoading(false);
         });
     }, []);
 
@@ -40,7 +48,18 @@ export function TransactionList(props: TransactionListProps) {
         );
     });
 
-    return <div>{cards}</div>;
+    return isLoading ? (
+        <Loading />
+    ) : (
+        <>
+            <div className="transactionList__backIcon">
+                <Link to="/">
+                    <FontAwesomeIcon icon={faArrowLeft} size="lg" />
+                </Link>
+            </div>
+            <div>{cards}</div>
+        </>
+    );
 }
 
 export default TransactionList;

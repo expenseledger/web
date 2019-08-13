@@ -52,9 +52,9 @@ class More extends React.Component<RouteComponentProps, MoreState> {
     public render() {
         return (
             <div className="more__content">
-                <div>
+                <div className="more__content__backIcon">
                     <Link to="/">
-                        <FontAwesomeIcon icon={faArrowLeft} />
+                        <FontAwesomeIcon icon={faArrowLeft} size="lg" />
                     </Link>
                 </div>
                 <div className="tabs is-toggle">

@@ -1,98 +1,98 @@
 @import "_base.scss";
 
 .content {
-  max-width: 400px;
-  margin: auto;
+    max-width: 400px;
+    margin: auto;
 
-  @include mobile-portrait {
-    margin-left: 5px;
-  }
-
-  &__balance {
-    @include line-margin();
-    font-weight: bold;
-
-    &__dropdown {
-      display: inline-block;
+    @include mobile-portrait {
+        margin-left: 5px;
     }
 
-    .field {
-      margin: 0;
+    &__balance {
+        @include line-margin();
+        font-weight: bold;
+
+        &__dropdown {
+            display: inline-block;
+        }
+
+        .field {
+            margin: 0;
+        }
+
+        &__transaction__link {
+            display: inline-block;
+            position: relative;
+            top: 8px;
+            left: 10px;
+        }
+
+        &__text {
+            display: block;
+            margin-bottom: 10px;
+        }
     }
 
-    &__transaction__link {
-      display: inline-block;
-      position: relative;
-      top: 8px;
-      left: 10px;
+    &__expense {
+        @include line-margin();
+
+        &__box {
+            display: inline-block;
+            width: 200px;
+        }
+
+        &__text {
+            display: inline-block;
+            width: 130px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
     }
 
-    &__text {
-      display: block;
-      margin-bottom: 10px;
-    }
-  }
+    &__date {
+        @include line-margin();
 
-  &__expense {
-    @include line-margin();
+        &__box {
+            display: inline-block;
+            width: 200px;
+        }
 
-    &__box {
-      display: inline-block;
-      width: 200px;
-    }
-
-    &__text {
-      display: inline-block;
-      width: 110px;
-      position: relative;
-      top: 7px;
-      font-weight: bold;
-    }
-  }
-
-  &__date {
-    @include line-margin();
-
-    &__box {
-      display: inline-block;
-      width: 200px;
+        &__text {
+            display: inline-block;
+            width: 130px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
     }
 
-    &__text {
-      display: inline-block;
-      width: 110px;
-      position: relative;
-      top: 7px;
-      font-weight: bold;
-    }
-  }
+    &__category {
+        @include line-margin();
 
-  &__category {
-    @include line-margin();
+        &__text {
+            display: inline-block;
+            width: 130px;
+            position: relative;
+            top: 7px;
+            font-weight: bold;
+        }
 
-    &__text {
-      display: inline-block;
-      width: 110px;
-      position: relative;
-      top: 7px;
-      font-weight: bold;
+        &__dropdown {
+            display: inline-block;
+        }
     }
 
-    &__dropdown {
-      display: inline-block;
-    }
-  }
+    &__button {
+        @include line-margin();
+        &__add {
+            width: 100px;
+            margin: 0 10px 0 0;
+        }
 
-  &__button {
-    @include line-margin();
-    &__add {
-      width: 100px;
-      margin: 0 10px 0 0;
+        &__more {
+            width: 100px;
+            margin: 0 10px 0 0;
+        }
     }
-
-    &__more {
-      width: 100px;
-      margin: 0 10px 0 0;
-    }
-  }
 }

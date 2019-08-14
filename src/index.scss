@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap");
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
 
 html {
     overflow-y: unset;
@@ -18,10 +18,11 @@ body {
     background-attachment: scroll;
 }
 
+html,
 body,
 button,
 input,
 select,
 textarea {
-    font-family: "Poppins", sans-serif;
+    font-family: "Roboto", sans-serif;
 }

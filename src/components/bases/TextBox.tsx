@@ -6,13 +6,14 @@ interface TextBoxProps {
     placeholder?: string;
     updateValue: (value: string) => void;
     className?: string;
+    type?: string;
 }
 
 const TextBox = (props: TextBoxProps) => {
     const { bind } = useInput("", props.updateValue);
     const classNames = combineClassName([
         "field",
-        !!props.className ? props.className : "",
+        !!props.className ? props.className : ""
     ]);
 
     return (
@@ -21,7 +22,7 @@ const TextBox = (props: TextBoxProps) => {
                 <input
                     className="input"
                     name={props.name}
-                    type="text"
+                    type={props.type ? props.type : "text"}
                     placeholder={props.placeholder}
                     {...bind}
                 />

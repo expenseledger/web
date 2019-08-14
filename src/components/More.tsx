@@ -91,6 +91,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                         className="more__content__amount__box"
                         updateValue={this.updateExpense}
                         name="expnese"
+                        type="number"
                     />
                 </div>
                 <div className="more__content__description">

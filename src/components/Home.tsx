@@ -104,6 +104,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                         className="content__expense__box"
                         updateValue={this.updateExpense}
                         name="expnese"
+                        type="number"
                     />
                 </div>
                 <div className="content__category">

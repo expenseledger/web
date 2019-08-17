@@ -9,6 +9,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 import "./TransactionList.scss";
 import Loading from "../components/bases/Loading";
+import { withAuthProtection } from "../components/hoc/WithAuthProtection";
 
 interface TransactionListProps extends RouteComponentProps {
     wallet: string;
@@ -62,4 +63,8 @@ export function TransactionList(props: TransactionListProps) {
     );
 }
 
-export default TransactionList;
+const TransactionListWithAuthProctection = withAuthProtection()(
+    TransactionList
+);
+
+export default TransactionListWithAuthProctection;

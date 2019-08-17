@@ -22,6 +22,7 @@ import {
     addIncome,
     addTransfer
 } from "../service/TransactionService";
+import { withAuthProtection } from "./hoc/WithAuthProtection";
 
 interface MoreState {
     wallets: Wallet[];
@@ -416,4 +417,6 @@ class More extends React.Component<RouteComponentProps, MoreState> {
     }
 }
 
-export default More;
+const MoreWithAuthProtection = withAuthProtection()(More);
+
+export default MoreWithAuthProtection;

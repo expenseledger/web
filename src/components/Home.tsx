@@ -14,6 +14,7 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import "./Home.scss";
 import Loading from "./bases/Loading";
+import { withAuthProtection } from "./hoc/WithAuthProtection";
 
 interface HomeState {
     wallets: Wallet[];
@@ -235,4 +236,6 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
     };
 }
 
-export default withRouter(Home);
+const HomeWithAuthProtection = withAuthProtection()(Home);
+
+export default withRouter(HomeWithAuthProtection);

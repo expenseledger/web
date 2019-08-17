@@ -2,6 +2,8 @@ import * as React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import * as firebase from "firebase/app";
 import "firebase/auth";
+import "./SignIn.scss";
+import Logo from "../assets/pics/logo.svg";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -20,9 +22,7 @@ function SignIn() {
         null
     );
     const uiConfig = {
-        // Popup signin flow rather than redirect flow.
         signInFlow: "popup",
-        // We will display Google and Facebook as auth providers.
         signInOptions: [
             firebase.auth.EmailAuthProvider.PROVIDER_ID,
             firebase.auth.GoogleAuthProvider.PROVIDER_ID
@@ -42,9 +42,9 @@ function SignIn() {
     }, []);
 
     return !currentUser ? (
-        <div>
-            <h1>My App</h1>
-            <p>Please sign-in:</p>
+        <div className="signIn">
+            <img className="siginIn__logo" src={Logo} />
+            <span className="signIn__title">Welcome to Expense Ledger</span>
             <StyledFirebaseAuth
                 uiConfig={uiConfig}
                 firebaseAuth={firebase.auth()}

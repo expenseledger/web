@@ -1,0 +1,18 @@
+.layout {
+    max-width: 400px;
+    margin: auto;
+}
+
+.header {
+    margin: 10px 5px;
+    width: 97.5%;
+    display: inline-block;
+
+    &__backIcon {
+        display: inline;
+    }
+
+    &__signOut {
+        float: right;
+    }
+}

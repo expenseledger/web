@@ -14,6 +14,8 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import "./Home.scss";
 import Loading from "./bases/Loading";
+import { withAuthProtection } from "./hoc/WithAuthProtection";
+import Layout from "./Layout";
 
 interface HomeState {
     wallets: Wallet[];
@@ -63,73 +65,81 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         return this.state.isLoading ? (
             <Loading />
         ) : (
-            <div className="content">
-                <div className="content__balance">
-                    <span className="content__balance__text">
-                        Balance:{" "}
-                        {this.state.currentValue.wallet
-                            ? this.state.currentValue.wallet.balance
-                            : 0}{" "}
-                        THB
-                    </span>
-                    <Dropdown
-                        className="content__balance__dropdown"
-                        options={this.state.wallets.map(wallet => wallet.name)}
-                        updateSelectedValue={this.updateSelectedWallet}
-                    />
-                    <Link
-                        className="content__balance__transaction__link"
-                        to={{
-                            pathname: `/transactionList/${
-                                this.state.currentValue.wallet
-                                    ? this.state.currentValue.wallet.name
-                                    : ""
-                            }`
-                        }}
-                    >
-                        Transaction
-                    </Link>
+            <Layout isShowBackwardIcon={false}>
+                <div className="content">
+                    <div className="content__balance">
+                        <span className="content__balance__text">
+                            Balance:{" "}
+                            {this.state.currentValue.wallet
+                                ? this.state.currentValue.wallet.balance
+                                : 0}{" "}
+                            THB
+                        </span>
+                        <Dropdown
+                            className="content__balance__dropdown"
+                            options={this.state.wallets.map(
+                                wallet => wallet.name
+                            )}
+                            updateSelectedValue={this.updateSelectedWallet}
+                        />
+                        <Link
+                            className="content__balance__transaction__link"
+                            to={{
+                                pathname: `/transactionList/${
+                                    this.state.currentValue.wallet
+                                        ? this.state.currentValue.wallet.name
+                                        : ""
+                                }`
+                            }}
+                        >
+                            Transaction
+                        </Link>
+                    </div>
+                    <div className="content__date">
+                        <span className="content__date__text">Date </span>
+                        <DateBox
+                            className="content__date__box"
+                            name="date"
+                            updateValue={this.updateSelectedDate}
+                        />
+                    </div>
+                    <div className="content__expense">
+                        <span className="content__expense__text">
+                            Amount(THB){" "}
+                        </span>
+                        <TextBox
+                            className="content__expense__box"
+                            updateValue={this.updateExpense}
+                            name="expnese"
+                            type="number"
+                        />
+                    </div>
+                    <div className="content__category">
+                        <span className="content__category__text">
+                            Category{" "}
+                        </span>
+                        <Dropdown
+                            className="content__category__dropdown"
+                            options={this.state.categories.map(
+                                category => category.name
+                            )}
+                            updateSelectedValue={this.updateSelectedCategory}
+                        />
+                    </div>
+                    <div className="content__button">
+                        <Button
+                            className="content__button__add"
+                            onClickHandler={this.addTransaction}
+                            value="Add"
+                        />
+                        <Button
+                            className="content__button__more"
+                            onClickHandler={this.toMorePage}
+                            value="More"
+                        />
+                    </div>
                 </div>
-                <div className="content__date">
-                    <span className="content__date__text">Date </span>
-                    <DateBox
-                        className="content__date__box"
-                        name="date"
-                        updateValue={this.updateSelectedDate}
-                    />
-                </div>
-                <div className="content__expense">
-                    <span className="content__expense__text">Amount(THB) </span>
-                    <TextBox
-                        className="content__expense__box"
-                        updateValue={this.updateExpense}
-                        name="expnese"
-                        type="number"
-                    />
-                </div>
-                <div className="content__category">
-                    <span className="content__category__text">Category </span>
-                    <Dropdown
-                        className="content__category__dropdown"
-                        options={this.state.categories.map(
-                            category => category.name
-                        )}
-                        updateSelectedValue={this.updateSelectedCategory}
-                    />
-                </div>
-                <div className="content__button">
-                    <Button
-                        className="content__button__add"
-                        onClickHandler={this.addTransaction}
-                        value="Add"
-                    />
-                    <Button
-                        className="content__button__more"
-                        onClickHandler={this.toMorePage}
-                        value="More"
-                    />
-                </div>
-            </div>
+            </Layout>
         );
     }
 
@@ -235,4 +245,6 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
     };
 }
 
-export default withRouter(Home);
+const HomeWithAuthProtection = withAuthProtection()(Home);
+
+export default withRouter(HomeWithAuthProtection);

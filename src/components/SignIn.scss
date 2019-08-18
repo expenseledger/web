@@ -1,0 +1,11 @@
+.signIn {
+    margin-top: 5px;
+    text-align: center;
+
+    &__title {
+        font-weight: bold;
+        font-size: 2em;
+        display: block;
+        margin: 10px 0;
+    }
+}

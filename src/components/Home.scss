@@ -1,9 +1,6 @@
 @import "_base.scss";
 
 .content {
-    max-width: 400px;
-    margin: auto;
-
     @include mobile-portrait {
         margin-left: 5px;
     }

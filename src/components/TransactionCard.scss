@@ -3,7 +3,7 @@
 .card {
     &__box {
         @include mobile-portrait {
-            margin: 10px;
+            margin: 5px;
         }
 
         max-width: 400px;

@@ -10,6 +10,7 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import "./TransactionList.scss";
 import Loading from "../components/bases/Loading";
 import { withAuthProtection } from "../components/hoc/WithAuthProtection";
+import Layout from "../components/Layout";
 
 interface TransactionListProps extends RouteComponentProps {
     wallet: string;
@@ -52,14 +53,9 @@ export function TransactionList(props: TransactionListProps) {
     return isLoading ? (
         <Loading />
     ) : (
-        <>
-            <div className="transactionList__backIcon">
-                <Link to="/">
-                    <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                </Link>
-            </div>
+        <Layout isShowBackwardIcon={true}>
             <div>{cards}</div>
-        </>
+        </Layout>
     );
 }
 

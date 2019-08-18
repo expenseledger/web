@@ -23,6 +23,7 @@ import {
     addTransfer
 } from "../service/TransactionService";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
+import Layout from "./Layout";
 
 interface MoreState {
     wallets: Wallet[];
@@ -52,63 +53,65 @@ class More extends React.Component<RouteComponentProps, MoreState> {
 
     public render() {
         return (
-            <div className="more__content">
-                <div className="more__content__backIcon">
-                    <Link to="/">
-                        <FontAwesomeIcon icon={faArrowLeft} size="lg" />
-                    </Link>
+            <Layout isShowBackwardIcon={true}>
+                <div className="more__content">
+                    <div className="tabs is-toggle">
+                        {this.renderTransactoinTypeTab()}
+                    </div>
+                    <div className="more__content__category">
+                        <span className="more__content__category__title">
+                            Category{" "}
+                        </span>
+                        <Dropdown
+                            className="more__content__category__dropdown"
+                            default={
+                                this.state.currentValue.category &&
+                                this.state.currentValue.category.name
+                            }
+                            options={this.state.categories.map(x => x.name)}
+                            updateSelectedValue={this.updateSelectedCategory}
+                        />
+                    </div>
+                    <div className="more__content__transaction">
+                        {this.renderTransaction()}
+                    </div>
+                    <div className="more__content__date">
+                        <span className="more__content__date__title">Date</span>
+                        <DateBox
+                            className="more__content__date__box"
+                            name="date"
+                            updateValue={this.updateSelectedDate}
+                        />
+                    </div>
+                    <div className="more__content__amount">
+                        <span className="more__content__amount__title">
+                            Amount
+                        </span>
+                        <TextBox
+                            className="more__content__amount__box"
+                            updateValue={this.updateExpense}
+                            name="expnese"
+                            type="number"
+                        />
+                    </div>
+                    <div className="more__content__description">
+                        <span className="more__content__description__title">
+                            Description
+                        </span>
+                        <TextField
+                            className="more__content__description__box"
+                            name="description"
+                            updateValue={this.updateDescription}
+                        />
+                    </div>
+                    <div>
+                        <Button
+                            onClickHandler={this.addTransaction}
+                            value="Add"
+                        />
+                    </div>
                 </div>
-                <div className="tabs is-toggle">
-                    {this.renderTransactoinTypeTab()}
-                </div>
-                <div className="more__content__category">
-                    <span className="more__content__category__title">
-                        Category{" "}
-                    </span>
-                    <Dropdown
-                        className="more__content__category__dropdown"
-                        default={
-                            this.state.currentValue.category &&
-                            this.state.currentValue.category.name
-                        }
-                        options={this.state.categories.map(x => x.name)}
-                        updateSelectedValue={this.updateSelectedCategory}
-                    />
-                </div>
-                <div className="more__content__transaction">
-                    {this.renderTransaction()}
-                </div>
-                <div className="more__content__date">
-                    <span className="more__content__date__title">Date</span>
-                    <DateBox
-                        className="more__content__date__box"
-                        name="date"
-                        updateValue={this.updateSelectedDate}
-                    />
-                </div>
-                <div className="more__content__amount">
-                    <span className="more__content__amount__title">Amount</span>
-                    <TextBox
-                        className="more__content__amount__box"
-                        updateValue={this.updateExpense}
-                        name="expnese"
-                        type="number"
-                    />
-                </div>
-                <div className="more__content__description">
-                    <span className="more__content__description__title">
-                        Description
-                    </span>
-                    <TextField
-                        className="more__content__description__box"
-                        name="description"
-                        updateValue={this.updateDescription}
-                    />
-                </div>
-                <div>
-                    <Button onClickHandler={this.addTransaction} value="Add" />
-                </div>
-            </div>
+            </Layout>
         );
     }
     private renderTransaction() {

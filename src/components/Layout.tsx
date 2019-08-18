@@ -28,7 +28,7 @@ function Layout(props: LayoutProps) {
             <div className="header">
                 {renderBackIcon()}
                 <button
-                    className="header__signOut button is-link is-small"
+                    className="header__signOut button is-link is-inverted is-small"
                     onClick={() => firebase.auth().signOut()}
                 >
                     Sign out

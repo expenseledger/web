@@ -17,7 +17,7 @@ export async function callAxios(
     try {
         const token = user ? await user.getIdToken() : "";
         const header = {
-            "X-Token": token
+            Authorization: `Bearer ${token}`
         };
 
         const { data, status } = await axiosMethod(url, content, header);

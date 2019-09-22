@@ -3,8 +3,6 @@ import Response from "./model/Response";
 import firebase from "firebase/app";
 import "firebase/auth";
 
-const user = firebase.auth().currentUser;
-
 /**
  * @param {any} axiosMethod pass axios method eg. axios.post.
  * @param {string} url url
@@ -15,10 +13,15 @@ export async function callAxios(
     content?: object
 ): Promise<Response> {
     try {
+        const user = firebase.auth().currentUser;
         const token = user ? await user.getIdToken() : "";
         const header = {
-            Authorization: `Bearer ${token}`
+            headers: {
+                Authorization: `${token}`
+            }
         };
+
+        console.log(header);
 
         const { data, status } = await axiosMethod(url, content, header);
 

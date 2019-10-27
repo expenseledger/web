@@ -16,8 +16,8 @@ module.exports = {
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-explicit-any": "off",
         quotes: ["error", "double", { allowTemplateLiterals: true }],
-        "@typescript-eslint/explicit-member-accessibility": false,
-        "@typescript-eslint/explicit-function-return-type": false,
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
         "react-hooks/rules-of-hooks": "error", // Checks rules of Hooks
         "react-hooks/exhaustive-deps": "warn" // Checks effect dependencies
     }

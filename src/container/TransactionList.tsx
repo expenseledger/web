@@ -23,18 +23,19 @@ interface TransactionListParam {
 export function TransactionList(props: TransactionListProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const wallet = !!props.wallet
+        ? props.wallet
+        : (props.match.params as TransactionListParam).walletName;
 
     useEffect(() => {
         listTransactions({
-            wallet: !!props.wallet
-                ? props.wallet
-                : (props.match.params as TransactionListParam).walletName
+            wallet
         }).then(response => {
-            var sortedItems = response.items.reverse();
+            const sortedItems = response.items.reverse();
             setTransactions(sortedItems);
             setIsLoading(false);
         });
-    }, []);
+    }, [wallet]);
 
     const cards = transactions.map((tx, index) => {
         const { date, amount, type, category, description } = tx;

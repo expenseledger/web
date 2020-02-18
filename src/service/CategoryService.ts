@@ -24,6 +24,7 @@ export async function initCategory(): Promise<void> {
     const response = await Utils.callAxios(axios.post, categoryUrl + "/init");
 
     if (response.status !== Constants.httpStatus.ok || !response.success) {
-        throw new Error(`Cannot init category, ${response.error?.message}`);
+        console.log(`Cannot init category, ${response.error?.message}`);
+        throw new Error("Cannot init category");
     }
 }

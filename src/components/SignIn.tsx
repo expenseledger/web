@@ -54,6 +54,8 @@ function SignIn(props: RouteComponentProps) {
                             setIsLoading(false);
                             alert(err.message);
                         });
+                } else {
+                    setIsInitSuccess(true);
                 }
 
                 return false;

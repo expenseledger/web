@@ -18,10 +18,9 @@ function SignIn(props: RouteComponentProps) {
         const unregisterAuthObserver = firebase
             .auth()
             .onAuthStateChanged(user => setUser(user));
-
-        return () => unregisterAuthObserver();
-    }, []);
-
+    return () => unregisterAuthObserver();
+  }, []);
+  
     React.useEffect(() => {
         if (isInitSuccess) {
             props.history.replace("/");

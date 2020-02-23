@@ -36,3 +36,12 @@ export async function getWallet(walletName: string): Promise<Wallet | null> {
 
     return response.data;
 }
+
+export async function initWallet(): Promise<void> {
+    const response = await Utils.callAxios(axios.post, walletUrl + "/init");
+
+    if (response.status !== Constants.httpStatus.ok || !response.success) {
+        console.log(`Cannot init wallet, ${response.error?.message}`);
+        throw new Error("Cannot init wallet");
+    }
+}

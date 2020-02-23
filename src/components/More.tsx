@@ -64,10 +64,7 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                         </span>
                         <Dropdown
                             className="more__content__category__dropdown"
-                            default={
-                                this.state.currentValue.category &&
-                                this.state.currentValue.category.name
-                            }
+                            default={this.state.currentValue.category?.name}
                             options={this.state.categories.map(x => x.name)}
                             updateSelectedValue={this.updateSelectedCategory}
                         />
@@ -125,18 +122,12 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                     </span>
                     <Dropdown
                         className="more__content__transaction__from__dropdown"
-                        default={
-                            this.state.currentValue.fromWallet &&
-                            this.state.currentValue.fromWallet.name
-                        }
+                        default={this.state.currentValue.fromWallet?.name}
                         options={this.state.wallets.map(x => x.name)}
                         updateSelectedValue={this.updateSelectedFromWallet}
                     />
                     <span className="more__content__transaction__from__balance">
-                        {this.state.currentValue.fromWallet
-                            ? this.state.currentValue.fromWallet.balance
-                            : 0}{" "}
-                        THB
+                        {this.state.currentValue.fromWallet?.balance ?? 0} THB
                     </span>
                 </div>
                 {isTransfer ? (
@@ -146,18 +137,12 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                         </span>
                         <Dropdown
                             className="more__content__transaction__to__dropdown"
-                            default={
-                                this.state.currentValue.toWallet &&
-                                this.state.currentValue.toWallet.name
-                            }
+                            default={this.state.currentValue.toWallet?.name}
                             options={this.state.wallets.map(x => x.name)}
                             updateSelectedValue={this.updateSelectedToWallet}
                         />
                         <span className="more__content__transaction__to__balance">
-                            {this.state.currentValue.toWallet
-                                ? this.state.currentValue.toWallet.balance
-                                : 0}{" "}
-                            THB
+                            {this.state.currentValue.toWallet?.balance ?? 0} THB
                         </span>
                     </div>
                 ) : null}
@@ -192,8 +177,8 @@ class More extends React.Component<RouteComponentProps, MoreState> {
         const currentTabActive = [...this.state.transactionTypeTabActive];
         const currentTarget = e.currentTarget;
         const currentTabIdx = Number.parseInt(currentTarget.dataset.id, 10);
-        const tabActive = currentTabActive.map((t, idx) =>
-            idx === currentTabIdx ? true : false
+        const tabActive = currentTabActive.map(
+            (t, idx) => idx === currentTabIdx
         );
 
         this.setState(
@@ -313,12 +298,12 @@ class More extends React.Component<RouteComponentProps, MoreState> {
             description
         } = this.state.currentValue;
 
-        var request: AddExpenseRequest = {
+        const request: AddExpenseRequest = {
             amount,
-            category: category ? category.name : "",
+            category: category?.name ?? "",
             date,
             description,
-            from: fromWallet ? fromWallet.name : ""
+            from: fromWallet?.name ?? ""
         };
 
         const response = await addExpense(request);
@@ -349,12 +334,12 @@ class More extends React.Component<RouteComponentProps, MoreState> {
             description
         } = this.state.currentValue;
 
-        var request: AddIncomeRequest = {
+        const request: AddIncomeRequest = {
             amount,
-            category: category ? category.name : "",
+            category: category?.name ?? "",
             date,
             description,
-            to: fromWallet ? fromWallet.name : ""
+            to: fromWallet?.name ?? ""
         };
 
         const response = await addIncome(request);
@@ -386,13 +371,13 @@ class More extends React.Component<RouteComponentProps, MoreState> {
             description
         } = this.state.currentValue;
 
-        var request: AddTransferRequest = {
+        const request: AddTransferRequest = {
             amount,
-            category: category ? category.name : "",
+            category: category?.name ?? "",
             date,
             description,
-            to: toWallet ? toWallet.name : "",
-            from: fromWallet ? fromWallet.name : ""
+            to: toWallet?.name ?? "",
+            from: fromWallet?.name ?? ""
         };
 
         const response = await addTransfer(request);

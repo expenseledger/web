@@ -12,7 +12,7 @@ interface WithAuthProtectionState {
     isSignedIn: boolean;
 }
 
-export const withAuthProtection = (redirectPath: string = "/signIn") => (
+export const withAuthProtection = (redirectPath = "/signIn") => (
     WrappedComponent: any
 ) => {
     class WithAuthProtection extends React.Component<

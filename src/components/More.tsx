@@ -1,29 +1,26 @@
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
-import { Link } from "react-router-dom";
-import Category from "../service/model/Category";
-import Wallet from "../service/model/Wallet";
-import Button from "./bases/Button";
-import DateBox from "./bases/DateBox";
-import Dropdown from "./bases/Dropdown";
-import TextBox from "./bases/TextBox";
-import TextField from "./bases/TextField";
-import "./More.scss";
 import { TransactionType } from "../service/Constants";
+import Category from "../service/model/Category";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
     AddTransferRequest
 } from "../service/model/Requests";
+import Wallet from "../service/model/Wallet";
 import {
     addExpense,
     addIncome,
     addTransfer
 } from "../service/TransactionService";
+import Button from "./bases/Button";
+import DateBox from "./bases/DateBox";
+import Dropdown from "./bases/Dropdown";
+import TextBox from "./bases/TextBox";
+import TextField from "./bases/TextField";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
+import "./More.scss";
 
 interface MoreState {
     wallets: Wallet[];

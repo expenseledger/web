@@ -11,25 +11,40 @@ import "./SignIn.scss";
 
 function SignIn(props: RouteComponentProps) {
     const [isLoading, setIsLoading] = React.useState(false);
-    const [isInitSuccess, setIsInitSuccess] = React.useState(false);
-    const [user, setUser] = React.useState<firebase.User | null>();
+    const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
+    const executeAfterLogin = React.useCallback(
+        (user: firebase.User | null) => {
+            console.log("isNewUser", isNewUser, user);
+            if (!user || isNewUser === null) {
+                return;
+            }
+
+            if (!isNewUser) {
+                props.history.replace("/");
+            } else {
+                setIsLoading(true);
+                Promise.all([initCategory(), initWallet()])
+                    .then(() => {
+                        setIsLoading(false);
+                        props.history.replace("/");
+                    })
+                    .catch(err => {
+                        user?.delete().then(() => {
+                            setIsLoading(false);
+                            alert(err.message);
+                        });
+                    });
+            }
+        },
+        [isNewUser, props.history]
+    );
 
     React.useEffect(() => {
         const unregisterAuthObserver = firebase
             .auth()
-            .onAuthStateChanged(user => setUser(user));
-    return () => unregisterAuthObserver();
-  }, []);
-  
-    React.useEffect(() => {
-        if (isInitSuccess) {
-            props.history.replace("/");
-        } else {
-            user?.delete().then(() => {
-                firebase.auth().updateCurrentUser(user);
-            });
-        }
-    }, [isInitSuccess, props.history, user]);
+            .onAuthStateChanged(user => executeAfterLogin(user));
+        return () => unregisterAuthObserver();
+    }, [executeAfterLogin, props.history]);
 
     const uiConfig: firebaseui.auth.Config = {
         signInFlow: "popup",
@@ -39,24 +54,7 @@ function SignIn(props: RouteComponentProps) {
         ],
         callbacks: {
             signInSuccessWithAuthResult: authResult => {
-                const isNewUser = authResult.additionalUserInfo.isNewUser;
-
-                if (isNewUser) {
-                    setIsLoading(true);
-                    Promise.all([initCategory(), initWallet()])
-                        .then(() => {
-                            setIsInitSuccess(true);
-                            setIsLoading(false);
-                        })
-                        .catch(err => {
-                            setIsInitSuccess(false);
-                            setIsLoading(false);
-                            alert(err.message);
-                        });
-                } else {
-                    setIsInitSuccess(true);
-                }
-
+                setIsNewUser(authResult.additionalUserInfo.isNewUser);
                 return false;
             }
         }

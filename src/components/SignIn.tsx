@@ -14,7 +14,6 @@ function SignIn(props: RouteComponentProps) {
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
     const executeAfterLogin = React.useCallback(
         (user: firebase.User | null) => {
-            console.log("isNewUser", isNewUser, user);
             if (!user || isNewUser === null) {
                 return;
             }

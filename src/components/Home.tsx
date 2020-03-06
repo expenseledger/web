@@ -11,10 +11,10 @@ import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
-import TextBox from "./bases/TextBox";
-import "./Home.scss";
 import Loading from "./bases/Loading";
+import TextBox from "./bases/TextBox";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
+import "./Home.scss";
 import Layout from "./Layout";
 
 interface HomeState {
@@ -185,12 +185,12 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         const wallets = await WalletService.getAllWallet();
         const currentValue = { ...this.state.currentValue };
 
-        if (wallets.length > 0) {
+        if (wallets?.length > 0) {
             currentValue.wallet = wallets[0];
         }
 
         this.setState({
-            wallets,
+            wallets: wallets ?? [],
             currentValue
         });
     }
@@ -199,12 +199,12 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         const categories = await CategoryService.getAllCategories();
         const currentValue = { ...this.state.currentValue };
 
-        if (categories.length > 0) {
+        if (categories?.length > 0) {
             currentValue.category = categories[0];
         }
 
         this.setState({
-            categories,
+            categories: categories ?? [],
             currentValue
         });
     }

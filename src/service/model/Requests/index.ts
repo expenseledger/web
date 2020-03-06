@@ -20,3 +20,7 @@ export interface AddTransferRequest extends AddTransactionRequest {
 export interface ListTransactionsRequest {
     wallet: string;
 }
+
+export interface DeleteTranactionRequest {
+    transactionId: string;
+}

@@ -22,5 +22,5 @@ export interface ListTransactionsRequest {
 }
 
 export interface DeleteTranactionRequest {
-    transactionId: string;
+    id: string;
 }

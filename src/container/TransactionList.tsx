@@ -6,7 +6,10 @@ import { withAuthProtection } from "../components/hoc/WithAuthProtection";
 import Layout from "../components/Layout";
 import { TransactionCard } from "../components/TransactionCard";
 import { Transaction } from "../service/model/Transaction";
-import { listTransactions } from "../service/TransactionService";
+import {
+    deleteTransaction,
+    listTransactions
+} from "../service/TransactionService";
 import "./TransactionList.scss";
 
 interface TransactionListProps extends RouteComponentProps {
@@ -33,17 +36,30 @@ export function TransactionList(props: TransactionListProps) {
         });
     }, [wallet]);
 
+    const removeTransaction = async (id: string) => {
+        const response = await deleteTransaction({
+            id
+        });
+
+        if (!response.isSuccess) {
+            alert("Delete transaction failed");
+            return;
+        }
+
+        setTransactions(transactions.filter(tx => tx.id !== id));
+    };
+
     const cards = transactions.map((tx, index) => {
         const { id, date, amount, type, category, description } = tx;
         return (
             <TransactionCard
-                id={id}
                 date={date}
                 amount={amount}
                 type={type}
                 category={category}
                 description={description}
                 key={index}
+                onDelete={() => removeTransaction(id)}
             />
         );
     });

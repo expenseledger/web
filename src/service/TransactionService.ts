@@ -133,7 +133,7 @@ export async function listTransactions(
     };
 }
 
-export async function deleteTransactoins(
+export async function deleteTransaction(
     request: DeleteTranactionRequest
 ): Promise<DeleteTransactionResponse> {
     const response = await callAxios(

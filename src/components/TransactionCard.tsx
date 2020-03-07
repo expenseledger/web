@@ -4,34 +4,75 @@ import { TransactionType } from "../service/Constants";
 import "./TransactionCard.scss";
 
 interface TransactionItemProps {
-    id: string;
     date: Date;
     amount: number;
     type: TransactionType;
     category: string;
     description?: string;
-    onDelete?: () => void;
+    onDelete?: () => Promise<void>;
 }
 
 export function TransactionCard(props: TransactionItemProps) {
+    const [isClickedDelete, setIsClickedDelete] = React.useState(false);
     const date = moment.default(props.date);
     const title = `${date.format("DD/MM/YYYY")} - ${props.type}`;
     const amount = `: ${props.amount} THB`;
     const category = `: ${props.category}`;
     const description = `: ${props.description}`;
+    const onDeleteHandler = () => {
+        setIsClickedDelete(true);
+    };
+    const onCancelHandler = () => {
+        setIsClickedDelete(false);
+    };
+    const onConfirmHandler = async () => {
+        if (!props.onDelete) {
+            return;
+        }
+        await props.onDelete();
+        setIsClickedDelete(false);
+    };
+    const renderDelete = () => {
+        if (isClickedDelete) {
+            return (
+                <div className="columns is-variable is-1 card-header-icon">
+                    <div className="column">
+                        <button
+                            onClick={onCancelHandler}
+                            className="button is-primary is-small is-outlined"
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                    <div className="column">
+                        <button
+                            onClick={onConfirmHandler}
+                            className="button is-danger is-small is-outlined "
+                        >
+                            Confirm
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        return (
+            <a onClick={onDeleteHandler} className="card-header-icon">
+                <span className="icon">
+                    <i
+                        className="fas fa-lg fa-times has-text-danger"
+                        aria-hidden="true"
+                    ></i>
+                </span>
+            </a>
+        );
+    };
 
     return (
         <div className="card card__box">
             <header className="card-header">
                 <span className="card-header-title">{title}</span>
-                <a onClick={props.onDelete} className="card-header-icon">
-                    <span className="icon">
-                        <i
-                            className="fas fa-lg fa-times has-text-danger"
-                            aria-hidden="true"
-                        ></i>
-                    </span>
-                </a>
+                {renderDelete()}
             </header>
             <div className="card-content">
                 <p className="content">

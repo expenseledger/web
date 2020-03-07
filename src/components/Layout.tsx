@@ -1,5 +1,3 @@
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
@@ -17,7 +15,9 @@ function Layout(props: LayoutProps) {
         return !!props.isShowBackwardIcon ? (
             <div className="header__backIcon">
                 <Link to="/">
-                    <FontAwesomeIcon icon={faArrowLeft} size="lg" />
+                    <span className="icon">
+                        <i className="fas fa-lg fa-arrow-left"></i>
+                    </span>
                 </Link>
             </div>
         ) : null;

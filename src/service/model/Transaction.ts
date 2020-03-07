@@ -1,7 +1,7 @@
 import { TransactionType } from "../Constants";
 
 export interface Transaction {
-    id: number;
+    id: string;
     srcWallet: string;
     dstWallet: string;
     amount: number;

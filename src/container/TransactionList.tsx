@@ -34,9 +34,10 @@ export function TransactionList(props: TransactionListProps) {
     }, [wallet]);
 
     const cards = transactions.map((tx, index) => {
-        const { date, amount, type, category, description } = tx;
+        const { id, date, amount, type, category, description } = tx;
         return (
             <TransactionCard
+                id={id}
                 date={date}
                 amount={amount}
                 type={type}

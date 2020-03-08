@@ -21,3 +21,7 @@ export interface ListTransactionsResponse {
     length: number;
     items: Transaction[];
 }
+
+export interface DeleteTransactionResponse {
+    isSuccess: boolean;
+}

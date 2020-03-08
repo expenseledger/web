@@ -1,6 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import { useState } from "react";
+import { httpStatus } from "./Constants";
 import Response from "./model/Response";
 
 /**
@@ -63,4 +64,20 @@ export function useInput(
             }
         }
     };
+}
+
+export function isReturnSuccessStatus(response: Response): boolean {
+    if (
+        response.status === httpStatus.ok &&
+        response.success &&
+        !response.error
+    ) {
+        return true;
+    }
+
+    return false;
+}
+
+export function log(...message: string[]) {
+    console.log(message);
 }

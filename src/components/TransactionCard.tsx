@@ -47,7 +47,7 @@ export function TransactionCard(props: TransactionItemProps) {
                     <div className="column">
                         <button
                             onClick={onConfirmHandler}
-                            className="button is-danger is-small is-outlined "
+                            className="button is-danger is-small is-primary"
                         >
                             Confirm
                         </button>

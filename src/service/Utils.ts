@@ -42,13 +42,17 @@ export async function callAxios(
 
 export function combineClassName(classNames: object) {
     return Object.values(classNames)
-        .reduce((toReturn, className) => toReturn + " " + className, "")
+        .reduce(
+            (toReturn, className) =>
+                className ? toReturn + " " + className : toReturn,
+            ""
+        )
         .trim();
 }
 
 export function useInput(
     initialValue: string,
-    updateValue: (v: string) => void
+    updateValue?: (v: string) => void
 ) {
     const [value, setValue] = useState(initialValue);
 
@@ -60,7 +64,7 @@ export function useInput(
             value,
             onChange: (e: React.ChangeEvent<any>) => {
                 setValue(e.target.value);
-                updateValue(e.target.value);
+                updateValue && updateValue(e.target.value);
             }
         }
     };

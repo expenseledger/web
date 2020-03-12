@@ -8,17 +8,19 @@ interface ButtonProps {
     className?: string;
 }
 
-const button = (props: ButtonProps) => {
+const Button = (props: ButtonProps) => {
     const classNames = combineClassName([
         "button",
         "is-primary",
         !!props.outlined ? "is-outlined" : "",
-        !!props.className ? props.className : "",
+        !!props.className ? props.className : ""
     ]);
 
     return (
-        <button className={classNames} onClick={props.onClickHandler}>{props.value}</button>
+        <button className={classNames} onClick={props.onClickHandler}>
+            {props.value}
+        </button>
     );
 };
 
-export default button;
+export default Button;

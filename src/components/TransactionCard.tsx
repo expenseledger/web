@@ -9,7 +9,7 @@ interface TransactionItemProps {
     type: TransactionType;
     category: string;
     description?: string;
-    onDelete?: () => Promise<void>;
+    onDelete: () => Promise<void>;
 }
 
 export function TransactionCard(props: TransactionItemProps) {

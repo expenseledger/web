@@ -13,6 +13,7 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import Loading from "./bases/Loading";
 import TextBox from "./bases/TextBox";
+import TextBoxWithButton from "./bases/TextBoxWithButton";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
@@ -22,6 +23,7 @@ interface HomeState {
     categories: Category[];
     currentValue: CurrentValue;
     isLoading: boolean;
+    isShowAddCategory: boolean;
 }
 
 interface CurrentValue {
@@ -49,7 +51,8 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 amount: 0,
                 date: moment().format("YYYY-MM-DD")
             },
-            isLoading: true
+            isLoading: true,
+            isShowAddCategory: false
         };
     }
 
@@ -125,7 +128,13 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                             )}
                             updateSelectedValue={this.updateSelectedCategory}
                         />
+                        <Button
+                            onClickHandler={this.onAddCategoryClickHandler}
+                            className="is-info is-light category__addBtn"
+                            value="Add"
+                        />
                     </div>
+                    {this.renderAddCategory()}
                     <div className="content__button">
                         <Button
                             className="content__button__add"
@@ -142,6 +151,12 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
             </Layout>
         );
     }
+
+    private renderAddCategory = () => {
+        return this.state.isShowAddCategory ? (
+            <TextBoxWithButton onClick={this.addCategory} />
+        ) : null;
+    };
 
     private updateSelectedDate = (value: string) => {
         const currentValue = { ...this.state.currentValue };
@@ -241,6 +256,30 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
     private toMorePage = () => {
         this.props.history.push("/more", {
             ...this.state
+        });
+    };
+
+    private onAddCategoryClickHandler = () => {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                isShowAddCategory: !prevState.isShowAddCategory
+            };
+        });
+    };
+
+    private addCategory = async (name: string) => {
+        const isSuccess = await CategoryService.addCategory({ name });
+
+        if (!isSuccess) {
+            return;
+        }
+
+        const newCategories = this.state.categories.concat({ name });
+
+        this.setState({
+            categories: newCategories,
+            isShowAddCategory: false
         });
     };
 }

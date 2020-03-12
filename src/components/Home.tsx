@@ -3,6 +3,7 @@ import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link, withRouter } from "react-router-dom";
 import * as CategoryService from "../service/CategoryService";
+import { mapNotificationProps } from "../service/Mapper";
 import Category from "../service/model/Category";
 import { AddExpenseRequest } from "../service/model/Requests";
 import Wallet from "../service/model/Wallet";
@@ -12,8 +13,10 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import Loading from "./bases/Loading";
+import { NotificationProps } from "./bases/Notification";
 import TextBox from "./bases/TextBox";
 import TextBoxWithButton from "./bases/TextBoxWithButton";
+import Toast from "./bases/Toast";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
@@ -24,6 +27,7 @@ interface HomeState {
     currentValue: CurrentValue;
     isLoading: boolean;
     isShowAddCategory: boolean;
+    notificationList: NotificationProps[];
 }
 
 interface CurrentValue {
@@ -52,7 +56,8 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 date: moment().format("YYYY-MM-DD")
             },
             isLoading: true,
-            isShowAddCategory: false
+            isShowAddCategory: false,
+            notificationList: []
         };
     }
 
@@ -69,6 +74,10 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
             <Loading />
         ) : (
             <Layout isShowBackwardIcon={false}>
+                <Toast
+                    toastList={this.state.notificationList}
+                    position="top-right"
+                />
                 <div className="content">
                     <div className="content__balance">
                         <span className="content__balance__text">
@@ -247,10 +256,26 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 wallets
             });
 
-            return alert("AddExpense sucess");
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    notificationList: prevState.notificationList.concat(
+                        mapNotificationProps("AddExpense sucess", "success")
+                    )
+                };
+            });
+
+            return;
         }
 
-        return alert("AddExpense is failed");
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.concat(
+                    mapNotificationProps("AddExpense is failed", "danger")
+                )
+            };
+        });
     };
 
     private toMorePage = () => {
@@ -269,17 +294,34 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
     };
 
     private addCategory = async (name: string) => {
-        const isSuccess = await CategoryService.addCategory({ name });
+        const response = await CategoryService.addCategory({ name });
 
-        if (!isSuccess) {
+        if (!response.isSuccess) {
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    notificationList: prevState.notificationList.concat(
+                        mapNotificationProps("Create category failed", "danger")
+                    )
+                };
+            });
             return;
         }
 
         const newCategories = this.state.categories.concat({ name });
 
-        this.setState({
-            categories: newCategories,
-            isShowAddCategory: false
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                categories: newCategories,
+                notificationList: prevState.notificationList.concat(
+                    mapNotificationProps(
+                        "Create category successful",
+                        "success"
+                    )
+                ),
+                isShowAddCategory: false
+            };
         });
     };
 }

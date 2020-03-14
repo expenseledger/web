@@ -1,3 +1,4 @@
+import * as uuid from "uuid";
 import {
     NotificationProps,
     NotificationType
@@ -5,10 +6,12 @@ import {
 
 export function mapNotificationProps(
     text: React.ReactNode,
-    type: NotificationType
+    type: NotificationType,
+    id?: string
 ): NotificationProps {
     return {
         text,
-        type
+        type,
+        id: id ?? uuid.v4()
     };
 }

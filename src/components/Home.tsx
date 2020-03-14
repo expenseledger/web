@@ -326,12 +326,12 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         });
     };
 
-    private onNotificationRemove = (id: number) => {
+    private onNotificationRemove = (id: string) => {
         this.setState(prevState => {
             return {
                 ...prevState,
                 notificationList: prevState.notificationList.filter(
-                    (_, idx) => idx !== id
+                    n => n.id !== id
                 )
             };
         });

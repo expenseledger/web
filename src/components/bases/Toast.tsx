@@ -6,7 +6,7 @@ import "./Toast.scss";
 interface ToastProps {
     toastList: NotificationProps[];
     position: Position;
-    onNotificationRemove: (idx: number) => Promise<void> | void;
+    onNotificationRemove: (idx: string) => Promise<void> | void;
 }
 
 function getNotificationList(props: ToastProps) {
@@ -15,15 +15,19 @@ function getNotificationList(props: ToastProps) {
         case "top-right":
             return props.toastList.map((t, idx) => (
                 <Notification
-                    key={idx}
+                    key={t.id}
+                    id={t.id}
                     text={t.text}
-                    className={combineClassName([
-                        t.className,
-                        "notification",
-                        `notification--${props.position}`
+                    showClassName={combineClassName([
+                        t.showClassName,
+                        `notification--show-${props.position}`
+                    ])}
+                    hideClassName={combineClassName([
+                        t.showClassName,
+                        `notification--hide-${props.position}`
                     ])}
                     type={t.type}
-                    onClose={() => props.onNotificationRemove(idx)}
+                    onClose={props.onNotificationRemove}
                 />
             ));
         case "bottom-left":
@@ -32,15 +36,19 @@ function getNotificationList(props: ToastProps) {
                 .reverse()
                 .map((t, idx) => (
                     <Notification
-                        key={idx}
+                        key={t.id}
+                        id={t.id}
                         text={t.text}
-                        className={combineClassName([
-                            t.className,
-                            "notification",
-                            `notification--${props.position}`
+                        showClassName={combineClassName([
+                            t.showClassName,
+                            `notification--show-${props.position}`
+                        ])}
+                        hideClassName={combineClassName([
+                            t.showClassName,
+                            `notification--hide-${props.position}`
                         ])}
                         type={t.type}
-                        onClose={() => props.onNotificationRemove(idx)}
+                        onClose={props.onNotificationRemove}
                     />
                 ));
     }

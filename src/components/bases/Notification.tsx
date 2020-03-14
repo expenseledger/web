@@ -2,13 +2,15 @@ import * as React from "react";
 import { combineClassName } from "../../service/Utils";
 
 export interface NotificationProps {
+    id: string;
     text: React.ReactNode | string;
     type: NotificationType;
-    className?: string;
+    showClassName?: string;
+    hideClassName?: string;
 }
 
 export interface NotificationPropsWithOnclose extends NotificationProps {
-    onClose?: () => Promise<void> | void;
+    onClose?: (id: string) => Promise<void> | void;
 }
 
 function mapTypeToClassname(type: NotificationType): string | null {
@@ -31,23 +33,31 @@ function mapTypeToClassname(type: NotificationType): string | null {
 }
 
 function Notification(props: NotificationPropsWithOnclose) {
-    const className = combineClassName([
+    const showNotificationClassName = combineClassName([
         "notification",
+        "notification--show",
         mapTypeToClassname(props.type),
-        props.className
+        props.showClassName
     ]);
+    const hideNotificationClassName = combineClassName([
+        "notification",
+        "notification--hide",
+        mapTypeToClassname(props.type),
+        props.hideClassName
+    ]);
+    const [className, SetClassName] = React.useState(showNotificationClassName);
 
     const onCloseHandler = () => {
-        props.onClose && props.onClose();
+        SetClassName(hideNotificationClassName);
+        setTimeout(() => props.onClose && props.onClose(props.id), 1000);
     };
 
     React.useEffect(() => {
-        const timeout = setTimeout(() => {
-            props.onClose && props.onClose();
+        setTimeout(() => {
+            SetClassName(hideNotificationClassName);
+            setTimeout(() => props.onClose && props.onClose(props.id), 1000);
         }, 3000);
-
-        return () => clearTimeout(timeout);
-    }, [props]);
+    }, [hideNotificationClassName, props]);
 
     return (
         <div className={className}>

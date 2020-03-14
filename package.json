@@ -16,7 +16,8 @@
         "react-firebaseui": "^4.1.0",
         "react-router": "^5.0.0",
         "react-router-dom": "^5.0.0",
-        "react-scripts": "^3.0.0"
+        "react-scripts": "^3.0.0",
+        "uuid": "^7.0.2"
     },
     "scripts": {
         "start": "react-scripts start",
@@ -33,6 +34,7 @@
         "@types/react-dom": "^16.0.9",
         "@types/react-router": "^5.0.0",
         "@types/react-router-dom": "^4.3.3",
+        "@types/uuid": "^7.0.0",
         "@typescript-eslint/eslint-plugin": "^2.5.0",
         "@typescript-eslint/parser": "^2.5.0",
         "eslint": "^6.6.0",

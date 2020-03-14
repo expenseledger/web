@@ -5,6 +5,9 @@ export interface NotificationProps {
     text: React.ReactNode | string;
     type: NotificationType;
     className?: string;
+}
+
+export interface NotificationPropsWithOnclose extends NotificationProps {
     onClose?: () => Promise<void> | void;
 }
 
@@ -27,8 +30,7 @@ function mapTypeToClassname(type: NotificationType): string | null {
     }
 }
 
-function Notification(props: NotificationProps) {
-    const [isRender, setIsRender] = React.useState(true);
+function Notification(props: NotificationPropsWithOnclose) {
     const className = combineClassName([
         "notification",
         mapTypeToClassname(props.type),
@@ -37,23 +39,22 @@ function Notification(props: NotificationProps) {
 
     const onCloseHandler = () => {
         props.onClose && props.onClose();
-        setIsRender(false);
     };
 
     React.useEffect(() => {
         const timeout = setTimeout(() => {
-            setIsRender(false);
+            props.onClose && props.onClose();
         }, 3000);
 
         return () => clearTimeout(timeout);
-    }, []);
+    }, [props]);
 
-    return isRender ? (
+    return (
         <div className={className}>
             <button onClick={onCloseHandler} className="delete"></button>
             {props.text}
         </div>
-    ) : null;
+    );
 }
 
 export type NotificationType =

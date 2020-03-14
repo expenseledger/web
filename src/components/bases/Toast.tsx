@@ -6,31 +6,29 @@ import "./Toast.scss";
 interface ToastProps {
     toastList: NotificationProps[];
     position: Position;
+    onNotificationRemove: (idx: number) => Promise<void> | void;
 }
 
-function getNotificationList(
-    notiList: NotificationProps[],
-    position: Position
-) {
-    switch (position) {
+function getNotificationList(props: ToastProps) {
+    switch (props.position) {
         case "top-left":
         case "top-right":
-            return notiList.map((t, idx) => (
+            return props.toastList.map((t, idx) => (
                 <Notification
                     key={idx}
                     text={t.text}
                     className={combineClassName([
                         t.className,
                         "notification",
-                        `notification--${position}`
+                        `notification--${props.position}`
                     ])}
                     type={t.type}
-                    onClose={t.onClose}
+                    onClose={() => props.onNotificationRemove(idx)}
                 />
             ));
         case "bottom-left":
         case "bottom-right":
-            return notiList
+            return props.toastList
                 .reverse()
                 .map((t, idx) => (
                     <Notification
@@ -39,17 +37,17 @@ function getNotificationList(
                         className={combineClassName([
                             t.className,
                             "notification",
-                            `notification--${position}`
+                            `notification--${props.position}`
                         ])}
                         type={t.type}
-                        onClose={t.onClose}
+                        onClose={() => props.onNotificationRemove(idx)}
                     />
                 ));
     }
 }
 
 function Toast(props: ToastProps) {
-    const notifications = getNotificationList(props.toastList, props.position);
+    const notifications = getNotificationList(props);
     const className = combineClassName(["toast", `toast--${props.position}`]);
 
     return <div className={className}>{notifications}</div>;

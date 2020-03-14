@@ -77,6 +77,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 <Toast
                     toastList={this.state.notificationList}
                     position="top-right"
+                    onNotificationRemove={this.onNotificationRemove}
                 />
                 <div className="content">
                     <div className="content__balance">
@@ -321,6 +322,17 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                     )
                 ),
                 isShowAddCategory: false
+            };
+        });
+    };
+
+    private onNotificationRemove = (id: number) => {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.filter(
+                    (_, idx) => idx !== id
+                )
             };
         });
     };

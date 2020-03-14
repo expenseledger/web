@@ -2,9 +2,12 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import Loading from "../components/bases/Loading";
+import { NotificationProps } from "../components/bases/Notification";
+import Toast from "../components/bases/Toast";
 import { withAuthProtection } from "../components/hoc/WithAuthProtection";
 import Layout from "../components/Layout";
 import { TransactionCard } from "../components/TransactionCard";
+import { mapNotificationProps } from "../service/Mapper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
@@ -22,6 +25,9 @@ interface TransactionListParam {
 
 export function TransactionList(props: TransactionListProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [notificationList, setNotificationList] = useState<
+        NotificationProps[]
+    >([]);
     const [isLoading, setIsLoading] = useState(true);
     const wallet =
         props.wallet ?? (props.match.params as TransactionListParam).walletName;
@@ -43,24 +49,46 @@ export function TransactionList(props: TransactionListProps) {
 
         if (!response.isSuccess) {
             alert("Delete transaction failed");
+            setNotificationList(
+                notificationList.concat(
+                    mapNotificationProps("Delete transaction failed", "danger")
+                )
+            );
             return;
         }
 
+        setNotificationList(
+            notificationList.concat(
+                mapNotificationProps("Delete transaction succes", "success")
+            )
+        );
         setTransactions(transactions.filter(tx => tx.id !== id));
+    };
+
+    const onNotificationRemove = (id: string) => {
+        const newNotificationList = notificationList.filter(n => n.id !== id);
+        setNotificationList(newNotificationList);
     };
 
     const cards = transactions.map((tx, index) => {
         const { id, date, amount, type, category, description } = tx;
         return (
-            <TransactionCard
-                date={date}
-                amount={amount}
-                type={type}
-                category={category}
-                description={description}
-                key={index}
-                onDelete={() => removeTransaction(id)}
-            />
+            <>
+                <Toast
+                    toastList={notificationList}
+                    position="top-right"
+                    onNotificationRemove={onNotificationRemove}
+                />
+                <TransactionCard
+                    date={date}
+                    amount={amount}
+                    type={type}
+                    category={category}
+                    description={description}
+                    key={index}
+                    onDelete={() => removeTransaction(id)}
+                />
+            </>
         );
     });
 

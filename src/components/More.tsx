@@ -1,6 +1,7 @@
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { TransactionType } from "../service/Constants";
+import { mapNotificationProps } from "../service/Mapper";
 import Category from "../service/model/Category";
 import {
     AddExpenseRequest,
@@ -16,8 +17,10 @@ import {
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
+import { NotificationProps } from "./bases/Notification";
 import TextBox from "./bases/TextBox";
 import TextField from "./bases/TextField";
+import Toast from "./bases/Toast";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
 import "./More.scss";
@@ -27,6 +30,7 @@ interface MoreState {
     categories: Category[];
     currentValue: CurrentValue;
     transactionTypeTabActive: boolean[];
+    notificationList: NotificationProps[];
 }
 
 interface CurrentValue {
@@ -51,6 +55,11 @@ class More extends React.Component<RouteComponentProps, MoreState> {
     public render() {
         return (
             <Layout isShowBackwardIcon={true}>
+                <Toast
+                    toastList={this.state.notificationList}
+                    position="top-right"
+                    onNotificationRemove={this.onNotificationRemove}
+                />
                 <div className="more__content">
                     <div className="tabs is-toggle">
                         {this.renderTransactoinTypeTab()}
@@ -268,7 +277,8 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 date: homeState.currentValue.date,
                 description: ""
             },
-            transactionTypeTabActive: [true, false, false]
+            transactionTypeTabActive: [true, false, false],
+            notificationList: []
         };
     }
 
@@ -316,10 +326,26 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 wallets
             });
 
-            return alert("AddExpense sucess");
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    notificationList: prevState.notificationList.concat(
+                        mapNotificationProps("AddExpense sucess", "success")
+                    )
+                };
+            });
+
+            return;
         }
 
-        return alert("AddExpense failed");
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.concat(
+                    mapNotificationProps("AddExpense failed", "danger")
+                )
+            };
+        });
     }
 
     private async addIncome() {
@@ -352,10 +378,26 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 wallets
             });
 
-            return alert("AddIncome sucess");
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    notificationList: prevState.notificationList.concat(
+                        mapNotificationProps("AddIncome sucess", "success")
+                    )
+                };
+            });
+
+            return;
         }
 
-        return alert("AddIncome failed");
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.concat(
+                    mapNotificationProps("AddIncome failed", "danger")
+                )
+            };
+        });
     }
 
     private async addTransfer() {
@@ -395,11 +437,38 @@ class More extends React.Component<RouteComponentProps, MoreState> {
                 wallets
             });
 
-            return alert("AddTransfer sucess");
+            this.setState(prevState => {
+                return {
+                    ...prevState,
+                    notificationList: prevState.notificationList.concat(
+                        mapNotificationProps("AddTransfer success", "success")
+                    )
+                };
+            });
+
+            return;
         }
 
-        return alert("AddTransfer failed");
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.concat(
+                    mapNotificationProps("AddTransfer failed", "danger")
+                )
+            };
+        });
     }
+
+    private onNotificationRemove = (id: string) => {
+        this.setState(prevState => {
+            return {
+                ...prevState,
+                notificationList: prevState.notificationList.filter(
+                    n => n.id !== id
+                )
+            };
+        });
+    };
 }
 
 const MoreWithAuthProtection = withAuthProtection()(More);

@@ -1,3 +1,4 @@
+// Transaction
 interface AddTransactionRequest {
     amount: number;
     category: string;
@@ -23,4 +24,9 @@ export interface ListTransactionsRequest {
 
 export interface DeleteTranactionRequest {
     id: string;
+}
+
+// Category
+export interface AddCategoryRequest {
+    name: string;
 }

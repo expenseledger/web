@@ -1,15 +1,16 @@
 import axios from "axios";
-import * as Constants from "./Constants";
 import Category from "./model/Category";
-import * as Utils from "./Utils";
+import { AddCategoryRequest } from "./model/Requests";
+import { AddCategoryResponse } from "./model/Responses/index";
+import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
 const categoryUrl = process.env.REACT_APP_SERVER_URL + "/category";
 
 export async function getAllCategories(): Promise<Category[]> {
     let toReturn: Category[] = new Array(0);
-    const response = await Utils.callAxios(axios.post, categoryUrl + "/list");
+    const response = await callAxios(axios.post, categoryUrl + "/list");
 
-    if (response.status !== Constants.httpStatus.ok || !response.success) {
+    if (!isReturnSuccessStatus(response)) {
         return toReturn;
     }
 
@@ -21,10 +22,32 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function initCategory(): Promise<void> {
-    const response = await Utils.callAxios(axios.post, categoryUrl + "/init");
+    const response = await callAxios(axios.post, categoryUrl + "/init");
 
-    if (response.status !== Constants.httpStatus.ok || !response.success) {
-        console.log(`Cannot init category, ${response.error?.message}`);
+    if (!isReturnSuccessStatus(response)) {
+        log(`Cannot init category, ${response.error?.message}`);
         throw new Error("Cannot init category");
     }
+}
+
+export async function addCategory(
+    request: AddCategoryRequest
+): Promise<AddCategoryResponse> {
+    const response = await callAxios(
+        axios.post,
+        categoryUrl + "/create",
+        request
+    );
+
+    if (!isReturnSuccessStatus(response)) {
+        log(`Cannot add category, ${response.error?.message}`);
+
+        return {
+            isSuccess: false
+        };
+    }
+
+    return {
+        isSuccess: true
+    };
 }

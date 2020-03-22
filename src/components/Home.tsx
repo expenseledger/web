@@ -141,7 +141,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                         <Button
                             onClickHandler={this.onAddCategoryClickHandler}
                             className="is-info is-light category__addBtn"
-                            value="Add"
+                            value="Create"
                         />
                     </div>
                     {this.renderAddCategory()}

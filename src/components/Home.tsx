@@ -1,7 +1,9 @@
 import moment from "moment";
+import * as R from "ramda";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link, withRouter } from "react-router-dom";
+import { atom, useRecoilState } from "recoil";
 import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import Category from "../service/model/Category";
@@ -37,6 +39,150 @@ interface CurrentValue {
     date: string;
 }
 
+const walletsState = atom<Wallet[]>({
+    key: "wallets",
+    default: [],
+});
+const categoriesState = atom<Category[]>({
+    key: "categories",
+    default: [],
+});
+
+function Home2(props: RouteComponentProps) {
+    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [currentValue, setCurrentValue] = React.useState({
+        wallet: {
+            name: "",
+            balance: 0,
+            type: "",
+        },
+        category: {
+            name: "",
+        },
+        amount: 0,
+        date: moment().format("YYYY-MM-DD"),
+    });
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [isShowAddCategory, setIsShowAddCategory] = React.useState(true);
+    const [notificationList, setNotificationList] = React.useState([]);
+    const fetchAllWallet = React.useCallback(async () => {
+        const tWallets = await WalletService.getAllWallet();
+        const tCurrentValue = R.clone(currentValue);
+
+        if (tWallets?.length > 0) {
+            tCurrentValue.wallet = tWallets[0];
+        }
+
+        setWallets(tWallets ?? []);
+        setCurrentValue(tCurrentValue);
+    }, [currentValue, setWallets]);
+    const fetchAllCategory = React.useCallback(async () => {
+        const tCategories = await CategoryService.getAllCategories();
+        const tCurrentValue = R.clone(currentValue);
+
+        if (tCategories?.length > 0) {
+            tCurrentValue.category = tCategories[0];
+        }
+
+        setCategories(tCategories ?? []);
+        setCurrentValue(tCurrentValue);
+    }, [currentValue, setCategories]);
+
+    React.useEffect(() => {
+        Promise.all([fetchAllWallet(), fetchAllCategory()]).then(() => {
+            setIsLoading(false);
+        });
+    }, [fetchAllCategory, fetchAllWallet]);
+
+    return isLoading ? (
+        <Loading />
+    ) : (
+        <Layout isShowBackwardIcon={false}>
+            <Toast
+                toastList={notificationList}
+                position="top-right"
+                onNotificationRemove={this.onNotificationRemove}
+            />
+            <div className="content">
+                <div className="content__balance">
+                    <span className="content__balance__text">
+                        Balance:{" "}
+                        {this.state.currentValue.wallet
+                            ? this.state.currentValue.wallet.balance
+                            : 0}{" "}
+                        THB
+                    </span>
+                    <Dropdown
+                        className="content__balance__dropdown"
+                        options={this.state.wallets.map(
+                            (wallet) => wallet.name
+                        )}
+                        updateSelectedValue={this.updateSelectedWallet}
+                    />
+                    <Link
+                        className="content__balance__transaction__link"
+                        to={{
+                            pathname: `/transactionList/${
+                                this.state.currentValue.wallet
+                                    ? this.state.currentValue.wallet.name
+                                    : ""
+                            }`,
+                        }}
+                    >
+                        Transaction
+                    </Link>
+                </div>
+                <div className="content__date">
+                    <span className="content__date__text">Date </span>
+                    <DateBox
+                        className="content__date__box"
+                        name="date"
+                        updateValue={this.updateSelectedDate}
+                    />
+                </div>
+                <div className="content__expense">
+                    <span className="content__expense__text">Amount(THB) </span>
+                    <TextBox
+                        className="content__expense__box"
+                        updateValue={this.updateExpense}
+                        name="expnese"
+                        type="number"
+                    />
+                </div>
+                <div className="content__category">
+                    <span className="content__category__text">Category </span>
+                    <Dropdown
+                        className="content__category__dropdown"
+                        options={this.state.categories.map(
+                            (category) => category.name
+                        )}
+                        updateSelectedValue={this.updateSelectedCategory}
+                    />
+                    <Button
+                        onClickHandler={this.onAddCategoryClickHandler}
+                        className="is-info is-light category__addBtn"
+                        value="Create"
+                    />
+                </div>
+                {this.renderAddCategory()}
+                <div className="content__button">
+                    <Button
+                        className="content__button__add"
+                        onClickHandler={this.addTransaction}
+                        value="Add"
+                    />
+                    <Button
+                        className="content__button__more"
+                        onClickHandler={this.toMorePage}
+                        value="More"
+                    />
+                </div>
+            </div>
+        </Layout>
+    );
+}
+
 class Home extends React.Component<RouteComponentProps, HomeState> {
     constructor(props: any) {
         super(props);
@@ -47,17 +193,17 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                 wallet: {
                     name: "",
                     balance: 0,
-                    type: ""
+                    type: "",
                 },
                 category: {
-                    name: ""
+                    name: "",
                 },
                 amount: 0,
-                date: moment().format("YYYY-MM-DD")
+                date: moment().format("YYYY-MM-DD"),
             },
             isLoading: true,
             isShowAddCategory: false,
-            notificationList: []
+            notificationList: [],
         };
     }
 
@@ -91,7 +237,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                         <Dropdown
                             className="content__balance__dropdown"
                             options={this.state.wallets.map(
-                                wallet => wallet.name
+                                (wallet) => wallet.name
                             )}
                             updateSelectedValue={this.updateSelectedWallet}
                         />
@@ -102,7 +248,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                                     this.state.currentValue.wallet
                                         ? this.state.currentValue.wallet.name
                                         : ""
-                                }`
+                                }`,
                             }}
                         >
                             Transaction
@@ -134,7 +280,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                         <Dropdown
                             className="content__category__dropdown"
                             options={this.state.categories.map(
-                                category => category.name
+                                (category) => category.name
                             )}
                             updateSelectedValue={this.updateSelectedCategory}
                         />
@@ -173,16 +319,16 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         currentValue.date = value;
         this.setState({
-            currentValue
+            currentValue,
         });
     };
 
     private updateSelectedWallet = (value: string) => {
         const currentValue = { ...this.state.currentValue };
 
-        currentValue.wallet = this.state.wallets.find(x => x.name === value);
+        currentValue.wallet = this.state.wallets.find((x) => x.name === value);
         this.setState({
-            currentValue
+            currentValue,
         });
     };
 
@@ -190,10 +336,10 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         const currentValue = { ...this.state.currentValue };
 
         currentValue.category = this.state.categories.find(
-            x => x.name === value
+            (x) => x.name === value
         );
         this.setState({
-            currentValue
+            currentValue,
         });
     };
 
@@ -202,7 +348,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         currentValue.amount = Number.parseFloat(value);
         this.setState({
-            currentValue
+            currentValue,
         });
     };
 
@@ -216,7 +362,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         this.setState({
             wallets: wallets ?? [],
-            currentValue
+            currentValue,
         });
     }
 
@@ -230,7 +376,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         this.setState({
             categories: categories ?? [],
-            currentValue
+            currentValue,
         });
     }
 
@@ -241,7 +387,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
             category: category ? category.name : "",
             from: wallet ? wallet.name : "",
             description: "quick add appense",
-            date
+            date,
         };
 
         const response = await addExpense(request);
@@ -249,47 +395,47 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         if (response) {
             const wallets = [...this.state.wallets];
             const selectedWalletIdx = wallets.findIndex(
-                x => x.name === response.srcWallet.name
+                (x) => x.name === response.srcWallet.name
             );
 
             wallets[selectedWalletIdx].balance = response.srcWallet.balance;
             this.setState({
-                wallets
+                wallets,
             });
 
-            this.setState(prevState => {
+            this.setState((prevState) => {
                 return {
                     ...prevState,
                     notificationList: prevState.notificationList.concat(
                         mapNotificationProps("AddExpense sucess", "success")
-                    )
+                    ),
                 };
             });
 
             return;
         }
 
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
                 ...prevState,
                 notificationList: prevState.notificationList.concat(
                     mapNotificationProps("AddExpense is failed", "danger")
-                )
+                ),
             };
         });
     };
 
     private toMorePage = () => {
         this.props.history.push("/more", {
-            ...this.state
+            ...this.state,
         });
     };
 
     private onAddCategoryClickHandler = () => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
                 ...prevState,
-                isShowAddCategory: !prevState.isShowAddCategory
+                isShowAddCategory: !prevState.isShowAddCategory,
             };
         });
     };
@@ -298,12 +444,12 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
         const response = await CategoryService.addCategory({ name });
 
         if (!response.isSuccess) {
-            this.setState(prevState => {
+            this.setState((prevState) => {
                 return {
                     ...prevState,
                     notificationList: prevState.notificationList.concat(
                         mapNotificationProps("Create category failed", "danger")
-                    )
+                    ),
                 };
             });
             return;
@@ -311,7 +457,7 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
 
         const newCategories = this.state.categories.concat({ name });
 
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
                 ...prevState,
                 categories: newCategories,
@@ -321,18 +467,18 @@ class Home extends React.Component<RouteComponentProps, HomeState> {
                         "success"
                     )
                 ),
-                isShowAddCategory: false
+                isShowAddCategory: false,
             };
         });
     };
 
     private onNotificationRemove = (id: string) => {
-        this.setState(prevState => {
+        this.setState((prevState) => {
             return {
                 ...prevState,
                 notificationList: prevState.notificationList.filter(
-                    n => n.id !== id
-                )
+                    (n) => n.id !== id
+                ),
             };
         });
     };

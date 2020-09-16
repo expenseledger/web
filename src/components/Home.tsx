@@ -48,7 +48,7 @@ const categoriesState = atom<Category[]>({
     default: [],
 });
 
-function Home2(props: RouteComponentProps) {
+function Home(props: RouteComponentProps) {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({

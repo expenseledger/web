@@ -23,15 +23,6 @@ import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
 
-interface HomeState {
-    wallets: Wallet[];
-    categories: Category[];
-    currentValue: CurrentValue;
-    isLoading: boolean;
-    isShowAddCategory: boolean;
-    notificationList: NotificationProps[];
-}
-
 interface CurrentValue {
     wallet?: Wallet;
     category?: Category;
@@ -68,40 +59,29 @@ function Home(props: RouteComponentProps) {
     const [notificationList, setNotificationList] = React.useState<
         NotificationProps[]
     >([]);
-    const fetchAllWallet = React.useCallback(async () => {
-        const tWallets = await WalletService.getAllWallet();
-        const tCurrentValue = R.clone(currentValue);
-
-        if (tWallets?.length > 0) {
-            tCurrentValue.wallet = tWallets[0];
-        }
-
-        setWallets(tWallets ?? []);
-        setCurrentValue(tCurrentValue);
-    }, [currentValue, setWallets]);
-    const fetchAllCategory = React.useCallback(async () => {
-        const tCategories = await CategoryService.getAllCategories();
-        const tCurrentValue = R.clone(currentValue);
-
-        if (tCategories?.length > 0) {
-            tCurrentValue.category = tCategories[0];
-        }
-
-        setCategories(tCategories ?? []);
-        setCurrentValue(tCurrentValue);
-    }, [currentValue, setCategories]);
 
     React.useEffect(() => {
-        Promise.all([fetchAllWallet(), fetchAllCategory()]).then(() => {
+        Promise.all([
+            WalletService.getAllWallet(),
+            CategoryService.getAllCategories(),
+        ]).then((responses) => {
+            const [tWallets, tCategories] = responses;
+            const tCurrentValue = R.clone(currentValue);
+            if (tCategories?.length > 0) {
+                tCurrentValue.category = tCategories[0];
+            }
+
+            if (tWallets?.length > 0) {
+                tCurrentValue.wallet = tWallets[0];
+            }
+
+            setCategories(tCategories ?? []);
+            setWallets(tWallets ?? []);
+            setCurrentValue(tCurrentValue);
             setIsLoading(false);
         });
-    }, [fetchAllCategory, fetchAllWallet]);
-
-    const renderAddCategory = () => {
-        return isShowAddCategory ? (
-            <TextBoxWithButton onClick={addCategory} />
-        ) : null;
-    };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [setCategories, setWallets]);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -203,6 +183,12 @@ function Home(props: RouteComponentProps) {
         setNotificationList((prevNotiList) =>
             prevNotiList.filter((n) => n.id !== id)
         );
+    };
+
+    const renderAddCategory = () => {
+        return isShowAddCategory ? (
+            <TextBoxWithButton onClick={addCategory} />
+        ) : null;
     };
 
     return isLoading ? (

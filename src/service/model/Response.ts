@@ -1,8 +1,8 @@
 interface Response {
     status: number;
-    data: any | null;
+    data: any;
     success: boolean;
-    error: Error | null;
+    error: Error;
 }
 
 export default Response;

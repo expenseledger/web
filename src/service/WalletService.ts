@@ -20,9 +20,9 @@ export async function getAllWallet(): Promise<Wallet[]> {
     return toReturn;
 }
 
-export async function getWallet(walletName: string): Promise<Wallet | null> {
+export async function getWallet(walletName: string): Promise<Wallet> {
     const response = await Utils.callAxios(axios.post, walletUrl + "/list", {
-        walletName
+        walletName,
     });
 
     if (response.status !== Constants.httpStatus.ok || !response.success) {

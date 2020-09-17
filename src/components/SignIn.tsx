@@ -13,7 +13,7 @@ function SignIn(props: RouteComponentProps) {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
     const executeAfterLogin = React.useCallback(
-        (user: firebase.User | null) => {
+        (user: firebase.User) => {
             if (!user || isNewUser === null) {
                 return;
             }
@@ -27,7 +27,7 @@ function SignIn(props: RouteComponentProps) {
                         setIsLoading(false);
                         props.history.replace("/");
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         user?.delete().then(() => {
                             setIsLoading(false);
                             alert(err.message);
@@ -41,7 +41,7 @@ function SignIn(props: RouteComponentProps) {
     React.useEffect(() => {
         const unregisterAuthObserver = firebase
             .auth()
-            .onAuthStateChanged(user => executeAfterLogin(user));
+            .onAuthStateChanged((user) => executeAfterLogin(user));
         return () => unregisterAuthObserver();
     }, [executeAfterLogin, props.history]);
 
@@ -49,14 +49,14 @@ function SignIn(props: RouteComponentProps) {
         signInFlow: "popup",
         signInOptions: [
             firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID
+            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
         ],
         callbacks: {
-            signInSuccessWithAuthResult: authResult => {
+            signInSuccessWithAuthResult: (authResult) => {
                 setIsNewUser(authResult.additionalUserInfo.isNewUser);
                 return false;
-            }
-        }
+            },
+        },
     };
 
     return (

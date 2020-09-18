@@ -3,7 +3,12 @@ import * as R from "ramda";
 import * as React from "react";
 import { RouteComponentProps } from "react-router";
 import { Link, withRouter } from "react-router-dom";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilState } from "recoil";
+import {
+    categoriesState,
+    toastState,
+    walletsState,
+} from "../common/shareState";
 import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import Category from "../service/model/Category";
@@ -15,10 +20,8 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import Loading from "./bases/Loading";
-import { NotificationProps } from "./bases/Notification";
 import TextBox from "./bases/TextBox";
 import TextBoxWithButton from "./bases/TextBoxWithButton";
-import Toast from "./bases/Toast";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
@@ -30,18 +33,12 @@ interface CurrentValue {
     date: string;
 }
 
-const walletsState = atom<Wallet[]>({
-    key: "wallets",
-    default: [],
-});
-const categoriesState = atom<Category[]>({
-    key: "categories",
-    default: [],
-});
+// Refactor notification
 
 function Home(props: RouteComponentProps) {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories, setCategories] = useRecoilState(categoriesState);
+    const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
         wallet: {
             name: "",
@@ -55,10 +52,7 @@ function Home(props: RouteComponentProps) {
         date: moment().format("YYYY-MM-DD"),
     });
     const [isLoading, setIsLoading] = React.useState(true);
-    const [isShowAddCategory, setIsShowAddCategory] = React.useState(true);
-    const [notificationList, setNotificationList] = React.useState<
-        NotificationProps[]
-    >([]);
+    const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
 
     React.useEffect(() => {
         Promise.all([
@@ -81,7 +75,7 @@ function Home(props: RouteComponentProps) {
             setIsLoading(false);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [setCategories, setWallets]);
+    }, []);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -120,19 +114,23 @@ function Home(props: RouteComponentProps) {
             description: "quick add appense",
             date,
         };
+        console.log(request);
 
         const response = await addExpense(request);
 
         if (response) {
             const tWallets = R.clone(wallets);
-            const selectedWalletIdx = tWallets.findIndex(
+            const tCurrentValue = R.clone(currentValue);
+            const selectedWalletIdx = wallets.findIndex(
                 (x) => x.name === response.srcWallet.name
             );
 
             tWallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            tCurrentValue.wallet.balance = response.srcWallet.balance;
             setWallets(tWallets);
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
+            setCurrentValue(tCurrentValue);
+            setNotificationList((prev) =>
+                prev.concat(
                     mapNotificationProps("AddExpense sucess", "success")
                 )
             );
@@ -140,15 +138,13 @@ function Home(props: RouteComponentProps) {
             return;
         }
 
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("AddExpense is failed", "danger")
-            )
+        setNotificationList((prev) =>
+            prev.concat(mapNotificationProps("AddExpense is failed", "danger"))
         );
     };
 
     const toMorePage = () => {
-        props.history.push("/more");
+        props.history.push("/more", { ...currentValue });
     };
 
     const onAddCategoryClickHandler = () => {
@@ -179,12 +175,6 @@ function Home(props: RouteComponentProps) {
         setIsShowAddCategory(false);
     };
 
-    const onNotificationRemove = (id: string) => {
-        setNotificationList((prevNotiList) =>
-            prevNotiList.filter((n) => n.id !== id)
-        );
-    };
-
     const renderAddCategory = () => {
         return isShowAddCategory ? (
             <TextBoxWithButton onClick={addCategory} />
@@ -195,11 +185,6 @@ function Home(props: RouteComponentProps) {
         <Loading />
     ) : (
         <Layout isShowBackwardIcon={false}>
-            <Toast
-                toastList={notificationList}
-                position="top-right"
-                onNotificationRemove={onNotificationRemove}
-            />
             <div className="content">
                 <div className="content__balance">
                     <span className="content__balance__text">

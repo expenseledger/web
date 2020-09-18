@@ -13,7 +13,7 @@ export interface NotificationPropsWithOnclose extends NotificationProps {
     onClose?: (id: string) => Promise<void> | void;
 }
 
-function mapTypeToClassname(type: NotificationType): string | null {
+function mapTypeToClassname(type: NotificationType): string {
     switch (type) {
         case "primary":
             return "is-primary";
@@ -37,13 +37,13 @@ function Notification(props: NotificationPropsWithOnclose) {
         "notification",
         "notification--show",
         mapTypeToClassname(props.type),
-        props.showClassName
+        props.showClassName,
     ]);
     const hideNotificationClassName = combineClassName([
         "notification",
         "notification--hide",
         mapTypeToClassname(props.type),
-        props.hideClassName
+        props.hideClassName,
     ]);
     const [className, SetClassName] = React.useState(showNotificationClassName);
 

@@ -1,61 +1,72 @@
 import * as React from "react";
+import { useRecoilState } from "recoil";
+import { toastState } from "../../common/shareState";
 import { combineClassName } from "../../service/Utils";
 import Notification, { NotificationProps } from "./Notification";
 import "./Toast.scss";
 
 interface ToastProps {
-    toastList: NotificationProps[];
     position: Position;
-    onNotificationRemove: (idx: string) => Promise<void> | void;
 }
 
-function getNotificationList(props: ToastProps) {
-    switch (props.position) {
+function getNotificationList(
+    notiList: NotificationProps[],
+    position: Position,
+    onNotificationRemove: (idx: string) => void
+) {
+    switch (position) {
         case "top-left":
         case "top-right":
-            return props.toastList.map((t, idx) => (
+            return notiList.map((t) => (
                 <Notification
                     key={t.id}
                     id={t.id}
                     text={t.text}
                     showClassName={combineClassName([
                         t.showClassName,
-                        `notification--show-${props.position}`
+                        `notification--show-${position}`,
                     ])}
                     hideClassName={combineClassName([
                         t.showClassName,
-                        `notification--hide-${props.position}`
+                        `notification--hide-${position}`,
                     ])}
                     type={t.type}
-                    onClose={props.onNotificationRemove}
+                    onClose={onNotificationRemove}
                 />
             ));
         case "bottom-left":
         case "bottom-right":
-            return props.toastList
+            return notiList
                 .reverse()
-                .map((t, idx) => (
+                .map((t) => (
                     <Notification
                         key={t.id}
                         id={t.id}
                         text={t.text}
                         showClassName={combineClassName([
                             t.showClassName,
-                            `notification--show-${props.position}`
+                            `notification--show-${position}`,
                         ])}
                         hideClassName={combineClassName([
                             t.showClassName,
-                            `notification--hide-${props.position}`
+                            `notification--hide-${position}`,
                         ])}
                         type={t.type}
-                        onClose={props.onNotificationRemove}
+                        onClose={onNotificationRemove}
                     />
                 ));
     }
 }
 
 function Toast(props: ToastProps) {
-    const notifications = getNotificationList(props);
+    const [notificationList, setNotificationList] = useRecoilState(toastState);
+    const notifications = getNotificationList(
+        notificationList,
+        props.position,
+        (id) => {
+            setNotificationList(notificationList.filter((x) => x.id != id));
+        }
+    );
     const className = combineClassName(["toast", `toast--${props.position}`]);
 
     return <div className={className}>{notifications}</div>;

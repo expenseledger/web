@@ -3,17 +3,26 @@ import { combineClassName } from "../../service/Utils";
 
 interface ButtonProps {
     value: string;
+    type?: ButtonType;
     outlined?: boolean;
     onClickHandler?: (e: React.MouseEvent) => void;
     className?: string;
 }
 
+export type ButtonType =
+    | "primary"
+    | "info"
+    | "link"
+    | "success"
+    | "danger"
+    | "default";
+
 const Button = (props: ButtonProps) => {
     const classNames = combineClassName([
         "button",
-        "is-primary",
-        !!props.outlined ? "is-outlined" : "",
-        !!props.className ? props.className : ""
+        props.type ? `is-${props.type}` : "",
+        props.outlined ? "is-outlined" : "",
+        props.className ? props.className : "",
     ]);
 
     return (

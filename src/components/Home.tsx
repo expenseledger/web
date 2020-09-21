@@ -246,11 +246,14 @@ function Home(props: RouteComponentProps) {
                         className="content__button__add"
                         onClickHandler={addTransaction}
                         value="Add"
+                        outlined
+                        type="primary"
                     />
                     <Button
-                        className="content__button__more"
+                        className="content__button__more is-dark"
                         onClickHandler={toMorePage}
                         value="More"
+                        outlined
                     />
                 </div>
             </div>

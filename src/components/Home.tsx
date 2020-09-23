@@ -11,9 +11,7 @@ import {
 } from "../common/shareState";
 import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
-import Category from "../service/model/Category";
 import { AddExpenseRequest } from "../service/model/Requests";
-import Wallet from "../service/model/Wallet";
 import { addExpense } from "../service/TransactionService";
 import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
@@ -27,8 +25,8 @@ import "./Home.scss";
 import Layout from "./Layout";
 
 interface CurrentValue {
-    wallet?: Wallet;
-    category?: Category;
+    walletIdx: number;
+    categoryIdx: number;
     amount: number;
     date: string;
 }
@@ -40,14 +38,8 @@ function Home(props: RouteComponentProps) {
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
-        wallet: {
-            name: "",
-            balance: 0,
-            type: "",
-        },
-        category: {
-            name: "",
-        },
+        walletIdx: 0,
+        categoryIdx: 0,
         amount: 0,
         date: moment().format("YYYY-MM-DD"),
     });
@@ -60,18 +52,12 @@ function Home(props: RouteComponentProps) {
             CategoryService.getAllCategories(),
         ]).then((responses) => {
             const [tWallets, tCategories] = responses;
-            const tCurrentValue = R.clone(currentValue);
-            if (tCategories?.length > 0) {
-                tCurrentValue.category = tCategories[0];
-            }
+            const sortByNameCaseInsensitive = R.sortBy<any>(
+                R.compose(R.toLower, R.prop("name"))
+            );
 
-            if (tWallets?.length > 0) {
-                tCurrentValue.wallet = tWallets[0];
-            }
-
-            setCategories(tCategories ?? []);
-            setWallets(tWallets ?? []);
-            setCurrentValue(tCurrentValue);
+            setCategories(sortByNameCaseInsensitive(tCategories ?? []));
+            setWallets(sortByNameCaseInsensitive(tWallets ?? []));
             setIsLoading(false);
         });
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -87,14 +73,16 @@ function Home(props: RouteComponentProps) {
     const updateSelectedWallet = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.wallet = wallets.find((x) => x.name === value);
+        tCurrentValue.walletIdx = wallets.findIndex((x) => x.name === value);
         setCurrentValue(tCurrentValue);
     };
 
     const updateSelectedCategory = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.category = categories.find((x) => x.name === value);
+        tCurrentValue.categoryIdx = categories.findIndex(
+            (x) => x.name === value
+        );
         setCurrentValue(tCurrentValue);
     };
 
@@ -106,11 +94,11 @@ function Home(props: RouteComponentProps) {
     };
 
     const addTransaction = async () => {
-        const { wallet, amount, date, category } = currentValue;
+        const { walletIdx, amount, date, categoryIdx } = currentValue;
         const request: AddExpenseRequest = {
             amount,
-            category: category ? category.name : "",
-            from: wallet ? wallet.name : "",
+            category: categories[categoryIdx]?.name ?? "",
+            from: wallets[walletIdx]?.name ?? "",
             description: "quick add appense",
             date,
         };
@@ -120,15 +108,12 @@ function Home(props: RouteComponentProps) {
 
         if (response) {
             const tWallets = R.clone(wallets);
-            const tCurrentValue = R.clone(currentValue);
             const selectedWalletIdx = wallets.findIndex(
                 (x) => x.name === response.srcWallet.name
             );
 
             tWallets[selectedWalletIdx].balance = response.srcWallet.balance;
-            tCurrentValue.wallet.balance = response.srcWallet.balance;
             setWallets(tWallets);
-            setCurrentValue(tCurrentValue);
             setNotificationList((prev) =>
                 prev.concat(
                     mapNotificationProps("AddExpense sucess", "success")
@@ -188,8 +173,7 @@ function Home(props: RouteComponentProps) {
             <div className="content">
                 <div className="content__balance">
                     <span className="content__balance__text">
-                        Balance:{" "}
-                        {currentValue.wallet ? currentValue.wallet.balance : 0}{" "}
+                        Balance: {wallets[currentValue.walletIdx]?.balance ?? 0}{" "}
                         THB
                     </span>
                     <Dropdown
@@ -201,9 +185,7 @@ function Home(props: RouteComponentProps) {
                         className="content__balance__transaction__link"
                         to={{
                             pathname: `/transactionList/${
-                                currentValue.wallet
-                                    ? currentValue.wallet.name
-                                    : ""
+                                wallets[currentValue.walletIdx]?.name ?? ""
                             }`,
                         }}
                     >

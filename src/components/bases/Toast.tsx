@@ -64,7 +64,7 @@ function Toast(props: ToastProps) {
         notificationList,
         props.position,
         (id) => {
-            setNotificationList(notificationList.filter((x) => x.id != id));
+            setNotificationList(notificationList.filter((x) => x.id !== id));
         }
     );
     const className = combineClassName(["toast", `toast--${props.position}`]);

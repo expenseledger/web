@@ -5,21 +5,19 @@ import { useRecoilState } from "recoil";
 import {
     categoriesState,
     toastState,
-    walletsState,
+    walletsState
 } from "../common/shareState";
 import { TransactionType } from "../service/Constants";
 import { mapNotificationProps } from "../service/Mapper";
-import Category from "../service/model/Category";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
-    AddTransferRequest,
+    AddTransferRequest
 } from "../service/model/Requests";
-import Wallet from "../service/model/Wallet";
 import {
     addExpense,
     addIncome,
-    addTransfer,
+    addTransfer
 } from "../service/TransactionService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -31,9 +29,9 @@ import Layout from "./Layout";
 import "./More.scss";
 
 interface CurrentValue {
-    fromWallet?: Wallet;
-    toWallet?: Wallet;
-    category?: Category;
+    fromWalletIdx: number;
+    toWalletIdx: number;
+    categoryIdx: number;
     amount: number;
     date: string;
     description: string;
@@ -45,59 +43,52 @@ function More(props: RouteComponentProps) {
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
-        fromWallet: (props.location.state as any).wallet,
-        toWallet: (props.location.state as any).wallet,
-        category: (props.location.state as any).category,
-        amount: (props.location.state as any).amount,
-        date: (props.location.state as any).date,
+        fromWalletIdx: (props.location.state as any).walletIdx ?? 0,
+        toWalletIdx: (props.location.state as any).walletIdx ?? 0,
+        categoryIdx: (props.location.state as any).categoryIdx ?? 0,
+        amount: (props.location.state as any).amount ?? 0,
+        date: (props.location.state as any).date ?? Date.now.toString(),
         description: "",
     });
     const [
         transactionTypeTabActive,
         setTransactionTypeTabActive,
     ] = React.useState([true, false, false]);
-    let transactionType: TransactionType = "EXPENSE";
+    const transactionTypes: TransactionType[] = ["expense", "income", "transfer"];
 
     const transactionTypeTabOnClickHandler = (e: any) => {
         const currentTabActive = [...transactionTypeTabActive];
         const currentTarget = e.currentTarget;
         const currentTabIdx = Number.parseInt(currentTarget.dataset.id, 10);
         const tabActive = currentTabActive.map(
-            (t, idx) => idx === currentTabIdx
+            (_, idx) => idx === currentTabIdx
         );
 
         setTransactionTypeTabActive(tabActive);
-        switch (currentTabIdx) {
-            case 0:
-                transactionType = "EXPENSE";
-                break;
-            case 1:
-                transactionType = "INCOME";
-                break;
-            case 2:
-                transactionType = "TRANSFER";
-                break;
-        }
     };
 
     const updateSelectedCategory = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.category = categories.find((x) => x.name === value);
+        tCurrentValue.categoryIdx = categories.findIndex(
+            (x) => x.name === value
+        );
         setCurrentValue(tCurrentValue);
     };
 
     const updateSelectedFromWallet = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.fromWallet = wallets.find((x) => x.name === value);
+        tCurrentValue.fromWalletIdx = wallets.findIndex(
+            (x) => x.name === value
+        );
         setCurrentValue(tCurrentValue);
     };
 
     const updateSelectedToWallet = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.toWallet = wallets.find((x) => x.name === value);
+        tCurrentValue.toWalletIdx = wallets.findIndex((x) => x.name === value);
         setCurrentValue(tCurrentValue);
     };
 
@@ -124,8 +115,8 @@ function More(props: RouteComponentProps) {
 
     const doAddExpense = async () => {
         const {
-            fromWallet,
-            category,
+            fromWalletIdx,
+            categoryIdx,
             amount,
             date,
             description,
@@ -133,10 +124,10 @@ function More(props: RouteComponentProps) {
 
         const request: AddExpenseRequest = {
             amount,
-            category: category?.name ?? "",
+            category: categories[categoryIdx]?.name ?? "",
             date,
             description,
-            from: fromWallet?.name ?? "",
+            from: wallets[fromWalletIdx]?.name ?? "",
         };
 
         const response = await addExpense(request);
@@ -165,8 +156,8 @@ function More(props: RouteComponentProps) {
 
     const doAddIncome = async () => {
         const {
-            fromWallet,
-            category,
+            fromWalletIdx,
+            categoryIdx,
             amount,
             date,
             description,
@@ -174,10 +165,10 @@ function More(props: RouteComponentProps) {
 
         const request: AddIncomeRequest = {
             amount,
-            category: category?.name ?? "",
+            category: categories[categoryIdx]?.name ?? "",
             date,
             description,
-            to: fromWallet?.name ?? "",
+            to: wallets[fromWalletIdx]?.name ?? "",
         };
 
         const response = await addIncome(request);
@@ -204,9 +195,9 @@ function More(props: RouteComponentProps) {
 
     const doAddTransfer = async () => {
         const {
-            fromWallet,
-            toWallet,
-            category,
+            fromWalletIdx,
+            toWalletIdx,
+            categoryIdx,
             amount,
             date,
             description,
@@ -214,11 +205,11 @@ function More(props: RouteComponentProps) {
 
         const request: AddTransferRequest = {
             amount,
-            category: category?.name ?? "",
+            category: categories[categoryIdx]?.name ?? "",
             date,
             description,
-            to: toWallet?.name ?? "",
-            from: fromWallet?.name ?? "",
+            to: wallets[toWalletIdx]?.name ?? "",
+            from: wallets[fromWalletIdx]?.name ?? "",
         };
 
         const response = await addTransfer(request);
@@ -251,14 +242,15 @@ function More(props: RouteComponentProps) {
     };
 
     const addTransaction = () => {
-        switch (transactionType) {
-            case "EXPENSE":
+        const transactionTypeIdx = transactionTypeTabActive.findIndex(x => x === true);
+        switch (transactionTypes[transactionTypeIdx]) {
+            case "expense":
                 doAddExpense();
                 break;
-            case "INCOME":
+            case "income":
                 doAddIncome();
                 break;
-            case "TRANSFER":
+            case "transfer":
                 doAddTransfer();
                 break;
         }
@@ -275,12 +267,12 @@ function More(props: RouteComponentProps) {
                     </span>
                     <Dropdown
                         className="more__content__transaction__from__dropdown"
-                        default={currentValue.fromWallet?.name}
+                        default={wallets[currentValue.fromWalletIdx]?.name}
                         options={wallets.map((x) => x.name)}
                         updateSelectedValue={updateSelectedFromWallet}
                     />
                     <span className="more__content__transaction__from__balance">
-                        {currentValue.fromWallet?.balance ?? 0} THB
+                        {wallets[currentValue.fromWalletIdx]?.balance ?? 0} THB
                     </span>
                 </div>
                 {isTransfer ? (
@@ -290,12 +282,13 @@ function More(props: RouteComponentProps) {
                         </span>
                         <Dropdown
                             className="more__content__transaction__to__dropdown"
-                            default={currentValue.toWallet?.name}
+                            default={wallets[currentValue.toWalletIdx]?.name}
                             options={wallets.map((x) => x.name)}
                             updateSelectedValue={updateSelectedToWallet}
                         />
                         <span className="more__content__transaction__to__balance">
-                            {currentValue.toWallet?.balance ?? 0} THB
+                            {wallets[currentValue.toWalletIdx]?.balance ?? 0}{" "}
+                            THB
                         </span>
                     </div>
                 ) : null}
@@ -336,7 +329,7 @@ function More(props: RouteComponentProps) {
                     </span>
                     <Dropdown
                         className="more__content__category__dropdown"
-                        default={currentValue.category?.name}
+                        default={categories[currentValue.categoryIdx]?.name}
                         options={categories.map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
                     />

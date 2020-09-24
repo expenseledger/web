@@ -1,22 +1,27 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap");
 html {
-    overflow-y: unset;
-    min-height: 100%;
-    background: linear-gradient(
-        180deg,
-        rgba(246, 237, 178, 0.6),
-        rgba(245, 152, 168, 0.6)
-    );
+    // overflow-y: unset;
+    // min-height: 100%;
+    background-image: url("./assets/pics/background.webp");
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center center;
+
+    // background: linear-gradient(
+    //     180deg,
+    //     rgba(246, 237, 178, 0.6),
+    //     rgba(245, 152, 168, 0.6)
+    // );
 }
 
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-repeat: no-repeat;
-    background-attachment: scroll;
-}
+// body {
+//     margin: 0;
+//     padding: 0;
+//     height: 100%;
+//     background-repeat: no-repeat;
+//     background-attachment: scroll;
+// }
 
 html,
 body,
@@ -24,5 +29,5 @@ button,
 input,
 select,
 textarea {
-    font-family: "Roboto", sans-serif;
+    font-family: "Quicksand", sans-serif;
 }

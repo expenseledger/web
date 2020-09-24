@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
-import { NotificationProps } from "../components/bases/Notification";
-import Toast from "../components/bases/Toast";
 import { withAuthProtection } from "../components/hoc/WithAuthProtection";
 import Layout from "../components/Layout";
 import { TransactionCard } from "../components/TransactionCard";
@@ -11,7 +11,7 @@ import { mapNotificationProps } from "../service/Mapper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
-    listTransactions
+    listTransactions,
 } from "../service/TransactionService";
 import "./TransactionList.scss";
 
@@ -25,17 +25,15 @@ interface TransactionListParam {
 
 export function TransactionList(props: TransactionListProps) {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [notificationList, setNotificationList] = useState<
-        NotificationProps[]
-    >([]);
+    const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
     const wallet =
         props.wallet ?? (props.match.params as TransactionListParam).walletName;
 
     useEffect(() => {
         listTransactions({
-            wallet
-        }).then(response => {
+            wallet,
+        }).then((response) => {
             const sortedItems = response.items.reverse();
             setTransactions(sortedItems);
             setIsLoading(false);
@@ -44,7 +42,7 @@ export function TransactionList(props: TransactionListProps) {
 
     const removeTransaction = async (id: string) => {
         const response = await deleteTransaction({
-            id
+            id,
         });
 
         if (!response.isSuccess) {
@@ -62,30 +60,20 @@ export function TransactionList(props: TransactionListProps) {
                 mapNotificationProps("Delete transaction succes", "success")
             )
         );
-        setTransactions(transactions.filter(tx => tx.id !== id));
+        setTransactions(transactions.filter((tx) => tx.id !== id));
     };
 
-    const onNotificationRemove = (id: string) => {
-        const newNotificationList = notificationList.filter(n => n.id !== id);
-        setNotificationList(newNotificationList);
-    };
-
-    const cards = transactions.map((tx, index) => {
+    const cards = transactions.map((tx) => {
         const { id, date, amount, type, category, description } = tx;
         return (
             <>
-                <Toast
-                    toastList={notificationList}
-                    position="top-right"
-                    onNotificationRemove={onNotificationRemove}
-                />
                 <TransactionCard
                     date={date}
                     amount={amount}
                     type={type}
                     category={category}
                     description={description}
-                    key={index}
+                    key={id}
                     onDelete={() => removeTransaction(id)}
                 />
             </>

@@ -4,6 +4,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import { RecoilRoot } from "recoil";
 import App from "./container/App";
 import "./index.scss";
 import registerServiceWorker from "./registerServiceWorker";
@@ -15,10 +16,15 @@ const firebaseConfig = {
     projectId: process.env.REACT_APP_FIREBASE_PROJECTID,
     storageBucket: process.env.REACT_APP_FIREBASE_BUCKET,
     messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-    appId: process.env.REACT_APP_FIREBASE_APP_ID
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
 };
 
 firebase.initializeApp(firebaseConfig);
 
-ReactDOM.render(<App />, document.getElementById("root") as HTMLElement);
+ReactDOM.render(
+    <RecoilRoot>
+        <App />
+    </RecoilRoot>,
+    document.getElementById("root") as HTMLElement
+);
 registerServiceWorker();

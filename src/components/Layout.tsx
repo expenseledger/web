@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
+import Toast from "./bases/Toast";
 import "./Layout.scss";
 
 interface LayoutProps {
@@ -25,6 +26,7 @@ function Layout(props: LayoutProps) {
 
     return (
         <div className="layout">
+            <Toast position="top-right" />
             <div className="header">
                 {renderBackIcon()}
                 <button

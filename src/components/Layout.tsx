@@ -24,7 +24,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
     };
 
     return (
-        <div className="layout">
+        <>
             <Toast position="top-right" />
             <div className="header">
                 {renderBackIcon()}
@@ -35,8 +35,15 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     Sign out
                 </button>
             </div>
-            <div className="content">{props.children}</div>
-        </div>
+            <section className="container is-mobile">{props.children}</section>
+            <footer className="footer">
+                <div className="content has-text-centered">
+                    <a href="https://www.freepik.com/vectors/banner">
+                        Banner vector created by upklyak - www.freepik.com
+                    </a>
+                </div>
+            </footer>
+        </>
     );
 };
 

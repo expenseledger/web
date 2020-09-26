@@ -2,6 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
+import Slider from "./bases/Slider";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
@@ -26,15 +27,31 @@ const Layout: React.FC<LayoutProps> = (props) => {
     return (
         <>
             <Toast position="top-right" />
-            <div className="header">
+            <Slider>
+                <span>Test</span>
+            </Slider>
+            <nav className="navbar is-transparent is-mobile">
                 {renderBackIcon()}
-                <button
-                    className="header__signOut button is-link is-inverted is-small"
-                    onClick={() => firebase.auth().signOut()}
-                >
-                    Sign out
-                </button>
-            </div>
+                <div className="navbar-item">
+                    <a className="navbar-burger burger">
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                        <span aria-hidden="true"></span>
+                    </a>
+                </div>
+                <div className="navbar-menu">
+                    <div className="navbar-end">
+                        <div className="navbar-item">
+                            <button
+                                className="header__signout button is-link is-inverted is-small"
+                                onClick={() => firebase.auth().signOut()}
+                            >
+                                Sign out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
             <section className="container is-mobile">{props.children}</section>
             <footer className="footer">
                 <div className="content has-text-centered">

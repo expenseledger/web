@@ -9,9 +9,13 @@
         display: inline;
     }
 
-    &__signOut {
+    &__signout {
         float: right;
     }
+}
+
+.navbar {
+    background-color: unset;
 }
 
 .footer {

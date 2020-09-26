@@ -9,7 +9,7 @@ interface DateBoxProps {
     className?: string;
 }
 
-const DateBox = (props: DateBoxProps) => {
+const DateBox: React.FC<DateBoxProps> = (props) => {
     const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
     const classNames = combineClassName([
         "field",

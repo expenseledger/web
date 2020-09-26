@@ -1,6 +1,6 @@
 import * as React from "react";
 
-const Loading = () => {
+const Loading: React.FC = () => {
     const [isShowLoading, setIsShowLoading] = React.useState(false);
 
     React.useEffect(() => {
@@ -21,14 +21,14 @@ const Loading = () => {
                 width: "50%",
                 position: "absolute",
                 top: "50%",
-                left: "25%"
+                left: "25%",
             }}
         >
             <progress className="progress is-small is-dark" max="100" />
             <span
                 style={{
                     display: "inlint-block",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                 }}
             >
                 Loading...

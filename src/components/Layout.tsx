@@ -8,11 +8,10 @@ import "./Layout.scss";
 interface LayoutProps {
     isShowBackwardIcon?: boolean;
     linkBackwardTo?: string;
-    children: React.ReactNode;
 }
 
-function Layout(props: LayoutProps) {
-    function renderBackIcon() {
+const Layout: React.FC<LayoutProps> = (props) => {
+    const renderBackIcon = () => {
         return !!props.isShowBackwardIcon ? (
             <div className="header__backIcon">
                 <Link to="/">
@@ -22,7 +21,7 @@ function Layout(props: LayoutProps) {
                 </Link>
             </div>
         ) : null;
-    }
+    };
 
     return (
         <div className="layout">
@@ -39,6 +38,6 @@ function Layout(props: LayoutProps) {
             <div className="content">{props.children}</div>
         </div>
     );
-}
+};
 
 export default Layout;

@@ -58,7 +58,7 @@ function getNotificationList(
     }
 }
 
-function Toast(props: ToastProps) {
+const Toast: React.FC<ToastProps> = (props) => {
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const notifications = getNotificationList(
         notificationList,
@@ -70,7 +70,7 @@ function Toast(props: ToastProps) {
     const className = combineClassName(["toast", `toast--${props.position}`]);
 
     return <div className={className}>{notifications}</div>;
-}
+};
 
 type Position = "top-right" | "top-left" | "bottom-left" | "bottom-right";
 

@@ -6,12 +6,12 @@ interface TextBoxWithButtonProps {
     onClick?: (value: string) => Promise<void> | void;
 }
 
-function TextBoxWithButton(props: TextBoxWithButtonProps) {
+const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
     const { bind, value } = useInput("");
     const className = combineClassName([
         "field",
         "has-addons",
-        props.className
+        props.className,
     ]);
 
     return (
@@ -34,6 +34,6 @@ function TextBoxWithButton(props: TextBoxWithButtonProps) {
             </div>
         </div>
     );
-}
+};
 
 export default TextBoxWithButton;

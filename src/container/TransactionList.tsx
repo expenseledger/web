@@ -23,7 +23,7 @@ interface TransactionListParam {
     walletName: string;
 }
 
-export function TransactionList(props: TransactionListProps) {
+export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
@@ -87,7 +87,7 @@ export function TransactionList(props: TransactionListProps) {
             <div>{cards}</div>
         </Layout>
     );
-}
+};
 
 const TransactionListWithAuthProctection = withAuthProtection()(
     TransactionList

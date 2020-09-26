@@ -7,7 +7,7 @@ const Home = React.lazy(() => import("../components/Home"));
 const More = React.lazy(() => import("../components/More"));
 const SignIn = React.lazy(() => import("../components/SignIn"));
 
-function App() {
+const App: React.FC = () => {
     return (
         <Router>
             <React.Suspense fallback={<Loading />}>
@@ -24,6 +24,6 @@ function App() {
             </React.Suspense>
         </Router>
     );
-}
+};
 
 export default App;

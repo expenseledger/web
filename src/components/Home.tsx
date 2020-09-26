@@ -1,8 +1,7 @@
 import moment from "moment";
 import * as R from "ramda";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { Link, withRouter } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import {
     categoriesState,
@@ -33,7 +32,7 @@ interface CurrentValue {
 
 // Refactor notification
 
-function Home(props: RouteComponentProps) {
+const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
@@ -241,7 +240,7 @@ function Home(props: RouteComponentProps) {
             </div>
         </Layout>
     );
-}
+};
 
 const HomeWithAuthProtection = withAuthProtection()(Home);
 

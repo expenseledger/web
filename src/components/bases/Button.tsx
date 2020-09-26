@@ -17,7 +17,7 @@ export type ButtonType =
     | "danger"
     | "default";
 
-const Button = (props: ButtonProps) => {
+const Button: React.FC<ButtonProps> = (props) => {
     const classNames = combineClassName([
         "button",
         props.type ? `is-${props.type}` : "",

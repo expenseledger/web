@@ -32,7 +32,7 @@ function mapTypeToClassname(type: NotificationType): string {
     }
 }
 
-function Notification(props: NotificationPropsWithOnclose) {
+const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     const showNotificationClassName = combineClassName([
         "notification",
         "notification--show",
@@ -65,7 +65,7 @@ function Notification(props: NotificationPropsWithOnclose) {
             {props.text}
         </div>
     );
-}
+};
 
 export type NotificationType =
     | "primary"

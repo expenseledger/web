@@ -65,7 +65,7 @@ const Background = styled.div`
         forwards;
 `;
 
-const Slider: React.FC = (props) => {
+const Drawer: React.FC = (props) => {
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const btnClickHandler = () => {
         setIsShowPanel(true);
@@ -86,4 +86,4 @@ const Slider: React.FC = (props) => {
     );
 };
 
-export default Slider;
+export default Drawer;

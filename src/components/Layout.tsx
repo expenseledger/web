@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
-import Slider from "./bases/Slider";
+import Drawer from "./bases/Drawer";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
@@ -27,9 +27,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
     return (
         <>
             <Toast position="top-right" />
-            <Slider>
+            <Drawer>
                 <span>Test</span>
-            </Slider>
+            </Drawer>
             <nav className="navbar is-transparent is-mobile">
                 {renderBackIcon()}
                 <div className="navbar-item">

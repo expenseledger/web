@@ -30,8 +30,6 @@ interface CurrentValue {
     date: string;
 }
 
-// Refactor notification
-
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories, setCategories] = useRecoilState(categoriesState);

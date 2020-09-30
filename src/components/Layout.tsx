@@ -2,6 +2,9 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { walletsState } from "../common/shareState";
+import Wallet from "../service/model/Wallet";
 import Drawer from "./bases/Drawer";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
@@ -12,6 +15,7 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {
+    const [wallets] = useRecoilState(walletsState);
     const renderBackIcon = () => {
         return !!props.isShowBackwardIcon ? (
             <div className="header__backIcon">
@@ -24,20 +28,44 @@ const Layout: React.FC<LayoutProps> = (props) => {
         ) : null;
     };
 
+    const renderBurgerMenuContent = (wallets: Wallet[]) => {
+        return (
+            <div className="container is-fluid">
+                <aside className="menu">
+                    <p className="menu-label">Wallets</p>
+                    <ul className="menu-list">
+                        {wallets.map((x) => (
+                            <li key={x.name}>
+                                <a>
+                                    {x.name} {x.balance} baht
+                                </a>
+                            </li>
+                        ))}
+                    </ul>
+                    <p className="menu-label">Transactions</p>
+                    <ul className="menu-list">
+                        <li>
+                            <a>Payments</a>
+                        </li>
+                        <li>
+                            <a>Transfers</a>
+                        </li>
+                        <li>
+                            <a>Balance</a>
+                        </li>
+                    </ul>
+                </aside>
+            </div>
+        );
+    };
+
     return (
         <>
             <Toast position="top-right" />
-            <Drawer>
-                <span>Test</span>
-            </Drawer>
             <nav className="navbar is-transparent is-mobile">
                 {renderBackIcon()}
                 <div className="navbar-item">
-                    <a className="navbar-burger burger">
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                        <span aria-hidden="true"></span>
-                    </a>
+                    <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                 </div>
                 <div className="navbar-menu">
                     <div className="navbar-end">

@@ -11,9 +11,9 @@ interface TextFieldProps {
 const TextField: React.FC<TextFieldProps> = (props) => {
     const { bind } = useInput("", props.updateValue);
     const inputClass = !!props.className ? props.className : "";
-    const classNames = combineClassName(["field", inputClass]);
+    const classNames = combineClassName("field", inputClass);
 
-    const textAreaClassName = combineClassName(["input", inputClass]);
+    const textAreaClassName = combineClassName("input", inputClass);
 
     return (
         <div className={classNames}>

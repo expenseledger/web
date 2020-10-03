@@ -13,10 +13,10 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
         props.updateSelectedValue(e.target.value);
     };
 
-    const classNames = combineClassName([
+    const classNames = combineClassName(
         "field",
-        !!props.className ? props.className : "",
-    ]);
+        !!props.className ? props.className : ""
+    );
 
     const renderOptions = (options: string[]): JSX.Element[] => {
         return options.map((option, idx) => {

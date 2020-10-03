@@ -8,11 +8,7 @@ interface TextBoxWithButtonProps {
 
 const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
     const { bind, value } = useInput("");
-    const className = combineClassName([
-        "field",
-        "has-addons",
-        props.className,
-    ]);
+    const className = combineClassName("field", "has-addons", props.className);
 
     return (
         <div className={className}>

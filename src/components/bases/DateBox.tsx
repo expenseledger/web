@@ -11,10 +11,10 @@ interface DateBoxProps {
 
 const DateBox: React.FC<DateBoxProps> = (props) => {
     const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
-    const classNames = combineClassName([
+    const classNames = combineClassName(
         "field",
-        !!props.className ? props.className : "",
-    ]);
+        !!props.className ? props.className : ""
+    );
 
     return (
         <div className={classNames}>

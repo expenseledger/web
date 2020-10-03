@@ -8,19 +8,22 @@ import Response from "./model/Response";
  * @param {any} axiosMethod pass axios method eg. axios.post.
  * @param {string} url url
  */
-export async function callAxios(
+export async function callAxios<T>(
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     axiosMethod: any,
     url: string,
-    content?: object
+    content?: T
 ): Promise<Response> {
     try {
         const user = firebase.auth().currentUser;
         const token = user ? await user.getIdToken() : "";
         const header = {
             headers: {
-                Authorization: `Bearer ${token}`
-            }
+                Authorization: `Bearer ${token}`,
+            },
         };
+
+        console.log(header);
 
         const { data, status } = await axiosMethod(url, content, header);
 
@@ -28,20 +31,20 @@ export async function callAxios(
             data: data.data,
             error: null,
             status: Number.parseInt(status, 10),
-            success: data.success
+            success: data.success,
         };
     } catch (err) {
         return {
             data: null,
             error: err,
             status: (err.response && err.response.status) || 0,
-            success: false
+            success: false,
         };
     }
 }
 
-export function combineClassName(classNames: object) {
-    return Object.values(classNames)
+export function combineClassName(...classNames: string[]): string {
+    return classNames
         .reduce(
             (toReturn, className) =>
                 className ? toReturn + " " + className : toReturn,
@@ -53,7 +56,15 @@ export function combineClassName(classNames: object) {
 export function useInput(
     initialValue: string,
     updateValue?: (v: string) => void
-) {
+): {
+    value: string;
+    setValue: React.Dispatch<React.SetStateAction<string>>;
+    reset: () => void;
+    bind: {
+        value: string;
+        onChange: (e: React.ChangeEvent<any>) => void;
+    };
+} {
     const [value, setValue] = useState(initialValue);
 
     return {
@@ -65,8 +76,8 @@ export function useInput(
             onChange: (e: React.ChangeEvent<any>) => {
                 setValue(e.target.value);
                 updateValue && updateValue(e.target.value);
-            }
-        }
+            },
+        },
     };
 }
 
@@ -82,6 +93,6 @@ export function isReturnSuccessStatus(response: Response): boolean {
     return false;
 }
 
-export function log(...message: string[]) {
+export function log(...message: string[]): void {
     console.log(message);
 }

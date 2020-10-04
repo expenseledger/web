@@ -79,7 +79,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
             <div className="container header">
                 <div className="columns is-mobile">
                     {/* {renderBackIcon()} */}
-                    <div className="column is-3 mt-3 ml-1">
+                    <div className="column is-2 mt-4 ml-3">
                         <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                     </div>
                     <div className="column is-6 mt-2">
@@ -87,9 +87,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
                             Expense ledger
                         </span>
                     </div>
-                    <div className="column is-3">
+                    <div className="column pt-5">
                         <button
-                            className="header__signout button is-link is-outlined is-small mt-3 mr-3"
+                            className="header__signout button is-link is-outlined is-small"
                             onClick={() => firebase.auth().signOut()}
                         >
                             Sign out

@@ -1,25 +1,12 @@
 @import "bulma/sass/utilities/initial-variables";
 
 .header {
-    margin: 10px 5px;
-    width: 97.5%;
-    display: inline-block;
-
-    &__backIcon {
-        display: inline;
-    }
-
-    &__signout {
-        float: right;
-    }
-}
-
-.navbar {
-    background-color: unset;
+    background-color: $white;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
 
 .footer {
-    position: absolute;
+    position: fixed;
     right: 0;
     bottom: 0;
     padding: 0;

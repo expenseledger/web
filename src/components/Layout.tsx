@@ -75,19 +75,18 @@ const Layout: React.FC<LayoutProps> = (props) => {
 
     return (
         <>
-            <Toast position="top-right" />
-            <div className="container header">
-                <div className="columns is-mobile">
+            <div className="header">
+                <div className="columns is-mobile is-vcentered">
                     {/* {renderBackIcon()} */}
-                    <div className="column is-2 mt-4 ml-3">
+                    <div className="column is-narrow">
                         <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                     </div>
-                    <div className="column is-6 mt-2">
+                    <div className="column is-half-mobile is-half-tablet">
                         <span className="has-text-weight-bold is-size-4 has-text-dark">
                             Expense ledger
                         </span>
                     </div>
-                    <div className="column pt-5">
+                    <div className="column is-offset-4-desktop is-offset-3-tablet is-offset-1-mobile">
                         <button
                             className="header__signout button is-link is-outlined is-small"
                             onClick={() => firebase.auth().signOut()}
@@ -107,6 +106,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     </a>
                 </div>
             </footer>
+            <Toast position="top-right" />
         </>
     );
 };

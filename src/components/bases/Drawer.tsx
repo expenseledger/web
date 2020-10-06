@@ -7,7 +7,7 @@ interface StyledProps {
 
 const zIndex = 101;
 const slideIn = keyframes`
-    0%   {left: -30%}
+    0%   {left: -100%}
     100% {left: 0;}
 `;
 const fadeIn = keyframes`
@@ -15,7 +15,7 @@ const fadeIn = keyframes`
     100% {background-color: rgba(0, 0, 0, 0.8);}
 `;
 const slideOut = keyframes`
-    100% {left: -30%;}
+    100% {left: -100%;}
 `;
 const fadeOut = keyframes`
     100% {background-color: rgba(0, 0, 0, 0);z-index: -1;}
@@ -28,14 +28,14 @@ const Panel = styled.div`
     left: 0;
     height: 100%;
     width: 30%;
-    min-width: 200px;
+    min-width: 300px;
     background-color: white;
     animation: ${(props: StyledProps) => (props.isShow ? slideIn : slideOut)}
         0.5s forwards;
 `;
 
 const Background = styled.div`
-    z-index: ${zIndex - 1};
+    z-index: -1;
     position: fixed;
     top: 0;
     left: 0;

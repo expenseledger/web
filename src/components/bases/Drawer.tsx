@@ -5,7 +5,8 @@ interface StyledProps {
     isShow: boolean;
 }
 
-const zIndex = 101;
+const animationDuration = 0.5;
+const zIndex = 1000;
 const slideIn = keyframes`
     0%   {left: -100%}
     100% {left: 0;}
@@ -18,7 +19,7 @@ const slideOut = keyframes`
     100% {left: -100%;}
 `;
 const fadeOut = keyframes`
-    100% {background-color: rgba(0, 0, 0, 0);z-index: -1;}
+    100% {background-color: rgba(0, 0, 0, 0);}
 `;
 
 const Panel = styled.div`
@@ -31,30 +32,33 @@ const Panel = styled.div`
     min-width: 300px;
     background-color: white;
     animation: ${(props: StyledProps) => (props.isShow ? slideIn : slideOut)}
-        0.5s forwards;
+        ${animationDuration}s forwards;
 `;
 
 const Background = styled.div`
-    z-index: -1;
+    z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
     left: 0;
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.8);
-    animation: ${(props: StyledProps) => (props.isShow ? fadeIn : fadeOut)} 0.5s
-        forwards;
+    animation: ${(props: StyledProps) => (props.isShow ? fadeIn : fadeOut)}
+        ${animationDuration}s forwards;
 `;
 
 const Drawer: React.FC = (props) => {
     const [isShowPanel, setIsShowPanel] = React.useState(false);
-    const [isFirstRender, setIsFirstRender] = React.useState(true);
+    const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const btnClickHandler = () => {
         setIsShowPanel(true);
-        setIsFirstRender(false);
     };
     const closePanelHandler = () => {
-        setIsShowPanel(false);
+        setIsAnimationUnmount(true);
+        setTimeout(() => {
+            setIsShowPanel(false);
+            setIsAnimationUnmount(false);
+        }, animationDuration * 1000);
     };
 
     return (
@@ -62,9 +66,14 @@ const Drawer: React.FC = (props) => {
             <span className="icon" onClick={btnClickHandler}>
                 <i className="fas fa-lg fa-bars"></i>
             </span>
-            {!isFirstRender || isShowPanel ? (
-                <Background isShow={isShowPanel} onClick={closePanelHandler}>
-                    <Panel isShow={isShowPanel}>{props.children}</Panel>
+            {isShowPanel ? (
+                <Background
+                    isShow={!isAnimationUnmount && isShowPanel}
+                    onClick={closePanelHandler}
+                >
+                    <Panel isShow={!isAnimationUnmount && isShowPanel}>
+                        {props.children}
+                    </Panel>
                 </Background>
             ) : null}
         </>

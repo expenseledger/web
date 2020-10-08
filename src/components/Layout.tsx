@@ -96,9 +96,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     </div>
                 </div>
             </div>
-            <section className="container is-mobile mt-5">
+            <div className="container is-mobile is-fluid mt-4">
                 {props.children}
-            </section>
+            </div>
             <footer className="footer">
                 <div className="content has-text-centered">
                     <a href="https://www.freepik.com/vectors/banner">

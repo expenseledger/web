@@ -10,10 +10,14 @@ export const walletsState = atom<Wallet[]>({
 
 export const totalWalletsBalanceState = selector<number>({
     key: "totalWalletsBalance",
-    get: ({ get }) =>
-        get(walletsState)
-            .map((x) => x.balance)
-            .reduce((acc, current) => acc + current) ?? 0,
+    get: ({ get }) => {
+        const wallets = get(walletsState);
+        return wallets.length === 0
+            ? 0
+            : wallets
+                  .map((x) => x.balance)
+                  .reduce((acc, current) => acc + current) ?? 0;
+    },
 });
 
 export const categoriesState = atom<Category[]>({

@@ -12,6 +12,7 @@ import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/TransactionService";
+import { formatNumber } from "../service/Utils";
 import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -92,6 +93,19 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     const addTransaction = async () => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
+
+        if (amount === 0) {
+            setNotificationList((prev) =>
+                prev.concat(
+                    mapNotificationProps(
+                        "AddExpense failed: Please add amount",
+                        "danger"
+                    )
+                )
+            );
+            return;
+        }
+
         const request: AddExpenseRequest = {
             amount,
             category: categories[categoryIdx]?.name ?? "",
@@ -99,7 +113,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             description: "quick add appense",
             date,
         };
-        console.log(request);
 
         const response = await addExpense(request);
 
@@ -171,8 +184,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 <div className="hero-body">
                     <div className="container">
                         <h1 className="title inline">Balance:</h1>
-                        <h1 className="title inline has-text-weight-bold ml-3">
-                            {wallets[currentValue.walletIdx]?.balance ?? 0}
+                        <h1 className="subtitle inline has-text-weight-bold ml-3">
+                            {formatNumber(
+                                wallets[currentValue.walletIdx]?.balance ?? 0
+                            )}
                         </h1>
                         <h1 className="subtitle inline has-text-weight-bold ml-3">
                             THB

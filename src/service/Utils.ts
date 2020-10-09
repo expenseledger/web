@@ -96,3 +96,7 @@ export function isReturnSuccessStatus(response: Response): boolean {
 export function log(...message: string[]): void {
     console.log(message);
 }
+
+export function formatNumber(value: number): string {
+    return new Intl.NumberFormat("th-TH").format(value);
+}

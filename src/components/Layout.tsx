@@ -3,8 +3,10 @@ import "firebase/auth";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
+import Logo from "../assets/pics/logo.svg";
 import { totalWalletsBalanceState, walletsState } from "../common/shareState";
 import Wallet from "../service/model/Wallet";
+import { formatNumber } from "../service/Utils";
 import Drawer from "./bases/Drawer";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
@@ -31,41 +33,58 @@ const Layout: React.FC<LayoutProps> = (props) => {
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
-            <div className="container is-mobile is-fluid">
+            <div className="container is-mobile is-fluid mt-2">
                 <aside className="menu">
                     <p className="menu-label">Wallets</p>
                     <ul className="menu-list">
                         {wallets.map((x) => (
                             <li key={x.name}>
                                 <div className="columns is-mobile">
-                                    <div className="column is-three-fifths">
+                                    <div className="column is-half">
                                         {x.name}
                                     </div>
-                                    <div className="column">{x.balance}</div>
+                                    <div className="column is-one-quarter">
+                                        {formatNumber(x.balance)}
+                                    </div>
                                     <div className="column">THB</div>
                                 </div>
                             </li>
                         ))}
                         <li>
                             <div className="columns is-mobile">
-                                <div className="column is-three-fifths"></div>
-                                <div className="column">
-                                    {totalWalletsBalance}
+                                <div className="column is-half menu__totalBalance">
+                                    =
+                                </div>
+                                <div className="column is-one-quarter has-text-weight-bold">
+                                    {formatNumber(totalWalletsBalance)}
                                 </div>
                                 <div className="column">THB</div>
                             </div>
                         </li>
                     </ul>
-                    <p className="menu-label">Transactions</p>
+                    <p className="menu-label">Options</p>
                     <ul className="menu-list">
                         <li>
-                            <a>Payments</a>
+                            <a>Create</a>
+                            <ul>
+                                <li>
+                                    <a>Category</a>
+                                </li>
+                                <li>
+                                    <a>Wallet</a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
-                            <a>Transfers</a>
-                        </li>
-                        <li>
-                            <a>Balance</a>
+                            <a>Remove</a>
+                            <ul>
+                                <li>
+                                    <a>Category</a>
+                                </li>
+                                <li>
+                                    <a>Wallet</a>
+                                </li>
+                            </ul>
                         </li>
                     </ul>
                 </aside>
@@ -81,12 +100,15 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     <div className="column is-narrow">
                         <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                     </div>
-                    <div className="column is-half-mobile is-half-tablet">
-                        <span className="has-text-weight-bold is-size-4 has-text-dark">
-                            Expense ledger
-                        </span>
+                    <div className="column is-three-fifths-mobile is-three-fifths-tablet">
+                        <Link to="/">
+                            <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
+                                Expense ledger
+                            </span>
+                            <img className="ml-2" src={Logo} width="30px" />
+                        </Link>
                     </div>
-                    <div className="column is-offset-4-desktop is-offset-3-tablet is-offset-1-mobile">
+                    <div className="column is-offset-1-desktop is-offset-1-tablet">
                         <button
                             className="header__signout button is-link is-outlined is-small"
                             onClick={() => firebase.auth().signOut()}

@@ -33,7 +33,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
-            <div className="container is-mobile is-fluid mt-2">
+            <div className="container is-mobile is-fluid mt-5">
                 <aside className="menu">
                     <p className="menu-label">Wallets</p>
                     <ul className="menu-list">
@@ -65,18 +65,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     <p className="menu-label">Options</p>
                     <ul className="menu-list">
                         <li>
-                            <a>Create</a>
-                            <ul>
-                                <li>
-                                    <a>Category</a>
-                                </li>
-                                <li>
-                                    <a>Wallet</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a>Remove</a>
+                            <span>Add or Remove</span>
                             <ul>
                                 <li>
                                     <a>Category</a>
@@ -105,7 +94,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                             <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
                                 Expense ledger
                             </span>
-                            <img className="ml-2" src={Logo} width="30px" />
+                            <img className="ml-2" src={Logo} width="25px" />
                         </Link>
                     </div>
                     <div className="column is-offset-1-desktop is-offset-1-tablet">

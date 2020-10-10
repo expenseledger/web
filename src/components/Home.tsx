@@ -257,7 +257,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="content__button--add"
                         onClickHandler={addTransaction}
                         value="Add"
-                        outlined
                         type="primary"
                     />
                 </div>
@@ -266,7 +265,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="content__button--more is-dark is-narrow"
                         onClickHandler={toMorePage}
                         value="More"
-                        outlined
                     />
                 </div>
             </div>

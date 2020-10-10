@@ -19,6 +19,7 @@ import {
     addIncome,
     addTransfer,
 } from "../service/TransactionService";
+import { formatNumber } from "../service/Utils";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -262,43 +263,45 @@ const More: React.FC<RouteComponentProps> = (props) => {
         }
     };
 
-    const renderTransaction = () => {
+    const renderWalletSection = () => {
         const isTransfer = transactionTypeTabActive[2];
+        const render = (title: string, walletName: string, balance: number) => (
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">
+                    {title}
+                </span>
+                <Dropdown
+                    className="column is-4 is-narrow"
+                    default={walletName}
+                    options={wallets.map((x) => x.name)}
+                    updateSelectedValue={updateSelectedFromWallet}
+                />
+                <span className="column is-3 is-narrow">
+                    {formatNumber(balance)}
+                </span>
+                <span className="column is-1 is-narrow">THB</span>
+            </div>
+        );
 
-        return (
+        return isTransfer ? (
             <>
-                <div className="more__content__transaction__from">
-                    <span className="more__content__transaction__from__title">
-                        {isTransfer ? "From" : "Wallet"}
-                    </span>
-                    <Dropdown
-                        className="more__content__transaction__from__dropdown"
-                        default={wallets[currentValue.fromWalletIdx]?.name}
-                        options={wallets.map((x) => x.name)}
-                        updateSelectedValue={updateSelectedFromWallet}
-                    />
-                    <span className="more__content__transaction__from__balance">
-                        {wallets[currentValue.fromWalletIdx]?.balance ?? 0} THB
-                    </span>
-                </div>
-                {isTransfer ? (
-                    <div className="more__content__transaction__to">
-                        <span className="more__content__transaction__to__title">
-                            To
-                        </span>
-                        <Dropdown
-                            className="more__content__transaction__to__dropdown"
-                            default={wallets[currentValue.toWalletIdx]?.name}
-                            options={wallets.map((x) => x.name)}
-                            updateSelectedValue={updateSelectedToWallet}
-                        />
-                        <span className="more__content__transaction__to__balance">
-                            {wallets[currentValue.toWalletIdx]?.balance ?? 0}{" "}
-                            THB
-                        </span>
-                    </div>
-                ) : null}
+                {render(
+                    "From",
+                    wallets[currentValue.fromWalletIdx]?.name,
+                    wallets[currentValue.fromWalletIdx]?.balance ?? 0
+                )}
+                {render(
+                    "To",
+                    wallets[currentValue.toWalletIdx]?.name,
+                    wallets[currentValue.toWalletIdx]?.balance ?? 0
+                )}
             </>
+        ) : (
+            render(
+                "Wallet",
+                wallets[currentValue.fromWalletIdx]?.name,
+                wallets[currentValue.fromWalletIdx]?.balance ?? 0
+            )
         );
     };
 
@@ -325,53 +328,62 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
     return (
         <Layout isShowBackwardIcon={true}>
-            <div className="more__content">
+            <div className="mt-5 more">
                 <div className="tabs is-toggle">
                     {renderTransactionTypeTab()}
                 </div>
-                <div className="more__content__category">
-                    <span className="more__content__category__title">
-                        Category{" "}
+                <div className="columns is-mobile is-vcentered">
+                    <span className="column is-4 has-text-weight-bold">
+                        Category
                     </span>
                     <Dropdown
-                        className="more__content__category__dropdown"
+                        className="column is-8"
                         default={categories[currentValue.categoryIdx]?.name}
                         options={categories.map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
                     />
                 </div>
-                <div className="more__content__transaction">
-                    {renderTransaction()}
-                </div>
-                <div className="more__content__date">
-                    <span className="more__content__date__title">Date</span>
+                {renderWalletSection()}
+                <div className="columns is-mobile is-vcentered">
+                    <span className="column is-4 has-text-weight-bold">
+                        Date
+                    </span>
                     <DateBox
-                        className="more__content__date__box"
+                        className="column is-8"
                         name="date"
                         updateValue={updateSelectedDate}
                     />
                 </div>
-                <div className="more__content__amount">
-                    <span className="more__content__amount__title">Amount</span>
+                <div className="columns is-mobile is-vcentered">
+                    <span className="column is-4 has-text-weight-bold">
+                        Amount
+                    </span>
                     <TextBox
-                        className="more__content__amount__box"
+                        className="column is-8"
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
                     />
                 </div>
-                <div className="more__content__description">
-                    <span className="more__content__description__title">
+                <div className="columns is-mobile is-vcentered">
+                    <span className="column is-4 has-text-weight-bold">
                         Description
                     </span>
                     <TextField
-                        className="more__content__description__box"
+                        className="column is-8 more__textArea"
                         name="description"
                         updateValue={updateDescription}
                     />
                 </div>
-                <div>
-                    <Button onClickHandler={addTransaction} value="Add" />
+                <div className="columns is-mobile is-vcentered">
+                    <div className="column">
+                        <Button
+                            className="more__button--add"
+                            onClickHandler={addTransaction}
+                            value="Add"
+                            type="primary"
+                        />
+                    </div>
                 </div>
             </div>
         </Layout>

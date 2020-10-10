@@ -8,114 +8,20 @@
     width: 100px;
 }
 
-.more__content {
-    max-width: 400px;
-    margin: auto;
+.more {
+    .field {
+        margin: unset;
+    }
 
-    .tabs {
-        margin-bottom: 10px;
-
-        ul {
-            margin: 0;
+    &__button {
+        &--add {
+            width: 100px;
         }
     }
 
-    @include mobile-portrait {
-        margin-left: 5px;
-    }
-
-    &__category {
-        @include line-margin();
-
-        &__title {
-            @include title-center();
-        }
-
-        &__dropdown {
-            position: relative;
-            display: inline-block;
-        }
-    }
-
-    &__transaction {
-        &__from {
-            &__title {
-                @include title-center();
-            }
-
-            &__dropdown {
-                position: relative;
-                display: inline-block;
-            }
-
-            &__balance {
-                @include title-center();
-                display: inline-block;
-                margin-left: 5px;
-                width: 150px;
-            }
-        }
-
-        &__to {
-            &__title {
-                @include title-center();
-            }
-
-            &__dropdown {
-                position: relative;
-                display: inline-block;
-            }
-
-            &__balance {
-                @include title-center();
-                display: inline-block;
-                margin-left: 5px;
-                width: 150px;
-            }
-        }
-    }
-
-    &__date {
-        @include line-margin();
-
-        &__title {
-            @include title-center();
-        }
-
-        &__box {
-            position: relative;
-            display: inline-block;
-            width: 200px;
-        }
-    }
-
-    &__amount {
-        @include line-margin();
-
-        &__title {
-            @include title-center();
-        }
-
-        &__box {
-            position: relative;
-            display: inline-block;
-            width: 200px;
-        }
-    }
-
-    &__description {
-        @include line-margin();
-
-        &__title {
-            @include title-center();
-        }
-
-        &__box {
-            position: relative;
-            display: inline-block;
-            width: 200px;
+    &__textArea {
+        .input {
             height: 100px;
-            resize: none;
         }
     }
 }

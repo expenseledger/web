@@ -9,12 +9,12 @@ interface TextBoxProps {
     type?: string;
 }
 
-const TextBox = (props: TextBoxProps) => {
-    const { bind } = useInput("", props.updateValue);
-    const classNames = combineClassName([
+const TextBox: React.FC<TextBoxProps> = (props) => {
+    const { bind } = useInput("0", props.updateValue);
+    const classNames = combineClassName(
         "field",
         !!props.className ? props.className : ""
-    ]);
+    );
 
     return (
         <div className={classNames}>

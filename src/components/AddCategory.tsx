@@ -5,7 +5,7 @@ interface AddCategoryProps {
     onAddCategory: (name: string) => Promise<void>;
 }
 
-function AddCategory(props: AddCategoryProps) {
+const AddCategory: React.FC<AddCategoryProps> = (props) => {
     if (props.isHide) {
         return null;
     }
@@ -29,6 +29,6 @@ function AddCategory(props: AddCategoryProps) {
             </div>
         </div>
     );
-}
+};
 
 export default AddCategory;

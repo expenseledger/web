@@ -32,19 +32,19 @@ function mapTypeToClassname(type: NotificationType): string {
     }
 }
 
-function Notification(props: NotificationPropsWithOnclose) {
-    const showNotificationClassName = combineClassName([
+const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
+    const showNotificationClassName = combineClassName(
         "notification",
         "notification--show",
         mapTypeToClassname(props.type),
-        props.showClassName,
-    ]);
-    const hideNotificationClassName = combineClassName([
+        props.showClassName
+    );
+    const hideNotificationClassName = combineClassName(
         "notification",
         "notification--hide",
         mapTypeToClassname(props.type),
-        props.hideClassName,
-    ]);
+        props.hideClassName
+    );
     const [className, SetClassName] = React.useState(showNotificationClassName);
 
     const onCloseHandler = () => {
@@ -65,7 +65,7 @@ function Notification(props: NotificationPropsWithOnclose) {
             {props.text}
         </div>
     );
-}
+};
 
 export type NotificationType =
     | "primary"

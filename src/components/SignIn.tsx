@@ -9,7 +9,7 @@ import { initWallet } from "../service/WalletService";
 import Loading from "./bases/Loading";
 import "./SignIn.scss";
 
-function SignIn(props: RouteComponentProps) {
+const SignIn: React.FC<RouteComponentProps> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
     const executeAfterLogin = React.useCallback(
@@ -77,6 +77,6 @@ function SignIn(props: RouteComponentProps) {
             )}
         </div>
     );
-}
+};
 
 export default withRouter(SignIn);

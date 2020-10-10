@@ -22,14 +22,14 @@ function getNotificationList(
                     key={t.id}
                     id={t.id}
                     text={t.text}
-                    showClassName={combineClassName([
+                    showClassName={combineClassName(
                         t.showClassName,
-                        `notification--show-${position}`,
-                    ])}
-                    hideClassName={combineClassName([
+                        `notification--show-${position}`
+                    )}
+                    hideClassName={combineClassName(
                         t.showClassName,
-                        `notification--hide-${position}`,
-                    ])}
+                        `notification--hide-${position}`
+                    )}
                     type={t.type}
                     onClose={onNotificationRemove}
                 />
@@ -43,14 +43,14 @@ function getNotificationList(
                         key={t.id}
                         id={t.id}
                         text={t.text}
-                        showClassName={combineClassName([
+                        showClassName={combineClassName(
                             t.showClassName,
-                            `notification--show-${position}`,
-                        ])}
-                        hideClassName={combineClassName([
+                            `notification--show-${position}`
+                        )}
+                        hideClassName={combineClassName(
                             t.showClassName,
-                            `notification--hide-${position}`,
-                        ])}
+                            `notification--hide-${position}`
+                        )}
                         type={t.type}
                         onClose={onNotificationRemove}
                     />
@@ -58,19 +58,19 @@ function getNotificationList(
     }
 }
 
-function Toast(props: ToastProps) {
+const Toast: React.FC<ToastProps> = (props) => {
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const notifications = getNotificationList(
         notificationList,
         props.position,
         (id) => {
-            setNotificationList(notificationList.filter((x) => x.id != id));
+            setNotificationList(notificationList.filter((x) => x.id !== id));
         }
     );
-    const className = combineClassName(["toast", `toast--${props.position}`]);
+    const className = combineClassName("toast", `toast--${props.position}`);
 
     return <div className={className}>{notifications}</div>;
-}
+};
 
 type Position = "top-right" | "top-left" | "bottom-left" | "bottom-right";
 

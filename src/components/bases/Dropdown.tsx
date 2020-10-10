@@ -8,17 +8,17 @@ interface DropdownProps {
     default?: string;
 }
 
-const dropdown = (props: DropdownProps) => {
-    function onChangeHandler(e: React.ChangeEvent<HTMLSelectElement>) {
+const Dropdown: React.FC<DropdownProps> = (props) => {
+    const onChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
         props.updateSelectedValue(e.target.value);
-    }
+    };
 
-    const classNames = combineClassName([
+    const classNames = combineClassName(
         "field",
-        !!props.className ? props.className : "",
-    ]);
+        !!props.className ? props.className : ""
+    );
 
-    function renderOptions(options: string[]): JSX.Element[] {
+    const renderOptions = (options: string[]): JSX.Element[] => {
         return options.map((option, idx) => {
             if (props.default && props.default === option) {
                 return <option key={idx}>{option}</option>;
@@ -26,7 +26,7 @@ const dropdown = (props: DropdownProps) => {
 
             return <option key={idx}>{option}</option>;
         });
-    }
+    };
 
     return (
         <div className={classNames}>
@@ -44,4 +44,4 @@ const dropdown = (props: DropdownProps) => {
     );
 };
 
-export default dropdown;
+export default Dropdown;

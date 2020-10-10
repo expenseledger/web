@@ -17,13 +17,13 @@ export type ButtonType =
     | "danger"
     | "default";
 
-const Button = (props: ButtonProps) => {
-    const classNames = combineClassName([
+const Button: React.FC<ButtonProps> = (props) => {
+    const classNames = combineClassName(
         "button",
         props.type ? `is-${props.type}` : "",
         props.outlined ? "is-outlined" : "",
-        props.className ? props.className : "",
-    ]);
+        props.className ? props.className : ""
+    );
 
     return (
         <button className={classNames} onClick={props.onClickHandler}>

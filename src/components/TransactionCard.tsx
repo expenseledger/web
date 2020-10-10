@@ -12,7 +12,9 @@ interface TransactionItemProps {
     onDelete: () => Promise<void>;
 }
 
-export function TransactionCard(props: TransactionItemProps) {
+export const TransactionCard: React.FC<TransactionItemProps> = (
+    props: TransactionItemProps
+) => {
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
     const date = moment.default(props.date);
     const title = `${date.format("DD/MM/YYYY")} - ${props.type}`;
@@ -92,4 +94,4 @@ export function TransactionCard(props: TransactionItemProps) {
             </div>
         </div>
     );
-}
+};

@@ -1,8 +1,7 @@
 import moment from "moment";
 import * as R from "ramda";
 import * as React from "react";
-import { RouteComponentProps } from "react-router";
-import { Link, withRouter } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import {
     categoriesState,
@@ -13,6 +12,7 @@ import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/TransactionService";
+import { formatNumber } from "../service/Utils";
 import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -31,9 +31,7 @@ interface CurrentValue {
     date: string;
 }
 
-// Refactor notification
-
-function Home(props: RouteComponentProps) {
+const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
@@ -95,6 +93,19 @@ function Home(props: RouteComponentProps) {
 
     const addTransaction = async () => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
+
+        if (amount === 0) {
+            setNotificationList((prev) =>
+                prev.concat(
+                    mapNotificationProps(
+                        "AddExpense failed: Please add amount",
+                        "danger"
+                    )
+                )
+            );
+            return;
+        }
+
         const request: AddExpenseRequest = {
             amount,
             category: categories[categoryIdx]?.name ?? "",
@@ -102,7 +113,6 @@ function Home(props: RouteComponentProps) {
             description: "quick add appense",
             date,
         };
-        console.log(request);
 
         const response = await addExpense(request);
 
@@ -170,19 +180,32 @@ function Home(props: RouteComponentProps) {
         <Loading />
     ) : (
         <Layout isShowBackwardIcon={false}>
-            <div className="content">
-                <div className="content__balance">
-                    <span className="content__balance__text">
-                        Balance: {wallets[currentValue.walletIdx]?.balance ?? 0}{" "}
-                        THB
-                    </span>
+            <section className="hero content__hero">
+                <div className="hero-body">
+                    <div className="container">
+                        <h1 className="title inline">Balance:</h1>
+                        <h1 className="subtitle inline has-text-weight-bold ml-3">
+                            {formatNumber(
+                                wallets[currentValue.walletIdx]?.balance ?? 0
+                            )}
+                        </h1>
+                        <h1 className="subtitle inline has-text-weight-bold ml-3">
+                            THB
+                        </h1>
+                    </div>
+                </div>
+            </section>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-5">
                     <Dropdown
                         className="content__balance__dropdown"
                         options={wallets.map((wallet) => wallet.name)}
                         updateSelectedValue={updateSelectedWallet}
                     />
+                </div>
+                <div className="column is-7">
                     <Link
-                        className="content__balance__transaction__link"
+                        className="has-text-weight-bold"
                         to={{
                             pathname: `/transactionList/${
                                 wallets[currentValue.walletIdx]?.name ?? ""
@@ -192,47 +215,55 @@ function Home(props: RouteComponentProps) {
                         Transaction
                     </Link>
                 </div>
-                <div className="content__date">
-                    <span className="content__date__text">Date </span>
-                    <DateBox
-                        className="content__date__box"
-                        name="date"
-                        updateValue={updateSelectedDate}
-                    />
-                </div>
-                <div className="content__expense">
-                    <span className="content__expense__text">Amount(THB) </span>
-                    <TextBox
-                        className="content__expense__box"
-                        updateValue={updateExpense}
-                        name="expnese"
-                        type="number"
-                    />
-                </div>
-                <div className="content__category">
-                    <span className="content__category__text">Category </span>
-                    <Dropdown
-                        className="content__category__dropdown"
-                        options={categories.map((category) => category.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                    />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-5 has-text-weight-bold">Date</span>
+                <DateBox
+                    className="column is-7"
+                    name="date"
+                    updateValue={updateSelectedDate}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-5 has-text-weight-bold">
+                    Amount(THB)
+                </span>
+                <TextBox
+                    className="column is-7"
+                    updateValue={updateExpense}
+                    name="expnese"
+                    type="number"
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-5 has-text-weight-bold">
+                    Category
+                </span>
+                <Dropdown
+                    className="column is-7"
+                    options={categories.map((category) => category.name)}
+                    updateSelectedValue={updateSelectedCategory}
+                />
+                {/* <Button
+                    onClickHandler={onAddCategoryClickHandler}
+                    className="is-info is-light category__addBtn"
+                    value="Create"
+                /> */}
+            </div>
+            {/* {renderAddCategory()} */}
+            <div className="columns is-mobile">
+                <div className="column is-narrow">
                     <Button
-                        onClickHandler={onAddCategoryClickHandler}
-                        className="is-info is-light category__addBtn"
-                        value="Create"
-                    />
-                </div>
-                {renderAddCategory()}
-                <div className="content__button">
-                    <Button
-                        className="content__button__add"
+                        className="content__button--add"
                         onClickHandler={addTransaction}
                         value="Add"
                         outlined
                         type="primary"
                     />
+                </div>
+                <div className="column">
                     <Button
-                        className="content__button__more is-dark"
+                        className="content__button--more is-dark is-narrow"
                         onClickHandler={toMorePage}
                         value="More"
                         outlined
@@ -241,7 +272,7 @@ function Home(props: RouteComponentProps) {
             </div>
         </Layout>
     );
-}
+};
 
 const HomeWithAuthProtection = withAuthProtection()(Home);
 

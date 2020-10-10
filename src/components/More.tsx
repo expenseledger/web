@@ -5,19 +5,19 @@ import { useRecoilState } from "recoil";
 import {
     categoriesState,
     toastState,
-    walletsState
+    walletsState,
 } from "../common/shareState";
 import { TransactionType } from "../service/Constants";
 import { mapNotificationProps } from "../service/Mapper";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
-    AddTransferRequest
+    AddTransferRequest,
 } from "../service/model/Requests";
 import {
     addExpense,
     addIncome,
-    addTransfer
+    addTransfer,
 } from "../service/TransactionService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -38,7 +38,7 @@ interface CurrentValue {
     [key: string]: any;
 }
 
-function More(props: RouteComponentProps) {
+const More: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
@@ -54,7 +54,11 @@ function More(props: RouteComponentProps) {
         transactionTypeTabActive,
         setTransactionTypeTabActive,
     ] = React.useState([true, false, false]);
-    const transactionTypes: TransactionType[] = ["expense", "income", "transfer"];
+    const transactionTypes: TransactionType[] = [
+        "expense",
+        "income",
+        "transfer",
+    ];
 
     const transactionTypeTabOnClickHandler = (e: any) => {
         const currentTabActive = [...transactionTypeTabActive];
@@ -242,7 +246,9 @@ function More(props: RouteComponentProps) {
     };
 
     const addTransaction = () => {
-        const transactionTypeIdx = transactionTypeTabActive.findIndex(x => x === true);
+        const transactionTypeIdx = transactionTypeTabActive.findIndex(
+            (x) => x === true
+        );
         switch (transactionTypes[transactionTypeIdx]) {
             case "expense":
                 doAddExpense();
@@ -370,7 +376,7 @@ function More(props: RouteComponentProps) {
             </div>
         </Layout>
     );
-}
+};
 
 const MoreWithAuthProtection = withAuthProtection()(More);
 

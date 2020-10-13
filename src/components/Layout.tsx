@@ -1,12 +1,19 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import * as R from "ramda";
 import React from "react";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
-import { totalWalletsBalanceState, walletsState } from "../common/shareState";
+import {
+    categoriesState,
+    totalWalletsBalanceState,
+    walletsState,
+} from "../common/shareState";
+import { getAllCategories } from "../service/CategoryService";
 import Wallet from "../service/model/Wallet";
 import { formatNumber } from "../service/Utils";
+import { getAllWallet } from "../service/WalletService";
 import Drawer from "./bases/Drawer";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
@@ -17,8 +24,10 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = (props) => {
-    const [wallets] = useRecoilState(walletsState);
+    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [, setCategories] = useRecoilState(categoriesState);
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
+    const [isLoading, setIsLoading] = React.useState(true);
     const renderBackIcon = () => {
         return !!props.isShowBackwardIcon ? (
             <div className="header__backIcon">
@@ -81,7 +90,21 @@ const Layout: React.FC<LayoutProps> = (props) => {
         );
     };
 
-    return (
+    React.useEffect(() => {
+        Promise.all([getAllWallet(), getAllCategories()]).then((responses) => {
+            const [tWallets, tCategories] = responses;
+            const sortByNameCaseInsensitive = R.sortBy<any>(
+                R.compose(R.toLower, R.prop("name"))
+            );
+
+            setCategories(sortByNameCaseInsensitive(tCategories ?? []));
+            setWallets(sortByNameCaseInsensitive(tWallets ?? []));
+            setIsLoading(false);
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    return isLoading ? null : (
         <>
             <div className="header">
                 <div className="columns is-mobile is-vcentered">

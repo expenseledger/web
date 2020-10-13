@@ -8,12 +8,10 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { getAllCategories } from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/TransactionService";
 import { formatNumber } from "../service/Utils";
-import { getAllWallet } from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -40,22 +38,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         amount: 0,
         date: dayjs().format("YYYY-MM-DD"),
     });
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [isLoading, setIsLoading] = React.useState(false);
     // const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
-
-    React.useEffect(() => {
-        Promise.all([getAllWallet(), getAllCategories()]).then((responses) => {
-            const [tWallets, tCategories] = responses;
-            const sortByNameCaseInsensitive = R.sortBy<any>(
-                R.compose(R.toLower, R.prop("name"))
-            );
-
-            setCategories(sortByNameCaseInsensitive(tCategories ?? []));
-            setWallets(sortByNameCaseInsensitive(tWallets ?? []));
-            setIsLoading(false);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);

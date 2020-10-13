@@ -1,5 +1,5 @@
 import axios from "axios";
-import * as Constants from "./Constants";
+import { httpStatus } from "./Constants";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
@@ -41,7 +41,7 @@ export async function addExpense(
         request
     );
 
-    if (response.status !== Constants.httpStatus.ok || !response.success) {
+    if (response.status !== httpStatus.ok || !response.success) {
         log(
             `AddExpense failed, status: ${response.status}, ${
                 response.error ? response.error.message : ""

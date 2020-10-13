@@ -1,6 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-import * as React from "react";
+import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { RouteComponentProps, withRouter } from "react-router";
 import Logo from "../assets/pics/logo.svg";

@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import * as React from "react";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import { useRecoilState } from "recoil";
 import {
@@ -56,9 +56,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
         setTransactionTypeTabActive,
     ] = React.useState([true, false, false]);
     const transactionTypes: TransactionType[] = [
-        "expense",
-        "income",
-        "transfer",
+        "EXPENSE",
+        "INCOME",
+        "TRANSFER",
     ];
 
     const transactionTypeTabOnClickHandler = (e: any) => {
@@ -251,13 +251,13 @@ const More: React.FC<RouteComponentProps> = (props) => {
             (x) => x === true
         );
         switch (transactionTypes[transactionTypeIdx]) {
-            case "expense":
+            case "EXPENSE":
                 doAddExpense();
                 break;
-            case "income":
+            case "INCOME":
                 doAddIncome();
                 break;
-            case "transfer":
+            case "TRANSFER":
                 doAddTransfer();
                 break;
         }
@@ -265,7 +265,12 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
     const renderWalletSection = () => {
         const isTransfer = transactionTypeTabActive[2];
-        const render = (title: string, walletName: string, balance: number) => (
+        const render = (
+            title: string,
+            walletName: string,
+            balance: number,
+            updateWallet: (value: string) => void
+        ) => (
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">
                     {title}
@@ -274,7 +279,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     className="column is-4 is-narrow"
                     default={walletName}
                     options={wallets.map((x) => x.name)}
-                    updateSelectedValue={updateSelectedFromWallet}
+                    updateSelectedValue={updateWallet}
                 />
                 <span className="column is-3 is-narrow">
                     {formatNumber(balance)}
@@ -288,19 +293,22 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 {render(
                     "From",
                     wallets[currentValue.fromWalletIdx]?.name,
-                    wallets[currentValue.fromWalletIdx]?.balance ?? 0
+                    wallets[currentValue.fromWalletIdx]?.balance ?? 0,
+                    updateSelectedFromWallet
                 )}
                 {render(
                     "To",
                     wallets[currentValue.toWalletIdx]?.name,
-                    wallets[currentValue.toWalletIdx]?.balance ?? 0
+                    wallets[currentValue.toWalletIdx]?.balance ?? 0,
+                    updateSelectedToWallet
                 )}
             </>
         ) : (
             render(
                 "Wallet",
                 wallets[currentValue.fromWalletIdx]?.name,
-                wallets[currentValue.fromWalletIdx]?.balance ?? 0
+                wallets[currentValue.fromWalletIdx]?.balance ?? 0,
+                updateSelectedFromWallet
             )
         );
     };

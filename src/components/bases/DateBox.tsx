@@ -1,5 +1,5 @@
-import moment from "moment";
-import * as React from "react";
+import dayjs from "dayjs";
+import React from "react";
 import { combineClassName, useInput } from "../../service/Utils";
 
 interface DateBoxProps {
@@ -10,7 +10,7 @@ interface DateBoxProps {
 }
 
 const DateBox: React.FC<DateBoxProps> = (props) => {
-    const { bind } = useInput(moment().format("YYYY-MM-DD"), props.updateValue);
+    const { bind } = useInput(dayjs().format("YYYY-MM-DD"), props.updateValue);
     const classNames = combineClassName(
         "field",
         !!props.className ? props.className : ""

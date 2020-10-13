@@ -1,7 +1,7 @@
 import * as uuid from "uuid";
 import {
     NotificationProps,
-    NotificationType
+    NotificationType,
 } from "../components/bases/Notification";
 
 export function mapNotificationProps(
@@ -12,6 +12,6 @@ export function mapNotificationProps(
     return {
         text,
         type,
-        id: id ?? uuid.v4()
+        id: id ?? uuid.v4(),
     };
 }

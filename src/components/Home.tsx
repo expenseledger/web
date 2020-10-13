@@ -1,6 +1,6 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import * as R from "ramda";
-import * as React from "react";
+import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import {
@@ -8,18 +8,17 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import * as CategoryService from "../service/CategoryService";
+import { getAllCategories } from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/TransactionService";
 import { formatNumber } from "../service/Utils";
-import * as WalletService from "../service/WalletService";
+import { getAllWallet } from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import Loading from "./bases/Loading";
 import TextBox from "./bases/TextBox";
-import TextBoxWithButton from "./bases/TextBoxWithButton";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
@@ -39,16 +38,13 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         walletIdx: 0,
         categoryIdx: 0,
         amount: 0,
-        date: moment().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DD"),
     });
     const [isLoading, setIsLoading] = React.useState(true);
-    const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
+    // const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
 
     React.useEffect(() => {
-        Promise.all([
-            WalletService.getAllWallet(),
-            CategoryService.getAllCategories(),
-        ]).then((responses) => {
+        Promise.all([getAllWallet(), getAllCategories()]).then((responses) => {
             const [tWallets, tCategories] = responses;
             const sortByNameCaseInsensitive = R.sortBy<any>(
                 R.compose(R.toLower, R.prop("name"))
@@ -142,39 +138,39 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         props.history.push("/more", { ...currentValue });
     };
 
-    const onAddCategoryClickHandler = () => {
-        setIsShowAddCategory((prev) => !prev);
-    };
+    // const onAddCategoryClickHandler = () => {
+    //     setIsShowAddCategory((prev) => !prev);
+    // };
 
-    const addCategory = async (name: string) => {
-        const response = await CategoryService.addCategory({ name });
+    // const addCategory = async (name: string) => {
+    //     const response = await addCategory({ name });
 
-        if (!response.isSuccess) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Create category failed", "danger")
-                )
-            );
+    //     if (!response.isSuccess) {
+    //         setNotificationList((prevNotiList) =>
+    //             prevNotiList.concat(
+    //                 mapNotificationProps("Create category failed", "danger")
+    //             )
+    //         );
 
-            return;
-        }
+    //         return;
+    //     }
 
-        const newCategories = categories.concat({ name });
+    //     const newCategories = categories.concat({ name });
 
-        setCategories(newCategories);
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Create category successful", "success")
-            )
-        );
-        setIsShowAddCategory(false);
-    };
+    //     setCategories(newCategories);
+    //     setNotificationList((prevNotiList) =>
+    //         prevNotiList.concat(
+    //             mapNotificationProps("Create category successful", "success")
+    //         )
+    //     );
+    //     setIsShowAddCategory(false);
+    // };
 
-    const renderAddCategory = () => {
-        return isShowAddCategory ? (
-            <TextBoxWithButton onClick={addCategory} />
-        ) : null;
-    };
+    // const renderAddCategory = () => {
+    //     return isShowAddCategory ? (
+    //         <TextBoxWithButton onClick={addCategory} />
+    //     ) : null;
+    // };
 
     return isLoading ? (
         <Loading />

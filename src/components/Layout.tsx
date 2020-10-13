@@ -15,6 +15,7 @@ import Wallet from "../service/model/Wallet";
 import { formatNumber } from "../service/Utils";
 import { getAllWallet } from "../service/WalletService";
 import Drawer from "./bases/Drawer";
+import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
@@ -104,7 +105,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    return isLoading ? null : (
+    return isLoading ? (
+        <Loading />
+    ) : (
         <>
             <div className="header">
                 <div className="columns is-mobile is-vcentered">

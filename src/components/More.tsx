@@ -43,6 +43,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
+    const [isLoading, setIsLoading] = React.useState(false);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
         fromWalletIdx: (props.location.state as any).walletIdx ?? 0,
         toWalletIdx: (props.location.state as any).walletIdx ?? 0,
@@ -250,6 +251,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
         const transactionTypeIdx = transactionTypeTabActive.findIndex(
             (x) => x === true
         );
+
+        setIsLoading(true);
+
         switch (transactionTypes[transactionTypeIdx]) {
             case "EXPENSE":
                 doAddExpense();
@@ -261,6 +265,8 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 doAddTransfer();
                 break;
         }
+
+        setIsLoading(false);
     };
 
     const renderWalletSection = () => {
@@ -386,7 +392,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 <div className="columns is-mobile is-vcentered">
                     <div className="column">
                         <Button
-                            className="more__button--add"
+                            className={`more__button--add ${
+                                isLoading ? "is-loading" : ""
+                            }`}
                             onClickHandler={addTransaction}
                             value="Add"
                             type="primary"

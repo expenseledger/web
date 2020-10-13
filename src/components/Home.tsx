@@ -15,7 +15,6 @@ import { formatNumber } from "../service/Utils";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
-import Loading from "./bases/Loading";
 import TextBox from "./bases/TextBox";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
@@ -73,6 +72,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     const addTransaction = async () => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
+        setIsLoading(true);
 
         if (amount === 0) {
             setNotificationList((prev) =>
@@ -83,6 +83,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     )
                 )
             );
+            setIsLoading(false);
             return;
         }
 
@@ -110,12 +111,14 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 )
             );
 
+            setIsLoading(false);
             return;
         }
 
         setNotificationList((prev) =>
             prev.concat(mapNotificationProps("AddExpense is failed", "danger"))
         );
+        setIsLoading(false);
     };
 
     const toMorePage = () => {
@@ -156,9 +159,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     //     ) : null;
     // };
 
-    return isLoading ? (
-        <Loading />
-    ) : (
+    return (
         <Layout isShowBackwardIcon={false}>
             <section className="hero content__hero">
                 <div className="hero-body">
@@ -234,7 +235,9 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             <div className="columns is-mobile">
                 <div className="column is-narrow">
                     <Button
-                        className="content__button--add"
+                        className={`content__button--add ${
+                            isLoading ? "is-loading" : ""
+                        }`}
                         onClickHandler={addTransaction}
                         value="Add"
                         type="primary"

@@ -479,13 +479,13 @@ type Transaction implements Node {
     category: Category
     categoryId: Int
     createdAt: Datetime!
+    date: Datetime!
     description: String!
     fromAccount: Account
     fromAccountId: Int
     id: Int!
     "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
     nodeId: ID!
-    occurredAt: Datetime!
     "Reads a single `Owner` that is related to this `Transaction`."
     owner: Owner
     ownerId: String!
@@ -604,6 +604,8 @@ enum TransactionsOrderBy {
     CATEGORY_ID_DESC
     CREATED_AT_ASC
     CREATED_AT_DESC
+    DATE_ASC
+    DATE_DESC
     DESCRIPTION_ASC
     DESCRIPTION_DESC
     FROM_ACCOUNT_ID_ASC
@@ -611,8 +613,6 @@ enum TransactionsOrderBy {
     ID_ASC
     ID_DESC
     NATURAL
-    OCCURRED_AT_ASC
-    OCCURRED_AT_DESC
     OWNER_ID_ASC
     OWNER_ID_DESC
     PRIMARY_KEY_ASC
@@ -738,14 +738,14 @@ input TransactionCondition {
     categoryId: Int
     "Checks for equality with the object’s `createdAt` field."
     createdAt: Datetime
+    "Checks for equality with the object’s `date` field."
+    date: Datetime
     "Checks for equality with the object’s `description` field."
     description: String
     "Checks for equality with the object’s `fromAccountId` field."
     fromAccountId: Int
     "Checks for equality with the object’s `id` field."
     id: Int
-    "Checks for equality with the object’s `occurredAt` field."
-    occurredAt: Datetime
     "Checks for equality with the object’s `ownerId` field."
     ownerId: String
     "Checks for equality with the object’s `toAccountId` field."

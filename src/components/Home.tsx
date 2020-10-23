@@ -124,8 +124,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 return;
             }
 
-            setCategories(data.currentUser.owner.accounts.nodes);
-            setWallets(data.currentUser.owner.categories.nodes);
+            setCategories(data.currentUser.owner.categories.nodes);
+            setWallets(data.currentUser.owner.accounts.nodes);
             setIsLoading(false);
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps

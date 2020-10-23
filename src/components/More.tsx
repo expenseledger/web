@@ -183,7 +183,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         if (!errors) {
             const tWallets = R.clone(wallets);
-            const toAccount = data.spend.transaction.toAccount;
+            const toAccount = data.receive.transaction.toAccount;
             const selectedWalletIdx = wallets.findIndex(
                 (x) => x.id === toAccount.id
             );
@@ -223,11 +223,11 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         if (!errors) {
             const tWallets = R.clone(wallets);
-            const fromAccount = data.spend.transaction.fromAccount;
+            const fromAccount = data.transfer.transaction.fromAccount;
             const fromWalletIdx = wallets.findIndex(
                 (x) => x.id === fromAccount.id
             );
-            const toAccount = data.spend.transaction.toAccount;
+            const toAccount = data.transfer.transaction.toAccount;
             const toWalletIdx = wallets.findIndex(
                 (x) => x.id === toAccount.id
             );

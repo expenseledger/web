@@ -10,6 +10,7 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
+import { ADD_EXPENSE } from "../service/TransactionService";
 import { mapNotificationProps } from "../service/Mapper";
 import { formatNumber } from "../service/Utils";
 import Button from "./bases/Button";
@@ -62,41 +63,6 @@ const CURRENT_USER = gql`
 //         }
 //     }
 // `;
-
-const ADD_EXPENSE = gql`
-    mutation AddExpense(
-        $amount: Float!
-        $description: String!
-        $categoryId: Int!
-        $fromAccountId: Int!
-    ) {
-        spend(
-            input: {
-                amount: $amount
-                description: $description
-                categoryId: $categoryId
-                fromAccountId: $fromAccountId
-            }
-        ) {
-            transaction {
-                id
-                amount
-                description
-                type
-                date
-                categoryId
-                fromAccountId
-                toAccountId
-                fromAccount {
-                    id
-                    name
-                    type
-                    balance
-                }
-            }
-        }
-    }
-`;
 
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);

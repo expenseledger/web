@@ -1,4 +1,6 @@
 import axios from "axios";
+import { gql } from "@apollo/client";
+
 import * as Constants from "./Constants";
 import {
     AddExpenseRequest,
@@ -6,14 +8,14 @@ import {
     AddTransferRequest,
     ListTransactionsRequest,
 } from "./model/Requests";
-import { DeleteTranactionRequest } from "./model/Requests/index";
+import { DeleteTranactionRequest } from "./model/Requests";
 import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
     ListTransactionsResponse,
 } from "./model/Responses";
-import { DeleteTransactionResponse } from "./model/Responses/index";
+import { DeleteTransactionResponse } from "./model/Responses";
 import Transaction from "./model/Transaction";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
@@ -158,3 +160,52 @@ export async function deleteTransaction(
         isSuccess: true,
     };
 }
+
+const accountFragment = gql`
+    fragment PlainAccount on Account {
+        id
+        name
+        type
+        balance
+    }
+`;
+
+const transactionFragment = gql`
+    fragment PlainTransaction on Transaction {
+        id
+        amount
+        description
+        type
+        date
+        categoryId
+        fromAccountId
+        toAccountId
+    }
+`;
+
+export const ADD_EXPENSE = gql`
+    mutation AddExpense(
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $fromAccountId: Int!
+    ) {
+        spend(
+            input: {
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                fromAccountId: $fromAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;

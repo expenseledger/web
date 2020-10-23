@@ -4,13 +4,9 @@ import * as React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { RouteComponentProps, withRouter } from "react-router";
 import Logo from "../assets/pics/logo.svg";
-import { initCategory } from "../service/CategoryService";
-import { initWallet } from "../service/WalletService";
-import Loading from "./bases/Loading";
 import "./SignIn.scss";
 
 const SignIn: React.FC<RouteComponentProps> = (props) => {
-    const [isLoading, setIsLoading] = React.useState(false);
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
     const executeAfterLogin = React.useCallback(
         (user: firebase.User) => {
@@ -18,22 +14,7 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
                 return;
             }
 
-            if (!isNewUser) {
-                props.history.replace("/");
-            } else {
-                setIsLoading(true);
-                Promise.all([initCategory(), initWallet()])
-                    .then(() => {
-                        setIsLoading(false);
-                        props.history.replace("/");
-                    })
-                    .catch((err) => {
-                        user?.delete().then(() => {
-                            setIsLoading(false);
-                            alert(err.message);
-                        });
-                    });
-            }
+            props.history.replace("/");
         },
         [isNewUser, props.history]
     );
@@ -61,20 +42,14 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
 
     return (
         <div className="signIn">
-            {isLoading ? (
-                <Loading />
-            ) : (
-                <>
-                    <img className="siginIn__logo" src={Logo} />
-                    <span className="signIn__title">
-                        Welcome to Expense Ledger
-                    </span>
-                    <StyledFirebaseAuth
-                        uiConfig={uiConfig}
-                        firebaseAuth={firebase.auth()}
-                    />
-                </>
-            )}
+            <>
+                <img className="siginIn__logo" src={Logo} alt="sign in logo" />
+                <span className="signIn__title">Welcome to Expense Ledger</span>
+                <StyledFirebaseAuth
+                    uiConfig={uiConfig}
+                    firebaseAuth={firebase.auth()}
+                />
+            </>
         </div>
     );
 };

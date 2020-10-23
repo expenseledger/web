@@ -129,7 +129,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     };
 
     const addTransaction = async () => {
-        const { walletIdx, amount, categoryIdx } = currentValue;
+        const { walletIdx, amount, date, categoryIdx } = currentValue;
 
         if (amount === 0) {
             setNotificationList((prev) =>
@@ -146,6 +146,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         const { data, errors } = await addExpense({
             variables: {
                 amount,
+                date,
                 description: "quick add appense",
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: wallets[walletIdx]?.id ?? 0,

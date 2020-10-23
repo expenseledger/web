@@ -209,3 +209,60 @@ export const ADD_EXPENSE = gql`
     ${transactionFragment}
     ${accountFragment}
 `;
+
+export const ADD_INCOME = gql`
+    mutation AddIncome(
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $toAccountId: Int!
+    ) {
+        receive(
+            input: {
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                toAccountId: $toAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                toAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;
+
+export const ADD_TRANSFER = gql`
+    mutation AddTransfer(
+        $amount: Float!
+        $description: String!
+        $fromAccountId: Int!
+        $toAccountId: Int!
+    ) {
+        transfer(
+            input: {
+                amount: $amount
+                description: $description
+                fromAccountId: $fromAccountId
+                toAccountId: $toAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+                toAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;

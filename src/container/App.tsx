@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import AddOrRemove from "../components/AddOrRemove";
 import Loading from "../components/bases/Loading";
 
 const TransactionList = React.lazy(() => import("./TransactionList"));
@@ -20,6 +21,11 @@ const App: React.FC = () => {
                     />
                     <Route path="/more" exact={true} component={More} />
                     <Route path="/signIn" exact={true} component={SignIn} />
+                    <Route
+                        path="/addOrRemove"
+                        exact={true}
+                        component={AddOrRemove}
+                    />
                 </Switch>
             </React.Suspense>
         </Router>

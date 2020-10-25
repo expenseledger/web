@@ -2,7 +2,7 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import * as R from "ramda";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import {
@@ -19,7 +19,7 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
-interface LayoutProps {
+interface LayoutProps extends RouteComponentProps {
     isShowBackwardIcon?: boolean;
     linkBackwardTo?: string;
 }
@@ -39,6 +39,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
                 </Link>
             </div>
         ) : null;
+    };
+    const categoryMenuHandler = () => {
+        props.history.push("/addOrRemove");
     };
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
@@ -78,7 +81,9 @@ const Layout: React.FC<LayoutProps> = (props) => {
                             <span>Add or Remove</span>
                             <ul>
                                 <li>
-                                    <a>Category</a>
+                                    <a onClick={categoryMenuHandler}>
+                                        Category
+                                    </a>
                                 </li>
                                 <li>
                                     <a>Wallet</a>
@@ -148,4 +153,4 @@ const Layout: React.FC<LayoutProps> = (props) => {
     );
 };
 
-export default Layout;
+export default withRouter(Layout);

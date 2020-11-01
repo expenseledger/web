@@ -5,7 +5,7 @@ import "firebase/auth";
 import React from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
-import App from "./container/App";
+import App from "./components/App";
 import "./index.scss";
 import registerServiceWorker from "./registerServiceWorker";
 

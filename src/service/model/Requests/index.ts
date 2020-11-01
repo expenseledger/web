@@ -30,3 +30,7 @@ export interface DeleteTranactionRequest {
 export interface AddCategoryRequest {
     name: string;
 }
+
+export interface RemoveCategoryRequest {
+    name: string;
+}

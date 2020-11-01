@@ -1,7 +1,7 @@
 import axios from "axios";
 import Category from "./model/Category";
-import { AddCategoryRequest } from "./model/Requests";
-import { AddCategoryResponse } from "./model/Responses/index";
+import { AddCategoryRequest, RemoveCategoryRequest } from "./model/Requests";
+import { AddCategoryResponse, RemoveCategoryResponse } from "./model/Responses/index";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
 const categoryUrl = process.env.REACT_APP_SERVER_URL + "/category";
@@ -41,6 +41,28 @@ export async function addCategory(
 
     if (!isReturnSuccessStatus(response)) {
         log(`Cannot add category, ${response.error?.message}`);
+
+        return {
+            isSuccess: false
+        };
+    }
+
+    return {
+        isSuccess: true
+    };
+}
+
+export async function removeCategory(
+    request: RemoveCategoryRequest
+) : Promise<RemoveCategoryResponse> {
+     const response = await callAxios(
+        axios.post,
+        categoryUrl + "/delete",
+        request
+    );
+
+    if (!isReturnSuccessStatus(response)) {
+        log(`Cannot remove category, ${response.error?.message}`);
 
         return {
             isSuccess: false

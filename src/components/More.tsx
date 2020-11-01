@@ -341,7 +341,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
     };
 
     return (
-        <Layout isShowBackwardIcon={true}>
+        <Layout>
             <div className="mt-5 more">
                 <div className="tabs is-toggle">
                     {renderTransactionTypeTab()}

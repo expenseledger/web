@@ -29,7 +29,7 @@ interface CurrentValue {
 
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
-    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
         walletIdx: 0,
@@ -38,7 +38,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         date: dayjs().format("YYYY-MM-DD"),
     });
     const [isLoading, setIsLoading] = React.useState(false);
-    // const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -125,42 +124,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         props.history.push("/more", { ...currentValue });
     };
 
-    // const onAddCategoryClickHandler = () => {
-    //     setIsShowAddCategory((prev) => !prev);
-    // };
-
-    // const addCategory = async (name: string) => {
-    //     const response = await addCategory({ name });
-
-    //     if (!response.isSuccess) {
-    //         setNotificationList((prevNotiList) =>
-    //             prevNotiList.concat(
-    //                 mapNotificationProps("Create category failed", "danger")
-    //             )
-    //         );
-
-    //         return;
-    //     }
-
-    //     const newCategories = categories.concat({ name });
-
-    //     setCategories(newCategories);
-    //     setNotificationList((prevNotiList) =>
-    //         prevNotiList.concat(
-    //             mapNotificationProps("Create category successful", "success")
-    //         )
-    //     );
-    //     setIsShowAddCategory(false);
-    // };
-
-    // const renderAddCategory = () => {
-    //     return isShowAddCategory ? (
-    //         <TextBoxWithButton onClick={addCategory} />
-    //     ) : null;
-    // };
-
     return (
-        <Layout isShowBackwardIcon={false}>
+        <Layout>
             <section className="hero content__hero">
                 <div className="hero-body">
                     <div className="container">

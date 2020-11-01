@@ -7,10 +7,11 @@ interface TextBoxProps {
     updateValue: (value: string) => void;
     className?: string;
     type?: string;
+    defaultValue?: string;
 }
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
-    const { bind } = useInput("0", props.updateValue);
+    const { bind } = useInput(props.defaultValue ?? "0", props.updateValue);
     const classNames = combineClassName(
         "field",
         !!props.className ? props.className : ""

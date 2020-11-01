@@ -31,3 +31,7 @@ export interface DeleteTransactionResponse {
 export interface AddCategoryResponse {
     isSuccess: boolean;
 }
+
+export interface RemoveCategoryResponse {
+    isSuccess: boolean;
+}

@@ -82,7 +82,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     return isLoading ? (
         <Loading />
     ) : (
-        <Layout isShowBackwardIcon={true}>
+        <Layout>
             <div>{cards}</div>
         </Layout>
     );

@@ -1,5 +1,6 @@
 import React from "react";
-import Layout from "./Layout";
+import styled from "styled-components";
+import TextBox from "./TextBox";
 
 export interface Item {
     id: number;
@@ -7,13 +8,14 @@ export interface Item {
 }
 
 export interface AddOrRemoveProps {
-    addFunc?: (id: number) => Promise<void>;
-    removeFunc?: (id: number) => Promise<void>;
-    currentItems?: () => Item[];
+    createFuncHandler: (value: string) => Promise<void>;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    items: Item[];
 }
 
 interface ItemBoxProps {
-    removeFunc: (id: number) => Promise<void>;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    item: Item;
 }
 
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
@@ -25,11 +27,11 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         setIsClickedDelete(false);
     };
     const onConfirmHandler = async () => {
-        if (!props.removeFunc) {
+        if (!props.deleteFuncHandler) {
             return;
         }
 
-        await props.removeFunc(1);
+        await props.deleteFuncHandler(props.item.name);
         setIsClickedDelete(false);
     };
 
@@ -58,7 +60,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         }
 
         return (
-            <a onClick={onDeleteHandler}>
+            <a onClick={onDeleteHandler} style={{ float: "right" }}>
                 <span className="icon">
                     <i
                         className="fas fa-lg fa-times has-text-danger"
@@ -70,55 +72,54 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
     };
 
     return (
-        <a className="panel-block is-active is-primary">
-            <span className="panel-icon">
-                <i className="fas fa-book" aria-hidden="true"></i>
-            </span>
-            bulma
+        <div className="panel-block is-active is-primary">
+            <span>{props.item.name}</span>
             {renderDelete()}
-        </a>
+        </div>
     );
 };
 
+const ItemContainer = styled.nav`
+    overflow-y: scroll;
+    max-height: 80vh;
+    background-color: white;
+`;
+
 const AddOrRemove: React.FC<AddOrRemoveProps> = (props) => {
-    const i = Array.from(Array(100).keys());
+    const [input, setInput] = React.useState("");
 
     return (
-        <Layout>
-            <div className="columns is-mobile is-centered is-multiline">
-                <div className="column is-full">
-                    <nav
-                        className="panel"
-                        style={{
-                            overflowY: "scroll",
-                            maxHeight: "80vh",
-                            backgroundColor: "white",
-                        }}
-                    >
-                        {i.map((i) => (
-                            <ItemBox removeFunc={props.removeFunc} key={i} />
-                        ))}
-                    </nav>
-                </div>
-                <div className="columns is-gapless is-centered is-mobile">
-                    <div className="column is-four-fifths control">
-                        <input
-                            className="input"
-                            type="text"
-                            placeholder="Category's name"
+        <div className="columns is-mobile is-centered is-multiline">
+            <div className="column is-full">
+                <ItemContainer className="panel">
+                    {props.items.map((i) => (
+                        <ItemBox
+                            deleteFuncHandler={props.deleteFuncHandler}
+                            key={i.id}
+                            item={i}
                         />
-                    </div>
-                    <div className="column control">
-                        <button
-                            // onClick={() => props.onAddCategory}
-                            className="button is-link"
-                        >
-                            Create
-                        </button>
-                    </div>
+                    ))}
+                </ItemContainer>
+            </div>
+            <div className="columns is-gapless is-centered is-mobile">
+                <TextBox
+                    name="adding"
+                    updateValue={setInput}
+                    className="input column is-four-fifths"
+                    type="text"
+                    placeholder="Category's name"
+                    defaultValue=""
+                />
+                <div className="column control">
+                    <button
+                        onClick={() => props.createFuncHandler(input)}
+                        className="button is-link"
+                    >
+                        Create
+                    </button>
                 </div>
             </div>
-        </Layout>
+        </div>
     );
 };
 

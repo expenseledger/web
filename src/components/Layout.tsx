@@ -19,29 +19,13 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
-interface LayoutProps extends RouteComponentProps {
-    isShowBackwardIcon?: boolean;
-    linkBackwardTo?: string;
-}
-
-const Layout: React.FC<LayoutProps> = (props) => {
+const Layout: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [, setCategories] = useRecoilState(categoriesState);
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
-    const renderBackIcon = () => {
-        return !!props.isShowBackwardIcon ? (
-            <div className="header__backIcon">
-                <Link to="/">
-                    <span className="icon">
-                        <i className="fas fa-lg fa-arrow-left"></i>
-                    </span>
-                </Link>
-            </div>
-        ) : null;
-    };
     const categoryMenuHandler = () => {
-        props.history.push("/addOrRemove");
+        props.history.push("/categorySetting");
     };
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
@@ -78,7 +62,7 @@ const Layout: React.FC<LayoutProps> = (props) => {
                     <p className="menu-label">Options</p>
                     <ul className="menu-list">
                         <li>
-                            <span>Add or Remove</span>
+                            <span>Setting</span>
                             <ul>
                                 <li>
                                     <a onClick={categoryMenuHandler}>
@@ -97,16 +81,18 @@ const Layout: React.FC<LayoutProps> = (props) => {
     };
 
     React.useEffect(() => {
-        Promise.all([getAllWallet(), getAllCategories()]).then((responses) => {
-            const [tWallets, tCategories] = responses;
-            const sortByNameCaseInsensitive = R.sortBy<any>(
-                R.compose(R.toLower, R.prop("name"))
-            );
+        Promise.all([getAllWallet(), getAllCategories()])
+            .then((responses) => {
+                const [tWallets, tCategories] = responses;
+                const sortByNameCaseInsensitive = R.sortBy<any>(
+                    R.compose(R.toLower, R.prop("name"))
+                );
 
-            setCategories(sortByNameCaseInsensitive(tCategories ?? []));
-            setWallets(sortByNameCaseInsensitive(tWallets ?? []));
-            setIsLoading(false);
-        });
+                setCategories(sortByNameCaseInsensitive(tCategories ?? []));
+                setWallets(sortByNameCaseInsensitive(tWallets ?? []));
+                setIsLoading(false);
+            })
+            .catch((err) => console.log(err));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

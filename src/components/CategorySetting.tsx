@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
 import { addCategory, removeCategory } from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
-import AddOrRemove from "./bases/AddOrRemove";
+import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
 
@@ -59,7 +59,7 @@ const CategorySetting: React.FC = () => {
 
     return (
         <Layout>
-            <AddOrRemove
+            <CreateAndDelete
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
                 items={categories.map((x, idx) => {

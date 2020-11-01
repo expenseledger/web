@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import Button from "./Button";
 import TextBox from "./TextBox";
 
 export interface Item {
@@ -38,29 +39,30 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const renderDelete = () => {
         if (isClickedDelete) {
             return (
-                <div className="columns">
+                <div className="columns is-mobile is-variable is-1">
                     <div className="column">
-                        <button
-                            onClick={onCancelHandler}
-                            className="button is-primary is-small is-outlined"
-                        >
-                            Cancel
-                        </button>
+                        <Button
+                            onClickHandler={onCancelHandler}
+                            size="small"
+                            outlined
+                            type="primary"
+                            value="Cancel"
+                        />
                     </div>
                     <div className="column">
-                        <button
-                            onClick={onConfirmHandler}
-                            className="button is-danger is-small is-primary"
-                        >
-                            Confirm
-                        </button>
+                        <Button
+                            onClickHandler={onConfirmHandler}
+                            size="small"
+                            type="danger"
+                            value="Confirm"
+                        />
                     </div>
                 </div>
             );
         }
 
         return (
-            <a onClick={onDeleteHandler} style={{ float: "right" }}>
+            <a onClick={onDeleteHandler}>
                 <span className="icon">
                     <i
                         className="fas fa-lg fa-times has-text-danger"
@@ -72,7 +74,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
     };
 
     return (
-        <div className="panel-block is-active is-primary">
+        <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
             <span>{props.item.name}</span>
             {renderDelete()}
         </div>
@@ -85,7 +87,7 @@ const ItemContainer = styled.nav`
     background-color: white;
 `;
 
-const AddOrRemove: React.FC<AddOrRemoveProps> = (props) => {
+const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
     const [input, setInput] = React.useState("");
 
     return (
@@ -123,4 +125,4 @@ const AddOrRemove: React.FC<AddOrRemoveProps> = (props) => {
     );
 };
 
-export default AddOrRemove;
+export default CreateAndDelete;

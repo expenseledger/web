@@ -7,6 +7,7 @@ interface ButtonProps {
     outlined?: boolean;
     onClickHandler?: (e: React.MouseEvent) => void;
     className?: string;
+    size?: ButtonSize;
 }
 
 export type ButtonType =
@@ -17,12 +18,15 @@ export type ButtonType =
     | "danger"
     | "default";
 
+export type ButtonSize = "small" | "normal" | "medium" | "large";
+
 const Button: React.FC<ButtonProps> = (props) => {
     const classNames = combineClassName(
         "button",
         props.type ? `is-${props.type}` : "",
         props.outlined ? "is-outlined" : "",
-        props.className ? props.className : ""
+        props.className ?? "",
+        props.size ? `is-${props.size}` : ""
     );
 
     return (

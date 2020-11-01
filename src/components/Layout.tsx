@@ -59,10 +59,9 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                             </div>
                         </li>
                     </ul>
-                    <p className="menu-label">Options</p>
+                    <p className="menu-label">Setting</p>
                     <ul className="menu-list">
                         <li>
-                            <span>Setting</span>
                             <ul>
                                 <li>
                                     <a onClick={categoryMenuHandler}>

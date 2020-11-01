@@ -9,6 +9,7 @@ const SignIn = React.lazy(() => import("../components/SignIn"));
 const CategorySetting = React.lazy(
     () => import("../components/CategorySetting")
 );
+const WalletSetting = React.lazy(() => import("../components/WalletSetting"));
 
 const App: React.FC = () => {
     return (
@@ -24,9 +25,14 @@ const App: React.FC = () => {
                     <Route path="/more" exact={true} component={More} />
                     <Route path="/signIn" exact={true} component={SignIn} />
                     <Route
-                        path="/categorySetting"
+                        path="/category/setting"
                         exact={true}
                         component={CategorySetting}
+                    />
+                    <Route
+                        path="/wallet/setting"
+                        exact={true}
+                        component={WalletSetting}
                     />
                 </Switch>
             </React.Suspense>

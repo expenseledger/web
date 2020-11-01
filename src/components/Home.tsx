@@ -190,13 +190,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
                 />
-                {/* <Button
-                    onClickHandler={onAddCategoryClickHandler}
-                    className="is-info is-light category__addBtn"
-                    value="Create"
-                /> */}
             </div>
-            {/* {renderAddCategory()} */}
             <div className="columns is-mobile">
                 <div className="column is-narrow">
                     <Button

@@ -25,7 +25,10 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
     const categoryMenuHandler = () => {
-        props.history.push("/categorySetting");
+        props.history.push("/category/setting");
+    };
+    const walletMenuHandler = () => {
+        props.history.push("/wallet/setting");
     };
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
@@ -69,7 +72,7 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                                     </a>
                                 </li>
                                 <li>
-                                    <a>Wallet</a>
+                                    <a onClick={walletMenuHandler}>Wallet</a>
                                 </li>
                             </ul>
                         </li>

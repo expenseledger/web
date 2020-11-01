@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
-import TextBox from "./TextBox";
+import TextBoxWithButton from "./TextBoxWithButton";
 
 export interface Item {
     id: number;
@@ -88,8 +88,6 @@ const ItemContainer = styled.nav`
 `;
 
 const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
-    const [input, setInput] = React.useState("");
-
     return (
         <div className="columns is-mobile is-centered is-multiline">
             <div className="column is-full">
@@ -104,22 +102,14 @@ const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
                 </ItemContainer>
             </div>
             <div className="columns is-gapless is-centered is-mobile">
-                <TextBox
-                    name="adding"
-                    updateValue={setInput}
+                <TextBoxWithButton
+                    name="add"
                     className="input column is-four-fifths"
                     type="text"
-                    placeholder="Category's name"
-                    defaultValue=""
+                    buttonType="link"
+                    buttonText="Create"
+                    onClick={(value) => props.createFuncHandler(value)}
                 />
-                <div className="column control">
-                    <button
-                        onClick={() => props.createFuncHandler(input)}
-                        className="button is-link"
-                    >
-                        Create
-                    </button>
-                </div>
             </div>
         </div>
     );

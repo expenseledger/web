@@ -1,7 +1,11 @@
 import React from "react";
+import { useRecoilState } from "recoil";
+import { walletsState } from "../common/shareState";
+import Layout from "./Layout";
 
 const WalletSetting: React.FC = () => {
-    return <div>Test</div>;
+    const [wallets, setWallets] = useRecoilState(walletsState);
+    return <Layout>Hello</Layout>;
 };
 
 export default WalletSetting;

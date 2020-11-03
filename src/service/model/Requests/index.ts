@@ -27,10 +27,15 @@ export interface DeleteTranactionRequest {
 }
 
 // Category
-export interface AddCategoryRequest {
+export interface CreateCategoryRequest {
     name: string;
 }
 
-export interface RemoveCategoryRequest {
+export interface DeleteCategoryRequest {
+    name: string;
+}
+
+// Wallet
+export interface CreateWalletRequest {
     name: string;
 }

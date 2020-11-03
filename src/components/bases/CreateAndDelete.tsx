@@ -12,6 +12,7 @@ export interface AddOrRemoveProps {
     createFuncHandler: (value: string) => Promise<void>;
     deleteFuncHandler: (value: string) => Promise<void>;
     items: Item[];
+    dropdowns?: string[];
 }
 
 interface ItemBoxProps {
@@ -109,6 +110,7 @@ const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
                     buttonType="link"
                     buttonText="Create"
                     onClick={(value) => props.createFuncHandler(value)}
+                    dropdown={props.dropdowns}
                 />
             </div>
         </div>

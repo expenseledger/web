@@ -1,6 +1,6 @@
 import axios from "axios";
 import Category from "./model/Category";
-import { AddCategoryRequest, RemoveCategoryRequest } from "./model/Requests";
+import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
 import { AddCategoryResponse, RemoveCategoryResponse } from "./model/Responses/index";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
@@ -31,7 +31,7 @@ export async function initCategory(): Promise<void> {
 }
 
 export async function addCategory(
-    request: AddCategoryRequest
+    request: CreateCategoryRequest
 ): Promise<AddCategoryResponse> {
     const response = await callAxios(
         axios.post,
@@ -53,7 +53,7 @@ export async function addCategory(
 }
 
 export async function removeCategory(
-    request: RemoveCategoryRequest
+    request: DeleteCategoryRequest
 ) : Promise<RemoveCategoryResponse> {
      const response = await callAxios(
         axios.post,

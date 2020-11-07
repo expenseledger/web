@@ -102,17 +102,14 @@ const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
                     ))}
                 </ItemContainer>
             </div>
-            <div className="columns is-gapless is-centered is-mobile">
-                <TextBoxWithButton
-                    name="add"
-                    className="input column is-four-fifths"
-                    type="text"
-                    buttonType="link"
-                    buttonText="Create"
-                    onClick={(value) => props.createFuncHandler(value)}
-                    dropdown={props.dropdowns}
-                />
-            </div>
+            <TextBoxWithButton
+                name="add"
+                type="text"
+                buttonType="link"
+                buttonText="Create"
+                onClick={(value) => props.createFuncHandler(value)}
+                dropdown={props.dropdowns}
+            />
         </div>
     );
 };

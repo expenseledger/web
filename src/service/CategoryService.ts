@@ -4,11 +4,11 @@ import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
 import { AddCategoryResponse, RemoveCategoryResponse } from "./model/Responses/index";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
-const categoryUrl = process.env.REACT_APP_SERVER_URL + "/category";
+const categoryUrl = (path: string) => process.env.REACT_APP_SERVER_URL + "/category" + path;
 
 export async function getAllCategories(): Promise<Category[]> {
     let toReturn: Category[] = new Array(0);
-    const response = await callAxios(axios.post, categoryUrl + "/list");
+    const response = await callAxios(axios.post, categoryUrl("/list"));
 
     if (!isReturnSuccessStatus(response)) {
         return toReturn;
@@ -22,7 +22,7 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function initCategory(): Promise<void> {
-    const response = await callAxios(axios.post, categoryUrl + "/init");
+    const response = await callAxios(axios.post, categoryUrl("/init"));
 
     if (!isReturnSuccessStatus(response)) {
         log(`Cannot init category, ${response.error?.message}`);
@@ -30,7 +30,7 @@ export async function initCategory(): Promise<void> {
     }
 }
 
-export async function addCategory(
+export async function createCategory(
     request: CreateCategoryRequest
 ): Promise<AddCategoryResponse> {
     const response = await callAxios(
@@ -52,7 +52,7 @@ export async function addCategory(
     };
 }
 
-export async function removeCategory(
+export async function deleteCategory(
     request: DeleteCategoryRequest
 ) : Promise<RemoveCategoryResponse> {
      const response = await callAxios(

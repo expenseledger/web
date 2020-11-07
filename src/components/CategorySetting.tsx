@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
-import { addCategory, removeCategory } from "../service/CategoryService";
+import { createCategory, deleteCategory } from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
@@ -12,7 +12,7 @@ const CategorySetting: React.FC = () => {
     const [, setNotificationList] = useRecoilState(toastState);
 
     const addCategoryHandler = async (name: string) => {
-        const response = await addCategory({ name });
+        const response = await createCategory({ name });
 
         if (!response.isSuccess) {
             setNotificationList((prevNotiList) =>
@@ -35,7 +35,7 @@ const CategorySetting: React.FC = () => {
     };
 
     const removeCategoryHandler = async (name: string) => {
-        const response = await removeCategory({ name });
+        const response = await deleteCategory({ name });
 
         if (!response.isSuccess) {
             setNotificationList((prevNotiList) =>

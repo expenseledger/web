@@ -1,6 +1,6 @@
-import moment from "moment";
+import dayjs from "dayjs";
 import * as R from "ramda";
-import * as React from "react";
+import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import {
@@ -8,18 +8,14 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import * as CategoryService from "../service/CategoryService";
 import { mapNotificationProps } from "../service/Mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/TransactionService";
 import { formatNumber } from "../service/Utils";
-import * as WalletService from "../service/WalletService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
-import Loading from "./bases/Loading";
 import TextBox from "./bases/TextBox";
-import TextBoxWithButton from "./bases/TextBoxWithButton";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 import Layout from "./Layout";
@@ -33,33 +29,15 @@ interface CurrentValue {
 
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
-    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
         walletIdx: 0,
         categoryIdx: 0,
         amount: 0,
-        date: moment().format("YYYY-MM-DD"),
+        date: dayjs().format("YYYY-MM-DD"),
     });
-    const [isLoading, setIsLoading] = React.useState(true);
-    const [isShowAddCategory, setIsShowAddCategory] = React.useState(false);
-
-    React.useEffect(() => {
-        Promise.all([
-            WalletService.getAllWallet(),
-            CategoryService.getAllCategories(),
-        ]).then((responses) => {
-            const [tWallets, tCategories] = responses;
-            const sortByNameCaseInsensitive = R.sortBy<any>(
-                R.compose(R.toLower, R.prop("name"))
-            );
-
-            setCategories(sortByNameCaseInsensitive(tCategories ?? []));
-            setWallets(sortByNameCaseInsensitive(tWallets ?? []));
-            setIsLoading(false);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -93,6 +71,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     const addTransaction = async () => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
+        setIsLoading(true);
 
         if (amount === 0) {
             setNotificationList((prev) =>
@@ -103,6 +82,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     )
                 )
             );
+            setIsLoading(false);
             return;
         }
 
@@ -130,68 +110,31 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 )
             );
 
+            setIsLoading(false);
             return;
         }
 
         setNotificationList((prev) =>
             prev.concat(mapNotificationProps("AddExpense is failed", "danger"))
         );
+        setIsLoading(false);
     };
 
     const toMorePage = () => {
         props.history.push("/more", { ...currentValue });
     };
 
-    const onAddCategoryClickHandler = () => {
-        setIsShowAddCategory((prev) => !prev);
-    };
-
-    const addCategory = async (name: string) => {
-        const response = await CategoryService.addCategory({ name });
-
-        if (!response.isSuccess) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Create category failed", "danger")
-                )
-            );
-
-            return;
-        }
-
-        const newCategories = categories.concat({ name });
-
-        setCategories(newCategories);
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Create category successful", "success")
-            )
-        );
-        setIsShowAddCategory(false);
-    };
-
-    const renderAddCategory = () => {
-        return isShowAddCategory ? (
-            <TextBoxWithButton onClick={addCategory} />
-        ) : null;
-    };
-
-    return isLoading ? (
-        <Loading />
-    ) : (
-        <Layout isShowBackwardIcon={false}>
-            <section className="hero content__hero">
-                <div className="hero-body">
-                    <div className="container">
-                        <h1 className="title inline">Balance:</h1>
-                        <h1 className="subtitle inline has-text-weight-bold ml-3">
-                            {formatNumber(
-                                wallets[currentValue.walletIdx]?.balance ?? 0
-                            )}
-                        </h1>
-                        <h1 className="subtitle inline has-text-weight-bold ml-3">
-                            THB
-                        </h1>
+    return (
+        <Layout>
+            <section className="section">
+                <div className="columns is-mobile is-vcentered">
+                    <div className="column has-text-weight-bold is-size-3 is-5-desktop is-5-tablet">
+                        {formatNumber(
+                            wallets[currentValue.walletIdx]?.balance ?? 0
+                        )}
+                    </div>
+                    <div className="column has-text-weight-bold is-size-3">
+                        baht
                     </div>
                 </div>
             </section>
@@ -244,20 +187,15 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
                 />
-                {/* <Button
-                    onClickHandler={onAddCategoryClickHandler}
-                    className="is-info is-light category__addBtn"
-                    value="Create"
-                /> */}
             </div>
-            {/* {renderAddCategory()} */}
             <div className="columns is-mobile">
                 <div className="column is-narrow">
                     <Button
-                        className="content__button--add"
+                        className={`content__button--add ${
+                            isLoading ? "is-loading" : ""
+                        }`}
                         onClickHandler={addTransaction}
                         value="Add"
-                        outlined
                         type="primary"
                     />
                 </div>
@@ -266,7 +204,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="content__button--more is-dark is-narrow"
                         onClickHandler={toMorePage}
                         value="More"
-                        outlined
                     />
                 </div>
             </div>

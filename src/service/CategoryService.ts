@@ -1,14 +1,14 @@
 import axios from "axios";
 import Category from "./model/Category";
-import { AddCategoryRequest } from "./model/Requests";
-import { AddCategoryResponse } from "./model/Responses/index";
+import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
+import { AddCategoryResponse, RemoveCategoryResponse } from "./model/Responses/index";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
-const categoryUrl = process.env.REACT_APP_SERVER_URL + "/category";
+const categoryUrl = (path: string) => process.env.REACT_APP_SERVER_URL + "/category" + path;
 
 export async function getAllCategories(): Promise<Category[]> {
     let toReturn: Category[] = new Array(0);
-    const response = await callAxios(axios.post, categoryUrl + "/list");
+    const response = await callAxios(axios.post, categoryUrl("/list"));
 
     if (!isReturnSuccessStatus(response)) {
         return toReturn;
@@ -22,7 +22,7 @@ export async function getAllCategories(): Promise<Category[]> {
 }
 
 export async function initCategory(): Promise<void> {
-    const response = await callAxios(axios.post, categoryUrl + "/init");
+    const response = await callAxios(axios.post, categoryUrl("/init"));
 
     if (!isReturnSuccessStatus(response)) {
         log(`Cannot init category, ${response.error?.message}`);
@@ -30,17 +30,39 @@ export async function initCategory(): Promise<void> {
     }
 }
 
-export async function addCategory(
-    request: AddCategoryRequest
+export async function createCategory(
+    request: CreateCategoryRequest
 ): Promise<AddCategoryResponse> {
     const response = await callAxios(
         axios.post,
-        categoryUrl + "/create",
+        categoryUrl("/create"),
         request
     );
 
     if (!isReturnSuccessStatus(response)) {
         log(`Cannot add category, ${response.error?.message}`);
+
+        return {
+            isSuccess: false
+        };
+    }
+
+    return {
+        isSuccess: true
+    };
+}
+
+export async function deleteCategory(
+    request: DeleteCategoryRequest
+) : Promise<RemoveCategoryResponse> {
+     const response = await callAxios(
+        axios.post,
+        categoryUrl("/delete"),
+        request
+    );
+
+    if (!isReturnSuccessStatus(response)) {
+        log(`Cannot remove category, ${response.error?.message}`);
 
         return {
             isSuccess: false

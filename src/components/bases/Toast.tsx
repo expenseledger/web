@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import { useRecoilState } from "recoil";
 import { toastState } from "../../common/shareState";
 import { combineClassName } from "../../service/Utils";

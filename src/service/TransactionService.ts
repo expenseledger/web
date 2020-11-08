@@ -1,23 +1,23 @@
 import axios from "axios";
-import * as Constants from "./Constants";
+import { httpStatus } from "./Constants";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
     AddTransferRequest,
-    ListTransactionsRequest,
+    ListTransactionsRequest
 } from "./model/Requests";
 import { DeleteTranactionRequest } from "./model/Requests/index";
 import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
-    ListTransactionsResponse,
+    ListTransactionsResponse
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import Transaction from "./model/Transaction";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
-const transactionUrl = process.env.REACT_APP_SERVER_URL + "/transaction";
+const transactionUrl = (path: string) => process.env.REACT_APP_SERVER_URL + "/transaction" + path;
 
 function mapJsonToTransaction(json: any): Transaction {
     return {
@@ -37,14 +37,14 @@ export async function addExpense(
 ): Promise<AddExpenseResponse> {
     const response = await callAxios(
         axios.post,
-        transactionUrl + "/createExpense",
+        transactionUrl("/createExpense"),
         request
     );
 
-    if (response.status !== Constants.httpStatus.ok || !response.success) {
+    if (response.status !== httpStatus.ok || !response.success) {
         log(
             `AddExpense failed, status: ${response.status}, ${
-                response.error ? response.error.message : ""
+                response.error?.message ?? ""
             }`
         );
         return null;
@@ -61,14 +61,14 @@ export async function addIncome(
 ): Promise<AddIncomeResponse> {
     const response = await callAxios(
         axios.post,
-        transactionUrl + "/createIncome",
+        transactionUrl("/createIncome"),
         request
     );
 
     if (!isReturnSuccessStatus(response)) {
         log(
             `AddIncome failed, status: ${response.status}, ${
-                response.error ? response.error.message : ""
+                response.error?.message ?? ""
             }`
         );
         return null;
@@ -85,14 +85,14 @@ export async function addTransfer(
 ): Promise<AddTransferResponse> {
     const response = await callAxios(
         axios.post,
-        transactionUrl + "/createTransfer",
+        transactionUrl("/createTransfer"),
         request
     );
 
     if (!isReturnSuccessStatus(response)) {
         log(
             `AddTransfer failed, status: ${response.status}, ${
-                response.error ? response.error.message : ""
+                response.error.message ?? ""
             }`
         );
         return null;
@@ -110,14 +110,14 @@ export async function listTransactions(
 ): Promise<ListTransactionsResponse> {
     const response = await callAxios(
         axios.post,
-        transactionUrl + "/list",
+        transactionUrl("/list"),
         request
     );
 
     if (!isReturnSuccessStatus(response)) {
         log(
             `ListTransactions failed, status: ${response.status}, ${
-                response.error ? response.error.message : ""
+                response.error?.message ?? ""
             }`
         );
 
@@ -138,14 +138,14 @@ export async function deleteTransaction(
 ): Promise<DeleteTransactionResponse> {
     const response = await callAxios(
         axios.post,
-        transactionUrl + "/delete",
+        transactionUrl("/delete"),
         request
     );
 
     if (!isReturnSuccessStatus(response)) {
         log(
             `DeleteTransaction failed, status: ${response.status}, ${
-                response.error ? response.error.message : ""
+                response.error?.message ?? ""
             }`
         );
 

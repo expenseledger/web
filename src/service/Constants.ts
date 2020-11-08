@@ -4,6 +4,6 @@ export const httpStatus = {
     ok: 200,
 };
 
-export type WalletType = "CASH";
+export type WalletType = "CASH" | "BANK_ACCOUNT" | "CREDIT";
 
-export type TransactionType = "expense" | "income" | "transfer";
+export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";

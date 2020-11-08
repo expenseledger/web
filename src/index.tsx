@@ -2,10 +2,10 @@ import "@fortawesome/fontawesome-free/css/all.css";
 import "bulma/css/bulma.css";
 import firebase from "firebase/app";
 import "firebase/auth";
-import * as React from "react";
-import * as ReactDOM from "react-dom";
+import React from "react";
+import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
-import App from "./container/App";
+import App from "./components/App";
 import "./index.scss";
 import registerServiceWorker from "./registerServiceWorker";
 

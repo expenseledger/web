@@ -8,8 +8,8 @@ export interface Item {
     name: string;
 }
 
-export interface AddOrRemoveProps {
-    createFuncHandler: (value: string) => Promise<void>;
+export interface CreateAndDeleteProps {
+    createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
     deleteFuncHandler: (value: string) => Promise<void>;
     items: Item[];
     dropdowns?: string[];
@@ -88,7 +88,7 @@ const ItemContainer = styled.nav`
     background-color: white;
 `;
 
-const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
+const CreateAndDelete: React.FC<CreateAndDeleteProps> = (props) => {
     return (
         <div className="columns is-mobile is-centered is-multiline">
             <div className="column is-full">
@@ -107,7 +107,7 @@ const CreateAndDelete: React.FC<AddOrRemoveProps> = (props) => {
                 type="text"
                 buttonType="link"
                 buttonText="Create"
-                onClick={(value) => props.createFuncHandler(value)}
+                onClick={props.createFuncHandler}
                 dropdown={props.dropdowns}
             />
         </div>

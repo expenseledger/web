@@ -29,7 +29,7 @@ const Panel = styled.div`
     left: 0;
     height: 100%;
     width: 30%;
-    min-width: 300px;
+    min-width: 350px;
     background-color: white;
     animation: ${(props: StyledProps) => (props.isShow ? slideIn : slideOut)}
         ${animationDuration}s forwards;

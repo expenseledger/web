@@ -35,7 +35,7 @@ export async function createCategory(
 ): Promise<AddCategoryResponse> {
     const response = await callAxios(
         axios.post,
-        categoryUrl + "/create",
+        categoryUrl("/create"),
         request
     );
 
@@ -57,7 +57,7 @@ export async function deleteCategory(
 ) : Promise<RemoveCategoryResponse> {
      const response = await callAxios(
         axios.post,
-        categoryUrl + "/delete",
+        categoryUrl("/delete"),
         request
     );
 

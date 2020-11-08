@@ -23,8 +23,6 @@ export async function callAxios<T>(
             },
         };
 
-        console.log(header);
-
         const { data, status } = await axiosMethod(url, content, header);
 
         return {
@@ -98,5 +96,8 @@ export function log(...message: string[]): void {
 }
 
 export function formatNumber(value: number): string {
-    return new Intl.NumberFormat("th-TH").format(value);
+    return new Intl.NumberFormat("th-TH", {
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
+    }).format(value);
 }

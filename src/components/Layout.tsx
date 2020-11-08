@@ -43,7 +43,7 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                                     <div className="column is-half">
                                         {x.name}
                                     </div>
-                                    <div className="column is-one-quarter">
+                                    <div className="column is-one-third">
                                         {formatNumber(x.balance)}
                                     </div>
                                     <div className="column">THB</div>
@@ -55,7 +55,7 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                                 <div className="column is-half menu__totalBalance">
                                     =
                                 </div>
-                                <div className="column is-one-quarter has-text-weight-bold">
+                                <div className="column is-one-third has-text-weight-bold">
                                     {formatNumber(totalWalletsBalance)}
                                 </div>
                                 <div className="column">THB</div>

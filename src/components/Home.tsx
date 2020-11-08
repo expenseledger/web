@@ -126,18 +126,15 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     return (
         <Layout>
-            <section className="hero content__hero">
-                <div className="hero-body">
-                    <div className="container">
-                        <h1 className="title inline">Balance:</h1>
-                        <h1 className="subtitle inline has-text-weight-bold ml-3">
-                            {formatNumber(
-                                wallets[currentValue.walletIdx]?.balance ?? 0
-                            )}
-                        </h1>
-                        <h1 className="subtitle inline has-text-weight-bold ml-3">
-                            THB
-                        </h1>
+            <section className="section">
+                <div className="columns is-mobile is-vcentered">
+                    <div className="column has-text-weight-bold is-size-3 is-5-desktop is-5-tablet">
+                        {formatNumber(
+                            wallets[currentValue.walletIdx]?.balance ?? 0
+                        )}
+                    </div>
+                    <div className="column has-text-weight-bold is-size-3">
+                        baht
                     </div>
                 </div>
             </section>

@@ -7,7 +7,7 @@ import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
 import App from "./components/App";
 import "./index.scss";
-import registerServiceWorker from "./registerServiceWorker";
+import { unregister } from "./registerServiceWorker";
 
 const firebaseConfig = {
     apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -27,4 +27,5 @@ ReactDOM.render(
     </RecoilRoot>,
     document.getElementById("root") as HTMLElement
 );
-registerServiceWorker();
+
+unregister();

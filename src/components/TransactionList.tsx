@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import Layout from "../components/Layout";
@@ -77,10 +76,6 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             />
         );
     });
-
-    const MultilineDiv = styled.div`
-        word-wrap: break-word;
-    `;
 
     return isLoading ? (
         <Loading />

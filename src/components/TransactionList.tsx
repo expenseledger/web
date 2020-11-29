@@ -1,3 +1,5 @@
+import * as R from "ramda";
+import { Dictionary } from "ramda";
 import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -23,7 +25,9 @@ interface TransactionListParam {
 }
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [transactions, setTransactions] = useState<Dictionary<Transaction[]>>(
+        null
+    );
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
     const wallet =
@@ -33,7 +37,12 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         listTransactions({
             wallet,
         }).then((response) => {
-            const sortedItems = response.items.reverse();
+            const sortedItems: Dictionary<
+                Transaction[]
+            > = R.groupBy<Transaction>((x) => x.date.toString())(
+                response.items.reverse()
+            );
+
             setTransactions(sortedItems);
             setIsLoading(false);
         });
@@ -80,142 +89,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     return isLoading ? (
         <Loading />
     ) : (
-        <Layout>
-            {/* <div>{cards}</div> */}
-            <div className="box">
-                <h1 className="title is-4">25 Nov 2020</h1>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <div className="columns is-mobile is-gapless is-multiline">
-                            <div className="column is-half">
-                                <span className="has-text-weight-bold">
-                                    Amount:
-                                </span>
-                            </div>
-                            <div className="column is-half">123</div>
-                            <div className="column is-half">
-                                <span className="has-text-weight-bold">
-                                    Category:
-                                </span>
-                            </div>
-                            <div className="column is-half">Good</div>
-                            <div className="column is-half">
-                                <span className="has-text-weight-bold">
-                                    Description:
-                                </span>
-                            </div>
-                            <div className="column is-half">
-                                Lorem Ipsum is simply dummy text of the printing
-                                and typesetting industry. Lorem Ipsum has been
-                                the industrys standard dummy text ever since the
-                                1500s,
-                            </div>
-                        </div>
-                    </div>
-                </article>
-                <article className="message">
-                    <div className="message-body">
-                        <p>
-                            <strong>Amount:</strong> 123
-                        </p>
-                        <p>
-                            <strong>Category:</strong> Food
-                        </p>
-                        <p>
-                            <strong>Description:</strong> expasdlkfjlaksdjf
-                        </p>
-                    </div>
-                </article>
-                <article className="message is-danger">
-                    <div className="message-body">
-                        <p>
-                            <strong>Amount:</strong> 123
-                        </p>
-                        <p>
-                            <strong>Category:</strong> Food
-                        </p>
-                        <p>
-                            <strong>Description:</strong> expasdlkfjlaksdjf
-                        </p>
-                    </div>
-                </article>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>
-                            <strong>Amount:</strong> 123
-                        </p>
-                        <p>
-                            <strong>Category:</strong> Food
-                        </p>
-                        <p>
-                            <strong>Description:</strong> expasdlkfjlaksdjf
-                        </p>
-                    </div>
-                </article>
-            </div>
-            <div className="box">
-                <h1 className="title is-4">25 Nov 2020</h1>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-danger">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-            </div>
-            <div className="box">
-                <h1 className="title is-4">25 Nov 2020</h1>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-danger">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-                <article className="message is-success">
-                    <div className="message-body">
-                        <p>Amount: 123</p>
-                        <p>Category: Food</p>
-                        <p>Description: expasdlkfjlaksdjf</p>
-                    </div>
-                </article>
-            </div>
-        </Layout>
+        <Layout>{/* <div>{cards}</div> */}</Layout>
     );
 };
 

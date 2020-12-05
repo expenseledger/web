@@ -3,6 +3,7 @@ import * as R from "ramda";
 import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import {
     categoriesState,
     toastState,
@@ -26,6 +27,10 @@ interface CurrentValue {
     amount: number;
     date: string;
 }
+
+const Icon = styled.span`
+    vertical-align: middle;
+`;
 
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
@@ -150,7 +155,13 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                             }`,
                         }}
                     >
-                        Transaction
+                        <span>Transactions</span>
+                        <Icon className="icon">
+                            <i
+                                className="fas fa-chevron-right"
+                                aria-hidden="true"
+                            ></i>
+                        </Icon>
                     </Link>
                 </div>
             </div>

@@ -3,8 +3,11 @@ import "firebase/auth";
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { RouteComponentProps, withRouter } from "react-router";
+import { useRecoilState } from "recoil";
 import Logo from "../assets/pics/logo.svg";
+import { toastState } from "../common/shareState";
 import { initCategory } from "../service/CategoryService";
+import { mapNotificationProps } from "../service/Mapper";
 import { initWallet } from "../service/WalletService";
 import Loading from "./bases/Loading";
 import "./SignIn.scss";
@@ -12,6 +15,8 @@ import "./SignIn.scss";
 const SignIn: React.FC<RouteComponentProps> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
+    const [notificationList, setNotificationList] = useRecoilState(toastState);
+
     const executeAfterLogin = React.useCallback(
         (user: firebase.User) => {
             if (!user || isNewUser === null) {
@@ -30,7 +35,14 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
                     .catch((err) => {
                         user?.delete().then(() => {
                             setIsLoading(false);
-                            alert(err.message);
+                            setNotificationList(
+                                notificationList.concat(
+                                    mapNotificationProps(
+                                        "Sign in failed. Please try again",
+                                        "danger"
+                                    )
+                                )
+                            );
                         });
                     });
             }

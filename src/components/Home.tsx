@@ -3,6 +3,7 @@ import * as R from "ramda";
 import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import {
     categoriesState,
     toastState,
@@ -26,6 +27,10 @@ interface CurrentValue {
     amount: number;
     date: string;
 }
+
+const Icon = styled.span`
+    vertical-align: middle;
+`;
 
 const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
@@ -73,14 +78,9 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
         setIsLoading(true);
 
-        if (amount === 0) {
+        if (!amount || amount === 0) {
             setNotificationList((prev) =>
-                prev.concat(
-                    mapNotificationProps(
-                        "AddExpense failed: Please add amount",
-                        "danger"
-                    )
-                )
+                prev.concat(mapNotificationProps("Please add amount", "danger"))
             );
             setIsLoading(false);
             return;
@@ -155,7 +155,13 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                             }`,
                         }}
                     >
-                        Transaction
+                        <span>Transactions</span>
+                        <Icon className="icon">
+                            <i
+                                className="fas fa-chevron-right"
+                                aria-hidden="true"
+                            ></i>
+                        </Icon>
                     </Link>
                 </div>
             </div>
@@ -176,6 +182,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
+                    defaultValue="0"
                 />
             </div>
             <div className="columns is-mobile is-vcentered">

@@ -3,15 +3,15 @@ import { RouteComponentProps } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
-import { withAuthProtection } from "../components/hoc/WithAuthProtection";
 import Layout from "../components/Layout";
-import { TransactionCard } from "../components/TransactionCard";
 import { mapNotificationProps } from "../service/Mapper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
     listTransactions,
 } from "../service/TransactionService";
+import { withAuthProtection } from "./hoc/WithAuthProtection";
+import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
 interface TransactionListProps extends RouteComponentProps {
@@ -23,7 +23,7 @@ interface TransactionListParam {
 }
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
-    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
     const wallet =
@@ -34,6 +34,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
             wallet,
         }).then((response) => {
             const sortedItems = response.items.reverse();
+
             setTransactions(sortedItems);
             setIsLoading(false);
         });
@@ -45,7 +46,6 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         });
 
         if (!response.isSuccess) {
-            alert("Delete transaction failed");
             setNotificationList(
                 notificationList.concat(
                     mapNotificationProps("Delete transaction failed", "danger")
@@ -59,33 +59,38 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 mapNotificationProps("Delete transaction succes", "success")
             )
         );
-        setTransactions(transactions.filter((tx) => tx.id !== id));
+
+        setTransactions(transactions.filter((x) => x.id !== id));
     };
 
-    const cards = transactions.map((tx) => {
-        const { id, date, amount, type, category, description } = tx;
-        return (
-            <>
-                <TransactionCard
-                    date={date}
-                    amount={amount}
-                    type={type}
-                    category={category}
-                    description={description}
-                    key={id}
-                    onDelete={() => removeTransaction(id)}
-                />
-            </>
-        );
-    });
+    const getCards = () => {
+        const dateSet: Set<string> = new Set();
+        const toReturn: JSX.Element[] = [];
+        transactions.forEach((x) => dateSet.add(x.date.toString()));
 
-    return isLoading ? (
-        <Loading />
-    ) : (
-        <Layout>
-            <div>{cards}</div>
-        </Layout>
-    );
+        dateSet.forEach((x) =>
+            toReturn.push(
+                <TransactionCard
+                    date={new Date(x)}
+                    items={transactions
+                        .filter((y) => x === y.date.toString())
+                        .map((y) => {
+                            return {
+                                amount: y.amount,
+                                type: y.type,
+                                description: y.description,
+                                category: y.category,
+                                onDelete: () => removeTransaction(y.id),
+                            };
+                        })}
+                />
+            )
+        );
+
+        return toReturn;
+    };
+
+    return isLoading ? <Loading /> : <Layout>{getCards()}</Layout>;
 };
 
 const TransactionListWithAuthProctection = withAuthProtection()(

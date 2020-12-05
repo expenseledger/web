@@ -73,14 +73,9 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         const { walletIdx, amount, date, categoryIdx } = currentValue;
         setIsLoading(true);
 
-        if (amount === 0) {
+        if (!amount || amount === 0) {
             setNotificationList((prev) =>
-                prev.concat(
-                    mapNotificationProps(
-                        "AddExpense failed: Please add amount",
-                        "danger"
-                    )
-                )
+                prev.concat(mapNotificationProps("Please add amount", "danger"))
             );
             setIsLoading(false);
             return;
@@ -176,6 +171,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
+                    defaultValue="0"
                 />
             </div>
             <div className="columns is-mobile is-vcentered">

@@ -119,6 +119,16 @@ const More: React.FC<RouteComponentProps> = (props) => {
         setCurrentValue(tCurrentValue);
     };
 
+    const validateAmount = (amount: number) => {
+        if (!amount || amount === 0) {
+            setNotificationList((prev) =>
+                prev.concat(mapNotificationProps("Please add amount", "danger"))
+            );
+            return false;
+        }
+        return true;
+    };
+
     const doAddExpense = async () => {
         const {
             fromWalletIdx,
@@ -127,6 +137,13 @@ const More: React.FC<RouteComponentProps> = (props) => {
             date,
             description,
         } = currentValue;
+
+        const isValid = validateAmount(amount);
+
+        if (!isValid) {
+            setIsLoading(false);
+            return;
+        }
 
         const request: AddExpenseRequest = {
             amount,
@@ -169,6 +186,13 @@ const More: React.FC<RouteComponentProps> = (props) => {
             description,
         } = currentValue;
 
+        const isValid = validateAmount(amount);
+
+        if (!isValid) {
+            setIsLoading(false);
+            return;
+        }
+
         const request: AddIncomeRequest = {
             amount,
             category: categories[categoryIdx]?.name ?? "",
@@ -208,6 +232,13 @@ const More: React.FC<RouteComponentProps> = (props) => {
             date,
             description,
         } = currentValue;
+
+        const isValid = validateAmount(amount);
+
+        if (!isValid) {
+            setIsLoading(false);
+            return;
+        }
 
         const request: AddTransferRequest = {
             amount,
@@ -377,6 +408,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
+                        defaultValue="0"
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

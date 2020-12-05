@@ -46,7 +46,6 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         });
 
         if (!response.isSuccess) {
-            alert("Delete transaction failed");
             setNotificationList(
                 notificationList.concat(
                     mapNotificationProps("Delete transaction failed", "danger")

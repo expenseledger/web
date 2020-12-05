@@ -89,7 +89,7 @@ export const TransactionCard: React.FC<TransactionItemProps> = (
                 {formatItems.map((x, idx) => (
                     <article
                         className={`message ${
-                            x.type === "INCOME" ? "success" : ""
+                            x.type === "INCOME" ? "is-success" : "is-dark"
                         }`}
                         key={idx}
                     >
@@ -121,7 +121,9 @@ export const TransactionCard: React.FC<TransactionItemProps> = (
                                     </span>
                                 </div>
                                 <div className="column is-half">
-                                    {x.description}
+                                    {!x.description || x.description === ""
+                                        ? "-"
+                                        : x.description}
                                 </div>
                             </div>
                         </div>

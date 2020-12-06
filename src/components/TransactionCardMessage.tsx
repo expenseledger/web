@@ -98,7 +98,7 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (
     return (
         <article
             className={`message ${
-                props.type === "INCOME" ? "is-success" : "is-dark"
+                props.amount.startsWith("-") ? "is-dark" : "is-success"
             }`}
         >
             <MessageBox className="message-body">

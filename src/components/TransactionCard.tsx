@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import React from "react";
+import styled from "styled-components";
 import { TransactionType } from "../service/Constants";
 import { formatNumber } from "../service/Utils";
 import TransactionCardMessage from "./TransactionCardMessage";
@@ -17,6 +18,16 @@ interface TransactionCardProps {
     items: TransactoinCardItem[];
 }
 
+const Title = styled.h1`
+    display: inline;
+`;
+const SumAmountBox = styled.div`
+    display: inline-block;
+`;
+const MiddleSpan = styled.span`
+    vertical-align: middle;
+`;
+
 export const TransactionCard: React.FC<TransactionCardProps> = (
     props: TransactionCardProps
 ) => {
@@ -27,10 +38,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
             return {
                 cateogry: x.category,
                 description: x.description ?? "-",
-                amount:
-                    x.type === "INCOME"
-                        ? formatNumber(x.amount)
-                        : "-" + formatNumber(x.amount),
+                amount: formatNumber(x.amount),
                 type: x.type,
                 onDelete: x.onDelete,
             };
@@ -50,7 +58,15 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
 
     return (
         <div className="box">
-            <h1 className="title is-4">{title}</h1>
+            <div className="is-flex is-flex-direction-row is-justify-content-space-between">
+                <Title className="title is-4">{title}</Title>
+                <SumAmountBox>
+                    <MiddleSpan>
+                        {props.items.reduce((acc, cur) => acc + cur.amount, 0)}
+                    </MiddleSpan>
+                    <MiddleSpan className="ml-2">Baht</MiddleSpan>
+                </SumAmountBox>
+            </div>
             {renderBody()}
         </div>
     );

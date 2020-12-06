@@ -26,19 +26,19 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
-    const wallet =
+    const walletName =
         props.wallet ?? (props.match.params as TransactionListParam).walletName;
 
     useEffect(() => {
         listTransactions({
-            wallet,
+            wallet: walletName,
         }).then((response) => {
             const sortedItems = response.items.reverse();
 
             setTransactions(sortedItems);
             setIsLoading(false);
         });
-    }, [wallet]);
+    }, [walletName]);
 
     const removeTransaction = async (id: string) => {
         const response = await deleteTransaction({
@@ -67,6 +67,17 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
         transactions.forEach((x) => dateSet.add(x.date.toString()));
+        const getAmount = (tx: Transaction) => {
+            switch (tx.type) {
+                case "EXPENSE":
+                    return -tx.amount;
+                case "TRANSFER":
+                    return tx.dstWallet === walletName ? tx.amount : -tx.amount;
+                case "INCOME":
+                default:
+                    return tx.amount;
+            }
+        };
 
         dateSet.forEach((x) =>
             toReturn.push(
@@ -76,7 +87,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                         .filter((y) => x === y.date.toString())
                         .map((y) => {
                             return {
-                                amount: y.amount,
+                                amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
                                 category: y.category,

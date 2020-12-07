@@ -47,7 +47,7 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
                     });
             }
         },
-        [isNewUser, props.history]
+        [isNewUser, notificationList, props.history, setNotificationList]
     );
 
     React.useEffect(() => {

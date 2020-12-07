@@ -1,23 +1,25 @@
+import { gql } from "@apollo/client";
 import axios from "axios";
 import { httpStatus } from "./Constants";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
     AddTransferRequest,
-    ListTransactionsRequest
+    DeleteTranactionRequest,
+    ListTransactionsRequest,
 } from "./model/Requests";
-import { DeleteTranactionRequest } from "./model/Requests/index";
 import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
-    ListTransactionsResponse
+    ListTransactionsResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import Transaction from "./model/Transaction";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
-const transactionUrl = (path: string) => process.env.REACT_APP_SERVER_URL + "/transaction" + path;
+const transactionUrl = (path: string) =>
+    process.env.REACT_APP_SERVER_URL + "/transaction" + path;
 
 function mapJsonToTransaction(json: any): Transaction {
     return {
@@ -158,3 +160,109 @@ export async function deleteTransaction(
         isSuccess: true,
     };
 }
+
+const accountFragment = gql`
+    fragment PlainAccount on Account {
+        id
+        name
+        type
+        balance
+    }
+`;
+
+const transactionFragment = gql`
+    fragment PlainTransaction on Transaction {
+        id
+        amount
+        description
+        type
+        date
+        categoryId
+        fromAccountId
+        toAccountId
+    }
+`;
+
+export const ADD_EXPENSE = gql`
+    mutation AddExpense(
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $fromAccountId: Int!
+    ) {
+        spend(
+            input: {
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                fromAccountId: $fromAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;
+
+export const ADD_INCOME = gql`
+    mutation AddIncome(
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $toAccountId: Int!
+    ) {
+        receive(
+            input: {
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                toAccountId: $toAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                toAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;
+
+export const ADD_TRANSFER = gql`
+    mutation AddTransfer(
+        $amount: Float!
+        $description: String!
+        $fromAccountId: Int!
+        $toAccountId: Int!
+    ) {
+        transfer(
+            input: {
+                amount: $amount
+                description: $description
+                fromAccountId: $fromAccountId
+                toAccountId: $toAccountId
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+                toAccount {
+                    ...PlainAccount
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+`;

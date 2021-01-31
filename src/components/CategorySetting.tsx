@@ -24,9 +24,9 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.concat({ name });
+        // const newCategories = categories.concat({ name });
 
-        setCategories(newCategories);
+        // setCategories(newCategories);
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Create category successful", "success")

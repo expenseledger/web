@@ -35,13 +35,13 @@ const WalletSetting: React.FC = () => {
             return;
         }
 
-        setWallets(
-            wallets.concat({
-                name: walletName,
-                type: walletType,
-                balance: 0,
-            })
-        );
+        // setWallets(
+        //     wallets.concat({
+        //         name: walletName,
+        //         type: walletType,
+        //         balance: 0,
+        //     })
+        // );
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Create wallet success", "success")

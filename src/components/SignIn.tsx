@@ -3,19 +3,11 @@ import "firebase/auth";
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { RouteComponentProps, withRouter } from "react-router";
-import { useRecoilState } from "recoil";
 import Logo from "../assets/pics/logo.svg";
-import { toastState } from "../common/shareState";
-import { initCategory } from "../service/CategoryService";
-import { mapNotificationProps } from "../service/Mapper";
-import { initWallet } from "../service/WalletService";
-import Loading from "./bases/Loading";
 import "./SignIn.scss";
 
 const SignIn: React.FC<RouteComponentProps> = (props) => {
-    const [isLoading, setIsLoading] = React.useState(false);
     const [isNewUser, setIsNewUser] = React.useState<boolean | null>(null);
-    const [notificationList, setNotificationList] = useRecoilState(toastState);
 
     const executeAfterLogin = React.useCallback(
         (user: firebase.User) => {
@@ -23,31 +15,9 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
                 return;
             }
 
-            if (!isNewUser) {
-                props.history.replace("/");
-            } else {
-                setIsLoading(true);
-                Promise.all([initCategory(), initWallet()])
-                    .then(() => {
-                        setIsLoading(false);
-                        props.history.replace("/");
-                    })
-                    .catch((err) => {
-                        user?.delete().then(() => {
-                            setIsLoading(false);
-                            setNotificationList(
-                                notificationList.concat(
-                                    mapNotificationProps(
-                                        "Sign in failed. Please try again",
-                                        "danger"
-                                    )
-                                )
-                            );
-                        });
-                    });
-            }
+            props.history.replace("/");
         },
-        [isNewUser, notificationList, props.history, setNotificationList]
+        [isNewUser, props.history]
     );
 
     React.useEffect(() => {
@@ -73,20 +43,12 @@ const SignIn: React.FC<RouteComponentProps> = (props) => {
 
     return (
         <div className="signIn">
-            {isLoading ? (
-                <Loading />
-            ) : (
-                <>
-                    <img className="siginIn__logo" src={Logo} />
-                    <span className="signIn__title">
-                        Welcome to Expense Ledger
-                    </span>
-                    <StyledFirebaseAuth
-                        uiConfig={uiConfig}
-                        firebaseAuth={firebase.auth()}
-                    />
-                </>
-            )}
+            <img className="siginIn__logo" src={Logo} />
+            <span className="signIn__title">Welcome to Expense Ledger</span>
+            <StyledFirebaseAuth
+                uiConfig={uiConfig}
+                firebaseAuth={firebase.auth()}
+            />
         </div>
     );
 };

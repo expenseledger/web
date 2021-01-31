@@ -11,6 +11,17 @@ import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 const categoryUrl = (path: string) =>
     process.env.REACT_APP_SERVER_URL + "/category" + path;
 
+export const ADD_CATEGORY = gql`
+    mutation AddCategory($name: String!) {
+        createCategory(input: { name: $name }) {
+            category {
+                id
+                name
+            }
+        }
+    }
+`;
+
 export async function getAllCategories(): Promise<Category[]> {
     let toReturn: Category[] = new Array(0);
     const response = await callAxios(axios.post, categoryUrl("/list"));
@@ -78,14 +89,3 @@ export async function deleteCategory(
         isSuccess: true,
     };
 }
-
-export const ADD_CATEGORY = gql`
-    mutation AddCategory($name: String!) {
-        createCategory(input: { name: $name }) {
-            category {
-                id
-                name
-            }
-        }
-    }
-`;

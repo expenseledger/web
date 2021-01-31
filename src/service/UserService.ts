@@ -1,4 +1,6 @@
 import { gql } from "@apollo/client";
+import client from "../lib/apollo";
+import User from "./model/User";
 
 export const CURRENT_USER = gql`
     mutation CurrentUser {
@@ -31,3 +33,18 @@ export const accountFragment = gql`
         balance
     }
 `;
+
+export async function getUserData(): Promise<User> {
+    const result = await client.mutate({
+        mutation: CURRENT_USER,
+    });
+
+    if (result.errors) {
+        throw new Error(result.errors.map((x) => x.message).join("\n"));
+    }
+
+    return {
+        categories: result.data.currentUser.owner.categories.nodes,
+        wallets: result.data.currentUser.owner.accounts.nodes,
+    };
+}

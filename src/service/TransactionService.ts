@@ -16,6 +16,7 @@ import {
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import Transaction from "./model/Transaction";
+import { accountFragment } from "./UserService";
 import { callAxios, isReturnSuccessStatus, log } from "./Utils";
 
 const transactionUrl = (path: string) =>
@@ -160,15 +161,6 @@ export async function deleteTransaction(
         isSuccess: true,
     };
 }
-
-const accountFragment = gql`
-    fragment PlainAccount on Account {
-        id
-        name
-        type
-        balance
-    }
-`;
 
 const transactionFragment = gql`
     fragment PlainTransaction on Transaction {

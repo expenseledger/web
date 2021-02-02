@@ -1,18 +1,18 @@
 import { gql } from "@apollo/client";
-import axios from "axios";
+import client from "../lib/apollo";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
 import {
     AddCategoryResponse,
     RemoveCategoryResponse,
 } from "./model/Responses/index";
-import { callAxios, isReturnSuccessStatus, log } from "./uils";
+import { extractGraphQLErrors, log } from "./uils";
 
 const categoryUrl = (path: string) =>
     process.env.REACT_APP_SERVER_URL + "/category" + path;
 
-export const ADD_CATEGORY = gql`
-    mutation AddCategory($name: String!) {
+export const CREATE_CATEGORY = gql`
+    mutation CreateCategory($name: String!) {
         createCategory(input: { name: $name }) {
             category {
                 id
@@ -22,45 +22,60 @@ export const ADD_CATEGORY = gql`
     }
 `;
 
+export const DELETE_CATEGORY = gql`
+    mutation DeleteCategory($id: Int!) {
+        deleteCategory(input: { id: $id }) {
+            owner {
+                categories {
+                    nodes {
+                        id
+                        name
+                    }
+                }
+            }
+        }
+    }
+`;
+
 export const GET_ALL_CATEGORIES = gql`
-    query GetAllCategory
+    query GetAllCategories() {
+        categories {
+            nodes {
+                id
+                name
+            }
+        }
+    }
 `;
 
 export async function getAllCategories(): Promise<Category[]> {
-    let toReturn: Category[] = new Array(0);
-    const response = await callAxios(axios.post, categoryUrl("/list"));
+    const response = await client.query({
+        query: GET_ALL_CATEGORIES,
+    });
 
-    if (!isReturnSuccessStatus(response)) {
-        return toReturn;
+    if (response.errors) {
+        log(`Cannot get all categories`, response.errors);
+
+        return [];
     }
 
-    if (response.data) {
-        toReturn = response.data.items;
-    }
+    const toReturn = response.data.categories.nodes as Category[];
 
     return toReturn;
-}
-
-export async function initCategory(): Promise<void> {
-    const response = await callAxios(axios.post, categoryUrl("/init"));
-
-    if (!isReturnSuccessStatus(response)) {
-        log(`Cannot init category, ${response.error?.message}`);
-        throw new Error("Cannot init category");
-    }
 }
 
 export async function createCategory(
     request: CreateCategoryRequest
 ): Promise<AddCategoryResponse> {
-    const response = await callAxios(
-        axios.post,
-        categoryUrl("/create"),
-        request
-    );
+    const response = await client.mutate({
+        mutation: CREATE_CATEGORY,
+        variables: {
+            name: request.name,
+        },
+    });
 
-    if (!isReturnSuccessStatus(response)) {
-        log(`Cannot add category, ${response.error?.message}`);
+    if (response.errors) {
+        log(`Cannot add category, ${extractGraphQLErrors(response.errors)}`);
 
         return {
             isSuccess: false,
@@ -75,14 +90,15 @@ export async function createCategory(
 export async function deleteCategory(
     request: DeleteCategoryRequest
 ): Promise<RemoveCategoryResponse> {
-    const response = await callAxios(
-        axios.post,
-        categoryUrl("/delete"),
-        request
-    );
+    const response = await client.mutate({
+        mutation: DELETE_CATEGORY,
+        variables: {
+            id: request.id,
+        },
+    });
 
-    if (!isReturnSuccessStatus(response)) {
-        log(`Cannot remove category, ${response.error?.message}`);
+    if (response.errors) {
+        log(`Cannot remove category`, response.errors);
 
         return {
             isSuccess: false,

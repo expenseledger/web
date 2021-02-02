@@ -34,8 +34,8 @@ const CategorySetting: React.FC = () => {
         );
     };
 
-    const removeCategoryHandler = async (name: string) => {
-        const response = await deleteCategory({ name });
+    const removeCategoryHandler = async (id: string | number) => {
+        const response = await deleteCategory({ id: id as number });
 
         if (!response.isSuccess) {
             setNotificationList((prevNotiList) =>
@@ -47,7 +47,7 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.filter((x) => x.name !== name);
+        const newCategories = categories.filter((x) => x.id !== id);
 
         setCategories(newCategories);
         setNotificationList((prevNotiList) =>
@@ -62,8 +62,8 @@ const CategorySetting: React.FC = () => {
             <CreateAndDelete
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
-                items={categories.map((x, idx) => {
-                    return { id: idx, name: x.name };
+                items={categories.map((x) => {
+                    return { id: x.id, name: x.name };
                 })}
             />
         </Layout>

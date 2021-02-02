@@ -32,7 +32,7 @@ export interface CreateCategoryRequest {
 }
 
 export interface DeleteCategoryRequest {
-    name: string;
+    id: number;
 }
 
 // Wallet

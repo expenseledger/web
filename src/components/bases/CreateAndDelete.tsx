@@ -10,13 +10,13 @@ export interface Item {
 
 export interface CreateAndDeleteProps {
     createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
-    deleteFuncHandler: (value: string) => Promise<void>;
+    deleteFuncHandler: (value: string | number) => Promise<void>;
     items: Item[];
     dropdowns?: string[];
 }
 
 interface ItemBoxProps {
-    deleteFuncHandler: (value: string) => Promise<void>;
+    deleteFuncHandler: (value: string | number) => Promise<void>;
     item: Item;
 }
 
@@ -33,7 +33,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
             return;
         }
 
-        await props.deleteFuncHandler(props.item.name);
+        await props.deleteFuncHandler(props.item.id);
         setIsClickedDelete(false);
     };
 

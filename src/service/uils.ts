@@ -1,5 +1,6 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import { GraphQLError } from "graphql";
 import { useState } from "react";
 import { httpStatus } from "./constants";
 import Response from "./model/Response";
@@ -91,8 +92,8 @@ export function isReturnSuccessStatus(response: Response): boolean {
     return false;
 }
 
-export function log(...message: string[]): void {
-    console.log(message);
+export function log(message: string, errors?: readonly GraphQLError[]): void {
+    console.log(message, extractGraphQLErrors(errors));
 }
 
 export function formatNumber(value: number): string {
@@ -100,4 +101,8 @@ export function formatNumber(value: number): string {
         maximumFractionDigits: 2,
         minimumFractionDigits: 2,
     }).format(value);
+}
+
+export function extractGraphQLErrors(errors?: readonly GraphQLError[]): string {
+    return errors?.map((x) => x.message).join("\n") ?? "";
 }

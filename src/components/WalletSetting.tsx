@@ -1,13 +1,13 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { toastState, walletsState } from "../common/shareState";
-import { WalletType } from "../service/Constants";
-import { mapNotificationProps } from "../service/Mapper";
+import { WalletType } from "../service/constants";
+import { mapNotificationProps } from "../service/mapper";
 import {
     mapStringToWalletType,
     mapWalletTypeToString,
-} from "../service/WalletHelper";
-import { createWallet, deleteWallet } from "../service/WalletService";
+} from "../service/walletHelper";
+import { createWallet, deleteWallet } from "../service/walletService";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";

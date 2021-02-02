@@ -1,8 +1,8 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
-import { createCategory, deleteCategory } from "../service/CategoryService";
-import { mapNotificationProps } from "../service/Mapper";
+import { createCategory, deleteCategory } from "../service/categoryService";
+import { mapNotificationProps } from "../service/mapper";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";

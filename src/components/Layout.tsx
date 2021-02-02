@@ -10,8 +10,8 @@ import {
     walletsState,
 } from "../common/shareState";
 import Wallet from "../service/model/Wallet";
-import { getUserData } from "../service/UserService";
-import { formatNumber } from "../service/Utils";
+import { formatNumber } from "../service/uils";
+import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";

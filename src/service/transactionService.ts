@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import axios from "axios";
-import { httpStatus } from "./Constants";
+import { httpStatus } from "./constants";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
@@ -16,8 +16,8 @@ import {
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import Transaction from "./model/Transaction";
-import { accountFragment } from "./UserService";
-import { callAxios, isReturnSuccessStatus, log } from "./Utils";
+import { callAxios, isReturnSuccessStatus, log } from "./uils";
+import { accountFragment } from "./userService";
 
 const transactionUrl = (path: string) =>
     process.env.REACT_APP_SERVER_URL + "/transaction" + path;

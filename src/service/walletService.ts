@@ -1,9 +1,10 @@
 import axios from "axios";
-import { httpStatus, WalletType } from "./Constants";
+import { httpStatus, WalletType } from "./constants";
 import Wallet from "./model/Wallet";
-import { callAxios, isReturnSuccessStatus } from "./Utils";
+import { callAxios, isReturnSuccessStatus } from "./uils";
 
-const walletUrl = (path: string) => process.env.REACT_APP_SERVER_URL + "/wallet" + path;
+const walletUrl = (path: string) =>
+    process.env.REACT_APP_SERVER_URL + "/wallet" + path;
 
 export async function getAllWallet(): Promise<Wallet[]> {
     let toReturn: Wallet[] = new Array(0);
@@ -46,13 +47,16 @@ export async function initWallet(): Promise<void> {
     }
 }
 
-export async function createWallet(walletName: string, walletType: WalletType): Promise<boolean> {
+export async function createWallet(
+    walletName: string,
+    walletType: WalletType
+): Promise<boolean> {
     const response = await callAxios(axios.post, walletUrl("/create"), {
         name: walletName,
         type: walletType.toString(),
         balance: 0,
     });
-    
+
     if (!isReturnSuccessStatus(response)) {
         console.log(`Cannot create wallet, ${response.error?.message}`);
         return false;
@@ -63,10 +67,10 @@ export async function createWallet(walletName: string, walletType: WalletType): 
 
 export async function deleteWallet(walletName: string): Promise<boolean> {
     const response = await callAxios(axios.post, walletUrl("/delete"), {
-        name: walletName
+        name: walletName,
     });
 
-     if (!isReturnSuccessStatus(response)) {
+    if (!isReturnSuccessStatus(response)) {
         console.log(`Cannot delete wallet, ${response.error?.message}`);
         return false;
     }

@@ -7,8 +7,8 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { TransactionType } from "../service/Constants";
-import { mapNotificationProps } from "../service/Mapper";
+import { TransactionType } from "../service/constants";
+import { mapNotificationProps } from "../service/mapper";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
@@ -18,8 +18,8 @@ import {
     addExpense,
     addIncome,
     addTransfer,
-} from "../service/TransactionService";
-import { formatNumber } from "../service/Utils";
+} from "../service/transactionService";
+import { formatNumber } from "../service/uils";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";

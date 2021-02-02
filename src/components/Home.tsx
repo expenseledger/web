@@ -9,10 +9,10 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { mapNotificationProps } from "../service/Mapper";
+import { mapNotificationProps } from "../service/mapper";
 import { AddExpenseRequest } from "../service/model/Requests";
-import { addExpense } from "../service/TransactionService";
-import { formatNumber } from "../service/Utils";
+import { addExpense } from "../service/transactionService";
+import { formatNumber } from "../service/uils";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";

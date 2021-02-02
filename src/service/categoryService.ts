@@ -6,7 +6,7 @@ import {
     AddCategoryResponse,
     RemoveCategoryResponse,
 } from "./model/Responses/index";
-import { callAxios, isReturnSuccessStatus, log } from "./Utils";
+import { callAxios, isReturnSuccessStatus, log } from "./uils";
 
 const categoryUrl = (path: string) =>
     process.env.REACT_APP_SERVER_URL + "/category" + path;
@@ -20,6 +20,10 @@ export const ADD_CATEGORY = gql`
             }
         }
     }
+`;
+
+export const GET_ALL_CATEGORIES = gql`
+    query GetAllCategory
 `;
 
 export async function getAllCategories(): Promise<Category[]> {

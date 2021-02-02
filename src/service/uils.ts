@@ -1,7 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
 import { useState } from "react";
-import { httpStatus } from "./Constants";
+import { httpStatus } from "./constants";
 import Response from "./model/Response";
 
 /**
@@ -98,6 +98,6 @@ export function log(...message: string[]): void {
 export function formatNumber(value: number): string {
     return new Intl.NumberFormat("th-TH", {
         maximumFractionDigits: 2,
-        minimumFractionDigits: 2
+        minimumFractionDigits: 2,
     }).format(value);
 }

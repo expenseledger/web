@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName } from "../../service/Utils";
+import { combineClassName } from "../../service/uils";
 
 interface ButtonProps {
     value: string;

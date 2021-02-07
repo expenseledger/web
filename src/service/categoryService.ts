@@ -8,9 +8,6 @@ import {
 } from "./model/Responses/index";
 import { extractGraphQLErrors, log } from "./uils";
 
-const categoryUrl = (path: string) =>
-    process.env.REACT_APP_SERVER_URL + "/category" + path;
-
 export const CREATE_CATEGORY = gql`
     mutation CreateCategory($name: String!) {
         createCategory(input: { name: $name }) {
@@ -78,12 +75,15 @@ export async function createCategory(
         log(`Cannot add category, ${extractGraphQLErrors(response.errors)}`);
 
         return {
-            isSuccess: false,
+            addedCategory: null,
         };
     }
 
     return {
-        isSuccess: true,
+        addedCategory: {
+            id: response.data.category.id,
+            name: response.data.ccategory.name,
+        },
     };
 }
 

@@ -14,7 +14,7 @@ const CategorySetting: React.FC = () => {
     const addCategoryHandler = async (name: string) => {
         const response = await createCategory({ name });
 
-        if (!response.isSuccess) {
+        if (!response.addedCategory) {
             setNotificationList((prevNotiList) =>
                 prevNotiList.concat(
                     mapNotificationProps("Create category failed", "danger")
@@ -24,9 +24,9 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        // const newCategories = categories.concat({ name });
+        const newCategories = categories.concat(response.addedCategory);
 
-        // setCategories(newCategories);
+        setCategories(newCategories);
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Create category successful", "success")

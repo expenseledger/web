@@ -1,3 +1,4 @@
+import Category from "../Category";
 import Transaction from "../Transaction";
 import Wallet from "../Wallet";
 
@@ -29,7 +30,7 @@ export interface DeleteTransactionResponse {
 
 // Category
 export interface AddCategoryResponse {
-    isSuccess: boolean;
+    addedCategory: Category;
 }
 
 export interface RemoveCategoryResponse {

@@ -8,7 +8,7 @@ import {
 } from "./model/Responses/index";
 import { extractGraphQLErrors, log } from "./uils";
 
-export const CREATE_CATEGORY = gql`
+const CREATE_CATEGORY = gql`
     mutation CreateCategory($name: String!) {
         createCategory(input: { name: $name }) {
             category {
@@ -19,7 +19,7 @@ export const CREATE_CATEGORY = gql`
     }
 `;
 
-export const DELETE_CATEGORY = gql`
+const DELETE_CATEGORY = gql`
     mutation DeleteCategory($id: Int!) {
         deleteCategory(input: { id: $id }) {
             owner {
@@ -34,7 +34,7 @@ export const DELETE_CATEGORY = gql`
     }
 `;
 
-export const GET_ALL_CATEGORIES = gql`
+const GET_ALL_CATEGORIES = gql`
     query GetAllCategories() {
         categories {
             nodes {

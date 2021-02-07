@@ -35,7 +35,7 @@ const DELETE_CATEGORY = gql`
 `;
 
 const GET_ALL_CATEGORIES = gql`
-    query GetAllCategories() {
+    query GetAllCategories {
         categories {
             nodes {
                 id
@@ -67,7 +67,9 @@ export async function createCategory(
     const response = await client.mutate({
         mutation: CREATE_CATEGORY,
         variables: {
-            name: request.name,
+            input: {
+                name: request.name,
+            },
         },
     });
 
@@ -93,7 +95,9 @@ export async function deleteCategory(
     const response = await client.mutate({
         mutation: DELETE_CATEGORY,
         variables: {
-            id: request.id,
+            input: {
+                id: request.id,
+            },
         },
     });
 

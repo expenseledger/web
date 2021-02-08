@@ -1,79 +1,160 @@
-import axios from "axios";
-import { httpStatus, WalletType } from "./constants";
-import Wallet from "./model/Wallet";
-import { callAxios, isReturnSuccessStatus } from "./uils";
+import { gql } from "@apollo/client";
+import client from "../lib/apollo";
+import {
+    CreateWalletRequest,
+    DeleteWalletRequest,
+    GetWalletRequest,
+} from "./model/Requests/index";
+import {
+    CreateWalletResponse,
+    DeleteWalletResponse,
+    GetAllWalletResponse,
+    GetWalletResponse,
+} from "./model/Responses/index";
+import { log } from "./uils";
+import { mapWalletFromServer, mapWalletTypeToString } from "./walletHelper";
 
-const walletUrl = (path: string) =>
-    process.env.REACT_APP_SERVER_URL + "/wallet" + path;
-
-export async function getAllWallet(): Promise<Wallet[]> {
-    let toReturn: Wallet[] = new Array(0);
-    const response = await callAxios(axios.post, walletUrl("/list"));
-
-    if (response.status !== httpStatus.ok || !response.success) {
-        return toReturn;
+const GET_ALL_WALLETS = gql`
+    query GetAllWallets {
+        accounts {
+            nodes {
+                id
+                balance
+                name
+                type
+            }
+        }
     }
+`;
 
-    if (response.data) {
-        toReturn = response.data.items;
+const GET_WALLET_BY_ID = gql`
+    query GetWalletById($id: Int!) {
+        getAccount(id: $id) {
+            id
+            name
+            balance
+            type
+        }
     }
+`;
 
-    return toReturn;
-}
+const CREATE_WALET = gql`
+    mutation CreateWallet($name: String!, $type: AccountType!) {
+        createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
 
-export async function getWallet(walletName: string): Promise<Wallet> {
-    const response = await callAxios(axios.post, walletUrl("/list"), {
-        name: walletName,
+const DELETE_WALLET_BY_ID = gql`
+    mutation DeleteWallet($id: Int!) {
+        closeAccount(input: { id: $id }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
+
+export async function getAllWallet(): Promise<GetAllWalletResponse> {
+    const response = await client.query({
+        query: GET_ALL_WALLETS,
     });
 
-    if (!isReturnSuccessStatus) {
-        console.log(
-            `getWallet failed, status: ${response.status}, ${
-                response.error?.message ?? ""
-            }`
-        );
-        return null;
+    if (response.errors) {
+        log("Cannot get all wallets.", response.errors);
+        return {
+            wallets: [],
+        };
     }
 
-    return response.data;
+    const toReturn = response.data.accounts.nodes.map(mapWalletFromServer);
+
+    return {
+        wallets: toReturn,
+    };
 }
 
-export async function initWallet(): Promise<void> {
-    const response = await callAxios(axios.post, walletUrl("/init"));
+export async function getWallet(
+    request: GetWalletRequest
+): Promise<GetWalletResponse> {
+    const response = await client.query({
+        query: GET_WALLET_BY_ID,
+        variables: {
+            input: {
+                id: request.id,
+            },
+        },
+    });
 
-    if (!isReturnSuccessStatus(response)) {
-        console.log(`Cannot init wallet, ${response.error?.message}`);
-        throw new Error("Cannot init wallet");
+    if (response.errors) {
+        log(`Cannet get wallet by id: ${request.id}`, response.errors);
+
+        return {
+            wallet: null,
+        };
     }
+
+    return {
+        wallet: mapWalletFromServer(response.data),
+    };
 }
 
 export async function createWallet(
-    walletName: string,
-    walletType: WalletType
-): Promise<boolean> {
-    const response = await callAxios(axios.post, walletUrl("/create"), {
-        name: walletName,
-        type: walletType.toString(),
-        balance: 0,
+    request: CreateWalletRequest
+): Promise<CreateWalletResponse> {
+    const response = await client.mutate({
+        mutation: CREATE_WALET,
+        variables: {
+            input: {
+                name: request.name,
+                type: mapWalletTypeToString(request.type, true),
+            },
+        },
     });
 
-    if (!isReturnSuccessStatus(response)) {
-        console.log(`Cannot create wallet, ${response.error?.message}`);
-        return false;
+    if (response.errors) {
+        log(`Cannot create wallet`, response.errors);
+
+        return {
+            wallet: null,
+        };
     }
 
-    return true;
+    return {
+        wallet: mapWalletFromServer(response.data.account),
+    };
 }
 
-export async function deleteWallet(walletName: string): Promise<boolean> {
-    const response = await callAxios(axios.post, walletUrl("/delete"), {
-        name: walletName,
+export async function deleteWallet(
+    request: DeleteWalletRequest
+): Promise<DeleteWalletResponse> {
+    const response = await client.mutate({
+        mutation: DELETE_WALLET_BY_ID,
+        variables: {
+            input: {
+                id: request.id,
+            },
+        },
     });
 
-    if (!isReturnSuccessStatus(response)) {
-        console.log(`Cannot delete wallet, ${response.error?.message}`);
-        return false;
+    if (response.errors) {
+        console.log(`Cannot delete wallet id: ${request.id}`, response.errors);
+
+        return {
+            isSuccess: false,
+        };
     }
 
-    return true;
+    return {
+        isSuccess: true,
+    };
 }

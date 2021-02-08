@@ -3,8 +3,8 @@ import client from "../lib/apollo";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
 import {
-    AddCategoryResponse,
-    RemoveCategoryResponse,
+    CreateCategoryResponse,
+    DeleteCategoryResponse,
 } from "./model/Responses/index";
 import { extractGraphQLErrors, log } from "./uils";
 
@@ -63,7 +63,7 @@ export async function getAllCategories(): Promise<Category[]> {
 
 export async function createCategory(
     request: CreateCategoryRequest
-): Promise<AddCategoryResponse> {
+): Promise<CreateCategoryResponse> {
     const response = await client.mutate({
         mutation: CREATE_CATEGORY,
         variables: {
@@ -91,7 +91,7 @@ export async function createCategory(
 
 export async function deleteCategory(
     request: DeleteCategoryRequest
-): Promise<RemoveCategoryResponse> {
+): Promise<DeleteCategoryResponse> {
     const response = await client.mutate({
         mutation: DELETE_CATEGORY,
         variables: {

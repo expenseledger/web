@@ -20,13 +20,12 @@ const WalletSetting: React.FC = () => {
         walletName: string,
         walletType: string
     ) => {
-        console.log(walletName, walletType);
-        const isSuccess = await createWallet(
-            walletName,
-            mapStringToWalletType(walletType)
-        );
+        const response = await createWallet({
+            name: walletName,
+            type: mapStringToWalletType(walletType),
+        });
 
-        if (!isSuccess) {
+        if (!response.wallet) {
             setNotificationList((prevNotiList) =>
                 prevNotiList.concat(
                     mapNotificationProps("Create wallet failed", "danger")
@@ -35,21 +34,25 @@ const WalletSetting: React.FC = () => {
             return;
         }
 
-        // setWallets(
-        //     wallets.concat({
-        //         name: walletName,
-        //         type: walletType,
-        //         balance: 0,
-        //     })
-        // );
+        setWallets(
+            wallets.concat({
+                id: response.wallet.id,
+                name: response.wallet.name,
+                type: response.wallet.type,
+                balance: response.wallet.balance,
+            })
+        );
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Create wallet success", "success")
             )
         );
     };
-    const deleteWalletHandler = async (walletName: string) => {
-        const isSuccess = await deleteWallet(walletName);
+
+    const deleteWalletHandler = async (id: string | number) => {
+        const isSuccess = await deleteWallet({
+            id: +id,
+        });
 
         if (!isSuccess) {
             setNotificationList((prevNotiList) =>
@@ -60,7 +63,7 @@ const WalletSetting: React.FC = () => {
             return;
         }
 
-        setWallets(wallets.filter((x) => x.name !== walletName));
+        setWallets(wallets.filter((x) => x.id !== id));
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Delete wallet success", "success")

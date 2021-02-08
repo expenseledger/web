@@ -76,8 +76,8 @@ const WalletSetting: React.FC = () => {
             <CreateAndDelete
                 createFuncHandler={createWalletHandler}
                 deleteFuncHandler={deleteWalletHandler}
-                items={wallets.map((x, idx) => {
-                    return { id: idx, name: x.name };
+                items={wallets.map((x) => {
+                    return { id: x.id, name: x.name };
                 })}
                 dropdowns={walletTypes.map((x) => mapWalletTypeToString(x))}
             />

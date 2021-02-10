@@ -67,9 +67,7 @@ export async function createCategory(
     const response = await client.mutate({
         mutation: CREATE_CATEGORY,
         variables: {
-            input: {
-                name: request.name,
-            },
+            name: request.name,
         },
     });
 
@@ -83,8 +81,8 @@ export async function createCategory(
 
     return {
         addedCategory: {
-            id: response.data.category.id,
-            name: response.data.ccategory.name,
+            id: response.data.createCategory.category.id,
+            name: response.data.createCategory.category.name,
         },
     };
 }
@@ -95,9 +93,7 @@ export async function deleteCategory(
     const response = await client.mutate({
         mutation: DELETE_CATEGORY,
         variables: {
-            input: {
-                id: request.id,
-            },
+            id: request.id,
         },
     });
 

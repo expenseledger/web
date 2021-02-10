@@ -89,9 +89,7 @@ export async function getWallet(
     const response = await client.query({
         query: GET_WALLET_BY_ID,
         variables: {
-            input: {
-                id: request.id,
-            },
+            id: request.id,
         },
     });
 
@@ -104,7 +102,7 @@ export async function getWallet(
     }
 
     return {
-        wallet: mapWalletFromServer(response.data),
+        wallet: mapWalletFromServer(response.data.getAccount),
     };
 }
 
@@ -114,10 +112,8 @@ export async function createWallet(
     const response = await client.mutate({
         mutation: CREATE_WALET,
         variables: {
-            input: {
-                name: request.name,
-                type: mapWalletTypeToString(request.type, true),
-            },
+            name: request.name,
+            type: mapWalletTypeToString(request.type, true),
         },
     });
 
@@ -130,7 +126,7 @@ export async function createWallet(
     }
 
     return {
-        wallet: mapWalletFromServer(response.data.account),
+        wallet: mapWalletFromServer(response.data.createAccount.account),
     };
 }
 
@@ -140,14 +136,12 @@ export async function deleteWallet(
     const response = await client.mutate({
         mutation: DELETE_WALLET_BY_ID,
         variables: {
-            input: {
-                id: request.id,
-            },
+            id: request.id,
         },
     });
 
     if (response.errors) {
-        console.log(`Cannot delete wallet id: ${request.id}`, response.errors);
+        log(`Cannot delete wallet id: ${request.id}`, response.errors);
 
         return {
             isSuccess: false,

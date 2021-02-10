@@ -10,7 +10,7 @@ import {
     walletsState,
 } from "../common/shareState";
 import Wallet from "../service/model/Wallet";
-import { formatNumber } from "../service/uils";
+import { formatNumber, log } from "../service/uils";
 import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
@@ -87,7 +87,7 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                 setWallets(wallets);
                 setIsLoading(false);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => log(err));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

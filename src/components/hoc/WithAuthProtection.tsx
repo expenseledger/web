@@ -1,6 +1,6 @@
-import React from "react";
 import firebase from "firebase/app";
 import "firebase/auth";
+import React from "react";
 import { RouteComponentProps } from "react-router";
 import Loading from "../bases/Loading";
 
@@ -12,7 +12,9 @@ interface WithAuthProtectionState {
     isSignedIn: boolean;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const withAuthProtection = (redirectPath = "/signIn") => (
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     WrappedComponent: any
 ) => {
     class WithAuthProtection extends React.Component<
@@ -23,14 +25,14 @@ export const withAuthProtection = (redirectPath = "/signIn") => (
             super(props);
 
             this.state = {
-                isSignedIn: false
+                isSignedIn: false,
             };
         }
 
         componentDidMount() {
             firebase
                 .auth()
-                .onAuthStateChanged(user =>
+                .onAuthStateChanged((user) =>
                     !user
                         ? this.props.history.replace(redirectPath)
                         : this.setState({ isSignedIn: true })

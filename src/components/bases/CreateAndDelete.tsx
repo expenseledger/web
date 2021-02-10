@@ -10,13 +10,13 @@ export interface Item {
 
 export interface CreateAndDeleteProps {
     createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
-    deleteFuncHandler: (value: string | number) => Promise<void>;
+    deleteFuncHandler: (value: number) => Promise<void>;
     items: Item[];
     dropdowns?: string[];
 }
 
 interface ItemBoxProps {
-    deleteFuncHandler: (value: string | number) => Promise<void>;
+    deleteFuncHandler: (value: number) => Promise<void>;
     item: Item;
 }
 

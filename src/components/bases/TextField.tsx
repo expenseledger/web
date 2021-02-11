@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName, useInput } from "../../service/uils";
+import { combineClassName, useInput } from "../../common/uils";
 
 interface TextFieldProps {
     name: string;

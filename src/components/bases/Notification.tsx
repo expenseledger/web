@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName } from "../../service/uils";
+import { combineClassName } from "../../common/uils";
 
 export interface NotificationProps {
     id: string;

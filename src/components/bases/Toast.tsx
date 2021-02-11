@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { toastState } from "../../common/shareState";
-import { combineClassName } from "../../service/uils";
+import { combineClassName } from "../../common/uils";
 import Notification, { NotificationProps } from "./Notification";
 import "./Toast.scss";
 

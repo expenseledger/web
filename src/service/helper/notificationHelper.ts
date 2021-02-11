@@ -2,7 +2,7 @@ import * as uuid from "uuid";
 import {
     NotificationProps,
     NotificationType,
-} from "../components/bases/Notification";
+} from "../../components/bases/Notification";
 
 export function mapNotificationProps(
     text: React.ReactNode,

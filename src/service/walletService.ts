@@ -1,5 +1,10 @@
 import { gql } from "@apollo/client";
+import { log } from "../common/uils";
 import client from "../lib/apollo";
+import {
+    mapWalletFromServer,
+    mapWalletTypeToString,
+} from "./helper/walletHelper";
 import {
     CreateWalletRequest,
     DeleteWalletRequest,
@@ -11,8 +16,6 @@ import {
     GetAllWalletResponse,
     GetWalletResponse,
 } from "./model/Responses/index";
-import { log } from "./uils";
-import { mapWalletFromServer, mapWalletTypeToString } from "./walletHelper";
 
 const GET_ALL_WALLETS = gql`
     query GetAllWallets {

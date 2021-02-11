@@ -1,5 +1,5 @@
-import { WalletType } from "./constants";
-import Wallet from "./model/Wallet";
+import { WalletType } from "../constants";
+import Wallet from "../model/Wallet";
 
 export function mapWalletTypeToString(
     walletType: WalletType,

@@ -9,8 +9,8 @@ import {
     totalWalletsBalanceState,
     walletsState,
 } from "../common/shareState";
+import { formatNumber, log } from "../common/uils";
 import Wallet from "../service/model/Wallet";
-import { formatNumber, log } from "../service/uils";
 import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";

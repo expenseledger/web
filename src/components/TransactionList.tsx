@@ -4,7 +4,7 @@ import { useRecoilState } from "recoil";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import Layout from "../components/Layout";
-import { mapNotificationProps } from "../service/mapper";
+import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,

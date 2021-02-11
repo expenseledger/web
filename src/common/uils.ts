@@ -2,8 +2,8 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import { GraphQLError } from "graphql";
 import { useState } from "react";
-import { httpStatus } from "./constants";
-import Response from "./model/Response";
+import { httpStatus } from "../service/constants";
+import Response from "../service/model/Response";
 
 /**
  * @param {any} axiosMethod pass axios method eg. axios.post.

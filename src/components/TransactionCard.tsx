@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
-import { formatNumber } from "../common/uils";
+import { formatNumber } from "../common/utils";
 import { TransactionType } from "../service/constants";
 import TransactionCardMessage from "./TransactionCardMessage";
 

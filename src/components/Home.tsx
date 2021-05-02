@@ -9,7 +9,7 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { formatNumber } from "../common/uils";
+import { formatNumber } from "../common/utils";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";

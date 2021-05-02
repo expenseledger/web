@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName } from "../../common/uils";
+import { combineClassName } from "../../common/utils";
 
 interface DropdownProps {
     options: string[];

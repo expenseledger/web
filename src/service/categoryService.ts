@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { extractGraphQLErrors, log } from "../common/uils";
+import { extractGraphQLErrors, log } from "../common/utils";
 import client from "../lib/apollo";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";

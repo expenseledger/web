@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { combineClassName, useInput } from "../../common/uils";
+import { combineClassName, useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
 
 interface TextBoxWithButtonProps {

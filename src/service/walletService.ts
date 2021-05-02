@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { log } from "../common/uils";
+import { log } from "../common/utils";
 import client from "../lib/apollo";
 import {
     mapWalletFromServer,

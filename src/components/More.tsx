@@ -7,7 +7,7 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { formatNumber } from "../common/uils";
+import { formatNumber } from "../common/utils";
 import { TransactionType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import {

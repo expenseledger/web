@@ -3,7 +3,7 @@ import Category from "./Category";
 import Wallet from "./Wallet";
 
 export interface Transaction {
-    id: string;
+    id: number;
     fromAccount?: Wallet;
     toAccount?: Wallet;
     amount: number;

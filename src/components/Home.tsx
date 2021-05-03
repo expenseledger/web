@@ -152,7 +152,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="has-text-weight-bold"
                         to={{
                             pathname: `/transactionList/${
-                                wallets[currentValue.walletIdx]?.name ?? ""
+                                wallets[currentValue.walletIdx]?.id ?? 0
                             }`,
                         }}
                     >

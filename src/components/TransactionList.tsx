@@ -15,32 +15,31 @@ import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
 interface TransactionListProps extends RouteComponentProps {
-    wallet: string;
+    accountId: number;
 }
 
 interface TransactionListParam {
-    walletName: string;
+    accountId: number;
 }
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
-    const walletName =
-        props.wallet ?? (props.match.params as TransactionListParam).walletName;
+    const accountId =
+        props.accountId ??
+        (props.match.params as TransactionListParam).accountId;
 
     useEffect(() => {
-        listTransactions({
-            accountId: walletName,
-        }).then((response) => {
+        listTransactions().then((response) => {
             const sortedItems = response.items.reverse();
 
             setTransactions(sortedItems);
             setIsLoading(false);
         });
-    }, [walletName]);
+    }, [accountId]);
 
-    const removeTransaction = async (id: string) => {
+    const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
             id,
         });
@@ -72,7 +71,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 case "EXPENSE":
                     return -tx.amount;
                 case "TRANSFER":
-                    return tx.toAccountId === walletName
+                    return tx.toAccount.id === accountId
                         ? tx.amount
                         : -tx.amount;
                 case "INCOME":
@@ -92,7 +91,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                                 amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
-                                category: y.categoryId,
+                                category: y.category?.name ?? "-",
                                 onDelete: () => removeTransaction(y.id),
                             };
                         })}

@@ -37,7 +37,7 @@ export const ADD_EXPENSE = gql`
         $description: String!
         $categoryId: Int!
         $fromAccountId: Int!
-        $occurredAt: Date!
+        $occurredAt: Datetime!
     ) {
         spend(
             input: {
@@ -45,6 +45,7 @@ export const ADD_EXPENSE = gql`
                 description: $description
                 categoryId: $categoryId
                 fromAccountId: $fromAccountId
+                occurredAt: $occurredAt
             }
         ) {
             transaction {
@@ -69,7 +70,7 @@ export const ADD_INCOME = gql`
         $description: String!
         $categoryId: Int!
         $toAccountId: Int!
-        $occurredAt: Date!
+        $occurredAt: Datetime!
     ) {
         receive(
             input: {
@@ -77,12 +78,16 @@ export const ADD_INCOME = gql`
                 description: $description
                 categoryId: $categoryId
                 toAccountId: $toAccountId
+                occurredAt: $occurredAt
             }
         ) {
             transaction {
                 ...PlainTransaction
                 toAccount {
                     ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
                 }
             }
         }
@@ -98,7 +103,7 @@ export const ADD_TRANSFER = gql`
         $description: String!
         $fromAccountId: Int!
         $toAccountId: Int!
-        $occurredAt: Date!
+        $occurredAt: Datetime!
     ) {
         transfer(
             input: {
@@ -106,6 +111,7 @@ export const ADD_TRANSFER = gql`
                 description: $description
                 fromAccountId: $fromAccountId
                 toAccountId: $toAccountId
+                occurredAt: $occurredAt
             }
         ) {
             transaction {
@@ -115,6 +121,9 @@ export const ADD_TRANSFER = gql`
                 }
                 toAccount {
                     ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
                 }
             }
         }
@@ -135,6 +144,9 @@ export const DELETE_TRANSACTION = gql`
                 toAccount {
                     ...PlainAccount
                 }
+                category {
+                    ...PlainCategory
+                }
             }
         }
     }
@@ -154,6 +166,9 @@ export const GET_TRANSACTIONS = gql`
                 fromAccount {
                     ...PlainAccount
                 }
+                category {
+                    ...PlainCategory
+                }
             }
             totalCount
         }
@@ -170,6 +185,7 @@ export async function addExpense(
         mutation: ADD_EXPENSE,
         variables: {
             amount: request.amount,
+            categoryId: request.categoryId,
             description: request.description,
             fromAccountId: request.fromAccountId,
             occurredAt: request.date,

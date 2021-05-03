@@ -1,0 +1,736 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"An object with a globally unique `ID`."
+interface Node {
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+}
+
+type Account implements Node {
+    balance: Float!
+    createdAt: Datetime!
+    id: Int!
+    name: String!
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+    "Reads a single `Owner` that is related to this `Account`."
+    owner: Owner
+    ownerId: String!
+    type: AccountType!
+    updatedAt: Datetime!
+}
+
+"A connection to a list of `Account` values."
+type AccountsConnection {
+    "A list of edges which contains the `Account` and cursor to aid in pagination."
+    edges: [AccountsEdge!]!
+    "A list of `Account` objects."
+    nodes: [Account]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `Account` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `Account` edge in the connection."
+type AccountsEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `Account` at the end of the edge."
+    node: Account
+}
+
+"A connection to a list of `Category` values."
+type CategoriesConnection {
+    "A list of edges which contains the `Category` and cursor to aid in pagination."
+    edges: [CategoriesEdge!]!
+    "A list of `Category` objects."
+    nodes: [Category]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `Category` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `Category` edge in the connection."
+type CategoriesEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `Category` at the end of the edge."
+    node: Category
+}
+
+type Category implements Node {
+    createdAt: Datetime!
+    id: Int!
+    name: String!
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+    "Reads a single `Owner` that is related to this `Category`."
+    owner: Owner
+    ownerId: String!
+    "Reads and enables pagination through a set of `Transaction`."
+    transactions(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: TransactionCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsConnection!
+    updatedAt: Datetime!
+}
+
+"The output of our `closeAccount` mutation."
+type CloseAccountPayload {
+    account: Account
+    "An edge for our `Account`. May be used by Relay 1."
+    accountEdge(
+        "The method to use when ordering `Account`."
+        orderBy: [AccountsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): AccountsEdge
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Account`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+}
+"The output of our `createAccount` mutation."
+type CreateAccountPayload {
+    account: Account
+    "An edge for our `Account`. May be used by Relay 1."
+    accountEdge(
+        "The method to use when ordering `Account`."
+        orderBy: [AccountsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): AccountsEdge
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Account`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+}
+"The output of our `createCategory` mutation."
+type CreateCategoryPayload {
+    category: Category
+    "An edge for our `Category`. May be used by Relay 1."
+    categoryEdge(
+        "The method to use when ordering `Category`."
+        orderBy: [CategoriesOrderBy!] = [PRIMARY_KEY_ASC]
+    ): CategoriesEdge
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Category`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+}
+"The output of our `currentUser` mutation."
+type CurrentUserPayload {
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    owner: Owner
+    "An edge for our `Owner`. May be used by Relay 1."
+    ownerEdge(
+        "The method to use when ordering `Owner`."
+        orderBy: [OwnersOrderBy!] = [PRIMARY_KEY_ASC]
+    ): OwnersEdge
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+}
+"The output of our `deleteCategory` mutation."
+type DeleteCategoryPayload {
+    category: Category
+    "An edge for our `Category`. May be used by Relay 1."
+    categoryEdge(
+        "The method to use when ordering `Category`."
+        orderBy: [CategoriesOrderBy!] = [PRIMARY_KEY_ASC]
+    ): CategoriesEdge
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Category`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+}
+"The output of our `deleteTransaction` mutation."
+type DeleteTransactionPayload {
+    "Reads a single `Category` that is related to this `Transaction`."
+    category: Category
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Transaction`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    transaction: Transaction
+    "An edge for our `Transaction`. May be used by Relay 1."
+    transactionEdge(
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsEdge
+}
+"The root mutation type which contains root level fields which mutate data."
+type Mutation {
+    "close account"
+    closeAccount(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: CloseAccountInput!
+    ): CloseAccountPayload
+    "create a new account"
+    createAccount(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: CreateAccountInput!
+    ): CreateAccountPayload
+    "create a new category to be used in transactions"
+    createCategory(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: CreateCategoryInput!
+    ): CreateCategoryPayload
+    "Get current logged-in user"
+    currentUser(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: CurrentUserInput!
+    ): CurrentUserPayload
+    "delete a category"
+    deleteCategory(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: DeleteCategoryInput!
+    ): DeleteCategoryPayload
+    "add transfer transaction"
+    deleteTransaction(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: DeleteTransactionInput!
+    ): DeleteTransactionPayload
+    "add income transaction"
+    receive(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: ReceiveInput!
+    ): ReceivePayload
+    "add expense transaction"
+    spend(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: SpendInput!
+    ): SpendPayload
+    "add transfer transaction"
+    transfer(
+        "The exclusive input argument for this mutation. An object type, make sure to see documentation for this object’s fields."
+        input: TransferInput!
+    ): TransferPayload
+}
+type Owner implements Node {
+    "Reads and enables pagination through a set of `Account`."
+    accounts(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: AccountCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Account`."
+        orderBy: [AccountsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): AccountsConnection!
+    "Reads and enables pagination through a set of `Category`."
+    categories(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: CategoryCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Category`."
+        orderBy: [CategoriesOrderBy!] = [PRIMARY_KEY_ASC]
+    ): CategoriesConnection!
+    createdAt: Datetime!
+    id: String!
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+    "Reads and enables pagination through a set of `Transaction`."
+    transactions(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: TransactionCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsConnection!
+    updatedAt: Datetime!
+}
+
+"A connection to a list of `Owner` values."
+type OwnersConnection {
+    "A list of edges which contains the `Owner` and cursor to aid in pagination."
+    edges: [OwnersEdge!]!
+    "A list of `Owner` objects."
+    nodes: [Owner]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `Owner` you could get from the connection."
+    totalCount: Int!
+}
+
+"A `Owner` edge in the connection."
+type OwnersEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `Owner` at the end of the edge."
+    node: Owner
+}
+
+"Information about pagination in a connection."
+type PageInfo {
+    "When paginating forwards, the cursor to continue."
+    endCursor: Cursor
+    "When paginating forwards, are there more items?"
+    hasNextPage: Boolean!
+    "When paginating backwards, are there more items?"
+    hasPreviousPage: Boolean!
+    "When paginating backwards, the cursor to continue."
+    startCursor: Cursor
+}
+"The root query type which gives access points into the data universe."
+type Query implements Node {
+    account(id: Int!): Account
+    accountByNameAndOwnerId(name: String!, ownerId: String!): Account
+    "Reads a single `Account` using its globally unique `ID`."
+    accountByNodeId(
+        "The globally unique `ID` to be used in selecting a single `Account`."
+        nodeId: ID!
+    ): Account
+    "Reads and enables pagination through a set of `Account`."
+    accounts(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: AccountCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Account`."
+        orderBy: [AccountsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): AccountsConnection
+    "Reads and enables pagination through a set of `Category`."
+    categories(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: CategoryCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Category`."
+        orderBy: [CategoriesOrderBy!] = [PRIMARY_KEY_ASC]
+    ): CategoriesConnection
+    category(id: Int!): Category
+    categoryByNameAndOwnerId(name: String!, ownerId: String!): Category
+    "Reads a single `Category` using its globally unique `ID`."
+    categoryByNodeId(
+        "The globally unique `ID` to be used in selecting a single `Category`."
+        nodeId: ID!
+    ): Category
+    "Fetches an object given its globally unique `ID`."
+    node("The globally unique `ID`." nodeId: ID!): Node
+    "The root query type must be a `Node` to work well with Relay 1 mutations. This just resolves to `query`."
+    nodeId: ID!
+    owner(id: String!): Owner
+    "Reads a single `Owner` using its globally unique `ID`."
+    ownerByNodeId(
+        "The globally unique `ID` to be used in selecting a single `Owner`."
+        nodeId: ID!
+    ): Owner
+    "Reads and enables pagination through a set of `Owner`."
+    owners(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: OwnerCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Owner`."
+        orderBy: [OwnersOrderBy!] = [PRIMARY_KEY_ASC]
+    ): OwnersConnection
+    "Exposes the root query type nested one level down. This is helpful for Relay 1 which can only query top level fields if they are in a particular form."
+    query: Query!
+    transaction(id: Int!): Transaction
+    "Reads a single `Transaction` using its globally unique `ID`."
+    transactionByNodeId(
+        "The globally unique `ID` to be used in selecting a single `Transaction`."
+        nodeId: ID!
+    ): Transaction
+    "Reads and enables pagination through a set of `Transaction`."
+    transactions(
+        "Read all values in the set after (below) this cursor."
+        after: Cursor
+        "Read all values in the set before (above) this cursor."
+        before: Cursor
+        "A condition to be used in determining which values should be returned by the collection."
+        condition: TransactionCondition
+        "Only read the first `n` values of the set."
+        first: Int
+        "Only read the last `n` values of the set."
+        last: Int
+        "Skip the first `n` values from our `after` cursor, an alternative to cursor based pagination. May not be used with `last`."
+        offset: Int
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsConnection
+}
+
+"The output of our `receive` mutation."
+type ReceivePayload {
+    "Reads a single `Category` that is related to this `Transaction`."
+    category: Category
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Transaction`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    transaction: Transaction
+    "An edge for our `Transaction`. May be used by Relay 1."
+    transactionEdge(
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsEdge
+}
+"The output of our `spend` mutation."
+type SpendPayload {
+    "Reads a single `Category` that is related to this `Transaction`."
+    category: Category
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Transaction`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    transaction: Transaction
+    "An edge for our `Transaction`. May be used by Relay 1."
+    transactionEdge(
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsEdge
+}
+type Transaction implements Node {
+    amount: Float!
+    "Reads a single `Category` that is related to this `Transaction`."
+    category: Category
+    categoryId: Int
+    createdAt: Datetime!
+    date: Datetime!
+    description: String!
+    fromAccount: Account
+    fromAccountId: Int
+    id: Int!
+    "A globally unique identifier. Can be used in various places throughout the system to identify this single value."
+    nodeId: ID!
+    "Reads a single `Owner` that is related to this `Transaction`."
+    owner: Owner
+    ownerId: String!
+    toAccount: Account
+    toAccountId: Int
+    type: TransactionType!
+    updatedAt: Datetime!
+}
+"A connection to a list of `Transaction` values."
+type TransactionsConnection {
+    "A list of edges which contains the `Transaction` and cursor to aid in pagination."
+    edges: [TransactionsEdge!]!
+    "A list of `Transaction` objects."
+    nodes: [Transaction]!
+    "Information to aid in pagination."
+    pageInfo: PageInfo!
+    "The count of *all* `Transaction` you could get from the connection."
+    totalCount: Int!
+}
+"A `Transaction` edge in the connection."
+type TransactionsEdge {
+    "A cursor for use in pagination."
+    cursor: Cursor
+    "The `Transaction` at the end of the edge."
+    node: Transaction
+}
+"The output of our `transfer` mutation."
+type TransferPayload {
+    "Reads a single `Category` that is related to this `Transaction`."
+    category: Category
+    "The exact same `clientMutationId` that was provided in the mutation input, unchanged and unused. May be used by a client to track mutations."
+    clientMutationId: String
+    "Reads a single `Owner` that is related to this `Transaction`."
+    owner: Owner
+    "Our root query field type. Allows us to run any query from our mutation payload."
+    query: Query
+    transaction: Transaction
+    "An edge for our `Transaction`. May be used by Relay 1."
+    transactionEdge(
+        "The method to use when ordering `Transaction`."
+        orderBy: [TransactionsOrderBy!] = [PRIMARY_KEY_ASC]
+    ): TransactionsEdge
+}
+enum AccountType {
+    BANK
+    CASH
+    CREDIT
+}
+"Methods to use when ordering `Account`."
+enum AccountsOrderBy {
+    BALANCE_ASC
+    BALANCE_DESC
+    CREATED_AT_ASC
+    CREATED_AT_DESC
+    ID_ASC
+    ID_DESC
+    NAME_ASC
+    NAME_DESC
+    NATURAL
+    OWNER_ID_ASC
+    OWNER_ID_DESC
+    PRIMARY_KEY_ASC
+    PRIMARY_KEY_DESC
+    TYPE_ASC
+    TYPE_DESC
+    UPDATED_AT_ASC
+    UPDATED_AT_DESC
+}
+"Methods to use when ordering `Category`."
+enum CategoriesOrderBy {
+    CREATED_AT_ASC
+    CREATED_AT_DESC
+    ID_ASC
+    ID_DESC
+    NAME_ASC
+    NAME_DESC
+    NATURAL
+    OWNER_ID_ASC
+    OWNER_ID_DESC
+    PRIMARY_KEY_ASC
+    PRIMARY_KEY_DESC
+    UPDATED_AT_ASC
+    UPDATED_AT_DESC
+}
+"Methods to use when ordering `Owner`."
+enum OwnersOrderBy {
+    CREATED_AT_ASC
+    CREATED_AT_DESC
+    ID_ASC
+    ID_DESC
+    NATURAL
+    PRIMARY_KEY_ASC
+    PRIMARY_KEY_DESC
+    UPDATED_AT_ASC
+    UPDATED_AT_DESC
+}
+enum TransactionType {
+    EXPENSE
+    INCOME
+    TRANSFER
+}
+"Methods to use when ordering `Transaction`."
+enum TransactionsOrderBy {
+    AMOUNT_ASC
+    AMOUNT_DESC
+    CATEGORY_ID_ASC
+    CATEGORY_ID_DESC
+    CREATED_AT_ASC
+    CREATED_AT_DESC
+    DATE_ASC
+    DATE_DESC
+    DESCRIPTION_ASC
+    DESCRIPTION_DESC
+    FROM_ACCOUNT_ID_ASC
+    FROM_ACCOUNT_ID_DESC
+    ID_ASC
+    ID_DESC
+    NATURAL
+    OWNER_ID_ASC
+    OWNER_ID_DESC
+    PRIMARY_KEY_ASC
+    PRIMARY_KEY_DESC
+    TO_ACCOUNT_ID_ASC
+    TO_ACCOUNT_ID_DESC
+    TYPE_ASC
+    TYPE_DESC
+    UPDATED_AT_ASC
+    UPDATED_AT_DESC
+}
+"A condition to be used against `Account` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input AccountCondition {
+    "Checks for equality with the object’s `balance` field."
+    balance: Float
+    "Checks for equality with the object’s `createdAt` field."
+    createdAt: Datetime
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `name` field."
+    name: String
+    "Checks for equality with the object’s `ownerId` field."
+    ownerId: String
+    "Checks for equality with the object’s `type` field."
+    type: AccountType
+    "Checks for equality with the object’s `updatedAt` field."
+    updatedAt: Datetime
+}
+"A condition to be used against `Category` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input CategoryCondition {
+    "Checks for equality with the object’s `createdAt` field."
+    createdAt: Datetime
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `name` field."
+    name: String
+    "Checks for equality with the object’s `ownerId` field."
+    ownerId: String
+    "Checks for equality with the object’s `updatedAt` field."
+    updatedAt: Datetime
+}
+"All input for the `closeAccount` mutation."
+input CloseAccountInput {
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    id: Int!
+}
+"All input for the `createAccount` mutation."
+input CreateAccountInput {
+    balance: Float!
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    name: String!
+    type: AccountType!
+}
+"All input for the `createCategory` mutation."
+input CreateCategoryInput {
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    name: String!
+}
+"All input for the `currentUser` mutation."
+input CurrentUserInput {
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+}
+"All input for the `deleteCategory` mutation."
+input DeleteCategoryInput {
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    id: Int!
+}
+"All input for the `deleteTransaction` mutation."
+input DeleteTransactionInput {
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    id: Int!
+}
+"A condition to be used against `Owner` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input OwnerCondition {
+    "Checks for equality with the object’s `createdAt` field."
+    createdAt: Datetime
+    "Checks for equality with the object’s `id` field."
+    id: String
+    "Checks for equality with the object’s `updatedAt` field."
+    updatedAt: Datetime
+}
+"All input for the `receive` mutation."
+input ReceiveInput {
+    amount: Float!
+    categoryId: Int!
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    description: String!
+    toAccountId: Int!
+}
+"All input for the `spend` mutation."
+input SpendInput {
+    amount: Float!
+    categoryId: Int!
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    description: String!
+    fromAccountId: Int!
+}
+"A condition to be used against `Transaction` object types. All fields are tested for equality and combined with a logical ‘and.’"
+input TransactionCondition {
+    "Checks for equality with the object’s `amount` field."
+    amount: Float
+    "Checks for equality with the object’s `categoryId` field."
+    categoryId: Int
+    "Checks for equality with the object’s `createdAt` field."
+    createdAt: Datetime
+    "Checks for equality with the object’s `date` field."
+    date: Datetime
+    "Checks for equality with the object’s `description` field."
+    description: String
+    "Checks for equality with the object’s `fromAccountId` field."
+    fromAccountId: Int
+    "Checks for equality with the object’s `id` field."
+    id: Int
+    "Checks for equality with the object’s `ownerId` field."
+    ownerId: String
+    "Checks for equality with the object’s `toAccountId` field."
+    toAccountId: Int
+    "Checks for equality with the object’s `type` field."
+    type: TransactionType
+    "Checks for equality with the object’s `updatedAt` field."
+    updatedAt: Datetime
+}
+"All input for the `transfer` mutation."
+input TransferInput {
+    amount: Float!
+    "An arbitrary string value with no semantic meaning. Will be included in the payload verbatim. May be used to track mutations by the client."
+    clientMutationId: String
+    description: String!
+    fromAccountId: Int!
+    toAccountId: Int!
+}
+"A location in a connection that can be used for resuming pagination."
+scalar Cursor
+"A point in time as described by the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) standard. May or may not include a timezone."
+scalar Datetime

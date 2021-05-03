@@ -4,43 +4,42 @@ import { useRecoilState } from "recoil";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import Layout from "../components/Layout";
-import { mapNotificationProps } from "../service/Mapper";
+import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
     listTransactions,
-} from "../service/TransactionService";
+} from "../service/transactionService";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
 interface TransactionListProps extends RouteComponentProps {
-    wallet: string;
+    accountId: number;
 }
 
 interface TransactionListParam {
-    walletName: string;
+    accountId: number;
 }
 
 export const TransactionList: React.FC<TransactionListProps> = (props) => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
-    const walletName =
-        props.wallet ?? (props.match.params as TransactionListParam).walletName;
+    const accountId =
+        props.accountId ??
+        (props.match.params as TransactionListParam).accountId;
 
     useEffect(() => {
-        listTransactions({
-            wallet: walletName,
-        }).then((response) => {
+        listTransactions().then((response) => {
             const sortedItems = response.items.reverse();
 
             setTransactions(sortedItems);
             setIsLoading(false);
         });
-    }, [walletName]);
+    }, [accountId]);
 
-    const removeTransaction = async (id: string) => {
+    const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
             id,
         });
@@ -72,7 +71,9 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 case "EXPENSE":
                     return -tx.amount;
                 case "TRANSFER":
-                    return tx.dstWallet === walletName ? tx.amount : -tx.amount;
+                    return tx.toAccount.id === accountId
+                        ? tx.amount
+                        : -tx.amount;
                 case "INCOME":
                 default:
                     return tx.amount;
@@ -90,7 +91,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                                 amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
-                                category: y.category,
+                                category: y.category?.name ?? "-",
                                 onDelete: () => removeTransaction(y.id),
                             };
                         })}

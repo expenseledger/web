@@ -1,6 +1,5 @@
 import firebase from "firebase/app";
 import "firebase/auth";
-import * as R from "ramda";
 import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -10,10 +9,9 @@ import {
     totalWalletsBalanceState,
     walletsState,
 } from "../common/shareState";
-import { getAllCategories } from "../service/CategoryService";
+import { formatNumber, log } from "../common/utils";
 import Wallet from "../service/model/Wallet";
-import { formatNumber } from "../service/Utils";
-import { getAllWallet } from "../service/WalletService";
+import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
@@ -83,18 +81,13 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
     };
 
     React.useEffect(() => {
-        Promise.all([getAllWallet(), getAllCategories()])
-            .then((responses) => {
-                const [tWallets, tCategories] = responses;
-                const sortByNameCaseInsensitive = R.sortBy<any>(
-                    R.compose(R.toLower, R.prop("name"))
-                );
-
-                setCategories(sortByNameCaseInsensitive(tCategories ?? []));
-                setWallets(sortByNameCaseInsensitive(tWallets ?? []));
+        getUserData()
+            .then(({ categories, wallets }) => {
+                setCategories(categories);
+                setWallets(wallets);
                 setIsLoading(false);
             })
-            .catch((err) => console.log(err));
+            .catch((err) => log(err));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

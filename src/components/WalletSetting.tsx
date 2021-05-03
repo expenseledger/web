@@ -1,13 +1,13 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { toastState, walletsState } from "../common/shareState";
-import { WalletType } from "../service/Constants";
-import { mapNotificationProps } from "../service/Mapper";
+import { WalletType } from "../service/constants";
+import { mapNotificationProps } from "../service/helper/notificationHelper";
 import {
     mapStringToWalletType,
     mapWalletTypeToString,
-} from "../service/WalletHelper";
-import { createWallet, deleteWallet } from "../service/WalletService";
+} from "../service/helper/walletHelper";
+import { createWallet, deleteWallet } from "../service/walletService";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
@@ -20,13 +20,12 @@ const WalletSetting: React.FC = () => {
         walletName: string,
         walletType: string
     ) => {
-        console.log(walletName, walletType);
-        const isSuccess = await createWallet(
-            walletName,
-            mapStringToWalletType(walletType)
-        );
+        const response = await createWallet({
+            name: walletName,
+            type: mapStringToWalletType(walletType),
+        });
 
-        if (!isSuccess) {
+        if (!response.wallet) {
             setNotificationList((prevNotiList) =>
                 prevNotiList.concat(
                     mapNotificationProps("Create wallet failed", "danger")
@@ -37,9 +36,10 @@ const WalletSetting: React.FC = () => {
 
         setWallets(
             wallets.concat({
-                name: walletName,
-                type: walletType,
-                balance: 0,
+                id: response.wallet.id,
+                name: response.wallet.name,
+                type: response.wallet.type,
+                balance: response.wallet.balance,
             })
         );
         setNotificationList((prevNotiList) =>
@@ -48,8 +48,11 @@ const WalletSetting: React.FC = () => {
             )
         );
     };
-    const deleteWalletHandler = async (walletName: string) => {
-        const isSuccess = await deleteWallet(walletName);
+
+    const deleteWalletHandler = async (id: string | number) => {
+        const isSuccess = await deleteWallet({
+            id: +id,
+        });
 
         if (!isSuccess) {
             setNotificationList((prevNotiList) =>
@@ -60,7 +63,7 @@ const WalletSetting: React.FC = () => {
             return;
         }
 
-        setWallets(wallets.filter((x) => x.name !== walletName));
+        setWallets(wallets.filter((x) => x.id !== id));
         setNotificationList((prevNotiList) =>
             prevNotiList.concat(
                 mapNotificationProps("Delete wallet success", "success")
@@ -73,8 +76,8 @@ const WalletSetting: React.FC = () => {
             <CreateAndDelete
                 createFuncHandler={createWalletHandler}
                 deleteFuncHandler={deleteWalletHandler}
-                items={wallets.map((x, idx) => {
-                    return { id: idx, name: x.name };
+                items={wallets.map((x) => {
+                    return { id: x.id, name: x.name };
                 })}
                 dropdowns={walletTypes.map((x) => mapWalletTypeToString(x))}
             />

@@ -1,8 +1,8 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
-import { createCategory, deleteCategory } from "../service/CategoryService";
-import { mapNotificationProps } from "../service/Mapper";
+import { createCategory, deleteCategory } from "../service/categoryService";
+import { mapNotificationProps } from "../service/helper/notificationHelper";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
@@ -14,7 +14,7 @@ const CategorySetting: React.FC = () => {
     const addCategoryHandler = async (name: string) => {
         const response = await createCategory({ name });
 
-        if (!response.isSuccess) {
+        if (!response.addedCategory) {
             setNotificationList((prevNotiList) =>
                 prevNotiList.concat(
                     mapNotificationProps("Create category failed", "danger")
@@ -24,7 +24,7 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.concat({ name });
+        const newCategories = categories.concat(response.addedCategory);
 
         setCategories(newCategories);
         setNotificationList((prevNotiList) =>
@@ -34,8 +34,8 @@ const CategorySetting: React.FC = () => {
         );
     };
 
-    const removeCategoryHandler = async (name: string) => {
-        const response = await deleteCategory({ name });
+    const removeCategoryHandler = async (id: string | number) => {
+        const response = await deleteCategory({ id: id as number });
 
         if (!response.isSuccess) {
             setNotificationList((prevNotiList) =>
@@ -47,7 +47,7 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.filter((x) => x.name !== name);
+        const newCategories = categories.filter((x) => x.id !== id);
 
         setCategories(newCategories);
         setNotificationList((prevNotiList) =>
@@ -62,8 +62,8 @@ const CategorySetting: React.FC = () => {
             <CreateAndDelete
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
-                items={categories.map((x, idx) => {
-                    return { id: idx, name: x.name };
+                items={categories.map((x) => {
+                    return { id: x.id, name: x.name };
                 })}
             />
         </Layout>

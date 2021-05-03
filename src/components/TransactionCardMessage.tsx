@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { TransactionType } from "../service/Constants";
+import { TransactionType } from "../service/constants";
 
 interface TransactionCardMessageProps {
     amount: string;

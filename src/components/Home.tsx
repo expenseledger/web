@@ -9,10 +9,10 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { mapNotificationProps } from "../service/Mapper";
+import { formatNumber } from "../common/utils";
+import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
-import { addExpense } from "../service/TransactionService";
-import { formatNumber } from "../service/Utils";
+import { addExpense } from "../service/transactionService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -88,8 +88,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
         const request: AddExpenseRequest = {
             amount,
-            category: categories[categoryIdx]?.name ?? "",
-            from: wallets[walletIdx]?.name ?? "",
+            categoryId: categories[categoryIdx]?.id ?? 0,
+            fromAccountId: wallets[walletIdx]?.id ?? 0,
             description: "quick add appense",
             date,
         };
@@ -99,10 +99,11 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         if (response) {
             const tWallets = R.clone(wallets);
             const selectedWalletIdx = wallets.findIndex(
-                (x) => x.name === response.srcWallet.name
+                (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            tWallets[selectedWalletIdx].balance =
+                response.transaction.fromAccount.balance;
             setWallets(tWallets);
             setNotificationList((prev) =>
                 prev.concat(
@@ -151,7 +152,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="has-text-weight-bold"
                         to={{
                             pathname: `/transactionList/${
-                                wallets[currentValue.walletIdx]?.name ?? ""
+                                wallets[currentValue.walletIdx]?.id ?? 0
                             }`,
                         }}
                     >

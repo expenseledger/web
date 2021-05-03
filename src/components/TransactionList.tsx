@@ -31,7 +31,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
     useEffect(() => {
         listTransactions({
-            wallet: walletName,
+            accountId: walletName,
         }).then((response) => {
             const sortedItems = response.items.reverse();
 
@@ -72,7 +72,9 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 case "EXPENSE":
                     return -tx.amount;
                 case "TRANSFER":
-                    return tx.dstWallet === walletName ? tx.amount : -tx.amount;
+                    return tx.toAccountId === walletName
+                        ? tx.amount
+                        : -tx.amount;
                 case "INCOME":
                 default:
                     return tx.amount;
@@ -90,7 +92,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                                 amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
-                                category: y.category,
+                                category: y.categoryId,
                                 onDelete: () => removeTransaction(y.id),
                             };
                         })}

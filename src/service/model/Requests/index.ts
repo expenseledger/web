@@ -3,29 +3,29 @@ import { WalletType } from "../../constants";
 // Transaction
 interface AddTransactionRequest {
     amount: number;
-    category: string;
+    categoryId?: number;
     description?: string;
-    date?: string;
+    date: string;
 }
 export interface AddExpenseRequest extends AddTransactionRequest {
-    from: string;
+    fromAccountId: number;
 }
 
 export interface AddIncomeRequest extends AddTransactionRequest {
-    to: string;
+    toAccountId: number;
 }
 
 export interface AddTransferRequest extends AddTransactionRequest {
-    from: string;
-    to: string;
+    fromAccountId: number;
+    toAccountId: number;
 }
 
 export interface ListTransactionsRequest {
-    wallet: string;
+    accountId: number;
 }
 
 export interface DeleteTranactionRequest {
-    id: string;
+    id: number;
 }
 
 // Category

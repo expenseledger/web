@@ -25,15 +25,6 @@ export const CURRENT_USER = gql`
     }
 `;
 
-export const accountFragment = gql`
-    fragment PlainAccount on Account {
-        id
-        name
-        type
-        balance
-    }
-`;
-
 export async function getUserData(): Promise<User> {
     const result = await client.mutate({
         mutation: CURRENT_USER,

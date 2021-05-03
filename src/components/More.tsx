@@ -147,10 +147,10 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         const request: AddExpenseRequest = {
             amount,
-            category: categories[categoryIdx]?.name ?? "",
+            categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            from: wallets[fromWalletIdx]?.name ?? "",
+            fromAccountId: wallets[fromWalletIdx]?.id ?? 0,
         };
 
         const response = await addExpense(request);
@@ -158,10 +158,11 @@ const More: React.FC<RouteComponentProps> = (props) => {
         if (response) {
             const tWallets = R.clone(wallets);
             const selectedWalletIdx = wallets.findIndex(
-                (x) => x.name === response.srcWallet.name
+                (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            tWallets[selectedWalletIdx].balance =
+                response.transaction.fromAccount.balance;
             setWallets(tWallets);
             setNotificationList((prev) =>
                 prev.concat(
@@ -195,10 +196,10 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         const request: AddIncomeRequest = {
             amount,
-            category: categories[categoryIdx]?.name ?? "",
+            categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            to: wallets[fromWalletIdx]?.name ?? "",
+            toAccountId: wallets[fromWalletIdx]?.id ?? 0,
         };
 
         const response = await addIncome(request);
@@ -206,10 +207,11 @@ const More: React.FC<RouteComponentProps> = (props) => {
         if (response) {
             const tWallets = R.clone(wallets);
             const selectedWalletIdx = wallets.findIndex(
-                (x) => x.name === response.dstWallet.name
+                (x) => x.name === response.transaction.toAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.dstWallet.balance;
+            tWallets[selectedWalletIdx].balance =
+                response.transaction.toAccount.balance;
             setWallets(tWallets);
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("AddIncome sucess", "success"))
@@ -242,11 +244,11 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         const request: AddTransferRequest = {
             amount,
-            category: categories[categoryIdx]?.name ?? "",
+            categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            to: wallets[toWalletIdx]?.name ?? "",
-            from: wallets[fromWalletIdx]?.name ?? "",
+            toAccountId: wallets[toWalletIdx]?.id ?? 0,
+            fromAccountId: wallets[fromWalletIdx]?.id ?? 0,
         };
 
         const response = await addTransfer(request);
@@ -254,14 +256,16 @@ const More: React.FC<RouteComponentProps> = (props) => {
         if (response) {
             const tWallets = R.clone(wallets);
             const fromWalletIdx = wallets.findIndex(
-                (x) => x.name === response.srcWallet.name
+                (x) => x.name === response.transaction.fromAccount.name
             );
             const toWalletIdx = wallets.findIndex(
-                (x) => x.name === response.dstWallet.name
+                (x) => x.name === response.transaction.toAccount.name
             );
 
-            tWallets[fromWalletIdx].balance = response.srcWallet.balance;
-            tWallets[toWalletIdx].balance = response.dstWallet.balance;
+            tWallets[fromWalletIdx].balance =
+                response.transaction.fromAccount.balance;
+            tWallets[toWalletIdx].balance =
+                response.transaction.toAccount.balance;
 
             setWallets(tWallets);
             setNotificationList((prev) =>

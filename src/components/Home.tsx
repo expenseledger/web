@@ -88,8 +88,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
         const request: AddExpenseRequest = {
             amount,
-            category: categories[categoryIdx]?.name ?? "",
-            from: wallets[walletIdx]?.name ?? "",
+            categoryId: categories[categoryIdx]?.id ?? 0,
+            fromAccountId: wallets[walletIdx]?.id ?? 0,
             description: "quick add appense",
             date,
         };
@@ -99,10 +99,11 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         if (response) {
             const tWallets = R.clone(wallets);
             const selectedWalletIdx = wallets.findIndex(
-                (x) => x.name === response.srcWallet.name
+                (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.srcWallet.balance;
+            tWallets[selectedWalletIdx].balance =
+                response.transaction.fromAccount.balance;
             setWallets(tWallets);
             setNotificationList((prev) =>
                 prev.concat(

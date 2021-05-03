@@ -67,6 +67,15 @@ const DELETE_WALLET_BY_ID = gql`
     }
 `;
 
+export const accountFragment = gql`
+    fragment PlainAccount on Account {
+        id
+        name
+        type
+        balance
+    }
+`;
+
 export async function getAllWallet(): Promise<GetAllWalletResponse> {
     const response = await client.query({
         query: GET_ALL_WALLETS,

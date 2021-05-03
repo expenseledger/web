@@ -1,12 +1,14 @@
 import { TransactionType } from "../constants";
+import Category from "./Category";
+import Wallet from "./Wallet";
 
 export interface Transaction {
     id: string;
-    srcWallet: string;
-    dstWallet: string;
+    fromAccount?: Wallet;
+    toAccount?: Wallet;
     amount: number;
     type: TransactionType;
-    category: string;
+    category?: Category;
     description: string;
     date: Date;
 }

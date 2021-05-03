@@ -45,6 +45,13 @@ const GET_ALL_CATEGORIES = gql`
     }
 `;
 
+export const categoryFragment = gql`
+    fragment PlainCategory on Category {
+        id
+        name
+    }
+`;
+
 export async function getAllCategories(): Promise<Category[]> {
     const response = await client.query({
         query: GET_ALL_CATEGORIES,

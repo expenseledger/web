@@ -31,7 +31,7 @@ const transactionFragment = gql`
     }
 `;
 
-export const ADD_EXPENSE = gql`
+const ADD_EXPENSE = gql`
     mutation AddExpense(
         $amount: Float!
         $description: String!
@@ -64,7 +64,7 @@ export const ADD_EXPENSE = gql`
     ${categoryFragment}
 `;
 
-export const ADD_INCOME = gql`
+const ADD_INCOME = gql`
     mutation AddIncome(
         $amount: Float!
         $description: String!
@@ -97,7 +97,7 @@ export const ADD_INCOME = gql`
     ${categoryFragment}
 `;
 
-export const ADD_TRANSFER = gql`
+const ADD_TRANSFER = gql`
     mutation AddTransfer(
         $amount: Float!
         $description: String!
@@ -133,7 +133,7 @@ export const ADD_TRANSFER = gql`
     ${categoryFragment}
 `;
 
-export const DELETE_TRANSACTION = gql`
+const DELETE_TRANSACTION = gql`
     mutation DeleteTransaction($transactionId: Int!) {
         deleteTransaction(input: { id: $transactionId }) {
             transaction {
@@ -155,7 +155,7 @@ export const DELETE_TRANSACTION = gql`
     ${categoryFragment}
 `;
 
-export const GET_TRANSACTIONS = gql`
+const GET_TRANSACTIONS = gql`
     query GetTransactions {
         transactions {
             nodes {

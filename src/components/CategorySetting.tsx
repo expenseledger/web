@@ -5,7 +5,6 @@ import { createCategory, deleteCategory } from "../service/categoryService";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import CreateAndDelete from "./bases/CreateAndDelete";
 import { withAuthProtection } from "./hoc/WithAuthProtection";
-import Layout from "./Layout";
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
@@ -58,7 +57,7 @@ const CategorySetting: React.FC = () => {
     };
 
     return (
-        <Layout>
+        <>
             <CreateAndDelete
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
@@ -66,7 +65,7 @@ const CategorySetting: React.FC = () => {
                     return { id: x.id, name: x.name };
                 })}
             />
-        </Layout>
+        </>
     );
 };
 

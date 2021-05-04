@@ -6,6 +6,7 @@ const TransactionList = React.lazy(() => import("./TransactionList"));
 const Home = React.lazy(() => import("../components/Home"));
 const More = React.lazy(() => import("../components/More"));
 const SignIn = React.lazy(() => import("../components/SignIn"));
+const Layout = React.lazy(() => import("../components/Layout"));
 const CategorySetting = React.lazy(
     () => import("../components/CategorySetting")
 );
@@ -16,24 +17,26 @@ const App: React.FC = () => {
         <Router>
             <React.Suspense fallback={<Loading />}>
                 <Switch>
-                    <Route path="/" exact={true} component={Home} />
-                    <Route
-                        path="/transactionList/:walletName"
-                        exact={true}
-                        component={TransactionList}
-                    />
-                    <Route path="/more" exact={true} component={More} />
                     <Route path="/signIn" exact={true} component={SignIn} />
-                    <Route
-                        path="/category/setting"
-                        exact={true}
-                        component={CategorySetting}
-                    />
-                    <Route
-                        path="/wallet/setting"
-                        exact={true}
-                        component={WalletSetting}
-                    />
+                    <Layout>
+                        <Route path="/" exact={true} component={Home} />
+                        <Route
+                            path="/transactionList/:walletName"
+                            exact={true}
+                            component={TransactionList}
+                        />
+                        <Route path="/more" exact={true} component={More} />
+                        <Route
+                            path="/category/setting"
+                            exact={true}
+                            component={CategorySetting}
+                        />
+                        <Route
+                            path="/wallet/setting"
+                            exact={true}
+                            component={WalletSetting}
+                        />
+                    </Layout>
                 </Switch>
             </React.Suspense>
         </Router>

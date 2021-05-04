@@ -3,7 +3,6 @@ import { RouteComponentProps } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
-import Layout from "../components/Layout";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
 import {
@@ -102,7 +101,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
         return toReturn;
     };
 
-    return isLoading ? <Loading /> : <Layout>{getCards()}</Layout>;
+    return isLoading ? <Loading /> : <>{getCards()}</>;
 };
 
 const TransactionListWithAuthProctection = withAuthProtection()(

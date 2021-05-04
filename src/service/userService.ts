@@ -2,7 +2,7 @@ import { gql } from "@apollo/client";
 import client from "../lib/apollo";
 import User from "./model/User";
 
-export const CURRENT_USER = gql`
+const CURRENT_USER = gql`
     mutation CurrentUser {
         currentUser(input: {}) {
             owner {

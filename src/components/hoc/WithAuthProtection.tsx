@@ -5,7 +5,7 @@ import { RouteComponentProps } from "react-router";
 import Loading from "../bases/Loading";
 
 interface WithAuthProtectionProps extends RouteComponentProps {
-    test?: string;
+    isTest?: boolean;
 }
 
 interface WithAuthProtectionState {
@@ -30,6 +30,10 @@ export const withAuthProtection = (redirectPath = "/signIn") => (
         }
 
         componentDidMount() {
+            if (this.props.isTest) {
+                return;
+            }
+
             firebase
                 .auth()
                 .onAuthStateChanged((user) =>
@@ -40,7 +44,7 @@ export const withAuthProtection = (redirectPath = "/signIn") => (
         }
 
         render() {
-            if (!this.state.isSignedIn) {
+            if (!this.props.isTest && !this.state.isSignedIn) {
                 return <Loading />;
             }
             return <WrappedComponent {...this.props} />;

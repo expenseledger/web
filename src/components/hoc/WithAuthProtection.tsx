@@ -1,7 +1,6 @@
-import firebase from "firebase/app";
-import "firebase/auth";
 import React from "react";
 import { RouteComponentProps } from "react-router";
+import firebase from "../../lib/firebase";
 import Loading from "../bases/Loading";
 
 interface WithAuthProtectionProps extends RouteComponentProps {

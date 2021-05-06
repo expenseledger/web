@@ -1,7 +1,5 @@
-import firebase from "firebase/app";
-import "firebase/auth";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import {
@@ -10,6 +8,7 @@ import {
     walletsState,
 } from "../common/shareState";
 import { formatNumber, log } from "../common/utils";
+import firebase from "../lib/firebase";
 import Wallet from "../service/model/Wallet";
 import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
@@ -24,6 +23,7 @@ const Layout: React.FC = (props) => {
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
     const isSignin = useAuth();
+    const history = useHistory();
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
@@ -76,6 +76,7 @@ const Layout: React.FC = (props) => {
 
     React.useEffect(() => {
         if (!isSignin) {
+            history.replace("/signIn");
             return;
         }
 

@@ -1,7 +1,6 @@
 import { ApolloProvider } from "@apollo/client";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "bulma/css/bulma.css";
-import "firebase/auth";
 import React from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";

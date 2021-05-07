@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { RouteComponentProps } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
+import styled from "styled-components";
 import { toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
@@ -13,30 +14,30 @@ import { withAuthProtection } from "./hoc/WithAuthProtection";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
-interface TransactionListProps extends RouteComponentProps {
-    accountId: number;
+interface PathParams {
+    accountId: string;
 }
 
-interface TransactionListParam {
-    accountId: number;
-}
+const NoData = styled.div`
+    font-weight: bold;
+    text-align: center;
+    margin-top: 30px;
+`;
 
-export const TransactionList: React.FC<TransactionListProps> = (props) => {
+export const TransactionList: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
-    const accountId =
-        props.accountId ??
-        (props.match.params as TransactionListParam).accountId;
+    const { accountId } = useParams<PathParams>();
 
     useEffect(() => {
-        listTransactions().then((response) => {
+        listTransactions({ accountId: +accountId }).then((response) => {
             const sortedItems = response.items.reverse();
 
             setTransactions(sortedItems);
             setIsLoading(false);
         });
-    }, [accountId]);
+    }, []);
 
     const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
@@ -70,7 +71,7 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
                 case "EXPENSE":
                     return -tx.amount;
                 case "TRANSFER":
-                    return tx.toAccount.id === accountId
+                    return tx.toAccount.id === +accountId
                         ? tx.amount
                         : -tx.amount;
                 case "INCOME":
@@ -100,8 +101,17 @@ export const TransactionList: React.FC<TransactionListProps> = (props) => {
 
         return toReturn;
     };
+    const renderCards = () => {
+        const cards = getCards();
 
-    return isLoading ? <Loading /> : <>{getCards()}</>;
+        if (cards.length > 0) {
+            return <>{cards}</>;
+        }
+
+        return <NoData className="notification is-danger">No data</NoData>;
+    };
+
+    return isLoading ? <Loading /> : <>{renderCards()}</>;
 };
 
 const TransactionListWithAuthProctection = withAuthProtection()(

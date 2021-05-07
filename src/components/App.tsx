@@ -21,7 +21,7 @@ const App: React.FC = () => {
                     <Layout>
                         <Route path="/" exact={true} component={Home} />
                         <Route
-                            path="/transactionList/:walletName"
+                            path="/wallet/:accountId/transactionList"
                             exact={true}
                             component={TransactionList}
                         />

@@ -8,6 +8,7 @@ import {
     AddIncomeRequest,
     AddTransferRequest,
     DeleteTranactionRequest,
+    ListTransactionsRequest,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
@@ -155,9 +156,32 @@ const DELETE_TRANSACTION = gql`
     ${categoryFragment}
 `;
 
-const GET_TRANSACTIONS = gql`
-    query GetTransactions {
-        transactions {
+const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
+    query GetTransactions($accountId: Int!) {
+        transactions(condition: { toAccountId: $accountId }) {
+            nodes {
+                ...PlainTransaction
+                toAccount {
+                    ...PlainAccount
+                }
+                fromAccount {
+                    ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
+                }
+            }
+            totalCount
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+    ${categoryFragment}
+`;
+
+const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
+    query GetTransactions($accountId: Int!) {
+        transactions(condition: { fromAccountId: $accountId }) {
             nodes {
                 ...PlainTransaction
                 toAccount {
@@ -257,13 +281,38 @@ export async function addTransfer(
     };
 }
 
-export async function listTransactions(): Promise<ListTransactionsResponse> {
-    const response = await client.query({
-        query: GET_TRANSACTIONS,
-    });
+export async function listTransactions(
+    request: ListTransactionsRequest
+): Promise<ListTransactionsResponse> {
+    const [resToAcc, resFromAcc] = await Promise.all([
+        client.query({
+            query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+            variables: {
+                accountId: request.accountId,
+            },
+        }),
+        client.query({
+            query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
+            variables: { accountId: request.accountId },
+        }),
+    ]);
+    const result = {
+        transactions: [
+            ...resToAcc.data.transactions.nodes,
+            ...resFromAcc.data.transactions.nodes,
+        ],
+        totalCount:
+            resToAcc.data.transactions.totalCount +
+            resFromAcc.data.transactions.totalCount,
+    };
 
-    if (response.errors) {
-        log("list transactions failed", response.errors);
+    if (resToAcc.errors || resFromAcc.errors) {
+        if (resToAcc.errors) {
+            log("list transactions failed", resToAcc.errors);
+        }
+        if (resFromAcc.errors) {
+            log("list transactions failed", resFromAcc.errors);
+        }
 
         return {
             length: 0,
@@ -272,8 +321,8 @@ export async function listTransactions(): Promise<ListTransactionsResponse> {
     }
 
     return {
-        length: response.data.transactions.totalCount,
-        items: response.data.transactions.nodes.map(mapTransactionFromServer),
+        length: result.totalCount,
+        items: result.transactions.map(mapTransactionFromServer),
     };
 }
 

@@ -55,6 +55,7 @@ export const withAuthProtection = (redirectPath = "/signIn") => (
 
 interface AuthProtectionProps {
     redirectPath?: string;
+    isTest?: boolean;
 }
 
 export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
@@ -62,12 +63,16 @@ export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
     const history = useHistory();
 
     React.useEffect(() => {
+        if (props.isTest) {
+            return;
+        }
+
         firebase.auth().onAuthStateChanged((user) => {
             user
                 ? setIsSignin(true)
                 : history.replace(props.redirectPath ?? "/signIn");
         });
-    }, [history, props.redirectPath]);
+    }, [history, props.isTest, props.redirectPath]);
 
-    return isSignin ? <>{props.children}</> : <Loading />;
+    return isSignin || props.isTest ? <>{props.children}</> : <Loading />;
 };

@@ -1,6 +1,6 @@
 import * as R from "ramda";
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, withRouter } from "react-router";
 import { useRecoilState } from "recoil";
 import {
     categoriesState,
@@ -440,4 +440,4 @@ const More: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-export default More;
+export default withRouter(More);

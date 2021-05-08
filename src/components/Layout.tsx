@@ -1,7 +1,5 @@
-import firebase from "firebase/app";
-import "firebase/auth";
 import React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import {
@@ -10,6 +8,7 @@ import {
     walletsState,
 } from "../common/shareState";
 import { formatNumber, log } from "../common/utils";
+import firebase from "../lib/firebase";
 import Wallet from "../service/model/Wallet";
 import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
@@ -17,17 +16,11 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
-const Layout: React.FC<RouteComponentProps> = (props) => {
+const Layout: React.FC = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [, setCategories] = useRecoilState(categoriesState);
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
-    const categoryMenuHandler = () => {
-        props.history.push("/category/setting");
-    };
-    const walletMenuHandler = () => {
-        props.history.push("/wallet/setting");
-    };
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
@@ -65,12 +58,10 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                         <li>
                             <ul>
                                 <li>
-                                    <a onClick={categoryMenuHandler}>
-                                        Category
-                                    </a>
+                                    <Link to="/category/setting">Category</Link>
                                 </li>
                                 <li>
-                                    <a onClick={walletMenuHandler}>Wallet</a>
+                                    <Link to="/wallet/setting">Wallet</Link>
                                 </li>
                             </ul>
                         </li>
@@ -88,6 +79,7 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
                 setIsLoading(false);
             })
             .catch((err) => log(err));
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -134,4 +126,4 @@ const Layout: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-export default withRouter(Layout);
+export default Layout;

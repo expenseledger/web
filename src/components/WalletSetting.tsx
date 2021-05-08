@@ -9,8 +9,6 @@ import {
 } from "../service/helper/walletHelper";
 import { createWallet, deleteWallet } from "../service/walletService";
 import CreateAndDelete from "./bases/CreateAndDelete";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
-import Layout from "./Layout";
 
 const WalletSetting: React.FC = () => {
     const [wallets, setWallets] = useRecoilState(walletsState);
@@ -72,7 +70,7 @@ const WalletSetting: React.FC = () => {
     };
 
     return (
-        <Layout>
+        <>
             <CreateAndDelete
                 createFuncHandler={createWalletHandler}
                 deleteFuncHandler={deleteWalletHandler}
@@ -81,8 +79,8 @@ const WalletSetting: React.FC = () => {
                 })}
                 dropdowns={walletTypes.map((x) => mapWalletTypeToString(x))}
             />
-        </Layout>
+        </>
     );
 };
 
-export default withAuthProtection()(WalletSetting);
+export default WalletSetting;

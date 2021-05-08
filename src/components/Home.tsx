@@ -17,9 +17,7 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
-import Layout from "./Layout";
 
 interface CurrentValue {
     walletIdx: number;
@@ -126,7 +124,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     };
 
     return (
-        <Layout>
+        <>
             <section className="section">
                 <div className="columns is-mobile is-vcentered">
                     <div className="column has-text-weight-bold is-size-3 is-5-desktop is-5-tablet">
@@ -151,9 +149,9 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     <Link
                         className="has-text-weight-bold"
                         to={{
-                            pathname: `/transactionList/${
+                            pathname: `wallet/${
                                 wallets[currentValue.walletIdx]?.id ?? 0
-                            }`,
+                            }/transactionList`,
                         }}
                     >
                         <span>Transactions</span>
@@ -215,10 +213,8 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     />
                 </div>
             </div>
-        </Layout>
+        </>
     );
 };
 
-const HomeWithAuthProtection = withAuthProtection()(Home);
-
-export default withRouter(HomeWithAuthProtection);
+export default withRouter(Home);

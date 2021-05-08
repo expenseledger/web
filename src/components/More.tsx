@@ -25,8 +25,6 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import TextField from "./bases/TextField";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
-import Layout from "./Layout";
 import "./More.scss";
 
 interface CurrentValue {
@@ -376,7 +374,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
     };
 
     return (
-        <Layout>
+        <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle">
                     {renderTransactionTypeTab()}
@@ -438,10 +436,8 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </>
     );
 };
 
-const MoreWithAuthProtection = withAuthProtection()(More);
-
-export default MoreWithAuthProtection;
+export default More;

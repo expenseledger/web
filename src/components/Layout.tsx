@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import {
@@ -14,7 +14,6 @@ import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
-import { useAuth } from "./hooks/useAuth";
 import "./Layout.scss";
 
 const Layout: React.FC = (props) => {
@@ -22,8 +21,6 @@ const Layout: React.FC = (props) => {
     const [, setCategories] = useRecoilState(categoriesState);
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
-    const isSignin = useAuth();
-    const history = useHistory();
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
@@ -75,11 +72,6 @@ const Layout: React.FC = (props) => {
     };
 
     React.useEffect(() => {
-        if (!isSignin) {
-            history.replace("/signIn");
-            return;
-        }
-
         getUserData()
             .then(({ categories, wallets }) => {
                 setCategories(categories);
@@ -87,6 +79,7 @@ const Layout: React.FC = (props) => {
                 setIsLoading(false);
             })
             .catch((err) => log(err));
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 

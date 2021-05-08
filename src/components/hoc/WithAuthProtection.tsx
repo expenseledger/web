@@ -1,5 +1,5 @@
 import React from "react";
-import { RouteComponentProps } from "react-router";
+import { RouteComponentProps, useHistory } from "react-router";
 import firebase from "../../lib/firebase";
 import Loading from "../bases/Loading";
 
@@ -51,4 +51,23 @@ export const withAuthProtection = (redirectPath = "/signIn") => (
     }
 
     return WithAuthProtection;
+};
+
+interface AuthProtectionProps {
+    redirectPath?: string;
+}
+
+export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
+    const [isSignin, setIsSignin] = React.useState(false);
+    const history = useHistory();
+
+    React.useEffect(() => {
+        firebase.auth().onAuthStateChanged((user) => {
+            user
+                ? setIsSignin(true)
+                : history.replace(props.redirectPath ?? "/signIn");
+        });
+    }, [history, props.redirectPath]);
+
+    return isSignin ? <>{props.children}</> : <Loading />;
 };

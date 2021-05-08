@@ -25,7 +25,6 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import TextField from "./bases/TextField";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./More.scss";
 
 interface CurrentValue {
@@ -441,6 +440,4 @@ const More: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-const MoreWithAuthProtection = withAuthProtection()(More);
-
-export default MoreWithAuthProtection;
+export default More;

@@ -9,7 +9,6 @@ import {
 } from "../service/helper/walletHelper";
 import { createWallet, deleteWallet } from "../service/walletService";
 import CreateAndDelete from "./bases/CreateAndDelete";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
 
 const WalletSetting: React.FC = () => {
     const [wallets, setWallets] = useRecoilState(walletsState);
@@ -84,4 +83,4 @@ const WalletSetting: React.FC = () => {
     );
 };
 
-export default withAuthProtection()(WalletSetting);
+export default WalletSetting;

@@ -10,7 +10,6 @@ import {
     deleteTransaction,
     listTransactions,
 } from "../service/transactionService";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -114,8 +113,4 @@ export const TransactionList: React.FC = () => {
     return isLoading ? <Loading /> : <>{renderCards()}</>;
 };
 
-const TransactionListWithAuthProctection = withAuthProtection()(
-    TransactionList
-);
-
-export default TransactionListWithAuthProctection;
+export default TransactionList;

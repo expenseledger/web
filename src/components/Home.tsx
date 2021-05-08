@@ -17,7 +17,6 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import { withAuthProtection } from "./hoc/WithAuthProtection";
 import "./Home.scss";
 
 interface CurrentValue {
@@ -218,6 +217,4 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-const HomeWithAuthProtection = withAuthProtection()(Home);
-
-export default withRouter(HomeWithAuthProtection);
+export default withRouter(Home);

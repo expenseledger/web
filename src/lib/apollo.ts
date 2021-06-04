@@ -1,13 +1,14 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
 import firebase from "./firebase";
+import { getServerUrl } from "./rr";
 
 let user: firebase.User | null = null;
 
 firebase.auth().onAuthStateChanged((signedInUser) => (user = signedInUser));
 
 const httpLink = createHttpLink({
-    uri: `${process.env.REACT_APP_SERVER_URL}/graphql`,
+    uri: getServerUrl,
 });
 
 const authLink = setContext(async (_, { headers }) => {

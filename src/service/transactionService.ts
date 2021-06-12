@@ -17,6 +17,7 @@ import {
     ListTransactionsResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
+import { Transaction } from "./model/Transaction";
 import { accountFragment } from "./walletService";
 
 const transactionFragment = gql`
@@ -300,7 +301,7 @@ export async function listTransactions(
         transactions: [
             ...resToAcc.data.transactions.nodes,
             ...resFromAcc.data.transactions.nodes,
-        ],
+        ].sort((a: Transaction, b: Transaction) => b.id - a.id),
         totalCount:
             resToAcc.data.transactions.totalCount +
             resFromAcc.data.transactions.totalCount,

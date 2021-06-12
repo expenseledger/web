@@ -31,15 +31,17 @@ const Icon = styled.span`
 `;
 
 const Home: React.FC<RouteComponentProps> = (props) => {
-    const [wallets, setWallets] = useRecoilState(walletsState);
-    const [categories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
-    const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
+    const initialState = {
         walletIdx: 0,
         categoryIdx: 0,
         amount: 0,
         date: dayjs().format("YYYY-MM-DD"),
-    });
+    };
+    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [categories] = useRecoilState(categoriesState);
+    const [, setNotificationList] = useRecoilState(toastState);
+    const [currentValue, setCurrentValue] =
+        React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const updateSelectedDate = (value: string) => {
@@ -109,6 +111,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 )
             );
 
+            setCurrentValue({
+                ...initialState,
+                walletIdx: currentValue.walletIdx,
+            });
             setIsLoading(false);
             return;
         }
@@ -143,6 +149,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                         className="content__balance__dropdown"
                         options={wallets.map((wallet) => wallet.name)}
                         updateSelectedValue={updateSelectedWallet}
+                        value={wallets[currentValue.walletIdx].name}
                     />
                 </div>
                 <div className="column is-7">
@@ -170,6 +177,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     className="column is-7"
                     name="date"
                     updateValue={updateSelectedDate}
+                    value={currentValue.date}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
@@ -182,6 +190,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     name="expnese"
                     type="number"
                     defaultValue="0"
+                    value={currentValue.amount.toString()}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
@@ -192,6 +201,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     className="column is-7"
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
+                    value={categories[currentValue.categoryIdx].name}
                 />
             </div>
             <div className="columns is-mobile">

@@ -31,9 +31,8 @@ export const TransactionList: React.FC = () => {
 
     useEffect(() => {
         listTransactions({ accountId: +accountId }).then((response) => {
-            const sortedItems = response.items.reverse();
-
-            setTransactions(sortedItems);
+            console.log(response);
+            setTransactions(response.items);
             setIsLoading(false);
         });
     }, []);
@@ -79,9 +78,10 @@ export const TransactionList: React.FC = () => {
             }
         };
 
-        dateSet.forEach((x) =>
+        dateSet.forEach((x, idx) =>
             toReturn.push(
                 <TransactionCard
+                    key={idx}
                     date={new Date(x)}
                     items={transactions
                         .filter((y) => x === y.date.toString())

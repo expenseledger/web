@@ -6,14 +6,19 @@ interface TextFieldProps {
     placeholder?: string;
     updateValue: (value: string) => void;
     className?: string;
+    value?: string;
 }
 
 const TextField: React.FC<TextFieldProps> = (props) => {
-    const { bind } = useInput("", props.updateValue);
+    const { bind, setValue } = useInput("", props.updateValue);
     const inputClass = !!props.className ? props.className : "";
     const classNames = combineClassName("field", inputClass);
 
     const textAreaClassName = combineClassName("input", inputClass);
+
+    React.useEffect(() => {
+        setValue(props.value);
+    }, [props.value, setValue]);
 
     return (
         <div className={classNames}>

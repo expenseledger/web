@@ -38,22 +38,22 @@ interface CurrentValue {
 }
 
 const More: React.FC<RouteComponentProps> = (props) => {
-    const [wallets, setWallets] = useRecoilState(walletsState);
-    const [categories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
-    const [isLoading, setIsLoading] = React.useState(false);
-    const [currentValue, setCurrentValue] = React.useState<CurrentValue>({
+    const initialState = {
         fromWalletIdx: (props.location.state as any).walletIdx ?? 0,
         toWalletIdx: (props.location.state as any).walletIdx ?? 0,
         categoryIdx: (props.location.state as any).categoryIdx ?? 0,
         amount: (props.location.state as any).amount ?? 0,
         date: (props.location.state as any).date ?? Date.now.toString(),
         description: "",
-    });
-    const [
-        transactionTypeTabActive,
-        setTransactionTypeTabActive,
-    ] = React.useState([true, false, false]);
+    };
+    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [categories] = useRecoilState(categoriesState);
+    const [, setNotificationList] = useRecoilState(toastState);
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [currentValue, setCurrentValue] =
+        React.useState<CurrentValue>(initialState);
+    const [transactionTypeTabActive, setTransactionTypeTabActive] =
+        React.useState([true, false, false]);
     const transactionTypes: TransactionType[] = [
         "EXPENSE",
         "INCOME",
@@ -128,13 +128,8 @@ const More: React.FC<RouteComponentProps> = (props) => {
     };
 
     const doAddExpense = async () => {
-        const {
-            fromWalletIdx,
-            categoryIdx,
-            amount,
-            date,
-            description,
-        } = currentValue;
+        const { fromWalletIdx, categoryIdx, amount, date, description } =
+            currentValue;
 
         const isValid = validateAmount(amount);
 
@@ -168,22 +163,19 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 )
             );
 
-            return;
+            return true;
         }
 
         setNotificationList((prev) =>
             prev.concat(mapNotificationProps("AddExpense failed", "danger"))
         );
+
+        return false;
     };
 
     const doAddIncome = async () => {
-        const {
-            fromWalletIdx,
-            categoryIdx,
-            amount,
-            date,
-            description,
-        } = currentValue;
+        const { fromWalletIdx, categoryIdx, amount, date, description } =
+            currentValue;
 
         const isValid = validateAmount(amount);
 
@@ -215,12 +207,14 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 prev.concat(mapNotificationProps("AddIncome sucess", "success"))
             );
 
-            return;
+            return true;
         }
 
         setNotificationList((prev) =>
             prev.concat(mapNotificationProps("AddIncome failed", "danger"))
         );
+
+        return false;
     };
 
     const doAddTransfer = async () => {
@@ -272,31 +266,42 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 )
             );
 
-            return;
+            return true;
         }
 
         setNotificationList((prev) =>
             prev.concat(mapNotificationProps("AddTransfer failed", "danger"))
         );
+
+        return false;
     };
 
     const addTransaction = () => {
-        const transactionTypeIdx = transactionTypeTabActive.findIndex(
-            (x) => x === true
-        );
+        const doTransaction = () => {
+            const transactionTypeIdx = transactionTypeTabActive.findIndex(
+                (x) => x === true
+            );
+
+            switch (transactionTypes[transactionTypeIdx]) {
+                case "EXPENSE":
+                    return doAddExpense();
+                case "INCOME":
+                    return doAddIncome();
+                case "TRANSFER":
+                    return doAddTransfer();
+            }
+        };
 
         setIsLoading(true);
 
-        switch (transactionTypes[transactionTypeIdx]) {
-            case "EXPENSE":
-                doAddExpense();
-                break;
-            case "INCOME":
-                doAddIncome();
-                break;
-            case "TRANSFER":
-                doAddTransfer();
-                break;
+        const result = doTransaction();
+
+        if (result) {
+            setCurrentValue({
+                ...initialState,
+                toWalletIdx: currentValue.toWalletIdx,
+                fromWalletIdx: currentValue.fromWalletIdx,
+            });
         }
 
         setIsLoading(false);
@@ -306,9 +311,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
         const isTransfer = transactionTypeTabActive[2];
         const render = (
             title: string,
-            walletName: string,
             balance: number,
-            updateWallet: (value: string) => void
+            updateWallet: (value: string) => void,
+            value: string
         ) => (
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">
@@ -316,9 +321,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 </span>
                 <Dropdown
                     className="column is-4 is-narrow"
-                    default={walletName}
                     options={wallets.map((x) => x.name)}
                     updateSelectedValue={updateWallet}
+                    value={value}
                 />
                 <span className="column is-3 is-narrow">
                     {formatNumber(balance)}
@@ -331,23 +336,23 @@ const More: React.FC<RouteComponentProps> = (props) => {
             <>
                 {render(
                     "From",
-                    wallets[currentValue.fromWalletIdx]?.name,
                     wallets[currentValue.fromWalletIdx]?.balance ?? 0,
-                    updateSelectedFromWallet
+                    updateSelectedFromWallet,
+                    wallets[currentValue.fromWalletIdx]?.name
                 )}
                 {render(
                     "To",
-                    wallets[currentValue.toWalletIdx]?.name,
                     wallets[currentValue.toWalletIdx]?.balance ?? 0,
-                    updateSelectedToWallet
+                    updateSelectedToWallet,
+                    wallets[currentValue.toWalletIdx]?.name
                 )}
             </>
         ) : (
             render(
                 "Wallet",
-                wallets[currentValue.fromWalletIdx]?.name,
                 wallets[currentValue.fromWalletIdx]?.balance ?? 0,
-                updateSelectedFromWallet
+                updateSelectedFromWallet,
+                wallets[currentValue.fromWalletIdx]?.name
             )
         );
     };
@@ -385,9 +390,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     </span>
                     <Dropdown
                         className="column is-8"
-                        default={categories[currentValue.categoryIdx]?.name}
                         options={categories.map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
                 {renderWalletSection()}
@@ -399,6 +404,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         className="column is-8"
                         name="date"
                         updateValue={updateSelectedDate}
+                        value={currentValue.date}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">
@@ -411,6 +417,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         name="expnese"
                         type="number"
                         defaultValue="0"
+                        value={currentValue.amount.toString()}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">
@@ -421,6 +428,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         className="column is-8 more__textArea"
                         name="description"
                         updateValue={updateDescription}
+                        value={currentValue.description}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

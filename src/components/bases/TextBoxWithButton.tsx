@@ -12,10 +12,11 @@ interface TextBoxWithButtonProps {
     defaultValue?: string;
     buttonText: string;
     buttonType: ButtonType;
+    value?: string;
 }
 
 const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
-    const { bind, value } = useInput(props.defaultValue ?? "");
+    const { bind, value, setValue } = useInput(props.defaultValue ?? "");
     const [dropdownValue, setDropdownValue] = useState(
         props.dropdown && props.dropdown.length !== 0 ? props.dropdown[0] : ""
     );
@@ -37,6 +38,10 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
                 </span>
             </div>
         ) : null;
+
+    React.useEffect(() => {
+        props.value && setValue(props.value);
+    }, [props.value, setValue]);
 
     return (
         <div className={className}>

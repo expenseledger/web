@@ -215,6 +215,20 @@ export async function addExpense(
             fromAccountId: request.fromAccountId,
             occurredAt: request.date,
         },
+        refetchQueries: [
+            {
+                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
+                variables: {
+                    accountId: request.fromAccountId,
+                },
+            },
+            {
+                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+                variables: {
+                    accountId: request.fromAccountId,
+                },
+            },
+        ],
     });
 
     if (response.errors) {
@@ -240,6 +254,20 @@ export async function addIncome(
             toAccountId: request.toAccountId,
             occurredAt: request.date,
         },
+        refetchQueries: [
+            {
+                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
+                variables: {
+                    accountId: request.toAccountId,
+                },
+            },
+            {
+                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+                variables: {
+                    accountId: request.toAccountId,
+                },
+            },
+        ],
     });
 
     if (response.errors) {
@@ -267,6 +295,20 @@ export async function addTransfer(
             toAccountId: request.toAccountId,
             occurredAt: request.date,
         },
+        refetchQueries: [
+            {
+                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
+                variables: {
+                    accountId: request.fromAccountId,
+                },
+            },
+            {
+                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+                variables: {
+                    accountId: request.toAccountId,
+                },
+            },
+        ],
     });
 
     if (response.errors) {
@@ -301,7 +343,7 @@ export async function listTransactions(
         transactions: [
             ...resToAcc.data.transactions.nodes,
             ...resFromAcc.data.transactions.nodes,
-        ].sort((a: Transaction, b: Transaction) => b.id - a.id),
+        ],
         totalCount:
             resToAcc.data.transactions.totalCount +
             resFromAcc.data.transactions.totalCount,
@@ -323,7 +365,27 @@ export async function listTransactions(
 
     return {
         length: result.totalCount,
-        items: result.transactions.map(mapTransactionFromServer),
+        items: result.transactions
+            .map(mapTransactionFromServer)
+            .sort((a: Transaction, b: Transaction) => {
+                if (b.date > a.date) {
+                    return 1;
+                }
+
+                if (b.date < a.date) {
+                    return -1;
+                }
+
+                if (b.id > a.id) {
+                    return 1;
+                }
+
+                if (b.id < a.id) {
+                    return -1;
+                }
+
+                return 0;
+            }),
     };
 }
 

@@ -7,7 +7,7 @@ import { RecoilRoot } from "recoil";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
-import register from "./registerServiceWorker";
+import { register } from "./serviceWorkerRegistration";
 
 ReactDOM.render(
     <RecoilRoot>

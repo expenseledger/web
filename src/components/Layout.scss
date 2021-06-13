@@ -15,6 +15,11 @@
     &__totalBalance {
         text-align: right;
     }
+    &-label {
+        &__signout {
+            cursor: pointer;
+        }
+    }
 }
 
 .footer {

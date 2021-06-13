@@ -67,7 +67,7 @@ const Layout: React.FC = (props) => {
                         </li>
                     </ul>
                     <p
-                        className="menu-label"
+                        className="menu-label menu-label__signout"
                         onClick={() => firebase.auth().signOut()}
                     >
                         Sign out

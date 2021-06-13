@@ -7,7 +7,7 @@ import { RecoilRoot } from "recoil";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
-import { unregister } from "./registerServiceWorker";
+import register from "./registerServiceWorker";
 
 ReactDOM.render(
     <RecoilRoot>
@@ -18,4 +18,4 @@ ReactDOM.render(
     document.getElementById("root") as HTMLElement
 );
 
-unregister();
+register();

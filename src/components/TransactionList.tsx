@@ -35,6 +35,7 @@ export const TransactionList: React.FC = () => {
             setTransactions(response.items);
             setIsLoading(false);
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const removeTransaction = async (id: number) => {

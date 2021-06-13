@@ -66,6 +66,12 @@ const Layout: React.FC = (props) => {
                             </ul>
                         </li>
                     </ul>
+                    <p
+                        className="menu-label"
+                        onClick={() => firebase.auth().signOut()}
+                    >
+                        Sign out
+                    </p>
                 </aside>
             </div>
         );
@@ -93,21 +99,13 @@ const Layout: React.FC = (props) => {
                     <div className="column is-narrow">
                         <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                     </div>
-                    <div className="column is-three-fifths-mobile is-three-fifths-tablet">
+                    <div className="column">
                         <Link to="/">
                             <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
                                 Expense ledger
                             </span>
                             <img className="ml-2" src={Logo} width="25px" />
                         </Link>
-                    </div>
-                    <div className="column is-offset-1-desktop is-offset-1-tablet">
-                        <button
-                            className="header__signout button is-link is-outlined is-small"
-                            onClick={() => firebase.auth().signOut()}
-                        >
-                            Sign out
-                        </button>
                     </div>
                 </div>
             </div>

@@ -90,7 +90,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             amount,
             categoryId: categories[categoryIdx]?.id ?? 0,
             fromAccountId: wallets[walletIdx]?.id ?? 0,
-            description: "quick add appense",
+            description: "-",
             date,
         };
 

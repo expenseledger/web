@@ -104,7 +104,12 @@ const Layout: React.FC = (props) => {
                             <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
                                 Expense ledger
                             </span>
-                            <img className="ml-2" src={Logo} width="25px" />
+                            <img
+                                className="ml-2"
+                                src={Logo}
+                                width="25px"
+                                alt="website logo"
+                            />
                         </Link>
                     </div>
                 </div>

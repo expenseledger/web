@@ -5,6 +5,9 @@
     box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
     margin-top: 12px;
     padding-left: 10px;
+    position: sticky;
+    top: 0px;
+    z-index: 1;
 
     &__title {
         vertical-align: text-bottom;

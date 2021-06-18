@@ -62,7 +62,12 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
                 <Title className="title is-4">{title}</Title>
                 <SumAmountBox>
                     <MiddleSpan>
-                        {props.items.reduce((acc, cur) => acc + cur.amount, 0)}
+                        {formatNumber(
+                            props.items.reduce(
+                                (acc, cur) => acc + cur.amount,
+                                0
+                            )
+                        )}
                     </MiddleSpan>
                     <MiddleSpan className="ml-2">Baht</MiddleSpan>
                 </SumAmountBox>

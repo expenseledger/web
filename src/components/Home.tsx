@@ -9,10 +9,10 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { formatNumber } from "../common/utils";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
+import AccountCard from "./AccountCard";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -133,13 +133,13 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         <>
             <section className="section">
                 <div className="columns is-mobile is-vcentered">
-                    <div className="column has-text-weight-bold is-size-3 is-5-desktop is-5-tablet">
-                        {formatNumber(
-                            wallets[currentValue.walletIdx]?.balance ?? 0
-                        )}
-                    </div>
-                    <div className="column has-text-weight-bold is-size-3">
-                        baht
+                    <div className="column is-5">
+                        <AccountCard
+                            balance={
+                                wallets[currentValue.walletIdx]?.balance ?? 0
+                            }
+                            name={wallets[currentValue.walletIdx].name}
+                        />
                     </div>
                 </div>
             </section>

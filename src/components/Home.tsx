@@ -131,9 +131,9 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     return (
         <>
-            <section className="section">
+            <section className="section px-0">
                 <div className="columns is-mobile is-vcentered">
-                    <div className="column is-5">
+                    <div className="column is-12">
                         <AccountCard
                             balance={
                                 wallets[currentValue.walletIdx]?.balance ?? 0

@@ -95,7 +95,6 @@ const Layout: React.FC = (props) => {
         <>
             <div className="header">
                 <div className="columns is-mobile is-vcentered">
-                    {/* {renderBackIcon()} */}
                     <div className="column is-narrow">
                         <Drawer>{renderBurgerMenuContent(wallets)}</Drawer>
                     </div>

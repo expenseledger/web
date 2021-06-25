@@ -22,6 +22,18 @@ const Cards = [
         background-color: #89d4cf;
         background-image: linear-gradient(315deg, #89d4cf 0%, #6e45e1 74%);
     `,
+    styled.div`
+        background-color: #f9d29d;
+        background-image: linear-gradient(315deg, #f9d29d 0%, #ffd8cb 74%);
+    `,
+    styled.div`
+        background-color: #537895;
+        background-image: linear-gradient(315deg, #537895 0%, #09203f 74%);
+    `,
+    styled.div`
+        background-color: #89d8d3;
+        background-image: linear-gradient(315deg, #89d8d3 0%, #03c8a8 74%);
+    `,
 ];
 
 const AccountCard: React.FC<AccountCardProps> = (props) => {

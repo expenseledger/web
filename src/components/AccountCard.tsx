@@ -35,19 +35,13 @@ const AccountCard: React.FC<AccountCardProps> = (props) => {
     const Card = Cards[props.id % 3];
 
     return (
-        <Card className="card">
-            <div className="card-content">
-                <div className="content has-text-right has-text-white">
-                    <div className="is-size-3 has-text-weight-bold">
-                        {props.name}
-                    </div>
-                    <div className="is-size-5">
-                        <span>฿</span>
-                        <animated.span>
-                            {number.to((x) => formatNumber(x))}
-                        </animated.span>
-                    </div>
-                </div>
+        <Card className="box has-text-right has-text-white p-5">
+            <div className="is-size-3 has-text-weight-bold">{props.name}</div>
+            <div className="is-size-5">
+                <span>฿</span>
+                <animated.span>
+                    {number.to((x) => formatNumber(x))}
+                </animated.span>
             </div>
         </Card>
     );

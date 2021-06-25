@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import {
@@ -9,10 +10,10 @@ import {
     toastState,
     walletsState,
 } from "../common/shareState";
-import { formatNumber } from "../common/utils";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
+import AccountCard from "./AccountCard";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -51,10 +52,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         setCurrentValue(tCurrentValue);
     };
 
-    const updateSelectedWallet = (value: string) => {
+    const updateSelectedWallet = (idx: number) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.walletIdx = wallets.findIndex((x) => x.name === value);
+        tCurrentValue.walletIdx = idx;
         setCurrentValue(tCurrentValue);
     };
 
@@ -129,29 +130,41 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         props.history.push("/more", { ...currentValue });
     };
 
+    const renderAccountCards = () => {
+        const accountCards = wallets.map((x, idx) => (
+            <AccountCard
+                key={idx}
+                id={idx}
+                balance={currentValue.walletIdx === idx ? x.balance : 0}
+                name={x.name}
+            />
+        ));
+        const settings = {
+            dots: false,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+        };
+        const afterChangeHandler = (idx: number) => {
+            updateSelectedWallet(idx);
+        };
+
+        return (
+            <Slider {...settings} afterChange={afterChangeHandler}>
+                {accountCards}
+            </Slider>
+        );
+    };
+
     return (
         <>
             <section className="section">
                 <div className="columns is-mobile is-vcentered">
-                    <div className="column has-text-weight-bold is-size-3 is-5-desktop is-5-tablet">
-                        {formatNumber(
-                            wallets[currentValue.walletIdx]?.balance ?? 0
-                        )}
-                    </div>
-                    <div className="column has-text-weight-bold is-size-3">
-                        baht
-                    </div>
+                    <div className="column is-12">{renderAccountCards()}</div>
                 </div>
             </section>
             <div className="columns is-mobile is-vcentered">
-                <div className="column is-5">
-                    <Dropdown
-                        className="content__balance__dropdown"
-                        options={wallets.map((wallet) => wallet.name)}
-                        updateSelectedValue={updateSelectedWallet}
-                        value={wallets[currentValue.walletIdx].name}
-                    />
-                </div>
                 <div className="column is-7">
                     <Link
                         className="has-text-weight-bold"

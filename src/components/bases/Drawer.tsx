@@ -64,7 +64,7 @@ const Drawer: React.FC = (props) => {
     return (
         <>
             <span className="icon" onClick={btnClickHandler}>
-                <i className="fas fa-lg fa-bars"></i>
+                <i className="fas fa-lg fa-ellipsis-h"></i>
             </span>
             {isShowPanel ? (
                 <Background

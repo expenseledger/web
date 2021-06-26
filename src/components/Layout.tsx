@@ -21,6 +21,8 @@ const Layout: React.FC = (props) => {
     const [, setCategories] = useRecoilState(categoriesState);
     const totalWalletsBalance = useRecoilValue(totalWalletsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
+    const [switchHeaderBackground, setSwitchHeaderBackground] =
+        React.useState(false);
 
     const renderBurgerMenuContent = (wallets: Wallet[]) => {
         return (
@@ -76,8 +78,13 @@ const Layout: React.FC = (props) => {
             </div>
         );
     };
+    const listenToScroll = () => {
+        console.log("scroll");
+        setSwitchHeaderBackground(document.body.scrollHeight > 63);
+    };
 
     React.useEffect(() => {
+        window.addEventListener("scroll", listenToScroll, false);
         getUserData()
             .then(({ categories, wallets }) => {
                 setCategories(categories);
@@ -85,6 +92,10 @@ const Layout: React.FC = (props) => {
                 setIsLoading(false);
             })
             .catch((err) => log(err));
+
+        return () => {
+            window.removeEventListener("scroll", listenToScroll, false);
+        };
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -116,13 +127,6 @@ const Layout: React.FC = (props) => {
             <div className="container is-mobile is-fluid mt-4">
                 {props.children}
             </div>
-            <footer className="footer">
-                <div className="content has-text-centered">
-                    <a href="https://www.freepik.com/vectors/banner">
-                        Banner vector created by upklyak - www.freepik.com
-                    </a>
-                </div>
-            </footer>
             <Toast position="top-right" />
         </>
     );

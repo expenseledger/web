@@ -44,7 +44,7 @@ const AccountCard: React.FC<AccountCardProps> = (props) => {
         delay: 200,
         config: config.default,
     });
-    const Card = Cards[props.id % 3];
+    const Card = Cards[props.id % Cards.length];
 
     return (
         <Card className="box has-text-right has-text-white p-5">

@@ -31,7 +31,6 @@ export const TransactionList: React.FC = () => {
 
     useEffect(() => {
         listTransactions({ accountId: +accountId }).then((response) => {
-            console.log(response);
             setTransactions(response.items);
             setIsLoading(false);
         });

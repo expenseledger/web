@@ -9,6 +9,7 @@ interface TextBoxProps {
     type?: string;
     defaultValue?: string;
     value?: string;
+    addOn?: string;
 }
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
@@ -18,7 +19,8 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
     );
     const classNames = combineClassName(
         "field",
-        !!props.className ? props.className : ""
+        props.addOn && "has-addons",
+        props.className
     );
 
     React.useEffect(() => {

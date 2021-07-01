@@ -20,15 +20,21 @@ interface ItemBoxProps {
     item: Item;
 }
 
+const Icon = styled.span`
+    cursor: pointer;
+`;
+
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
+    const [isClickedEdit, setIsClickedEdit] = React.useState(false);
+    const [isSaveLoading, setIsSaveLoading] = React.useState(false);
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
     };
-    const onCancelHandler = () => {
+    const onDeleteCancelHandler = () => {
         setIsClickedDelete(false);
     };
-    const onConfirmHandler = async () => {
+    const onDeleteConfirmHandler = async () => {
         if (!props.deleteFuncHandler) {
             return;
         }
@@ -36,14 +42,22 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         await props.deleteFuncHandler(props.item.id);
         setIsClickedDelete(false);
     };
-
+    const onEditHandler = () => {
+        setIsClickedEdit(true);
+    };
+    const onEditCancelHandler = () => {
+        setIsClickedEdit(false);
+    };
+    const onEditConfirmHandler = () => {
+        setIsClickedEdit(false);
+    };
     const renderDelete = () => {
         if (isClickedDelete) {
             return (
                 <div className="columns is-mobile is-variable is-1">
                     <div className="column">
                         <Button
-                            onClickHandler={onCancelHandler}
+                            onClickHandler={onDeleteCancelHandler}
                             size="small"
                             outlined
                             type="primary"
@@ -52,7 +66,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                     </div>
                     <div className="column">
                         <Button
-                            onClickHandler={onConfirmHandler}
+                            onClickHandler={onDeleteConfirmHandler}
                             size="small"
                             type="danger"
                             value="Confirm"
@@ -63,21 +77,69 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         }
 
         return (
-            <a onClick={onDeleteHandler}>
-                <span className="icon">
-                    <i
-                        className="fas fa-lg fa-times has-text-danger"
-                        aria-hidden="true"
-                    ></i>
-                </span>
-            </a>
+            <Icon className="icon" onClick={onDeleteHandler}>
+                <i
+                    className="fas fa-lg fa-times has-text-danger"
+                    aria-hidden="true"
+                ></i>
+            </Icon>
         );
+    };
+    const renderEdit = () => {
+        const modal = (
+            <div className="modal is-active">
+                <div
+                    className="modal-background"
+                    onClick={onEditCancelHandler}
+                ></div>
+                <div className="modal-card">
+                    <header className="modal-card-head">
+                        <p className="modal-card-title">Edit Wallet</p>
+                        <button
+                            className="delete"
+                            onClick={onEditCancelHandler}
+                        ></button>
+                    </header>
+                    <section className="modal-card-body has-text-black">
+                        Are you sure?
+                    </section>
+                    <footer className="modal-card-foot">
+                        <button
+                            className={`button is-success ${
+                                isSaveLoading ? "is-loading" : ""
+                            }`}
+                            onClick={onEditConfirmHandler}
+                        >
+                            Save
+                        </button>
+                        <button
+                            className="button"
+                            onClick={onEditCancelHandler}
+                        >
+                            Cancel
+                        </button>
+                    </footer>
+                </div>
+            </div>
+        );
+
+        return !isClickedDelete ? (
+            <>
+                <Icon className="icon" onClick={onEditHandler}>
+                    <i className="far fa-lg fa-edit"></i>
+                </Icon>
+                {isClickedEdit && modal}
+            </>
+        ) : null;
     };
 
     return (
         <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
             <span>{props.item.name}</span>
-            {renderDelete()}
+            <div>
+                {renderEdit()}
+                {renderDelete()}
+            </div>
         </div>
     );
 };

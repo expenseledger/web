@@ -185,33 +185,32 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 </div>
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-5 has-text-weight-bold">Date</span>
+                <span className="column is-4 has-text-weight-bold">Date</span>
                 <DateBox
-                    className="column is-7"
+                    className="column"
                     name="date"
                     updateValue={updateSelectedDate}
                     value={currentValue.date}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-5 has-text-weight-bold">
-                    Amount(THB)
-                </span>
+                <span className="column is-4 has-text-weight-bold">Amount</span>
                 <TextBox
-                    className="column is-7"
+                    className="column"
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
                     defaultValue="0"
                     value={currentValue.amount.toString()}
+                    addOn={{ text: "฿", position: "front" }}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-5 has-text-weight-bold">
+                <span className="column is-4 has-text-weight-bold">
                     Category
                 </span>
                 <Dropdown
-                    className="column is-7"
+                    className="column"
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}

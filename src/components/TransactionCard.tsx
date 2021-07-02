@@ -61,6 +61,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
             <div className="is-flex is-flex-direction-row is-justify-content-space-between">
                 <Title className="title is-4">{title}</Title>
                 <SumAmountBox>
+                    <MiddleSpan className="ml-2">฿</MiddleSpan>
                     <MiddleSpan>
                         {formatNumber(
                             props.items.reduce(
@@ -69,7 +70,6 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
                             )
                         )}
                     </MiddleSpan>
-                    <MiddleSpan className="ml-2">Baht</MiddleSpan>
                 </SumAmountBox>
             </div>
             {renderBody()}

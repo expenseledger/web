@@ -34,10 +34,9 @@ const Layout: React.FC = (props) => {
                                     <div className="column is-half">
                                         {x.name}
                                     </div>
-                                    <div className="column is-one-third">
-                                        {formatNumber(x.balance)}
+                                    <div className="column">
+                                        ฿ {formatNumber(x.balance)}
                                     </div>
-                                    <div className="column">THB</div>
                                 </div>
                             </li>
                         ))}
@@ -46,10 +45,9 @@ const Layout: React.FC = (props) => {
                                 <div className="column is-half menu__totalBalance">
                                     =
                                 </div>
-                                <div className="column is-one-third has-text-weight-bold">
-                                    {formatNumber(totalWalletsBalance)}
+                                <div className="column has-text-weight-bold">
+                                    ฿ {formatNumber(totalWalletsBalance)}
                                 </div>
-                                <div className="column">THB</div>
                             </div>
                         </li>
                     </ul>

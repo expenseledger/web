@@ -111,7 +111,7 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (
                     <div className="column is-half">
                         <span className="has-text-weight-bold">Amount:</span>
                     </div>
-                    <div className="column is-half">{props.amount}</div>
+                    <div className="column is-half">฿ {props.amount}</div>
                     <div className="column is-half">
                         <span className="has-text-weight-bold">Category:</span>
                     </div>

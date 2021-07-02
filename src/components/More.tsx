@@ -325,10 +325,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     updateSelectedValue={updateWallet}
                     value={value}
                 />
-                <span className="column is-3 is-narrow">
-                    {formatNumber(balance)}
+                <span className="column is-narrow">
+                    ฿ {formatNumber(balance)}
                 </span>
-                <span className="column is-1 is-narrow">THB</span>
             </div>
         );
 
@@ -389,7 +388,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         Category
                     </span>
                     <Dropdown
-                        className="column is-8"
+                        className="column"
                         options={categories.map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
                         value={categories[currentValue.categoryIdx].name}
@@ -401,7 +400,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         Date
                     </span>
                     <DateBox
-                        className="column is-8"
+                        className="column"
                         name="date"
                         updateValue={updateSelectedDate}
                         value={currentValue.date}
@@ -412,12 +411,13 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         Amount
                     </span>
                     <TextBox
-                        className="column is-8"
+                        className="column"
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
                         defaultValue="0"
                         value={currentValue.amount.toString()}
+                        addOn={{ text: "฿", position: "front" }}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">
@@ -425,7 +425,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         Description
                     </span>
                     <TextField
-                        className="column is-8 more__textArea"
+                        className="column more__textArea"
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}

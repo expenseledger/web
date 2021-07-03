@@ -380,7 +380,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
     return (
         <>
             <div className="mt-5 more">
-                <div className="tabs is-toggle">
+                <div className="tabs is-toggle is-fullwidth">
                     {renderTransactionTypeTab()}
                 </div>
                 <div className="columns is-mobile is-vcentered">

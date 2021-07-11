@@ -4,6 +4,8 @@ import { categoriesState, toastState } from "../common/shareState";
 import { createCategory, deleteCategory } from "../service/categoryService";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import CreateAndDelete from "./bases/CreateAndDelete";
+import Dropdown from "./bases/Dropdown";
+import TextBox from "./bases/TextBox";
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
@@ -63,7 +65,34 @@ const CategorySetting: React.FC = () => {
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-            />
+            >
+                <div className="control">
+                    <div className="field">
+                        <label className="label">Name</label>
+                        <TextBox
+                            updateValue={() => {
+                                return;
+                            }}
+                            name=""
+                        />
+                    </div>
+                    <div className="field">
+                        <label className="label">Type</label>
+                        <Dropdown
+                            options={["Test", "Oat"]}
+                            updateSelectedValue={() => {
+                                return;
+                            }}
+                            value=""
+                        />
+                    </div>
+                    <div className="field">
+                        <div className="control">
+                            <button className="button is-primary">Add</button>
+                        </div>
+                    </div>
+                </div>
+            </CreateAndDelete>
         </>
     );
 };

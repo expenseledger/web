@@ -1,11 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
-import TextBoxWithButton from "./TextBoxWithButton";
+import Modal from "./Modal";
 
 export interface Item {
     id: number;
     name: string;
+}
+
+interface ModalProps {
+    title: string;
+    content: React.ReactElement;
 }
 
 export interface CreateAndDeleteProps {
@@ -13,11 +18,13 @@ export interface CreateAndDeleteProps {
     deleteFuncHandler: (value: number) => Promise<void>;
     items: Item[];
     dropdowns?: string[];
+    modal?: ModalProps;
 }
 
 interface ItemBoxProps {
     deleteFuncHandler: (value: number) => Promise<void>;
     item: Item;
+    modal?: ModalProps;
 }
 
 const Icon = styled.span`
@@ -86,49 +93,21 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         );
     };
     const renderEdit = () => {
-        const modal = (
-            <div className="modal is-active">
-                <div
-                    className="modal-background"
-                    onClick={onEditCancelHandler}
-                ></div>
-                <div className="modal-card">
-                    <header className="modal-card-head">
-                        <p className="modal-card-title">Edit Wallet</p>
-                        <button
-                            className="delete"
-                            onClick={onEditCancelHandler}
-                        ></button>
-                    </header>
-                    <section className="modal-card-body has-text-black">
-                        Are you sure?
-                    </section>
-                    <footer className="modal-card-foot">
-                        <button
-                            className={`button is-success ${
-                                isSaveLoading ? "is-loading" : ""
-                            }`}
-                            onClick={onEditConfirmHandler}
-                        >
-                            Save
-                        </button>
-                        <button
-                            className="button"
-                            onClick={onEditCancelHandler}
-                        >
-                            Cancel
-                        </button>
-                    </footer>
-                </div>
-            </div>
-        );
-
         return !isClickedDelete ? (
             <>
                 <Icon className="icon" onClick={onEditHandler}>
                     <i className="far fa-lg fa-edit"></i>
                 </Icon>
-                {isClickedEdit && modal}
+                {isClickedEdit && props.modal && (
+                    <Modal
+                        title={props.modal.title}
+                        isConfirmLoading={isSaveLoading}
+                        onCancleHandler={onEditCancelHandler}
+                        onConfirmHandler={onEditConfirmHandler}
+                    >
+                        {props.modal.content}
+                    </Modal>
+                )}
             </>
         ) : null;
     };
@@ -164,14 +143,15 @@ const CreateAndDelete: React.FC<CreateAndDeleteProps> = (props) => {
                     ))}
                 </ItemContainer>
             </div>
-            <TextBoxWithButton
+            {props.children}
+            {/* <TextBoxWithButton
                 name="add"
                 type="text"
                 buttonType="link"
                 buttonText="Create"
                 onClick={props.createFuncHandler}
                 dropdown={props.dropdowns}
-            />
+            /> */}
         </div>
     );
 };

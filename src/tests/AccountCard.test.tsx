@@ -2,13 +2,15 @@ import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import toJson from "enzyme-to-json";
 import React from "react";
-import App from "../components/App";
+import AccountCard from "../components/AccountCard";
 
 Enzyme.configure({ adapter: new Adapter() });
 
-describe("<App>", () => {
+describe("<AccountCard>", () => {
     it("renders without crashing", () => {
-        const wrapper = shallow(<App />);
+        const wrapper = shallow(
+            <AccountCard id={1} balance={12.34} name="test" />
+        );
         expect(toJson(wrapper)).toMatchSnapshot();
     });
 });

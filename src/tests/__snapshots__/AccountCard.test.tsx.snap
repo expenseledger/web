@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<AccountCard> renders without crashing 1`] = `
+<styled.div
+  className="box has-text-right has-text-white p-5"
+>
+  <div
+    className="is-size-3 has-text-weight-bold"
+  >
+    test
+  </div>
+  <div
+    className="is-size-5"
+  >
+    <span>
+      ฿
+    </span>
+    <Animated(span)>
+      <Component />
+    </Animated(span)>
+  </div>
+</styled.div>
+`;

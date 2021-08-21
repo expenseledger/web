@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<App> renders without crashing 1`] = `
+<BrowserRouter>
+  <Suspense
+    fallback={<Loading />}
+  >
+    <Switch>
+      <Route
+        component={
+          Object {
+            "$$typeof": Symbol(react.lazy),
+            "_init": [Function],
+            "_payload": Object {
+              "_result": [Function],
+              "_status": -1,
+            },
+          }
+        }
+        exact={true}
+        path="/signIn"
+      />
+      <AuthProtection>
+        <lazy>
+          <Route
+            component={
+              Object {
+                "$$typeof": Symbol(react.lazy),
+                "_init": [Function],
+                "_payload": Object {
+                  "_result": [Function],
+                  "_status": -1,
+                },
+              }
+            }
+            exact={true}
+            path="/"
+          />
+          <Route
+            component={
+              Object {
+                "$$typeof": Symbol(react.lazy),
+                "_init": [Function],
+                "_payload": Object {
+                  "_result": [Function],
+                  "_status": -1,
+                },
+              }
+            }
+            exact={true}
+            path="/wallet/:accountId/transactionList"
+          />
+          <Route
+            component={
+              Object {
+                "$$typeof": Symbol(react.lazy),
+                "_init": [Function],
+                "_payload": Object {
+                  "_result": [Function],
+                  "_status": -1,
+                },
+              }
+            }
+            exact={true}
+            path="/more"
+          />
+          <Route
+            component={
+              Object {
+                "$$typeof": Symbol(react.lazy),
+                "_init": [Function],
+                "_payload": Object {
+                  "_result": [Function],
+                  "_status": -1,
+                },
+              }
+            }
+            exact={true}
+            path="/category/setting"
+          />
+          <Route
+            component={
+              Object {
+                "$$typeof": Symbol(react.lazy),
+                "_init": [Function],
+                "_payload": Object {
+                  "_result": [Function],
+                  "_status": -1,
+                },
+              }
+            }
+            exact={true}
+            path="/wallet/setting"
+          />
+        </lazy>
+      </AuthProtection>
+    </Switch>
+  </Suspense>
+</BrowserRouter>
+`;

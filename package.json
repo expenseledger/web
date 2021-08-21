@@ -43,9 +43,12 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --env=jsdom",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "release": "release-it"
     },
     "devDependencies": {
+        "@types/enzyme": "^3.10.9",
+        "@types/enzyme-adapter-react-16": "^1.0.6",
         "@types/jest": "^26.0.15",
         "@types/node": "^10.12.0",
         "@types/node-sass": "^4.11.1",
@@ -59,9 +62,15 @@
         "@types/uuid": "^8.3.0",
         "@typescript-eslint/eslint-plugin": "^4.2.0",
         "@typescript-eslint/parser": "^4.2.0",
+        "enzyme": "^3.11.0",
+        "enzyme-adapter-react-16": "^1.15.6",
+        "enzyme-to-json": "^3.6.2",
         "eslint": "^7.11.0",
         "eslint-plugin-react": "^7.21.1",
         "eslint-plugin-react-hooks": "^4.1.2",
+        "jest-environment-enzyme": "^7.1.2",
+        "jest-enzyme": "^7.1.2",
+        "release-it": "^14.11.5",
         "typescript": "^4.0.3"
     },
     "browserslist": {

@@ -1,46 +1,6 @@
-import firebase from "firebase/app";
 import "firebase/auth";
 import { GraphQLError } from "graphql";
 import { useState } from "react";
-import { httpStatus } from "../service/constants";
-import Response from "../service/model/Response";
-
-/**
- * @param {any} axiosMethod pass axios method eg. axios.post.
- * @param {string} url url
- */
-export async function callAxios<T>(
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    axiosMethod: any,
-    url: string,
-    content?: T
-): Promise<Response> {
-    try {
-        const user = firebase.auth().currentUser;
-        const token = user ? await user.getIdToken() : "";
-        const header = {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        };
-
-        const { data, status } = await axiosMethod(url, content, header);
-
-        return {
-            data: data.data,
-            error: null,
-            status: Number.parseInt(status, 10),
-            success: data.success,
-        };
-    } catch (err) {
-        return {
-            data: null,
-            error: err,
-            status: (err.response && err.response.status) || 0,
-            success: false,
-        };
-    }
-}
 
 export function combineClassName(...classNames: string[]): string {
     return classNames
@@ -78,18 +38,6 @@ export function useInput(
             },
         },
     };
-}
-
-export function isReturnSuccessStatus(response: Response): boolean {
-    if (
-        response.status === httpStatus.ok &&
-        response.success &&
-        !response.error
-    ) {
-        return true;
-    }
-
-    return false;
 }
 
 export function log(message: string, errors?: readonly GraphQLError[]): void {

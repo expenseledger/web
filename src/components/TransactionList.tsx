@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { toastState } from "../common/shareState";
+import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
@@ -27,6 +27,7 @@ export const TransactionList: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
+    const [accounts, setAccounts] = useRecoilState(walletsState);
     const { accountId } = useParams<PathParams>();
 
     useEffect(() => {
@@ -57,7 +58,20 @@ export const TransactionList: React.FC = () => {
             )
         );
 
+        const updatedAccounts = accounts.map((ac) => {
+            if (ac.id === Number.parseInt(accountId)) {
+                const tx = transactions.find((t) => t.id === id);
+
+                ac.balance =
+                    tx.type === "INCOME"
+                        ? ac.balance - tx.amount
+                        : ac.balance + tx.amount;
+            }
+
+            return ac;
+        });
         setTransactions(transactions.filter((x) => x.id !== id));
+        setAccounts(updatedAccounts);
     };
 
     const getCards = () => {

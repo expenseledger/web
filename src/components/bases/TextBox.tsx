@@ -48,6 +48,9 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
                     name={props.name}
                     type={props.type ?? "text"}
                     placeholder={props.placeholder}
+                    {...(props.type === "number"
+                        ? { inputMode: "decimal" }
+                        : null)}
                     {...bind}
                 />
             </div>

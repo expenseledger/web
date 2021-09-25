@@ -1,21 +1,21 @@
-module.exports = {
-    parser: "@typescript-eslint/parser", // Specifies the ESLint parser
-    extends: [
+{
+    "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+    "extends": [
         "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin,
-        "plugin:react/recommended",
+        "plugin:react/recommended"
     ],
-    parserOptions: {
-        ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
-        sourceType: "module", // Allows for the use of imports
+    "parserOptions": {
+        "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
+        "sourceType": "module" // Allows for the use of imports
     },
-    plugins: ["react-hooks"],
-    rules: {
+    "plugins": ["react-hooks"],
+    "rules": {
         // Place to specify ESLint rules. Can be used to overwrite rules specified from the extended configs
         // e.g. "@typescript-eslint/explicit-function-return-type": "off",
-        semi: ["error", "always"],
+        "semi": ["error", "always"],
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-explicit-any": "off",
-        quotes: ["error", "double", { allowTemplateLiterals: true }],
+        "quotes": ["error", "double", { "allowTemplateLiterals": true }],
         "@typescript-eslint/explicit-member-accessibility": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "react/prop-types": "off",
@@ -23,8 +23,8 @@ module.exports = {
         "react-hooks/exhaustive-deps": [
             "warn",
             {
-                additionalHooks: "useRecoilCallback",
-            },
-        ],
-    },
-};
+                "additionalHooks": "useRecoilCallback"
+            }
+        ]
+    }
+}

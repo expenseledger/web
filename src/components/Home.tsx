@@ -85,6 +85,14 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             );
             setIsLoading(false);
             return;
+        } else if (!amount || amount < 0) {
+            setNotificationList((prev) =>
+                prev.concat(
+                    mapNotificationProps("Please add positive amount", "danger")
+                )
+            );
+            setIsLoading(false);
+            return;
         }
 
         const request: AddExpenseRequest = {

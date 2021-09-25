@@ -122,8 +122,37 @@ const More: React.FC<RouteComponentProps> = (props) => {
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("Please add amount", "danger"))
             );
+
+            return false;
+        } else if (!amount || amount < 0) {
+            setNotificationList((prev) =>
+                prev.concat(
+                    mapNotificationProps("Please add positive amount", "danger")
+                )
+            );
+
             return false;
         }
+
+        return true;
+    };
+    const validateTransferAccount = (
+        fromAcccountId: number,
+        toAccountId: number
+    ) => {
+        if (fromAcccountId === toAccountId) {
+            setNotificationList((prev) =>
+                prev.concat(
+                    mapNotificationProps(
+                        "Please select different destination account",
+                        "danger"
+                    )
+                )
+            );
+
+            return false;
+        }
+
         return true;
     };
 
@@ -227,7 +256,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
             description,
         } = currentValue;
 
-        const isValid = validateAmount(amount);
+        const isValid =
+            validateAmount(amount) &&
+            validateTransferAccount(fromWalletIdx, toWalletIdx);
 
         if (!isValid) {
             setIsLoading(false);

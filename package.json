@@ -2,6 +2,7 @@
     "name": "expense-ledger-web",
     "version": "1.12.0",
     "private": true,
+    "type": "module",
     "dependencies": {
         "@apollo/client": "^3.3.4",
         "@fortawesome/fontawesome-free": "^5.14.0",
@@ -84,5 +85,8 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
+    },
+    "engines": {
+        "node": ">=16.0.0"
     }
 }

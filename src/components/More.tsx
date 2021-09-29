@@ -140,7 +140,10 @@ const More: React.FC<RouteComponentProps> = (props) => {
         } else if (!amount || amount < 0) {
             setNotificationList((prev) =>
                 prev.concat(
-                    mapNotificationProps("Please add positive amount", "danger")
+                    mapNotificationProps(
+                        "Amount should be more than 0",
+                        "danger"
+                    )
                 )
             );
 
@@ -386,7 +389,9 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     wallets[currentValue.fromWalletIdx]?.balance ?? 0,
                     updateSelectedFromWallet,
                     wallets[currentValue.fromWalletIdx]?.name,
-                    null
+                    wallets.filter(
+                        (x) => x.id !== wallets[currentValue.toWalletIdx].id
+                    )
                 )}
                 {render(
                     "To",

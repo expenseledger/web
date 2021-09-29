@@ -15,6 +15,7 @@ import {
     AddIncomeRequest,
     AddTransferRequest,
 } from "../service/model/Requests";
+import Wallet from "../service/model/Wallet";
 import {
     addExpense,
     addIncome,
@@ -36,22 +37,34 @@ interface CurrentValue {
     description: string;
     [key: string]: any;
 }
+interface HomeProps {
+    walletIdx: number;
+    categoryIdx: number;
+    amount: number;
+    date: string;
+}
 
 const More: React.FC<RouteComponentProps> = (props) => {
-    const initialState = {
-        fromWalletIdx: (props.location.state as any).walletIdx ?? 0,
-        toWalletIdx: (props.location.state as any).walletIdx ?? 0,
-        categoryIdx: (props.location.state as any).categoryIdx ?? 0,
-        amount: (props.location.state as any).amount ?? 0,
-        date: (props.location.state as any).date ?? Date.now.toString(),
-        description: "",
-    };
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = React.useState(false);
+    const homeProps = props.location.state as HomeProps;
+    const initialCurrentValue = {
+        fromWalletIdx: homeProps?.walletIdx ?? 0,
+        toWalletIdx:
+            (homeProps?.walletIdx ?? 0) == 0
+                ? 1
+                : homeProps.walletIdx + 1 >= wallets.length
+                ? wallets.length - homeProps.walletIdx + 1
+                : homeProps.walletIdx + 1,
+        categoryIdx: homeProps?.categoryIdx ?? 0,
+        amount: homeProps?.amount ?? 0,
+        date: homeProps?.date ?? Date.now.toString(),
+        description: "",
+    };
     const [currentValue, setCurrentValue] =
-        React.useState<CurrentValue>(initialState);
+        React.useState<CurrentValue>(initialCurrentValue);
     const [transactionTypeTabActive, setTransactionTypeTabActive] =
         React.useState([true, false, false]);
     const transactionTypes: TransactionType[] = [
@@ -329,7 +342,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
 
         if (result) {
             setCurrentValue({
-                ...initialState,
+                ...initialCurrentValue,
                 toWalletIdx: currentValue.toWalletIdx,
                 fromWalletIdx: currentValue.fromWalletIdx,
             });
@@ -344,7 +357,8 @@ const More: React.FC<RouteComponentProps> = (props) => {
             title: string,
             balance: number,
             updateWallet: (value: string) => void,
-            value: string
+            value: string,
+            overrideOptions: Wallet[]
         ) => (
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">
@@ -352,7 +366,10 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 </span>
                 <Dropdown
                     className="column is-4 is-narrow"
-                    options={wallets.map((x) => x.name)}
+                    options={
+                        overrideOptions?.map((x) => x.name) ??
+                        wallets.map((x) => x.name)
+                    }
                     updateSelectedValue={updateWallet}
                     value={value}
                 />
@@ -368,13 +385,17 @@ const More: React.FC<RouteComponentProps> = (props) => {
                     "From",
                     wallets[currentValue.fromWalletIdx]?.balance ?? 0,
                     updateSelectedFromWallet,
-                    wallets[currentValue.fromWalletIdx]?.name
+                    wallets[currentValue.fromWalletIdx]?.name,
+                    null
                 )}
                 {render(
                     "To",
                     wallets[currentValue.toWalletIdx]?.balance ?? 0,
                     updateSelectedToWallet,
-                    wallets[currentValue.toWalletIdx]?.name
+                    wallets[currentValue.toWalletIdx]?.name,
+                    wallets.filter(
+                        (x) => x.id !== wallets[currentValue.fromWalletIdx].id
+                    )
                 )}
             </>
         ) : (
@@ -382,7 +403,8 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 "Wallet",
                 wallets[currentValue.fromWalletIdx]?.balance ?? 0,
                 updateSelectedFromWallet,
-                wallets[currentValue.fromWalletIdx]?.name
+                wallets[currentValue.fromWalletIdx]?.name,
+                null
             )
         );
     };
@@ -446,7 +468,6 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
-                        defaultValue="0"
                         value={currentValue.amount.toString()}
                         addOn={{ text: "฿", position: "front" }}
                     />

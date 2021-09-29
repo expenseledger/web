@@ -208,7 +208,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
-                    defaultValue="0"
                     value={currentValue.amount.toString()}
                     addOn={{ text: "฿", position: "front" }}
                 />

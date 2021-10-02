@@ -441,6 +441,7 @@ const More: React.FC<RouteComponentProps> = (props) => {
                 <div className="tabs is-toggle is-fullwidth">
                     {renderTransactionTypeTab()}
                 </div>
+                {renderWalletSection()}
                 <div className="columns is-mobile is-vcentered">
                     <span className="column is-4 has-text-weight-bold">
                         Category
@@ -452,7 +453,6 @@ const More: React.FC<RouteComponentProps> = (props) => {
                         value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
-                {renderWalletSection()}
                 <div className="columns is-mobile is-vcentered">
                     <span className="column is-4 has-text-weight-bold">
                         Date

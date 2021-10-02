@@ -88,7 +88,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         } else if (!amount || amount < 0) {
             setNotificationList((prev) =>
                 prev.concat(
-                    mapNotificationProps("Please add positive amount", "danger")
+                    mapNotificationProps(
+                        "Amount should be more than 0",
+                        "danger"
+                    )
                 )
             );
             setIsLoading(false);
@@ -208,7 +211,6 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
-                    defaultValue="0"
                     value={currentValue.amount.toString()}
                     addOn={{ text: "฿", position: "front" }}
                 />

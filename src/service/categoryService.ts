@@ -3,10 +3,7 @@ import { extractGraphQLErrors, log } from "../common/utils";
 import client from "../lib/apollo";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
-import {
-    CreateCategoryResponse,
-    DeleteCategoryResponse,
-} from "./model/Responses/index";
+import { CreateCategoryResponse, DeleteCategoryResponse } from "./model/Responses/index";
 
 const CREATE_CATEGORY = gql`
     mutation CreateCategory($name: String!) {

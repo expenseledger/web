@@ -10,13 +10,7 @@ interface ButtonProps {
     size?: ButtonSize;
 }
 
-export type ButtonType =
-    | "primary"
-    | "info"
-    | "link"
-    | "success"
-    | "danger"
-    | "default";
+export type ButtonType = "primary" | "info" | "link" | "success" | "danger" | "default";
 
 export type ButtonSize = "small" | "normal" | "medium" | "large";
 

@@ -8,9 +8,7 @@ const Home = React.lazy(() => import("../components/Home"));
 const More = React.lazy(() => import("../components/More"));
 const SignIn = React.lazy(() => import("../components/SignIn"));
 const Layout = React.lazy(() => import("../components/Layout"));
-const CategorySetting = React.lazy(
-    () => import("../components/CategorySetting")
-);
+const CategorySetting = React.lazy(() => import("../components/CategorySetting"));
 const WalletSetting = React.lazy(() => import("../components/WalletSetting"));
 
 const App: React.FC = () => {
@@ -33,11 +31,7 @@ const App: React.FC = () => {
                                 exact={true}
                                 component={CategorySetting}
                             />
-                            <Route
-                                path="/wallet/setting"
-                                exact={true}
-                                component={WalletSetting}
-                            />
+                            <Route path="/wallet/setting" exact={true} component={WalletSetting} />
                         </Layout>
                     </AuthProtection>
                 </Switch>

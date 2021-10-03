@@ -28,9 +28,7 @@ const MiddleSpan = styled.span`
     vertical-align: middle;
 `;
 
-export const TransactionCard: React.FC<TransactionCardProps> = (
-    props: TransactionCardProps
-) => {
+export const TransactionCard: React.FC<TransactionCardProps> = (props: TransactionCardProps) => {
     const title = dayjs(props.date).format("DD MMM YYYY");
 
     const renderBody = () => {
@@ -63,12 +61,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (
                 <SumAmountBox>
                     <MiddleSpan className="ml-2">฿</MiddleSpan>
                     <MiddleSpan>
-                        {formatNumber(
-                            props.items.reduce(
-                                (acc, cur) => acc + cur.amount,
-                                0
-                            )
-                        )}
+                        {formatNumber(props.items.reduce((acc, cur) => acc + cur.amount, 0))}
                     </MiddleSpan>
                 </SumAmountBox>
             </div>

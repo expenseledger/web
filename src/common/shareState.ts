@@ -14,9 +14,7 @@ export const totalWalletsBalanceState = selector<number>({
         const wallets = get(walletsState);
         return wallets.length === 0
             ? 0
-            : wallets
-                  .map((x) => x.balance)
-                  .reduce((acc, current) => acc + current) ?? 0;
+            : wallets.map((x) => x.balance).reduce((acc, current) => acc + current) ?? 0;
     },
 });
 

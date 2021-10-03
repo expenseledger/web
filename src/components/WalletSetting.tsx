@@ -3,10 +3,7 @@ import { useRecoilState } from "recoil";
 import { toastState, walletsState } from "../common/shareState";
 import { WalletType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
-import {
-    mapStringToWalletType,
-    mapWalletTypeToString,
-} from "../service/helper/walletHelper";
+import { mapStringToWalletType, mapWalletTypeToString } from "../service/helper/walletHelper";
 import { createWallet, deleteWallet } from "../service/walletService";
 import CreateAndDelete from "./bases/CreateAndDelete";
 
@@ -14,10 +11,7 @@ const WalletSetting: React.FC = () => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [, setNotificationList] = useRecoilState(toastState);
     const walletTypes: WalletType[] = ["BANK_ACCOUNT", "CASH", "CREDIT"];
-    const createWalletHandler = async (
-        walletName: string,
-        walletType: string
-    ) => {
+    const createWalletHandler = async (walletName: string, walletType: string) => {
         const response = await createWallet({
             name: walletName,
             type: mapStringToWalletType(walletType),
@@ -25,9 +19,7 @@ const WalletSetting: React.FC = () => {
 
         if (!response.wallet) {
             setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Create wallet failed", "danger")
-                )
+                prevNotiList.concat(mapNotificationProps("Create wallet failed", "danger"))
             );
             return;
         }
@@ -41,9 +33,7 @@ const WalletSetting: React.FC = () => {
             })
         );
         setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Create wallet success", "success")
-            )
+            prevNotiList.concat(mapNotificationProps("Create wallet success", "success"))
         );
     };
 
@@ -54,18 +44,14 @@ const WalletSetting: React.FC = () => {
 
         if (!isSuccess) {
             setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Delete wallet failed", "danger")
-                )
+                prevNotiList.concat(mapNotificationProps("Delete wallet failed", "danger"))
             );
             return;
         }
 
         setWallets(wallets.filter((x) => x.id !== id));
         setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Delete wallet success", "success")
-            )
+            prevNotiList.concat(mapNotificationProps("Delete wallet success", "success"))
         );
     };
 

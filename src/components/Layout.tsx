@@ -2,11 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
-import {
-    categoriesState,
-    totalWalletsBalanceState,
-    walletsState,
-} from "../common/shareState";
+import { categoriesState, totalWalletsBalanceState, walletsState } from "../common/shareState";
 import { formatNumber, log } from "../common/utils";
 import firebase from "../lib/firebase";
 import Wallet from "../service/model/Wallet";
@@ -31,20 +27,14 @@ const Layout: React.FC = (props) => {
                         {wallets.map((x) => (
                             <li key={x.name}>
                                 <div className="columns is-mobile">
-                                    <div className="column is-half">
-                                        {x.name}
-                                    </div>
-                                    <div className="column">
-                                        ฿ {formatNumber(x.balance)}
-                                    </div>
+                                    <div className="column is-half">{x.name}</div>
+                                    <div className="column">฿ {formatNumber(x.balance)}</div>
                                 </div>
                             </li>
                         ))}
                         <li>
                             <div className="columns is-mobile">
-                                <div className="column is-half menu__totalBalance">
-                                    =
-                                </div>
+                                <div className="column is-half menu__totalBalance">=</div>
                                 <div className="column has-text-weight-bold">
                                     ฿ {formatNumber(totalWalletsBalance)}
                                 </div>
@@ -66,8 +56,7 @@ const Layout: React.FC = (props) => {
                     </ul>
                     <p
                         className="menu-label menu-label__signout"
-                        onClick={() => firebase.auth().signOut()}
-                    >
+                        onClick={() => firebase.auth().signOut()}>
                         Sign out
                     </p>
                 </aside>
@@ -101,19 +90,12 @@ const Layout: React.FC = (props) => {
                             <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
                                 Expense ledger
                             </span>
-                            <img
-                                className="ml-2"
-                                src={Logo}
-                                width="25px"
-                                alt="website logo"
-                            />
+                            <img className="ml-2" src={Logo} width="25px" alt="website logo" />
                         </Link>
                     </div>
                 </div>
             </div>
-            <div className="container is-mobile is-fluid mt-4">
-                {props.children}
-            </div>
+            <div className="container is-mobile is-fluid mt-4">{props.children}</div>
             <Toast position="top-right" />
         </>
     );

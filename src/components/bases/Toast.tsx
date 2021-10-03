@@ -60,13 +60,9 @@ function getNotificationList(
 
 const Toast: React.FC<ToastProps> = (props) => {
     const [notificationList, setNotificationList] = useRecoilState(toastState);
-    const notifications = getNotificationList(
-        notificationList,
-        props.position,
-        (id) => {
-            setNotificationList(notificationList.filter((x) => x.id !== id));
-        }
-    );
+    const notifications = getNotificationList(notificationList, props.position, (id) => {
+        setNotificationList(notificationList.filter((x) => x.id !== id));
+    });
     const className = combineClassName("toast", `toast--${props.position}`);
 
     return <div className={className}>{notifications}</div>;

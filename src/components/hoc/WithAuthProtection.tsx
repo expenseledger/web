@@ -14,6 +14,7 @@ interface WithAuthProtectionState {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const withAuthProtection =
     (redirectPath = "/signIn") =>
+    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     (
         // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
         WrappedComponent: any

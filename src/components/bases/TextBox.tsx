@@ -20,15 +20,8 @@ interface TextBoxProps {
 }
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
-    const { bind, setValue } = useInput(
-        props.defaultValue ?? "",
-        props.updateValue
-    );
-    const classNames = combineClassName(
-        "field",
-        props.addOn && "has-addons",
-        props.className
-    );
+    const { bind, setValue } = useInput(props.defaultValue ?? "", props.updateValue);
+    const classNames = combineClassName("field", props.addOn && "has-addons", props.className);
     const addonPosition = props.addOn?.position ?? "none";
 
     React.useEffect(() => {
@@ -48,9 +41,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
                     name={props.name}
                     type={props.type ?? "text"}
                     placeholder={props.placeholder}
-                    {...(props.type === "number"
-                        ? { inputMode: "decimal" }
-                        : null)}
+                    {...(props.type === "number" ? { inputMode: "decimal" } : null)}
                     {...bind}
                 />
             </div>

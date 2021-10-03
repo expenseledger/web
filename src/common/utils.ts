@@ -4,11 +4,7 @@ import { useState } from "react";
 
 export function combineClassName(...classNames: string[]): string {
     return classNames
-        .reduce(
-            (toReturn, className) =>
-                className ? toReturn + " " + className : toReturn,
-            ""
-        )
+        .reduce((toReturn, className) => (className ? toReturn + " " + className : toReturn), "")
         .trim();
 }
 

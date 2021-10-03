@@ -8,9 +8,7 @@ Enzyme.configure({ adapter: new Adapter() });
 
 describe("<AccountCard>", () => {
     it("renders without crashing", () => {
-        const wrapper = shallow(
-            <AccountCard id={1} balance={12.34} name="test" />
-        );
+        const wrapper = shallow(<AccountCard id={1} balance={12.34} name="test" />);
         expect(toJson(wrapper)).toMatchSnapshot();
     });
 });

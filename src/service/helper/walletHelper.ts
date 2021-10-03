@@ -1,10 +1,7 @@
 import { WalletType } from "../constants";
 import Wallet from "../model/Wallet";
 
-export function mapWalletTypeToString(
-    walletType: WalletType,
-    isGQL = false
-): string {
+export function mapWalletTypeToString(walletType: WalletType, isGQL = false): string {
     switch (walletType) {
         case "BANK_ACCOUNT":
             return isGQL ? "BANK" : "Bank Account";

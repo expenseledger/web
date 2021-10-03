@@ -41,10 +41,7 @@ const SignIn: React.FC = () => {
         <div className="signIn">
             <img className="siginIn__logo" src={Logo} />
             <span className="signIn__title">Welcome to Expense Ledger</span>
-            <StyledFirebaseAuth
-                uiConfig={uiConfig}
-                firebaseAuth={firebase.auth()}
-            />
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
         </div>
     );
 };

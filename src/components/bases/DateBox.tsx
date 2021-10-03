@@ -10,14 +10,8 @@ interface DateBoxProps {
 }
 
 const DateBox: React.FC<DateBoxProps> = (props) => {
-    const { bind, setValue } = useInput(
-        dayjs().format("YYYY-MM-DD"),
-        props.updateValue
-    );
-    const classNames = combineClassName(
-        "field",
-        !!props.className ? props.className : ""
-    );
+    const { bind, setValue } = useInput(dayjs().format("YYYY-MM-DD"), props.updateValue);
+    const classNames = combineClassName("field", !!props.className ? props.className : "");
 
     React.useEffect(() => {
         props.value && setValue(props.value);
@@ -26,12 +20,7 @@ const DateBox: React.FC<DateBoxProps> = (props) => {
     return (
         <div className={classNames}>
             <div className="control">
-                <input
-                    className="input"
-                    name={props.name}
-                    type="date"
-                    {...bind}
-                />
+                <input className="input" name={props.name} type="date" {...bind} />
             </div>
         </div>
     );

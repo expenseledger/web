@@ -7,10 +7,7 @@ import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
-import {
-    deleteTransaction,
-    listTransactions,
-} from "../service/transactionService";
+import { deleteTransaction, listTransactions } from "../service/transactionService";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -46,17 +43,13 @@ export const TransactionList: React.FC = () => {
 
         if (!response.isSuccess) {
             setNotificationList(
-                notificationList.concat(
-                    mapNotificationProps("Delete transaction failed", "danger")
-                )
+                notificationList.concat(mapNotificationProps("Delete transaction failed", "danger"))
             );
             return;
         }
 
         setNotificationList(
-            notificationList.concat(
-                mapNotificationProps("Delete transaction succes", "success")
-            )
+            notificationList.concat(mapNotificationProps("Delete transaction succes", "success"))
         );
 
         const updatedAccounts = accounts.map((ac) => {
@@ -65,9 +58,7 @@ export const TransactionList: React.FC = () => {
                 const tx = transactions.find((t) => t.id === id);
 
                 tAc.balance =
-                    tx.type === "INCOME"
-                        ? tAc.balance - tx.amount
-                        : tAc.balance + tx.amount;
+                    tx.type === "INCOME" ? tAc.balance - tx.amount : tAc.balance + tx.amount;
 
                 return tAc;
             }
@@ -87,9 +78,7 @@ export const TransactionList: React.FC = () => {
                 case "EXPENSE":
                     return -tx.amount;
                 case "TRANSFER":
-                    return tx.toAccount.id === +accountId
-                        ? tx.amount
-                        : -tx.amount;
+                    return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
                 case "INCOME":
                 default:
                     return tx.amount;

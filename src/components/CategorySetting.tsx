@@ -14,9 +14,7 @@ const CategorySetting: React.FC = () => {
 
         if (!response.addedCategory) {
             setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Create category failed", "danger")
-                )
+                prevNotiList.concat(mapNotificationProps("Create category failed", "danger"))
             );
 
             return;
@@ -26,9 +24,7 @@ const CategorySetting: React.FC = () => {
 
         setCategories(newCategories);
         setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Create category successful", "success")
-            )
+            prevNotiList.concat(mapNotificationProps("Create category successful", "success"))
         );
     };
 
@@ -37,9 +33,7 @@ const CategorySetting: React.FC = () => {
 
         if (!response.isSuccess) {
             setNotificationList((prevNotiList) =>
-                prevNotiList.concat(
-                    mapNotificationProps("Delete category failed", "danger")
-                )
+                prevNotiList.concat(mapNotificationProps("Delete category failed", "danger"))
             );
 
             return;
@@ -49,9 +43,7 @@ const CategorySetting: React.FC = () => {
 
         setCategories(newCategories);
         setNotificationList((prevNotiList) =>
-            prevNotiList.concat(
-                mapNotificationProps("Delete category successful", "success")
-            )
+            prevNotiList.concat(mapNotificationProps("Delete category successful", "success"))
         );
     };
 

@@ -27,8 +27,7 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
                 <span className="select">
                     <select
                         defaultValue={dropdownValue}
-                        onChange={(x) => setDropdownValue(x.target.value)}
-                    >
+                        onChange={(x) => setDropdownValue(x.target.value)}>
                         {props.dropdown.map((x, idx) => (
                             <option key={idx} value={x}>
                                 {x}
@@ -59,9 +58,7 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
                 <Button
                     type={props.buttonType}
                     value={props.buttonText}
-                    onClickHandler={() =>
-                        props.onClick && props.onClick(value, dropdownValue)
-                    }
+                    onClickHandler={() => props.onClick && props.onClick(value, dropdownValue)}
                 />
             </div>
         </div>

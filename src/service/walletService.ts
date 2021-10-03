@@ -1,15 +1,8 @@
 import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import {
-    mapWalletFromServer,
-    mapWalletTypeToString,
-} from "./helper/walletHelper";
-import {
-    CreateWalletRequest,
-    DeleteWalletRequest,
-    GetWalletRequest,
-} from "./model/Requests/index";
+import { mapWalletFromServer, mapWalletTypeToString } from "./helper/walletHelper";
+import { CreateWalletRequest, DeleteWalletRequest, GetWalletRequest } from "./model/Requests/index";
 import {
     CreateWalletResponse,
     DeleteWalletResponse,
@@ -95,9 +88,7 @@ export async function getAllWallet(): Promise<GetAllWalletResponse> {
     };
 }
 
-export async function getWallet(
-    request: GetWalletRequest
-): Promise<GetWalletResponse> {
+export async function getWallet(request: GetWalletRequest): Promise<GetWalletResponse> {
     const response = await client.query({
         query: GET_WALLET_BY_ID,
         variables: {
@@ -118,9 +109,7 @@ export async function getWallet(
     };
 }
 
-export async function createWallet(
-    request: CreateWalletRequest
-): Promise<CreateWalletResponse> {
+export async function createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     const response = await client.mutate({
         mutation: CREATE_WALET,
         variables: {
@@ -142,9 +131,7 @@ export async function createWallet(
     };
 }
 
-export async function deleteWallet(
-    request: DeleteWalletRequest
-): Promise<DeleteWalletResponse> {
+export async function deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
     const response = await client.mutate({
         mutation: DELETE_WALLET_BY_ID,
         variables: {

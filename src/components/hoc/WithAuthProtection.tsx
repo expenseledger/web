@@ -12,46 +12,49 @@ interface WithAuthProtectionState {
 }
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const withAuthProtection = (redirectPath = "/signIn") => (
+export const withAuthProtection =
+    (redirectPath = "/signIn") =>
     // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-    WrappedComponent: any
-) => {
-    class WithAuthProtection extends React.Component<
-        WithAuthProtectionProps,
-        WithAuthProtectionState
-    > {
-        constructor(props: WithAuthProtectionProps) {
-            super(props);
+    (
+        // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+        WrappedComponent: any
+    ) => {
+        class WithAuthProtection extends React.Component<
+            WithAuthProtectionProps,
+            WithAuthProtectionState
+        > {
+            constructor(props: WithAuthProtectionProps) {
+                super(props);
 
-            this.state = {
-                isSignedIn: false,
-            };
-        }
-
-        componentDidMount() {
-            if (this.props.isTest) {
-                return;
+                this.state = {
+                    isSignedIn: false,
+                };
             }
 
-            firebase
-                .auth()
-                .onAuthStateChanged((user) =>
-                    !user
-                        ? this.props.history.replace(redirectPath)
-                        : this.setState({ isSignedIn: true })
-                );
-        }
+            componentDidMount() {
+                if (this.props.isTest) {
+                    return;
+                }
 
-        render() {
-            if (!this.props.isTest && !this.state.isSignedIn) {
-                return <Loading />;
+                firebase
+                    .auth()
+                    .onAuthStateChanged((user) =>
+                        !user
+                            ? this.props.history.replace(redirectPath)
+                            : this.setState({ isSignedIn: true })
+                    );
             }
-            return <WrappedComponent {...this.props} />;
-        }
-    }
 
-    return WithAuthProtection;
-};
+            render() {
+                if (!this.props.isTest && !this.state.isSignedIn) {
+                    return <Loading />;
+                }
+                return <WrappedComponent {...this.props} />;
+            }
+        }
+
+        return WithAuthProtection;
+    };
 
 interface AuthProtectionProps {
     redirectPath?: string;
@@ -68,9 +71,7 @@ export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
         }
 
         firebase.auth().onAuthStateChanged((user) => {
-            user
-                ? setIsSignin(true)
-                : history.replace(props.redirectPath ?? "/signIn");
+            user ? setIsSignin(true) : history.replace(props.redirectPath ?? "/signIn");
         });
     }, [history, props.isTest, props.redirectPath]);
 

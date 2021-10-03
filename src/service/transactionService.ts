@@ -203,9 +203,7 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
     ${categoryFragment}
 `;
 
-export async function addExpense(
-    request: AddExpenseRequest
-): Promise<AddExpenseResponse> {
+export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
     const response = await client.mutate({
         mutation: ADD_EXPENSE,
         variables: {
@@ -242,9 +240,7 @@ export async function addExpense(
     };
 }
 
-export async function addIncome(
-    request: AddIncomeRequest
-): Promise<AddIncomeResponse> {
+export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeResponse> {
     const response = await client.mutate({
         mutation: ADD_INCOME,
         variables: {
@@ -277,15 +273,11 @@ export async function addIncome(
     }
 
     return {
-        transaction: mapTransactionFromServer(
-            response.data.receive.transaction
-        ),
+        transaction: mapTransactionFromServer(response.data.receive.transaction),
     };
 }
 
-export async function addTransfer(
-    request: AddTransferRequest
-): Promise<AddTransferResponse> {
+export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse> {
     const response = await client.mutate({
         mutation: ADD_TRANSFER,
         variables: {
@@ -318,9 +310,7 @@ export async function addTransfer(
     }
 
     return {
-        transaction: mapTransactionFromServer(
-            response.data.transfer.transaction
-        ),
+        transaction: mapTransactionFromServer(response.data.transfer.transaction),
     };
 }
 
@@ -340,13 +330,8 @@ export async function listTransactions(
         }),
     ]);
     const result = {
-        transactions: [
-            ...resToAcc.data.transactions.nodes,
-            ...resFromAcc.data.transactions.nodes,
-        ],
-        totalCount:
-            resToAcc.data.transactions.totalCount +
-            resFromAcc.data.transactions.totalCount,
+        transactions: [...resToAcc.data.transactions.nodes, ...resFromAcc.data.transactions.nodes],
+        totalCount: resToAcc.data.transactions.totalCount + resFromAcc.data.transactions.totalCount,
     };
 
     if (resToAcc.errors || resFromAcc.errors) {

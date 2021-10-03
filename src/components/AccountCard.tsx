@@ -51,9 +51,7 @@ const AccountCard: React.FC<AccountCardProps> = (props) => {
             <div className="is-size-3 has-text-weight-bold">{props.name}</div>
             <div className="is-size-5">
                 <span>฿</span>
-                <animated.span>
-                    {number.to((x) => formatNumber(x))}
-                </animated.span>
+                <animated.span>{number.to((x) => formatNumber(x))}</animated.span>
             </div>
         </Card>
     );

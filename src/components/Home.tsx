@@ -5,11 +5,7 @@ import { Link, RouteComponentProps, withRouter } from "react-router-dom";
 import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import {
-    categoriesState,
-    toastState,
-    walletsState,
-} from "../common/shareState";
+import { categoriesState, toastState, walletsState } from "../common/shareState";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -41,8 +37,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
-    const [currentValue, setCurrentValue] =
-        React.useState<CurrentValue>(initialState);
+    const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const updateSelectedDate = (value: string) => {
@@ -62,9 +57,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     const updateSelectedCategory = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.categoryIdx = categories.findIndex(
-            (x) => x.name === value
-        );
+        tCurrentValue.categoryIdx = categories.findIndex((x) => x.name === value);
         setCurrentValue(tCurrentValue);
     };
 
@@ -87,12 +80,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             return;
         } else if (!amount || amount < 0) {
             setNotificationList((prev) =>
-                prev.concat(
-                    mapNotificationProps(
-                        "Amount should be more than 0",
-                        "danger"
-                    )
-                )
+                prev.concat(mapNotificationProps("Amount should be more than 0", "danger"))
             );
             setIsLoading(false);
             return;
@@ -114,13 +102,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance =
-                response.transaction.fromAccount.balance;
+            tWallets[selectedWalletIdx].balance = response.transaction.fromAccount.balance;
             setWallets(tWallets);
             setNotificationList((prev) =>
-                prev.concat(
-                    mapNotificationProps("AddExpense sucess", "success")
-                )
+                prev.concat(mapNotificationProps("AddExpense sucess", "success"))
             );
 
             setCurrentValue({
@@ -183,14 +168,10 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                             pathname: `wallet/${
                                 wallets[currentValue.walletIdx]?.id ?? 0
                             }/transactionList`,
-                        }}
-                    >
+                        }}>
                         <span>Transactions</span>
                         <Icon className="icon">
-                            <i
-                                className="fas fa-chevron-right"
-                                aria-hidden="true"
-                            ></i>
+                            <i className="fas fa-chevron-right" aria-hidden="true"></i>
                         </Icon>
                     </Link>
                 </div>
@@ -216,9 +197,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">
-                    Category
-                </span>
+                <span className="column is-4 has-text-weight-bold">Category</span>
                 <Dropdown
                     className="column"
                     options={categories.map((category) => category.name)}
@@ -229,9 +208,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             <div className="columns is-mobile">
                 <div className="column is-narrow">
                     <Button
-                        className={`content__button--add ${
-                            isLoading ? "is-loading" : ""
-                        }`}
+                        className={`content__button--add ${isLoading ? "is-loading" : ""}`}
                         onClickHandler={addTransaction}
                         value="Add"
                         type="primary"

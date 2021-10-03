@@ -22,15 +22,13 @@ const Loading: React.FC = () => {
                 position: "absolute",
                 top: "50%",
                 left: "25%",
-            }}
-        >
+            }}>
             <progress className="progress is-small is-dark" max="100" />
             <span
                 style={{
                     display: "inlint-block",
                     fontWeight: "bold",
-                }}
-            >
+                }}>
                 Loading...
             </span>
         </div>

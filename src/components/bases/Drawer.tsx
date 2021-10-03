@@ -31,8 +31,8 @@ const Panel = styled.div`
     width: 30%;
     min-width: 350px;
     background-color: white;
-    animation: ${(props: StyledProps) => (props.isShow ? slideIn : slideOut)}
-        ${animationDuration}s forwards;
+    animation: ${(props: StyledProps) => (props.isShow ? slideIn : slideOut)} ${animationDuration}s
+        forwards;
 `;
 
 const Background = styled.div`
@@ -43,8 +43,8 @@ const Background = styled.div`
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.8);
-    animation: ${(props: StyledProps) => (props.isShow ? fadeIn : fadeOut)}
-        ${animationDuration}s forwards;
+    animation: ${(props: StyledProps) => (props.isShow ? fadeIn : fadeOut)} ${animationDuration}s
+        forwards;
 `;
 
 const Drawer: React.FC = (props) => {
@@ -67,13 +67,8 @@ const Drawer: React.FC = (props) => {
                 <i className="fas fa-lg fa-ellipsis-h"></i>
             </span>
             {isShowPanel ? (
-                <Background
-                    isShow={!isAnimationUnmount && isShowPanel}
-                    onClick={closePanelHandler}
-                >
-                    <Panel isShow={!isAnimationUnmount && isShowPanel}>
-                        {props.children}
-                    </Panel>
+                <Background isShow={!isAnimationUnmount && isShowPanel} onClick={closePanelHandler}>
+                    <Panel isShow={!isAnimationUnmount && isShowPanel}>{props.children}</Panel>
                 </Background>
             ) : null}
         </>

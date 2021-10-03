@@ -65,10 +65,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         return (
             <a onClick={onDeleteHandler}>
                 <span className="icon">
-                    <i
-                        className="fas fa-lg fa-times has-text-danger"
-                        aria-hidden="true"
-                    ></i>
+                    <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
                 </span>
             </a>
         );
@@ -94,11 +91,7 @@ const CreateAndDelete: React.FC<CreateAndDeleteProps> = (props) => {
             <div className="column is-full">
                 <ItemContainer className="panel">
                     {props.items.map((i) => (
-                        <ItemBox
-                            deleteFuncHandler={props.deleteFuncHandler}
-                            key={i.id}
-                            item={i}
-                        />
+                        <ItemBox deleteFuncHandler={props.deleteFuncHandler} key={i.id} item={i} />
                     ))}
                 </ItemContainer>
             </div>

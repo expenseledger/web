@@ -117,7 +117,7 @@ export const TransactionList: React.FC = () => {
         return <NoData className="notification is-danger">No data</NoData>;
     };
 
-    return isLoading ? <Loading /> : <>{renderCards()}</>;
+    return isLoading ? <Loading /> : <div className="mb-5">{renderCards()}</div>;
 };
 
 export default TransactionList;

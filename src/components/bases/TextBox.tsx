@@ -21,7 +21,7 @@ interface TextBoxProps {
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
     const { bind, setValue } = useInput(props.defaultValue ?? "", props.updateValue);
-    const classNames = combineClassName("field", props.addOn && "has-addons", props.className);
+    const rootClassName = combineClassName("field", props.addOn && "has-addons", props.className);
     const addonPosition = props.addOn?.position ?? "none";
 
     React.useEffect(() => {
@@ -29,7 +29,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <div className={classNames}>
+        <div className={rootClassName}>
             {addonPosition === "front" && (
                 <p className="control">
                     <a className="button is-static">{props.addOn.text}</a>

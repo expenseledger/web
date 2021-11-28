@@ -19,7 +19,21 @@
     }
 }
 
+.amount {
+    &__box {
+        > div {
+            width: 100%;
+        }
+    }
+}
+
 .category {
+    &__dropdown {
+        .control select {
+            width: 100%;
+        }
+    }
+
     &__addBtn {
         margin-left: 3px;
     }

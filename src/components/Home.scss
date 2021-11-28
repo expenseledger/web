@@ -29,7 +29,11 @@
 
 .category {
     &__dropdown {
-        .control select {
+        > div {
+            width: 100%;
+        }
+
+        select {
             width: 100%;
         }
     }

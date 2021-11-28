@@ -179,7 +179,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Date</span>
                 <DateBox
-                    className="column"
+                    className="column is-4-desktop is-4-tablet is-2-widescreen"
                     name="date"
                     updateValue={updateSelectedDate}
                     value={currentValue.date}
@@ -188,7 +188,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Amount</span>
                 <TextBox
-                    className="column"
+                    className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
@@ -199,7 +199,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Category</span>
                 <Dropdown
-                    className="column"
+                    className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}

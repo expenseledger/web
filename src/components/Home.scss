@@ -19,7 +19,25 @@
     }
 }
 
+.amount {
+    &__box {
+        > div {
+            width: 100%;
+        }
+    }
+}
+
 .category {
+    &__dropdown {
+        > div {
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+        }
+    }
+
     &__addBtn {
         margin-left: 3px;
     }

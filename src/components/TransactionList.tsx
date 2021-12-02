@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toastState, walletsState } from "../common/shareState";
@@ -117,7 +118,35 @@ export const TransactionList: React.FC = () => {
         return <NoData className="notification is-danger">No data</NoData>;
     };
 
-    return isLoading ? <Loading /> : <div className="mb-5">{renderCards()}</div>;
+    const renderMonthYear = () => {
+        const settings = {
+            dots: false,
+            infinite: true,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+        };
+        const afterChangeHandler = (idx: number) => {
+            idx = 1;
+        };
+
+        return (
+            <Slider {...settings} afterChange={afterChangeHandler}>
+                <div>Test</div>
+                <div>Test</div>
+                <div>Test</div>
+            </Slider>
+        );
+    };
+
+    return isLoading ? (
+        <Loading />
+    ) : (
+        <div className="mb-5">
+            {renderMonthYear()}
+            {renderCards()}
+        </div>
+    );
 };
 
 export default TransactionList;

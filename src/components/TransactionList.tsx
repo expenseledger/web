@@ -26,6 +26,9 @@ const NoData = styled.div`
     text-align: center;
     margin-top: 30px;
 `;
+const MonthYear = styled.h4`
+    text-align: center;
+`;
 
 export const TransactionList: React.FC = () => {
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
@@ -140,19 +143,22 @@ export const TransactionList: React.FC = () => {
     const renderMonthYear = () => {
         const settings = {
             dots: false,
-            infinite: true,
+            infinite: false,
             speed: 500,
             slidesToShow: 1,
             slidesToScroll: 1,
+            rtl: true,
         };
         const afterChangeHandler = (idx: number) => {
-            setMonthYearIdx(idx);
+            setMonthYearIdx(monthYearList.length - idx - 1);
         };
 
         return (
             <Slider {...settings} afterChange={afterChangeHandler}>
                 {monthYearList.map((x) => (
-                    <div key={x}>{x}</div>
+                    <MonthYear key={x} className="title is-4 px-5 py-5">
+                        {dayjs(x).format("MMMM YYYY")}
+                    </MonthYear>
                 ))}
             </Slider>
         );

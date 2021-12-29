@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -27,6 +28,7 @@ const NoData = styled.div`
 `;
 
 export const TransactionList: React.FC = () => {
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>(null);
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
@@ -40,12 +42,19 @@ export const TransactionList: React.FC = () => {
                 setMonthYearList(response.monthYears);
             });
         } else {
-            listTransactions({ accountId: +accountId }).then((response) => {
+            const from = dayjs(monthYearList[monthYearIdx]);
+            const until = from.add(1, "M");
+
+            listTransactions({
+                accountId: +accountId,
+                from: from.toDate(),
+                until: until.toDate(),
+            }).then((response) => {
                 setTransactions(response.items);
                 setIsLoading(false);
             });
         }
-    }, [accountId, monthYearList]);
+    }, [accountId, monthYearIdx, monthYearList]);
 
     const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
@@ -137,14 +146,14 @@ export const TransactionList: React.FC = () => {
             slidesToScroll: 1,
         };
         const afterChangeHandler = (idx: number) => {
-            idx = 1;
+            setMonthYearIdx(idx);
         };
 
         return (
             <Slider {...settings} afterChange={afterChangeHandler}>
-                <div>Test</div>
-                <div>Test</div>
-                <div>Test</div>
+                {monthYearList.map((x) => (
+                    <div key={x}>{x}</div>
+                ))}
             </Slider>
         );
     };

@@ -160,8 +160,11 @@ const DELETE_TRANSACTION = gql`
 `;
 
 const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
-    query GetTransactions($accountId: Int!) {
-        transactions(condition: { toAccountId: $accountId }) {
+    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
+        transactions(
+            condition: { toAccountId: $accountId }
+            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
+        ) {
             nodes {
                 ...PlainTransaction
                 toAccount {
@@ -183,8 +186,11 @@ const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
 `;
 
 const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
-    query GetTransactions($accountId: Int!) {
-        transactions(condition: { fromAccountId: $accountId }) {
+    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
+        transactions(
+            condition: { fromAccountId: $accountId }
+            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
+        ) {
             nodes {
                 ...PlainTransaction
                 toAccount {
@@ -206,7 +212,7 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
 `;
 
 const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
-    query GetTransactionMonthYearListByAccountId {
+    query GetTransactionMonthYearListByAccountId($accountId: Int!) {
         transactionMonthYearListByAccountId(accountId: $accountId) {
             nodes
         }
@@ -332,11 +338,17 @@ export async function listTransactions(
             query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
             variables: {
                 accountId: request.accountId,
+                from: request.from,
+                until: request.until,
             },
         }),
         client.query({
             query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-            variables: { accountId: request.accountId },
+            variables: {
+                accountId: request.accountId,
+                from: request.from,
+                until: request.until,
+            },
         }),
     ]);
     const result = {
@@ -426,6 +438,6 @@ export async function getTransactionMonthYearList(
     }
 
     return {
-        monthYears: response.data.nodes,
+        monthYears: response.data.transactionMonthYearListByAccountId.nodes,
     };
 }

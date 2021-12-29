@@ -1,13 +1,19 @@
+import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
-import { deleteTransaction, listTransactions } from "../service/transactionService";
+import {
+    deleteTransaction,
+    getTransactionMonthYearList,
+    listTransactions,
+} from "../service/transactionService";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -20,8 +26,13 @@ const NoData = styled.div`
     text-align: center;
     margin-top: 30px;
 `;
+const MonthYear = styled.h4`
+    text-align: center;
+`;
 
 export const TransactionList: React.FC = () => {
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
+    const [monthYearList, setMonthYearList] = useState<string[]>(null);
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
@@ -29,12 +40,24 @@ export const TransactionList: React.FC = () => {
     const { accountId } = useParams<PathParams>();
 
     useEffect(() => {
-        listTransactions({ accountId: +accountId }).then((response) => {
-            setTransactions(response.items);
-            setIsLoading(false);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (!monthYearList) {
+            getTransactionMonthYearList({ accountId: +accountId }).then((response) => {
+                setMonthYearList(response.monthYears);
+            });
+        } else {
+            const from = dayjs(monthYearList[monthYearIdx]);
+            const until = from.add(1, "M");
+
+            listTransactions({
+                accountId: +accountId,
+                from: from.toDate(),
+                until: until.toDate(),
+            }).then((response) => {
+                setTransactions(response.items);
+                setIsLoading(false);
+            });
+        }
+    }, [accountId, monthYearIdx, monthYearList]);
 
     const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
@@ -117,7 +140,38 @@ export const TransactionList: React.FC = () => {
         return <NoData className="notification is-danger">No data</NoData>;
     };
 
-    return isLoading ? <Loading /> : <div className="mb-5">{renderCards()}</div>;
+    const renderMonthYear = () => {
+        const settings = {
+            dots: false,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            rtl: true,
+        };
+        const afterChangeHandler = (idx: number) => {
+            setMonthYearIdx(monthYearList.length - idx - 1);
+        };
+
+        return (
+            <Slider {...settings} afterChange={afterChangeHandler}>
+                {monthYearList.map((x) => (
+                    <MonthYear key={x} className="title is-4 px-5 py-5">
+                        {dayjs(x).format("MMMM YYYY")}
+                    </MonthYear>
+                ))}
+            </Slider>
+        );
+    };
+
+    return isLoading ? (
+        <Loading />
+    ) : (
+        <div className="mb-5">
+            {renderMonthYear()}
+            {renderCards()}
+        </div>
+    );
 };
 
 export default TransactionList;

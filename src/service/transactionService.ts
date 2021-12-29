@@ -8,12 +8,14 @@ import {
     AddIncomeRequest,
     AddTransferRequest,
     DeleteTranactionRequest,
+    GetTransactionMonthYearListRequest,
     ListTransactionsRequest,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
+    GetTransactionMonthYearListResponse,
     ListTransactionsResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
@@ -158,8 +160,11 @@ const DELETE_TRANSACTION = gql`
 `;
 
 const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
-    query GetTransactions($accountId: Int!) {
-        transactions(condition: { toAccountId: $accountId }) {
+    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
+        transactions(
+            condition: { toAccountId: $accountId }
+            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
+        ) {
             nodes {
                 ...PlainTransaction
                 toAccount {
@@ -181,8 +186,11 @@ const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
 `;
 
 const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
-    query GetTransactions($accountId: Int!) {
-        transactions(condition: { fromAccountId: $accountId }) {
+    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
+        transactions(
+            condition: { fromAccountId: $accountId }
+            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
+        ) {
             nodes {
                 ...PlainTransaction
                 toAccount {
@@ -201,6 +209,14 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
     ${transactionFragment}
     ${accountFragment}
     ${categoryFragment}
+`;
+
+const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
+    query GetTransactionMonthYearListByAccountId($accountId: Int!) {
+        transactionMonthYearListByAccountId(accountId: $accountId) {
+            nodes
+        }
+    }
 `;
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
@@ -322,11 +338,17 @@ export async function listTransactions(
             query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
             variables: {
                 accountId: request.accountId,
+                from: request.from,
+                until: request.until,
             },
         }),
         client.query({
             query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-            variables: { accountId: request.accountId },
+            variables: {
+                accountId: request.accountId,
+                from: request.from,
+                until: request.until,
+            },
         }),
     ]);
     const result = {
@@ -394,5 +416,28 @@ export async function deleteTransaction(
 
     return {
         isSuccess: true,
+    };
+}
+
+export async function getTransactionMonthYearList(
+    request: GetTransactionMonthYearListRequest
+): Promise<GetTransactionMonthYearListResponse> {
+    const response = await client.query({
+        query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
+        variables: {
+            accountId: request.accountId,
+        },
+    });
+
+    if (response.errors) {
+        log("get transaction month year list failed", response.errors);
+
+        return {
+            monthYears: [],
+        };
+    }
+
+    return {
+        monthYears: response.data.transactionMonthYearListByAccountId.nodes,
     };
 }

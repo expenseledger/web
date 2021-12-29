@@ -8,12 +8,14 @@ import {
     AddIncomeRequest,
     AddTransferRequest,
     DeleteTranactionRequest,
+    GetTransactionMonthYearListRequest,
     ListTransactionsRequest,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
+    GetTransactionMonthYearListResponse,
     ListTransactionsResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
@@ -201,6 +203,14 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
     ${transactionFragment}
     ${accountFragment}
     ${categoryFragment}
+`;
+
+const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
+    query GetTransactionMonthYearListByAccountId {
+        transactionMonthYearListByAccountId(accountId: $accountId) {
+            nodes
+        }
+    }
 `;
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
@@ -394,5 +404,28 @@ export async function deleteTransaction(
 
     return {
         isSuccess: true,
+    };
+}
+
+export async function getTransactionMonthYearList(
+    request: GetTransactionMonthYearListRequest
+): Promise<GetTransactionMonthYearListResponse> {
+    const response = await client.query({
+        query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
+        variables: {
+            accountId: request.accountId,
+        },
+    });
+
+    if (response.errors) {
+        log("get transaction month year list failed", response.errors);
+
+        return {
+            monthYears: [],
+        };
+    }
+
+    return {
+        monthYears: response.data.nodes,
     };
 }

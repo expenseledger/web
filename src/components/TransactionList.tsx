@@ -8,7 +8,11 @@ import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
-import { deleteTransaction, listTransactions } from "../service/transactionService";
+import {
+    deleteTransaction,
+    getTransactionMonthYearList,
+    listTransactions,
+} from "../service/transactionService";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -23,6 +27,7 @@ const NoData = styled.div`
 `;
 
 export const TransactionList: React.FC = () => {
+    const [monthYearList, setMonthYearList] = useState<string[]>(null);
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
@@ -30,12 +35,17 @@ export const TransactionList: React.FC = () => {
     const { accountId } = useParams<PathParams>();
 
     useEffect(() => {
-        listTransactions({ accountId: +accountId }).then((response) => {
-            setTransactions(response.items);
-            setIsLoading(false);
-        });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+        if (!monthYearList) {
+            getTransactionMonthYearList({ accountId: +accountId }).then((response) => {
+                setMonthYearList(response.monthYears);
+            });
+        } else {
+            listTransactions({ accountId: +accountId }).then((response) => {
+                setTransactions(response.items);
+                setIsLoading(false);
+            });
+        }
+    }, [accountId, monthYearList]);
 
     const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({

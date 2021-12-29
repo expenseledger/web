@@ -22,6 +22,8 @@ export interface AddTransferRequest extends AddTransactionRequest {
 
 export interface ListTransactionsRequest {
     accountId: number;
+    from: Date;
+    until: Date;
 }
 
 export interface DeleteTranactionRequest {
@@ -49,4 +51,8 @@ export interface GetWalletRequest {
 
 export interface DeleteWalletRequest {
     id: number;
+}
+
+export interface GetTransactionMonthYearListRequest {
+    accountId: number;
 }

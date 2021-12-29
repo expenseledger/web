@@ -48,3 +48,7 @@ export interface GetAllWalletResponse {
 export interface GetWalletResponse {
     wallet: Wallet;
 }
+
+export interface GetTransactionMonthYearListResponse {
+    monthYears: string[];
+}

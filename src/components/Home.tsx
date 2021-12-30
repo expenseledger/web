@@ -141,7 +141,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
         return (
             <Swiper
                 spaceBetween={10}
-                navigation={true}
+                pagination={true}
                 slidesPerView={"auto"}
                 centeredSlides={true}
                 onSlideChange={(swipe) => updateSelectedWallet(swipe.realIndex)}>

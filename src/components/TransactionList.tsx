@@ -145,7 +145,6 @@ export const TransactionList: React.FC = () => {
             <Swiper
                 dir="rtl"
                 spaceBetween={10}
-                navigation={true}
                 slidesPerView={"auto"}
                 centeredSlides={true}
                 onSlideChange={(swipe) => setMonthYearIdx(swipe.realIndex)}>

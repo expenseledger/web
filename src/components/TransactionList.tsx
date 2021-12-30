@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
@@ -141,26 +141,22 @@ export const TransactionList: React.FC = () => {
     };
 
     const renderMonthYear = () => {
-        const settings = {
-            dots: false,
-            infinite: false,
-            speed: 500,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            rtl: true,
-        };
-        const afterChangeHandler = (idx: number) => {
-            setMonthYearIdx(monthYearList.length - idx - 1);
-        };
-
         return (
-            <Slider {...settings} afterChange={afterChangeHandler}>
+            <Swiper
+                dir="rtl"
+                spaceBetween={10}
+                navigation={true}
+                slidesPerView={"auto"}
+                centeredSlides={true}
+                onSlideChange={(swipe) => setMonthYearIdx(swipe.realIndex)}>
                 {monthYearList.map((x) => (
-                    <MonthYear key={x} className="title is-4 px-5 py-5">
-                        {dayjs(x).format("MMMM YYYY")}
-                    </MonthYear>
+                    <SwiperSlide key={x}>
+                        <MonthYear key={x} className="title is-4 px-5 py-5">
+                            {dayjs(x).format("MMMM YYYY")}
+                        </MonthYear>
+                    </SwiperSlide>
                 ))}
-            </Slider>
+            </Swiper>
         );
     };
 

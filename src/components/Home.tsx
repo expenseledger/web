@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { Link, RouteComponentProps, withRouter } from "react-router-dom";
-import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
 import { categoriesState, toastState, walletsState } from "../common/shareState";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
@@ -128,38 +128,34 @@ const Home: React.FC<RouteComponentProps> = (props) => {
 
     const renderAccountCards = () => {
         const accountCards = wallets.map((x, idx) => (
-            <AccountCard
-                key={idx}
-                id={idx}
-                balance={currentValue.walletIdx === idx ? x.balance : 0}
-                name={x.name}
-            />
+            <SwiperSlide key={idx}>
+                <AccountCard
+                    key={idx}
+                    id={idx}
+                    balance={currentValue.walletIdx === idx ? x.balance : 0}
+                    name={x.name}
+                />
+            </SwiperSlide>
         ));
-        const settings = {
-            dots: false,
-            infinite: true,
-            speed: 500,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-        };
-        const afterChangeHandler = (idx: number) => {
-            updateSelectedWallet(idx);
-        };
 
         return (
-            <Slider {...settings} afterChange={afterChangeHandler}>
+            <Swiper
+                spaceBetween={10}
+                navigation={true}
+                slidesPerView={"auto"}
+                centeredSlides={true}
+                onSlideChange={(swipe) => updateSelectedWallet(swipe.realIndex)}>
                 {accountCards}
-            </Slider>
+            </Swiper>
         );
     };
 
     return (
         <>
-            <section className="section">
-                <div className="columns is-mobile is-vcentered">
-                    <div className="column is-12">{renderAccountCards()}</div>
-                </div>
-            </section>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-12">{renderAccountCards()}</div>
+            </div>
+
             <div className="columns is-mobile is-vcentered">
                 <div className="column is-7">
                     <Link

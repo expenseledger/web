@@ -4,10 +4,6 @@ name: release
 
 # Controls when the workflow will run
 on:
-    # Triggers the workflow on push or pull request events but only for the master branch
-    push:
-        branches: [master]
-
     # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
 
@@ -27,7 +23,7 @@ jobs:
               run: |
                   git config --global user.name 'oat9002'
                   git config --global user.email 'oat9002@hotmail.com'
-                  
+
             - name: Setup Node.js environment
               uses: actions/setup-node@v2.3.0
               with:

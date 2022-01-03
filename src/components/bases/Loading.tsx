@@ -19,7 +19,7 @@ const Loading: React.FC = () => {
                 textAlign: "center",
                 margin: "auto",
                 width: "50%",
-                position: "absolute",
+                position: "fixed",
                 top: "50%",
                 left: "25%",
             }}>

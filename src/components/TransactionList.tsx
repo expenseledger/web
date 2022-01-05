@@ -17,10 +17,6 @@ import {
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
-interface PathParams {
-    accountId: string;
-}
-
 const NoData = styled.div`
     font-weight: bold;
     text-align: center;

@@ -4,7 +4,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import { categoriesState, totalWalletsBalanceState, walletsState } from "../common/shareState";
 import { formatNumber, log } from "../common/utils";
-import firebase from "../lib/firebase";
+import { auth } from "../lib/firebase";
 import Wallet from "../service/model/Wallet";
 import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
@@ -54,9 +54,7 @@ const Layout: React.FC = (props) => {
                             </ul>
                         </li>
                     </ul>
-                    <p
-                        className="menu-label menu-label__signout"
-                        onClick={() => firebase.auth().signOut()}>
+                    <p className="menu-label menu-label__signout" onClick={() => auth.signOut()}>
                         Sign out
                     </p>
                 </aside>

@@ -1,11 +1,12 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import firebase from "./firebase";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
 
-let user: firebase.User | null = null;
+let user: User | null = null;
 
-firebase.auth().onAuthStateChanged((signedInUser) => (user = signedInUser));
+onAuthStateChanged(auth, (signedInUser) => (user = signedInUser));
 
 const httpLink = createHttpLink({
     uri: getServerUrl,

@@ -1,16 +1,16 @@
-import firebase from "firebase/app";
-import "firebase/auth";
+import { EmailAuthProvider, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
 import { useNavigate } from "react-router";
 import Logo from "../assets/pics/logo.svg";
+import { auth } from "../lib/firebase";
 import "./SignIn.scss";
 
 const SignIn: React.FC = () => {
     const navigate = useNavigate();
 
     const executeAfterLogin = React.useCallback(
-        (user: firebase.User) => {
+        (user: User) => {
             if (!user) {
                 return;
             }
@@ -21,15 +21,12 @@ const SignIn: React.FC = () => {
     );
 
     React.useEffect(() => {
-        firebase.auth().onAuthStateChanged((user) => executeAfterLogin(user));
+        onAuthStateChanged(auth, (user) => executeAfterLogin(user));
     }, [executeAfterLogin, navigate]);
 
     const uiConfig: firebaseui.auth.Config = {
         signInFlow: "popup",
-        signInOptions: [
-            firebase.auth.EmailAuthProvider.PROVIDER_ID,
-            firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        ],
+        signInOptions: [EmailAuthProvider.PROVIDER_ID, GoogleAuthProvider.PROVIDER_ID],
         callbacks: {
             signInSuccessWithAuthResult: () => {
                 return false;
@@ -41,7 +38,7 @@ const SignIn: React.FC = () => {
         <div className="signIn">
             <img className="siginIn__logo" src={Logo} />
             <span className="signIn__title">Welcome to Expense Ledger</span>
-            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+            <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
         </div>
     );
 };

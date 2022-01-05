@@ -1,6 +1,7 @@
+import { onAuthStateChanged } from "firebase/auth";
 import React from "react";
 import { useNavigate } from "react-router";
-import firebase from "../../lib/firebase";
+import { auth } from "../../lib/firebase";
 import Loading from "../bases/Loading";
 
 interface AuthProtectionProps {
@@ -17,7 +18,7 @@ export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
             return;
         }
 
-        firebase.auth().onAuthStateChanged((user) => {
+        onAuthStateChanged(auth, (user) => {
             user ? setIsSignin(true) : navigate(props.redirectPath ?? "/signIn");
         });
     }, [navigate, props.isTest, props.redirectPath]);

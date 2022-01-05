@@ -1,6 +1,6 @@
 import * as R from "ramda";
 import React from "react";
-import { RouteComponentProps, withRouter } from "react-router";
+import { useLocation } from "react-router";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState, walletsState } from "../common/shareState";
 import { formatNumber } from "../common/utils";
@@ -32,12 +32,13 @@ interface HomeProps {
     date: string;
 }
 
-const More: React.FC<RouteComponentProps> = (props) => {
+const More: React.FC = () => {
     const [wallets, setWallets] = useRecoilState(walletsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = React.useState(false);
-    const homeProps = props.location.state as HomeProps;
+    const locatoin = useLocation();
+    const homeProps = locatoin.state as HomeProps;
     const initialCurrentValue = {
         fromWalletIdx: homeProps?.walletIdx ?? 0,
         toWalletIdx:
@@ -428,4 +429,4 @@ const More: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-export default withRouter(More);
+export default More;

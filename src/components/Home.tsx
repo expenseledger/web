@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
@@ -27,7 +27,7 @@ const Icon = styled.span`
     vertical-align: middle;
 `;
 
-const Home: React.FC<RouteComponentProps> = (props) => {
+const Home: React.FC = () => {
     const initialState = {
         walletIdx: 0,
         categoryIdx: 0,
@@ -39,6 +39,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
+    const navigate = useNavigate();
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -123,7 +124,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     };
 
     const toMorePage = () => {
-        props.history.push("/more", { ...currentValue });
+        navigate("/more", { state: { ...currentValue } });
     };
 
     const renderAccountCards = () => {
@@ -222,4 +223,4 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-export default withRouter(Home);
+export default Home;

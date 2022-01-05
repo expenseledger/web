@@ -2,12 +2,12 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import React from "react";
 import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router";
 import Logo from "../assets/pics/logo.svg";
 import "./SignIn.scss";
 
 const SignIn: React.FC = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
 
     const executeAfterLogin = React.useCallback(
         (user: firebase.User) => {
@@ -15,14 +15,14 @@ const SignIn: React.FC = () => {
                 return;
             }
 
-            history.replace("/");
+            navigate("/");
         },
-        [history]
+        [navigate]
     );
 
     React.useEffect(() => {
         firebase.auth().onAuthStateChanged((user) => executeAfterLogin(user));
-    }, [executeAfterLogin, history]);
+    }, [executeAfterLogin, navigate]);
 
     const uiConfig: firebaseui.auth.Config = {
         signInFlow: "popup",

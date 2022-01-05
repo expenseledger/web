@@ -37,7 +37,8 @@ export const TransactionList: React.FC = () => {
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(walletsState);
-    const { accountId } = useParams<PathParams>();
+    const params = useParams();
+    const { accountId } = params;
 
     useEffect(() => {
         if (!monthYearList) {

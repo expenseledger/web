@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { Swiper, SwiperSlide } from "swiper/react/swiper-react.js";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";

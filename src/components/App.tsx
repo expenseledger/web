@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Loading from "../components/bases/Loading";
-import { AuthProtection } from "./hoc/AuthProtection";
+import { AuthProtection } from "./hoc/WithAuthProtection";
 
 const TransactionList = React.lazy(() => import("./TransactionList"));
 const Home = React.lazy(() => import("../components/Home"));
@@ -17,18 +17,56 @@ const App: React.FC = () => {
             <React.Suspense fallback={<Loading />}>
                 <Routes>
                     <Route path="/signIn" element={<SignIn />} />
-                    <AuthProtection>
-                        <Layout>
-                            <Route path="/" element={<Home />} />
-                            <Route
-                                path="/wallet/:accountId/transactionList"
-                                element={<TransactionList />}
-                            />
-                            <Route path="/more" element={<More />} />
-                            <Route path="/category/setting" element={<CategorySetting />} />
-                            <Route path="/wallet/setting" element={<WalletSetting />} />
-                        </Layout>
-                    </AuthProtection>
+                    <Route
+                        path="/"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <Home />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/wallet/:accountId/transactionList"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <TransactionList />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/more"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <More />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/category/setting"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <CategorySetting />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/wallet/setting"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <WalletSetting />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
                 </Routes>
             </React.Suspense>
         </Router>

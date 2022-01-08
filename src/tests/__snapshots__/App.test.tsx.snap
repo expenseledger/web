@@ -5,96 +5,62 @@ exports[`<App> renders without crashing 1`] = `
   <Suspense
     fallback={<Loading />}
   >
-    <Switch>
+    <Routes>
       <Route
-        component={
-          Object {
-            "$$typeof": Symbol(react.lazy),
-            "_init": [Function],
-            "_payload": Object {
-              "_result": [Function],
-              "_status": -1,
-            },
-          }
-        }
-        exact={true}
+        element={<UNDEFINED />}
         path="/signIn"
       />
-      <AuthProtection>
-        <lazy>
-          <Route
-            component={
-              Object {
-                "$$typeof": Symbol(react.lazy),
-                "_init": [Function],
-                "_payload": Object {
-                  "_result": [Function],
-                  "_status": -1,
-                },
-              }
-            }
-            exact={true}
-            path="/"
-          />
-          <Route
-            component={
-              Object {
-                "$$typeof": Symbol(react.lazy),
-                "_init": [Function],
-                "_payload": Object {
-                  "_result": [Function],
-                  "_status": -1,
-                },
-              }
-            }
-            exact={true}
-            path="/wallet/:accountId/transactionList"
-          />
-          <Route
-            component={
-              Object {
-                "$$typeof": Symbol(react.lazy),
-                "_init": [Function],
-                "_payload": Object {
-                  "_result": [Function],
-                  "_status": -1,
-                },
-              }
-            }
-            exact={true}
-            path="/more"
-          />
-          <Route
-            component={
-              Object {
-                "$$typeof": Symbol(react.lazy),
-                "_init": [Function],
-                "_payload": Object {
-                  "_result": [Function],
-                  "_status": -1,
-                },
-              }
-            }
-            exact={true}
-            path="/category/setting"
-          />
-          <Route
-            component={
-              Object {
-                "$$typeof": Symbol(react.lazy),
-                "_init": [Function],
-                "_payload": Object {
-                  "_result": [Function],
-                  "_status": -1,
-                },
-              }
-            }
-            exact={true}
-            path="/wallet/setting"
-          />
-        </lazy>
-      </AuthProtection>
-    </Switch>
+      <Route
+        element={
+          <AuthProtection>
+            <UNDEFINED>
+              <UNDEFINED />
+            </UNDEFINED>
+          </AuthProtection>
+        }
+        path="/"
+      />
+      <Route
+        element={
+          <AuthProtection>
+            <UNDEFINED>
+              <UNDEFINED />
+            </UNDEFINED>
+          </AuthProtection>
+        }
+        path="/wallet/:accountId/transactionList"
+      />
+      <Route
+        element={
+          <AuthProtection>
+            <UNDEFINED>
+              <UNDEFINED />
+            </UNDEFINED>
+          </AuthProtection>
+        }
+        path="/more"
+      />
+      <Route
+        element={
+          <AuthProtection>
+            <UNDEFINED>
+              <UNDEFINED />
+            </UNDEFINED>
+          </AuthProtection>
+        }
+        path="/category/setting"
+      />
+      <Route
+        element={
+          <AuthProtection>
+            <UNDEFINED>
+              <UNDEFINED />
+            </UNDEFINED>
+          </AuthProtection>
+        }
+        path="/wallet/setting"
+      />
+    </Routes>
   </Suspense>
 </BrowserRouter>
 `;

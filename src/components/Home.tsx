@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
-import { Link, RouteComponentProps, withRouter } from "react-router-dom";
-import Slider from "react-slick";
+import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { categoriesState, toastState, walletsState } from "../common/shareState";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
@@ -27,7 +27,7 @@ const Icon = styled.span`
     vertical-align: middle;
 `;
 
-const Home: React.FC<RouteComponentProps> = (props) => {
+const Home: React.FC = () => {
     const initialState = {
         walletIdx: 0,
         categoryIdx: 0,
@@ -39,6 +39,7 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
+    const navigate = useNavigate();
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -123,43 +124,39 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     };
 
     const toMorePage = () => {
-        props.history.push("/more", { ...currentValue });
+        navigate("/more", { state: { ...currentValue } });
     };
 
     const renderAccountCards = () => {
         const accountCards = wallets.map((x, idx) => (
-            <AccountCard
-                key={idx}
-                id={idx}
-                balance={currentValue.walletIdx === idx ? x.balance : 0}
-                name={x.name}
-            />
+            <SwiperSlide key={idx}>
+                <AccountCard
+                    key={idx}
+                    id={idx}
+                    balance={currentValue.walletIdx === idx ? x.balance : 0}
+                    name={x.name}
+                />
+            </SwiperSlide>
         ));
-        const settings = {
-            dots: false,
-            infinite: true,
-            speed: 500,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-        };
-        const afterChangeHandler = (idx: number) => {
-            updateSelectedWallet(idx);
-        };
 
         return (
-            <Slider {...settings} afterChange={afterChangeHandler}>
+            <Swiper
+                spaceBetween={10}
+                pagination={true}
+                slidesPerView={"auto"}
+                centeredSlides={true}
+                onSlideChange={(swipe) => updateSelectedWallet(swipe.realIndex)}>
                 {accountCards}
-            </Slider>
+            </Swiper>
         );
     };
 
     return (
         <>
-            <section className="section">
-                <div className="columns is-mobile is-vcentered">
-                    <div className="column is-12">{renderAccountCards()}</div>
-                </div>
-            </section>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-12">{renderAccountCards()}</div>
+            </div>
+
             <div className="columns is-mobile is-vcentered">
                 <div className="column is-7">
                     <Link
@@ -226,4 +223,4 @@ const Home: React.FC<RouteComponentProps> = (props) => {
     );
 };
 
-export default withRouter(Home);
+export default Home;

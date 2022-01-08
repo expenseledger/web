@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Loading from "../components/bases/Loading";
 import { AuthProtection } from "./hoc/WithAuthProtection";
 
@@ -15,26 +15,59 @@ const App: React.FC = () => {
     return (
         <Router>
             <React.Suspense fallback={<Loading />}>
-                <Switch>
-                    <Route path="/signIn" exact={true} component={SignIn} />
-                    <AuthProtection>
-                        <Layout>
-                            <Route path="/" exact={true} component={Home} />
-                            <Route
-                                path="/wallet/:accountId/transactionList"
-                                exact={true}
-                                component={TransactionList}
-                            />
-                            <Route path="/more" exact={true} component={More} />
-                            <Route
-                                path="/category/setting"
-                                exact={true}
-                                component={CategorySetting}
-                            />
-                            <Route path="/wallet/setting" exact={true} component={WalletSetting} />
-                        </Layout>
-                    </AuthProtection>
-                </Switch>
+                <Routes>
+                    <Route path="/signIn" element={<SignIn />} />
+                    <Route
+                        path="/"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <Home />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/wallet/:accountId/transactionList"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <TransactionList />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/more"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <More />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/category/setting"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <CategorySetting />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                    <Route
+                        path="/wallet/setting"
+                        element={
+                            <AuthProtection>
+                                <Layout>
+                                    <WalletSetting />
+                                </Layout>
+                            </AuthProtection>
+                        }
+                    />
+                </Routes>
             </React.Suspense>
         </Router>
     );

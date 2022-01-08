@@ -2,9 +2,9 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import Slider from "react-slick";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
+import { Swiper, SwiperSlide } from "swiper/react";
 import { toastState, walletsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
@@ -16,10 +16,6 @@ import {
 } from "../service/transactionService";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
-
-interface PathParams {
-    accountId: string;
-}
 
 const NoData = styled.div`
     font-weight: bold;
@@ -37,7 +33,8 @@ export const TransactionList: React.FC = () => {
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(walletsState);
-    const { accountId } = useParams<PathParams>();
+    const params = useParams();
+    const { accountId } = params;
 
     useEffect(() => {
         if (!monthYearList) {
@@ -141,26 +138,21 @@ export const TransactionList: React.FC = () => {
     };
 
     const renderMonthYear = () => {
-        const settings = {
-            dots: false,
-            infinite: false,
-            speed: 500,
-            slidesToShow: 1,
-            slidesToScroll: 1,
-            rtl: true,
-        };
-        const afterChangeHandler = (idx: number) => {
-            setMonthYearIdx(monthYearList.length - idx - 1);
-        };
-
         return (
-            <Slider {...settings} afterChange={afterChangeHandler}>
+            <Swiper
+                dir="rtl"
+                spaceBetween={10}
+                slidesPerView={"auto"}
+                centeredSlides={true}
+                onSlideChange={(swipe) => setMonthYearIdx(swipe.realIndex)}>
                 {monthYearList.map((x) => (
-                    <MonthYear key={x} className="title is-4 px-5 py-5">
-                        {dayjs(x).format("MMMM YYYY")}
-                    </MonthYear>
+                    <SwiperSlide key={x}>
+                        <MonthYear key={x} className="title is-4 px-5 py-5">
+                            {dayjs(x).format("MMMM YYYY")}
+                        </MonthYear>
+                    </SwiperSlide>
                 ))}
-            </Slider>
+            </Swiper>
         );
     };
 

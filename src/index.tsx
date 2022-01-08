@@ -4,12 +4,15 @@ import "bulma/css/bulma.css";
 import React from "react";
 import ReactDOM from "react-dom";
 import { RecoilRoot } from "recoil";
-import "slick-carousel/slick/slick-theme.css";
-import "slick-carousel/slick/slick.css";
+import SwiperCore, { Pagination } from "swiper";
+import "swiper/css";
+import "swiper/css/pagination";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
 import { register } from "./serviceWorkerRegistration";
+
+SwiperCore.use([Pagination]);
 
 ReactDOM.render(
     <RecoilRoot>

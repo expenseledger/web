@@ -141,6 +141,7 @@ const Home: React.FC = () => {
 
         return (
             <Swiper
+                loop={true}
                 spaceBetween={10}
                 pagination={true}
                 slidesPerView={"auto"}

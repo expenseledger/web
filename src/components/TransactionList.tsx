@@ -144,6 +144,7 @@ export const TransactionList: React.FC = () => {
                 spaceBetween={10}
                 slidesPerView={"auto"}
                 centeredSlides={true}
+                navigation={true}
                 onSlideChange={(swipe) => setMonthYearIdx(swipe.realIndex)}>
                 {monthYearList.map((x) => (
                     <SwiperSlide key={x}>

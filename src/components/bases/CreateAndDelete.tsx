@@ -63,11 +63,18 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         }
 
         return (
-            <a onClick={onDeleteHandler}>
-                <span className="icon">
-                    <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
-                </span>
-            </a>
+            <div>
+                <a>
+                    <span className="icon">
+                        <i className="fas fa-lg fa-edit" aria-hidden="true"></i>
+                    </span>
+                </a>
+                <a onClick={onDeleteHandler}>
+                    <span className="icon">
+                        <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
+                    </span>
+                </a>
+            </div>
         );
     };
 

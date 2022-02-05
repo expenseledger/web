@@ -4,12 +4,12 @@ import Loading from "../components/bases/Loading";
 import { AuthProtection } from "./hoc/WithAuthProtection";
 
 const TransactionList = React.lazy(() => import("./TransactionList"));
-const Home = React.lazy(() => import("../components/Home"));
+const Home = React.lazy(() => import("./Home"));
 const More = React.lazy(() => import("../components/More"));
 const SignIn = React.lazy(() => import("../components/SignIn"));
 const Layout = React.lazy(() => import("../components/Layout"));
 const CategorySetting = React.lazy(() => import("../components/CategorySetting"));
-const WalletSetting = React.lazy(() => import("../components/WalletSetting"));
+const AccountSetting = React.lazy(() => import("./AccountSetting"));
 
 const App: React.FC = () => {
     return (
@@ -28,7 +28,7 @@ const App: React.FC = () => {
                         }
                     />
                     <Route
-                        path="/wallet/:accountId/transactionList"
+                        path="/account/:accountId/transactionList"
                         element={
                             <AuthProtection>
                                 <Layout>
@@ -58,11 +58,11 @@ const App: React.FC = () => {
                         }
                     />
                     <Route
-                        path="/wallet/setting"
+                        path="/account/setting"
                         element={
                             <AuthProtection>
                                 <Layout>
-                                    <WalletSetting />
+                                    <AccountSetting />
                                 </Layout>
                             </AuthProtection>
                         }

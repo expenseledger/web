@@ -1,17 +1,21 @@
 import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { mapWalletFromServer, mapWalletTypeToString } from "./helper/walletHelper";
-import { CreateWalletRequest, DeleteWalletRequest, GetWalletRequest } from "./model/Requests/index";
+import { mapAccountFromServer, mapAccountTypeToString } from "./helper/accountHelper";
 import {
-    CreateWalletResponse,
-    DeleteWalletResponse,
-    GetAllWalletResponse,
-    GetWalletResponse,
+    CreateAccountRequest,
+    DeleteAccountRequest,
+    GetAccountRequest,
+} from "./model/Requests/index";
+import {
+    CreateAccountResponse,
+    DeleteAccountResponse,
+    GetAccountResponse,
+    GetAllAccountResponse,
 } from "./model/Responses/index";
 
 const GET_ALL_WALLETS = gql`
-    query GetAllWallets {
+    query GetAllAccounts {
         accounts {
             nodes {
                 id
@@ -24,7 +28,7 @@ const GET_ALL_WALLETS = gql`
 `;
 
 const GET_WALLET_BY_ID = gql`
-    query GetWalletById($id: Int!) {
+    query GetAccountById($id: Int!) {
         getAccount(id: $id) {
             id
             name
@@ -35,7 +39,7 @@ const GET_WALLET_BY_ID = gql`
 `;
 
 const CREATE_WALET = gql`
-    mutation CreateWallet($name: String!, $type: AccountType!) {
+    mutation CreateAccount($name: String!, $type: AccountType!) {
         createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
             account {
                 balance
@@ -48,7 +52,7 @@ const CREATE_WALET = gql`
 `;
 
 const DELETE_WALLET_BY_ID = gql`
-    mutation DeleteWallet($id: Int!) {
+    mutation DeleteAccount($id: Int!) {
         closeAccount(input: { id: $id }) {
             account {
                 balance
@@ -69,26 +73,26 @@ export const accountFragment = gql`
     }
 `;
 
-export async function getAllWallet(): Promise<GetAllWalletResponse> {
+export async function getAllAccount(): Promise<GetAllAccountResponse> {
     const response = await client.query({
         query: GET_ALL_WALLETS,
     });
 
     if (response.errors) {
-        log("Cannot get all wallets.", response.errors);
+        log("Cannot get all accounts.", response.errors);
         return {
-            wallets: [],
+            accounts: [],
         };
     }
 
-    const toReturn = response.data.accounts.nodes.map(mapWalletFromServer);
+    const toReturn = response.data.accounts.nodes.map(mapAccountFromServer);
 
     return {
-        wallets: toReturn,
+        accounts: toReturn,
     };
 }
 
-export async function getWallet(request: GetWalletRequest): Promise<GetWalletResponse> {
+export async function getAccount(request: GetAccountRequest): Promise<GetAccountResponse> {
     const response = await client.query({
         query: GET_WALLET_BY_ID,
         variables: {
@@ -97,41 +101,41 @@ export async function getWallet(request: GetWalletRequest): Promise<GetWalletRes
     });
 
     if (response.errors) {
-        log(`Cannet get wallet by id: ${request.id}`, response.errors);
+        log(`Cannet get account by id: ${request.id}`, response.errors);
 
         return {
-            wallet: null,
+            account: null,
         };
     }
 
     return {
-        wallet: mapWalletFromServer(response.data.getAccount),
+        account: mapAccountFromServer(response.data.getAccount),
     };
 }
 
-export async function createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
+export async function createAccount(request: CreateAccountRequest): Promise<CreateAccountResponse> {
     const response = await client.mutate({
         mutation: CREATE_WALET,
         variables: {
             name: request.name,
-            type: mapWalletTypeToString(request.type, true),
+            type: mapAccountTypeToString(request.type, true),
         },
     });
 
     if (response.errors) {
-        log(`Cannot create wallet`, response.errors);
+        log(`Cannot create account`, response.errors);
 
         return {
-            wallet: null,
+            account: null,
         };
     }
 
     return {
-        wallet: mapWalletFromServer(response.data.createAccount.account),
+        account: mapAccountFromServer(response.data.createAccount.account),
     };
 }
 
-export async function deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
+export async function deleteAccount(request: DeleteAccountRequest): Promise<DeleteAccountResponse> {
     const response = await client.mutate({
         mutation: DELETE_WALLET_BY_ID,
         variables: {
@@ -140,7 +144,7 @@ export async function deleteWallet(request: DeleteWalletRequest): Promise<Delete
     });
 
     if (response.errors) {
-        log(`Cannot delete wallet id: ${request.id}`, response.errors);
+        log(`Cannot delete account id: ${request.id}`, response.errors);
 
         return {
             isSuccess: false,

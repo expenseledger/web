@@ -1,4 +1,4 @@
-import { WalletType } from "../../constants";
+import { AccountType } from "../../constants";
 
 // Transaction
 interface AddTransactionRequest {
@@ -39,17 +39,17 @@ export interface DeleteCategoryRequest {
     id: number;
 }
 
-// Wallet
-export interface CreateWalletRequest {
+// Account
+export interface CreateAccountRequest {
     name: string;
-    type: WalletType;
+    type: AccountType;
 }
 
-export interface GetWalletRequest {
+export interface GetAccountRequest {
     id: number;
 }
 
-export interface DeleteWalletRequest {
+export interface DeleteAccountRequest {
     id: number;
 }
 

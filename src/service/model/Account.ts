@@ -1,8 +1,8 @@
-interface Wallet {
+interface Account {
     id: number;
     name: string;
     type: string;
     balance: number;
 }
 
-export default Wallet;
+export default Account;

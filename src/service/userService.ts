@@ -36,6 +36,6 @@ export async function getUserData(): Promise<User> {
 
     return {
         categories: result.data.currentUser.owner.categories.nodes,
-        wallets: result.data.currentUser.owner.accounts.nodes,
+        accounts: result.data.currentUser.owner.accounts.nodes,
     };
 }

@@ -2,12 +2,12 @@ import * as R from "ramda";
 import React from "react";
 import { useLocation } from "react-router";
 import { useRecoilState } from "recoil";
-import { categoriesState, toastState, walletsState } from "../common/shareState";
+import { accountsState, categoriesState, toastState } from "../common/shareState";
 import { formatNumber } from "../common/utils";
 import { TransactionType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
+import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
-import Wallet from "../service/model/Wallet";
 import { addExpense, addIncome, addTransfer } from "../service/transactionService";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -17,8 +17,8 @@ import TextField from "./bases/TextField";
 import "./More.scss";
 
 interface CurrentValue {
-    fromWalletIdx: number;
-    toWalletIdx: number;
+    fromAccountIdx: number;
+    toAccountIdx: number;
     categoryIdx: number;
     amount: number;
     date: string;
@@ -26,27 +26,27 @@ interface CurrentValue {
     [key: string]: any;
 }
 interface HomeProps {
-    walletIdx: number;
+    accountIdx: number;
     categoryIdx: number;
     amount: number;
     date: string;
 }
 
 const More: React.FC = () => {
-    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = React.useState(false);
     const locatoin = useLocation();
     const homeProps = locatoin.state as HomeProps;
     const initialCurrentValue = {
-        fromWalletIdx: homeProps?.walletIdx ?? 0,
-        toWalletIdx:
-            (homeProps?.walletIdx ?? 0) == 0
+        fromAccountIdx: homeProps?.accountIdx ?? 0,
+        toAccountIdx:
+            (homeProps?.accountIdx ?? 0) == 0
                 ? 1
-                : homeProps.walletIdx + 1 >= wallets.length
-                ? wallets.length - homeProps.walletIdx + 1
-                : homeProps.walletIdx + 1,
+                : homeProps.accountIdx + 1 >= accounts.length
+                ? accounts.length - homeProps.accountIdx + 1
+                : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? 0,
         date: homeProps?.date ?? Date.now.toString(),
@@ -76,17 +76,17 @@ const More: React.FC = () => {
         setCurrentValue(tCurrentValue);
     };
 
-    const updateSelectedFromWallet = (value: string) => {
+    const updateSelectedFromAccount = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.fromWalletIdx = wallets.findIndex((x) => x.name === value);
+        tCurrentValue.fromAccountIdx = accounts.findIndex((x) => x.name === value);
         setCurrentValue(tCurrentValue);
     };
 
-    const updateSelectedToWallet = (value: string) => {
+    const updateSelectedToAccount = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.toWalletIdx = wallets.findIndex((x) => x.name === value);
+        tCurrentValue.toAccountIdx = accounts.findIndex((x) => x.name === value);
         setCurrentValue(tCurrentValue);
     };
 
@@ -143,7 +143,7 @@ const More: React.FC = () => {
     };
 
     const doAddExpense = async () => {
-        const { fromWalletIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         const isValid = validateAmount(amount);
 
@@ -157,19 +157,19 @@ const More: React.FC = () => {
             categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            fromAccountId: wallets[fromWalletIdx]?.id ?? 0,
+            fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
         };
 
         const response = await addExpense(request);
 
         if (response) {
-            const tWallets = R.clone(wallets);
-            const selectedWalletIdx = wallets.findIndex(
+            const tAccounts = R.clone(accounts);
+            const selectedAccountIdx = accounts.findIndex(
                 (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.transaction.fromAccount.balance;
-            setWallets(tWallets);
+            tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
+            setAccounts(tAccounts);
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("AddExpense sucess", "success"))
             );
@@ -185,7 +185,7 @@ const More: React.FC = () => {
     };
 
     const doAddIncome = async () => {
-        const { fromWalletIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         const isValid = validateAmount(amount);
 
@@ -199,19 +199,19 @@ const More: React.FC = () => {
             categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            toAccountId: wallets[fromWalletIdx]?.id ?? 0,
+            toAccountId: accounts[fromAccountIdx]?.id ?? 0,
         };
 
         const response = await addIncome(request);
 
         if (response) {
-            const tWallets = R.clone(wallets);
-            const selectedWalletIdx = wallets.findIndex(
+            const tAccounts = R.clone(accounts);
+            const selectedAccountIdx = accounts.findIndex(
                 (x) => x.name === response.transaction.toAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.transaction.toAccount.balance;
-            setWallets(tWallets);
+            tAccounts[selectedAccountIdx].balance = response.transaction.toAccount.balance;
+            setAccounts(tAccounts);
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("AddIncome sucess", "success"))
             );
@@ -227,10 +227,11 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const { fromWalletIdx, toWalletIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
+            currentValue;
 
         const isValid =
-            validateAmount(amount) && validateTransferAccount(fromWalletIdx, toWalletIdx);
+            validateAmount(amount) && validateTransferAccount(fromAccountIdx, toAccountIdx);
 
         if (!isValid) {
             setIsLoading(false);
@@ -242,25 +243,25 @@ const More: React.FC = () => {
             categoryId: categories[categoryIdx]?.id ?? 0,
             date,
             description,
-            toAccountId: wallets[toWalletIdx]?.id ?? 0,
-            fromAccountId: wallets[fromWalletIdx]?.id ?? 0,
+            toAccountId: accounts[toAccountIdx]?.id ?? 0,
+            fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
         };
 
         const response = await addTransfer(request);
 
         if (response) {
-            const tWallets = R.clone(wallets);
-            const fromWalletIdx = wallets.findIndex(
+            const tAccounts = R.clone(accounts);
+            const fromAccountIdx = accounts.findIndex(
                 (x) => x.name === response.transaction.fromAccount.name
             );
-            const toWalletIdx = wallets.findIndex(
+            const toAccountIdx = accounts.findIndex(
                 (x) => x.name === response.transaction.toAccount.name
             );
 
-            tWallets[fromWalletIdx].balance = response.transaction.fromAccount.balance;
-            tWallets[toWalletIdx].balance = response.transaction.toAccount.balance;
+            tAccounts[fromAccountIdx].balance = response.transaction.fromAccount.balance;
+            tAccounts[toAccountIdx].balance = response.transaction.toAccount.balance;
 
-            setWallets(tWallets);
+            setAccounts(tAccounts);
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("AddTransfer success", "success"))
             );
@@ -296,29 +297,29 @@ const More: React.FC = () => {
         if (result) {
             setCurrentValue({
                 ...initialCurrentValue,
-                toWalletIdx: currentValue.toWalletIdx,
-                fromWalletIdx: currentValue.fromWalletIdx,
+                toAccountIdx: currentValue.toAccountIdx,
+                fromAccountIdx: currentValue.fromAccountIdx,
             });
         }
 
         setIsLoading(false);
     };
 
-    const renderWalletSection = () => {
+    const renderAccountSection = () => {
         const isTransfer = transactionTypeTabActive[2];
         const render = (
             title: string,
             balance: number,
-            updateWallet: (value: string) => void,
+            updateAccount: (value: string) => void,
             value: string,
-            overrideOptions: Wallet[]
+            overrideOptions: Account[]
         ) => (
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">{title}</span>
                 <Dropdown
                     className="column is-4 is-narrow"
-                    options={overrideOptions?.map((x) => x.name) ?? wallets.map((x) => x.name)}
-                    updateSelectedValue={updateWallet}
+                    options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
+                    updateSelectedValue={updateAccount}
                     value={value}
                 />
                 <span className="column is-narrow">฿ {formatNumber(balance)}</span>
@@ -329,25 +330,25 @@ const More: React.FC = () => {
             <>
                 {render(
                     "From",
-                    wallets[currentValue.fromWalletIdx]?.balance ?? 0,
-                    updateSelectedFromWallet,
-                    wallets[currentValue.fromWalletIdx]?.name,
-                    wallets.filter((x) => x.id !== wallets[currentValue.toWalletIdx].id)
+                    accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                    updateSelectedFromAccount,
+                    accounts[currentValue.fromAccountIdx]?.name,
+                    accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx].id)
                 )}
                 {render(
                     "To",
-                    wallets[currentValue.toWalletIdx]?.balance ?? 0,
-                    updateSelectedToWallet,
-                    wallets[currentValue.toWalletIdx]?.name,
-                    wallets.filter((x) => x.id !== wallets[currentValue.fromWalletIdx].id)
+                    accounts[currentValue.toAccountIdx]?.balance ?? 0,
+                    updateSelectedToAccount,
+                    accounts[currentValue.toAccountIdx]?.name,
+                    accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx].id)
                 )}
             </>
         ) : (
             render(
-                "Wallet",
-                wallets[currentValue.fromWalletIdx]?.balance ?? 0,
-                updateSelectedFromWallet,
-                wallets[currentValue.fromWalletIdx]?.name,
+                "Account",
+                accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                updateSelectedFromAccount,
+                accounts[currentValue.fromAccountIdx]?.name,
                 null
             )
         );
@@ -375,7 +376,7 @@ const More: React.FC = () => {
         <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
-                {renderWalletSection()}
+                {renderAccountSection()}
                 <div className="columns is-mobile is-vcentered">
                     <span className="column is-4 has-text-weight-bold">Category</span>
                     <Dropdown

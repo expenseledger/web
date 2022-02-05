@@ -8,7 +8,7 @@ export interface Item {
     name: string;
 }
 
-export interface CreateAndDeleteProps {
+export interface SettingBoxProps {
     createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
     deleteFuncHandler: (value: number) => Promise<void>;
     items: Item[];
@@ -37,7 +37,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         setIsClickedDelete(false);
     };
 
-    const renderDelete = () => {
+    const renderButtonGroup = () => {
         if (isClickedDelete) {
             return (
                 <div className="columns is-mobile is-variable is-1">
@@ -79,10 +79,12 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
     };
 
     return (
-        <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
-            <span>{props.item.name}</span>
-            {renderDelete()}
-        </div>
+        <>
+            <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
+                <span>{props.item.name}</span>
+                {renderButtonGroup()}
+            </div>
+        </>
     );
 };
 
@@ -92,7 +94,7 @@ const ItemContainer = styled.nav`
     background-color: white;
 `;
 
-const CreateAndDelete: React.FC<CreateAndDeleteProps> = (props) => {
+const SettingBox: React.FC<SettingBoxProps> = (props) => {
     return (
         <div className="columns is-mobile is-centered is-multiline">
             <div className="column is-full">
@@ -114,4 +116,4 @@ const CreateAndDelete: React.FC<CreateAndDeleteProps> = (props) => {
     );
 };
 
-export default CreateAndDelete;
+export default SettingBox;

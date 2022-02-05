@@ -5,7 +5,7 @@ import { WalletType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { mapStringToWalletType, mapWalletTypeToString } from "../service/helper/walletHelper";
 import { createWallet, deleteWallet } from "../service/walletService";
-import CreateAndDelete from "./bases/CreateAndDelete";
+import SettingBox from "./bases/SettingBox";
 
 const WalletSetting: React.FC = () => {
     const [wallets, setWallets] = useRecoilState(walletsState);
@@ -57,7 +57,7 @@ const WalletSetting: React.FC = () => {
 
     return (
         <>
-            <CreateAndDelete
+            <SettingBox
                 createFuncHandler={createWalletHandler}
                 deleteFuncHandler={deleteWalletHandler}
                 items={wallets.map((x) => {

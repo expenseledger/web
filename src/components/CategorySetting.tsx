@@ -3,7 +3,7 @@ import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
 import { createCategory, deleteCategory } from "../service/categoryService";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
-import CreateAndDelete from "./bases/CreateAndDelete";
+import SettingBox from "./bases/SettingBox";
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
@@ -49,7 +49,7 @@ const CategorySetting: React.FC = () => {
 
     return (
         <>
-            <CreateAndDelete
+            <SettingBox
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
                 items={categories.map((x) => {

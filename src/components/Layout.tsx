@@ -46,10 +46,10 @@ const Layout: React.FC = (props) => {
                         <li>
                             <ul>
                                 <li>
-                                    <Link to="/category/setting">Category</Link>
+                                    <Link to="/account/setting">Account</Link>
                                 </li>
                                 <li>
-                                    <Link to="/account/setting">Account</Link>
+                                    <Link to="/category/setting">Category</Link>
                                 </li>
                             </ul>
                         </li>

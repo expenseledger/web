@@ -5,6 +5,7 @@ import { createAccount, deleteAccount } from "../service/accountService";
 import { AccountType } from "../service/constants";
 import { mapAccountTypeToString, mapStringToAccountType } from "../service/helper/accountHelper";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
+import Modal from "./bases/Modal";
 import SettingBox from "./bases/SettingBox";
 
 const AccountSetting: React.FC = () => {
@@ -54,7 +55,22 @@ const AccountSetting: React.FC = () => {
             prevNotiList.concat(mapNotificationProps("Delete account success", "success"))
         );
     };
+    const renderModal = (id: number, onCancel: () => void) => {
+        const account = accounts.find((x) => x.id === id);
 
+        return (
+            <Modal
+                title="Account Category"
+                onCancelHandler={onCancel}
+                onConfirmHandler={() => {
+                    return new Promise((resolve, _) => resolve());
+                }}
+                cancelBtnTxt="Cancel"
+                confirmBtnTxt="Confirm">
+                <div>{account.name}</div>
+            </Modal>
+        );
+    };
     return (
         <>
             <SettingBox
@@ -64,6 +80,7 @@ const AccountSetting: React.FC = () => {
                     return { id: x.id, name: x.name };
                 })}
                 dropdowns={accountTypes.map((x) => mapAccountTypeToString(x))}
+                modifyModal={renderModal}
             />
         </>
     );

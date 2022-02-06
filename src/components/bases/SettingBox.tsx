@@ -11,17 +11,20 @@ export interface Item {
 export interface SettingBoxProps {
     createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
     deleteFuncHandler: (value: number) => Promise<void>;
+    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
     items: Item[];
     dropdowns?: string[];
 }
 
 interface ItemBoxProps {
     deleteFuncHandler: (value: number) => Promise<void>;
+    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
     item: Item;
 }
 
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
+    const [isModifyClick, setIsModifyClick] = React.useState(false);
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
     };
@@ -36,7 +39,12 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         await props.deleteFuncHandler(props.item.id);
         setIsClickedDelete(false);
     };
-
+    const onModifyClick = () => {
+        setIsModifyClick(true);
+    };
+    const onModifyCancel = () => {
+        setIsModifyClick(false);
+    };
     const renderButtonGroup = () => {
         if (isClickedDelete) {
             return (
@@ -65,7 +73,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         return (
             <div>
                 <a>
-                    <span className="icon">
+                    <span className="icon" onClick={onModifyClick}>
                         <i className="fas fa-lg fa-edit" aria-hidden="true"></i>
                     </span>
                 </a>
@@ -80,6 +88,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
     return (
         <>
+            {isModifyClick ? props.modifyModal(props.item.id, onModifyCancel) : null}
             <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
                 <span>{props.item.name}</span>
                 {renderButtonGroup()}
@@ -100,7 +109,12 @@ const SettingBox: React.FC<SettingBoxProps> = (props) => {
             <div className="column is-full">
                 <ItemContainer className="panel">
                     {props.items.map((i) => (
-                        <ItemBox deleteFuncHandler={props.deleteFuncHandler} key={i.id} item={i} />
+                        <ItemBox
+                            deleteFuncHandler={props.deleteFuncHandler}
+                            key={i.id}
+                            item={i}
+                            modifyModal={props.modifyModal}
+                        />
                     ))}
                 </ItemContainer>
             </div>

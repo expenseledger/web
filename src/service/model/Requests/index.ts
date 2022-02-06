@@ -1,4 +1,5 @@
 import { AccountType } from "../../constants";
+import { CategoryType } from "./../../constants";
 
 // Transaction
 interface AddTransactionRequest {
@@ -37,6 +38,11 @@ export interface CreateCategoryRequest {
 
 export interface DeleteCategoryRequest {
     id: number;
+}
+export interface UpdateCategoryRequest {
+    id: number;
+    name: string;
+    type: CategoryType;
 }
 
 // Account

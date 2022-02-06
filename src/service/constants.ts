@@ -7,3 +7,5 @@ export const httpStatus = {
 export type AccountType = "CASH" | "BANK_ACCOUNT" | "CREDIT";
 
 export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";
+
+export type CategoryType = "ANY" | "INCOME" | "EXPENSE" | "TRANSFER";

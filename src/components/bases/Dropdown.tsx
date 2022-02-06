@@ -5,7 +5,7 @@ interface DropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
-    value: string;
+    defaultValue: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
@@ -21,7 +21,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
     return (
         <div className={classNames}>
             <div className="control select">
-                <select onChange={onChangeHandler} value={props.value}>
+                <select onChange={onChangeHandler} value={props.defaultValue}>
                     {renderOptions(props.options)}
                 </select>
             </div>

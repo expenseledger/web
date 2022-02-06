@@ -33,6 +33,12 @@ export interface DeleteCategoryResponse {
     isSuccess: boolean;
 }
 
+export interface UpdateCategoryResponse {
+    updatedCategory: Category;
+}
+
+// Account
+
 export interface DeleteAccountResponse {
     isSuccess: boolean;
 }

@@ -1,9 +1,15 @@
 import { gql } from "@apollo/client";
 import { extractGraphQLErrors, log } from "../common/utils";
 import client from "../lib/apollo";
+import { CategoryType } from "./constants";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
-import { CreateCategoryResponse, DeleteCategoryResponse } from "./model/Responses/index";
+import { UpdateCategoryRequest } from "./model/Requests/index";
+import {
+    CreateCategoryResponse,
+    DeleteCategoryResponse,
+    UpdateCategoryResponse,
+} from "./model/Responses/index";
 
 const CREATE_CATEGORY = gql`
     mutation CreateCategory($name: String!) {
@@ -26,6 +32,17 @@ const DELETE_CATEGORY = gql`
                         name
                     }
                 }
+            }
+        }
+    }
+`;
+const UPDATE_CATEGORY = gql`
+    mutation UpdateCategory($id: Int!, $name: String!, $type: CategoryType!) {
+        updateCategory(input: { id: $id, name: $name, type: $type }) {
+            category {
+                id
+                name
+                type
             }
         }
     }
@@ -87,6 +104,7 @@ export async function createCategory(
         addedCategory: {
             id: response.data.createCategory.category.id,
             name: response.data.createCategory.category.name,
+            type: "ANY",
         },
     };
 }
@@ -111,5 +129,34 @@ export async function deleteCategory(
 
     return {
         isSuccess: true,
+    };
+}
+
+export async function updateCategory(
+    request: UpdateCategoryRequest
+): Promise<UpdateCategoryResponse> {
+    const response = await client.mutate({
+        mutation: UPDATE_CATEGORY,
+        variables: {
+            id: request.id,
+            name: request.name,
+            type: request.type,
+        },
+    });
+
+    if (response.errors) {
+        log("Cannot update category", response.errors);
+
+        return {
+            updatedCategory: null,
+        };
+    }
+
+    return {
+        updatedCategory: {
+            id: response.data.updateCategory.category.id,
+            name: response.data.updateCategory.category.name,
+            type: response.data.updateCategory.category.type as CategoryType,
+        },
     };
 }

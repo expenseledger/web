@@ -1,7 +1,7 @@
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
-import { createCategory, deleteCategory } from "../service/categoryService";
+import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
 import { CategoryType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
@@ -54,14 +54,32 @@ const CategorySetting: React.FC = () => {
         const category = categories.find((x) => x.id === id);
         let newCategoryName = category.name;
         let newType = category.type;
+        const modifyCategory = async () => {
+            const response = await updateCategory({
+                id: id,
+                name: newCategoryName,
+                type: newType,
+            });
+
+            if (response.updatedCategory) {
+                setCategories(
+                    categories.filter((x) => x.id !== id).concat(response.updatedCategory)
+                );
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update category success", "success"))
+                );
+            } else {
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
+                );
+            }
+        };
 
         return (
             <Modal
                 title="Modigy Category"
                 onCancelHandler={onCancel}
-                onConfirmHandler={() => {
-                    return new Promise((resolve, _) => resolve());
-                }}
+                onConfirmHandler={modifyCategory}
                 cancelBtnTxt="Cancel"
                 confirmBtnTxt="Confirm">
                 <div className="is-columns">

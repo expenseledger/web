@@ -2,7 +2,6 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
 import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
-import { CategoryType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
@@ -53,12 +52,12 @@ const CategorySetting: React.FC = () => {
     const renderModal = (id: number, onCancel: () => void) => {
         const category = categories.find((x) => x.id === id);
         let newCategoryName = category.name;
-        let newType = category.type;
+        let newCategoryType = category.type;
         const modifyCategory = async () => {
             const response = await updateCategory({
                 id: id,
                 name: newCategoryName,
-                type: newType,
+                type: newCategoryType,
             });
 
             if (response.updatedCategory) {
@@ -73,6 +72,12 @@ const CategorySetting: React.FC = () => {
                     prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
                 );
             }
+        };
+        const categoryNameHandler = (value: string) => {
+            newCategoryName = value;
+        };
+        const categoryTypeHandler = (value: string) => {
+            newCategoryType = value;
         };
 
         return (
@@ -89,10 +94,7 @@ const CategorySetting: React.FC = () => {
                     <div className="is-column">
                         <TextBox
                             name="category-modify"
-                            updateValue={(value) => {
-                                newCategoryName = value;
-                                console.log(newCategoryName);
-                            }}
+                            updateValue={categoryNameHandler}
                             defaultValue={category.name}
                         />
                     </div>
@@ -105,10 +107,7 @@ const CategorySetting: React.FC = () => {
                         <Dropdown
                             defaultValue={category.type}
                             options={["ANY", "EXPENSE", "INCOME", "TRANSFER"]}
-                            updateSelectedValue={(value) => {
-                                newType = value as CategoryType;
-                                console.log(newType);
-                            }}
+                            updateSelectedValue={categoryTypeHandler}
                         />
                     </div>
                 </div>

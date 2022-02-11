@@ -2,6 +2,7 @@ import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
 import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
+import { CategoryType } from "../service/constants";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
@@ -77,7 +78,7 @@ const CategorySetting: React.FC = () => {
             newCategoryName = value;
         };
         const categoryTypeHandler = (value: string) => {
-            newCategoryType = value;
+            newCategoryType = value as CategoryType;
         };
 
         return (

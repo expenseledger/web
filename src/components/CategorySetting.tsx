@@ -9,6 +9,88 @@ import Modal from "./bases/Modal";
 import SettingBox from "./bases/SettingBox";
 import TextBox from "./bases/TextBox";
 
+interface ModifyModalProps {
+    id: number;
+    onCancel: () => void;
+}
+
+const ModifyModal: React.FC<ModifyModalProps> = (props) => {
+    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [, setNotificationList] = useRecoilState(toastState);
+    const [name, setName] = React.useState("");
+    const [type, setType] = React.useState<CategoryType>("ANY");
+    const modifyCategory = async () => {
+        const response = await updateCategory({
+            id: props.id,
+            name,
+            type,
+        });
+
+        if (response.updatedCategory) {
+            setCategories(
+                categories
+                    .filter((x) => x.id !== props.id)
+                    .concat(response.updatedCategory)
+                    .sort((a, b) => (a.name < b.name ? -1 : 1))
+            );
+            setNotificationList((prevNotiList) =>
+                prevNotiList.concat(mapNotificationProps("Update category success", "success"))
+            );
+        } else {
+            setNotificationList((prevNotiList) =>
+                prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
+            );
+        }
+
+        props.onCancel();
+    };
+    const categoryNameHandler = (value: string) => {
+        setName(value);
+    };
+    const categoryTypeHandler = (value: string) => {
+        setType(value as CategoryType);
+    };
+
+    React.useEffect(() => {
+        const category = categories.find((x) => x.id === props.id);
+
+        setName(category.name);
+        setType(category.type);
+    }, [categories, props.id]);
+
+    return (
+        <Modal
+            title="Modigy Category"
+            onCancelHandler={props.onCancel}
+            onConfirmHandler={modifyCategory}
+            cancelBtnTxt="Cancel"
+            confirmBtnTxt="Confirm">
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-2">
+                    <span>Name</span>
+                </div>
+                <TextBox
+                    className="column"
+                    name="category-modify"
+                    updateValue={categoryNameHandler}
+                    value={name}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-2">
+                    <span>Type</span>
+                </div>
+                <Dropdown
+                    className="column"
+                    value={type}
+                    options={["ANY", "EXPENSE", "INCOME", "TRANSFER"]}
+                    updateSelectedValue={categoryTypeHandler}
+                />
+            </div>
+        </Modal>
+    );
+};
+
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
@@ -50,78 +132,13 @@ const CategorySetting: React.FC = () => {
             prevNotiList.concat(mapNotificationProps("Delete category successful", "success"))
         );
     };
-    const renderModal = (id: number, onCancel: () => void) => {
-        const category = categories.find((x) => x.id === id);
-        let newCategoryName = category.name;
-        let newCategoryType = category.type;
-        const modifyCategory = async () => {
-            const response = await updateCategory({
-                id: id,
-                name: newCategoryName,
-                type: newCategoryType,
-            });
-
-            if (response.updatedCategory) {
-                setCategories(
-                    categories.filter((x) => x.id !== id).concat(response.updatedCategory)
-                );
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update category success", "success"))
-                );
-            } else {
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
-                );
-            }
-        };
-        const categoryNameHandler = (value: string) => {
-            newCategoryName = value;
-        };
-        const categoryTypeHandler = (value: string) => {
-            newCategoryType = value as CategoryType;
-        };
-
-        return (
-            <Modal
-                title="Modigy Category"
-                onCancelHandler={onCancel}
-                onConfirmHandler={modifyCategory}
-                cancelBtnTxt="Cancel"
-                confirmBtnTxt="Confirm">
-                <div className="is-columns">
-                    <div className="is-column">
-                        <span>Name</span>
-                    </div>
-                    <div className="is-column">
-                        <TextBox
-                            name="category-modify"
-                            updateValue={categoryNameHandler}
-                            defaultValue={category.name}
-                        />
-                    </div>
-                </div>
-                <div className="is-columns">
-                    <div className="is-column">
-                        <span>Type</span>
-                    </div>
-                    <div className="is-column">
-                        <Dropdown
-                            defaultValue={category.type}
-                            options={["ANY", "EXPENSE", "INCOME", "TRANSFER"]}
-                            updateSelectedValue={categoryTypeHandler}
-                        />
-                    </div>
-                </div>
-            </Modal>
-        );
-    };
 
     return (
         <>
             <SettingBox
                 createFuncHandler={addCategoryHandler}
                 deleteFuncHandler={removeCategoryHandler}
-                modifyModal={renderModal}
+                modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}

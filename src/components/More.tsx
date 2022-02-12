@@ -320,7 +320,7 @@ const More: React.FC = () => {
                     className="column is-4 is-narrow"
                     options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
                     updateSelectedValue={updateAccount}
-                    defaultValue={value}
+                    value={value}
                 />
                 <span className="column is-narrow">฿ {formatNumber(balance)}</span>
             </div>
@@ -383,7 +383,7 @@ const More: React.FC = () => {
                         className="column"
                         options={categories.map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
-                        defaultValue={categories[currentValue.categoryIdx].name}
+                        value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

@@ -200,7 +200,7 @@ const Home: React.FC = () => {
                     className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
                     options={categories.map((category) => category.name)}
                     updateSelectedValue={updateSelectedCategory}
-                    defaultValue={categories[currentValue.categoryIdx].name}
+                    value={categories[currentValue.categoryIdx].name}
                 />
             </div>
             <div className="columns is-mobile">

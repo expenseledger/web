@@ -18,6 +18,7 @@ const CURRENT_USER = gql`
                     nodes {
                         id
                         name
+                        type
                     }
                 }
             }

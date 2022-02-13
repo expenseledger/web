@@ -9,10 +9,8 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
-    const [value, setValue] = React.useState(props.value);
     const onChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
         props.updateSelectedValue(e.target.value);
-        setValue(e.target.value);
     };
 
     const classNames = combineClassName("field", !!props.className ? props.className : "");
@@ -23,7 +21,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
     return (
         <div className={classNames}>
             <div className="control select">
-                <select onChange={onChangeHandler} value={value}>
+                <select onChange={onChangeHandler} value={props.value}>
                     {renderOptions(props.options)}
                 </select>
             </div>

@@ -54,6 +54,7 @@ const GET_ALL_CATEGORIES = gql`
             nodes {
                 id
                 name
+                type
             }
         }
     }

@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Logo from "../assets/pics/logo.svg";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
@@ -93,7 +93,9 @@ const Layout: React.FC = (props) => {
                     </div>
                 </div>
             </div>
-            <div className="container is-mobile is-fluid mt-4">{props.children}</div>
+            <div className="container is-mobile is-fluid mt-4">
+                <Outlet />
+            </div>
             <Toast position="top-right" />
         </>
     );

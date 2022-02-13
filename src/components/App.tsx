@@ -18,55 +18,20 @@ const App: React.FC = () => {
                 <Routes>
                     <Route path="/signIn" element={<SignIn />} />
                     <Route
-                        path="/"
                         element={
                             <AuthProtection>
-                                <Layout>
-                                    <Home />
-                                </Layout>
+                                <Layout />
                             </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/account/:accountId/transactionList"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <TransactionList />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/more"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <More />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/category/setting"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <CategorySetting />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/account/setting"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <AccountSetting />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
+                        }>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/account/:accountId/transactionList"
+                            element={<TransactionList />}
+                        />
+                        <Route path="/more" element={<More />} />
+                        <Route path="/category/setting" element={<CategorySetting />} />
+                        <Route path="/account/setting" element={<AccountSetting />} />
+                    </Route>
                 </Routes>
             </React.Suspense>
         </Router>

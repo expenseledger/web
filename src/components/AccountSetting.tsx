@@ -1,10 +1,14 @@
+import dayjs from "dayjs";
+import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
 import { accountsState, categoriesState, toastState } from "../common/shareState";
-import { createAccount, deleteAccount } from "../service/accountService";
+import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
+import { createCategory } from "../service/categoryService";
 import { AccountType } from "../service/constants";
 import { mapAccountTypeToString, mapStringToAccountType } from "../service/helper/accountHelper";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { addExpense, addIncome } from "../service/transactionService";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
 import SettingBox from "./bases/SettingBox";
@@ -18,34 +22,110 @@ interface ModifyModalProps {
 const allAccountTypes: AccountType[] = ["BANK_ACCOUNT", "CASH", "CREDIT"];
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
-    const [categories, _] = useRecoilState(categoriesState);
+    const [categories] = useRecoilState(categoriesState);
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [name, setName] = React.useState("");
     const [balance, setBalance] = React.useState(0);
     const [type, setType] = React.useState<AccountType>("CASH");
-    const modifyAccount = async () => {
-        // const response = await updateCategory({
-        //     id: props.id,
-        //     name,
-        //     type,
-        // });
+    const getOtherCategory = async () => {
+        const other = categories.find((x) => x.name.toLowerCase() === "other");
 
-        // if (response.updatedCategory) {
-        //     // setCategories(
-        //     //     categories
-        //     //         .filter((x) => x.id !== props.id)
-        //     //         .concat(response.updatedCategory)
-        //     //         .sort((a, b) => (a.name < b.name ? -1 : 1))
-        //     // );
-        //     setNotificationList((prevNotiList) =>
-        //         prevNotiList.concat(mapNotificationProps("Update category success", "success"))
-        //     );
-        // } else {
-        //     setNotificationList((prevNotiList) =>
-        //         prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
-        //     );
-        // }
+        if (!other) {
+            const response = await createCategory({
+                name: "Other",
+                type: "ANY",
+            });
+
+            if (!response.addedCategory) {
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(
+                        mapNotificationProps("Create Other category failed", "danger")
+                    )
+                );
+                return;
+            }
+
+            return response.addedCategory;
+        }
+
+        return other;
+    };
+    const modifyAccount = async () => {
+        const account = accounts.find((x) => x.id === props.id);
+        const otherCategory = await getOtherCategory();
+
+        const response = await updateAccount({
+            id: props.id,
+            name,
+            type,
+        });
+
+        if (!response.account) {
+            setNotificationList((prevNotiList) =>
+                prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
+            );
+
+            return;
+        }
+
+        if (balance < account.balance) {
+            const response = await addExpense({
+                amount: account.balance - balance,
+                categoryId: otherCategory.id,
+                fromAccountId: account.id,
+                description: "Adjust balance",
+                date: dayjs().format("YYYY-MM-DD"),
+            });
+
+            if (response.transaction) {
+                const tAccounts = R.clone(accounts);
+                const idx = tAccounts.findIndex((x) => x.id === props.id);
+
+                tAccounts[idx].balance = balance;
+                tAccounts[idx].name = name;
+                tAccounts[idx].type = type;
+
+                setAccounts(tAccounts);
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update account success", "success"))
+                );
+            } else {
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
+                );
+            }
+        } else if (balance > account.balance) {
+            const response = await addIncome({
+                amount: balance - account.balance,
+                categoryId: otherCategory.id,
+                toAccountId: account.id,
+                description: "Adjust balance",
+                date: dayjs().format("YYYY-MM-DD"),
+            });
+
+            if (response.transaction) {
+                const tAccounts = R.clone(accounts);
+                const idx = tAccounts.findIndex((x) => x.id === props.id);
+
+                tAccounts[idx].balance = balance;
+                tAccounts[idx].name = name;
+                tAccounts[idx].type = type;
+
+                setAccounts(tAccounts);
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update account success", "success"))
+                );
+            } else {
+                setNotificationList((prevNotiList) =>
+                    prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
+                );
+            }
+        } else {
+            setNotificationList((prevNotiList) =>
+                prevNotiList.concat(mapNotificationProps("Update account success", "success"))
+            );
+        }
 
         props.onCancel();
     };

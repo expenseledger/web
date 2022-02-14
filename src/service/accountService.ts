@@ -6,12 +6,14 @@ import {
     CreateAccountRequest,
     DeleteAccountRequest,
     GetAccountRequest,
+    UpdateAccountRequest,
 } from "./model/Requests/index";
 import {
     CreateAccountResponse,
     DeleteAccountResponse,
     GetAccountResponse,
     GetAllAccountResponse,
+    UpdateAccountResponse,
 } from "./model/Responses/index";
 
 const GET_ALL_ACCOUNTS = gql`
@@ -38,7 +40,7 @@ const GET_ACCOUNT_BY_ID = gql`
     }
 `;
 
-const CREATE_WALET = gql`
+const CREATE_ACCOUNT = gql`
     mutation CreateAccount($name: String!, $type: AccountType!) {
         createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
             account {
@@ -54,6 +56,19 @@ const CREATE_WALET = gql`
 const DELETE_ACCOUNT_BY_ID = gql`
     mutation DeleteAccount($id: Int!) {
         closeAccount(input: { id: $id }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
+
+const UPDATE_ACCOUNT_BY_ID = gql`
+    mutation UpdateAccount($id: Int!, $name: String!, $type: AccountType!) {
+        updateAccount(input: { id: $id, name: $name, type: $type }) {
             account {
                 balance
                 id
@@ -115,7 +130,7 @@ export async function getAccount(request: GetAccountRequest): Promise<GetAccount
 
 export async function createAccount(request: CreateAccountRequest): Promise<CreateAccountResponse> {
     const response = await client.mutate({
-        mutation: CREATE_WALET,
+        mutation: CREATE_ACCOUNT,
         variables: {
             name: request.name,
             type: mapAccountTypeToString(request.type, true),
@@ -153,5 +168,29 @@ export async function deleteAccount(request: DeleteAccountRequest): Promise<Dele
 
     return {
         isSuccess: true,
+    };
+}
+
+export async function updateAccount(request: UpdateAccountRequest): Promise<UpdateAccountResponse> {
+    console.log(request);
+    const response = await client.mutate({
+        mutation: UPDATE_ACCOUNT_BY_ID,
+        variables: {
+            id: request.id,
+            name: request.name,
+            type: mapAccountTypeToString(request.type, true),
+        },
+    });
+
+    if (response.errors) {
+        log(`Cannot update account`, response.errors);
+
+        return {
+            account: null,
+        };
+    }
+
+    return {
+        account: mapAccountFromServer(response.data.createAccount.updateAccount),
     };
 }

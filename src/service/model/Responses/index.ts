@@ -55,6 +55,12 @@ export interface GetAccountResponse {
     account: Account;
 }
 
+export interface UpdateAccountResponse {
+    account: Account;
+}
+
+// Transaction
+
 export interface GetTransactionMonthYearListResponse {
     monthYears: string[];
 }

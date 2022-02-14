@@ -1,3 +1,4 @@
+import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
@@ -29,12 +30,13 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         });
 
         if (response.updatedCategory) {
-            setCategories(
-                categories
-                    .filter((x) => x.id !== props.id)
-                    .concat(response.updatedCategory)
-                    .sort((a, b) => (a.name < b.name ? -1 : 1))
-            );
+            const tCategories = R.clone(categories);
+            const idx = tCategories.findIndex((x) => x.id === props.id);
+
+            tCategories[idx].name = response.updatedCategory.name;
+            tCategories[idx].type = response.updatedCategory.type;
+
+            setCategories(tCategories);
             setNotificationList((prevNotiList) =>
                 prevNotiList.concat(mapNotificationProps("Update category success", "success"))
             );

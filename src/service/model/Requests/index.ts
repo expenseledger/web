@@ -60,6 +60,14 @@ export interface DeleteAccountRequest {
     id: number;
 }
 
+export interface UpdateAccountRequest {
+    id: number;
+    name: string;
+    type: AccountType;
+}
+
+// Transaction
+
 export interface GetTransactionMonthYearListRequest {
     accountId: number;
 }

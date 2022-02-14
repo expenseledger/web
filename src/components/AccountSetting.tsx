@@ -1,17 +1,120 @@
 import React from "react";
 import { useRecoilState } from "recoil";
-import { accountsState, toastState } from "../common/shareState";
+import { accountsState, categoriesState, toastState } from "../common/shareState";
 import { createAccount, deleteAccount } from "../service/accountService";
 import { AccountType } from "../service/constants";
 import { mapAccountTypeToString, mapStringToAccountType } from "../service/helper/accountHelper";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
+import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
 import SettingBox from "./bases/SettingBox";
+import TextBox from "./bases/TextBox";
+
+interface ModifyModalProps {
+    id: number;
+    onCancel: () => void;
+}
+
+const allAccountTypes: AccountType[] = ["BANK_ACCOUNT", "CASH", "CREDIT"];
+
+const ModifyModal: React.FC<ModifyModalProps> = (props) => {
+    const [categories, _] = useRecoilState(categoriesState);
+    const [accounts, setAccounts] = useRecoilState(accountsState);
+    const [, setNotificationList] = useRecoilState(toastState);
+    const [name, setName] = React.useState("");
+    const [balance, setBalance] = React.useState(0);
+    const [type, setType] = React.useState<AccountType>("CASH");
+    const modifyAccount = async () => {
+        // const response = await updateCategory({
+        //     id: props.id,
+        //     name,
+        //     type,
+        // });
+
+        // if (response.updatedCategory) {
+        //     // setCategories(
+        //     //     categories
+        //     //         .filter((x) => x.id !== props.id)
+        //     //         .concat(response.updatedCategory)
+        //     //         .sort((a, b) => (a.name < b.name ? -1 : 1))
+        //     // );
+        //     setNotificationList((prevNotiList) =>
+        //         prevNotiList.concat(mapNotificationProps("Update category success", "success"))
+        //     );
+        // } else {
+        //     setNotificationList((prevNotiList) =>
+        //         prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
+        //     );
+        // }
+
+        props.onCancel();
+    };
+    const accountNameHandler = (value: string) => {
+        setName(value);
+    };
+    const accountTypeHandler = (value: string) => {
+        setType(value as AccountType);
+    };
+    const accountBalanceHandler = (value: string) => {
+        setBalance(Number.parseFloat(value));
+    };
+
+    React.useEffect(() => {
+        const account = accounts.find((x) => x.id === props.id);
+
+        setName(account.name);
+        setType(account.type);
+        setBalance(account.balance);
+    }, [accounts, props.id]);
+
+    return (
+        <Modal
+            title="Modigy Category"
+            onCancelHandler={props.onCancel}
+            onConfirmHandler={modifyAccount}
+            cancelBtnTxt="Cancel"
+            confirmBtnTxt="Confirm">
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-2">
+                    <span>Name</span>
+                </div>
+                <TextBox
+                    className="column"
+                    name="category-modify"
+                    updateValue={accountNameHandler}
+                    value={name}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-2">
+                    <span>Type</span>
+                </div>
+                <Dropdown
+                    className="column"
+                    value={type}
+                    options={allAccountTypes}
+                    updateSelectedValue={accountTypeHandler}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <div className="column is-2">
+                    <span>Balance</span>
+                </div>
+                <TextBox
+                    className="column"
+                    name="category-modify"
+                    updateValue={accountBalanceHandler}
+                    type="number"
+                    value={balance.toString()}
+                />
+            </div>
+        </Modal>
+    );
+};
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [, setNotificationList] = useRecoilState(toastState);
-    const accountTypes: AccountType[] = ["BANK_ACCOUNT", "CASH", "CREDIT"];
     const createAccountHandler = async (accountName: string, accountType: string) => {
         const response = await createAccount({
             name: accountName,
@@ -55,22 +158,7 @@ const AccountSetting: React.FC = () => {
             prevNotiList.concat(mapNotificationProps("Delete account success", "success"))
         );
     };
-    const renderModal = (id: number, onCancel: () => void) => {
-        const account = accounts.find((x) => x.id === id);
 
-        return (
-            <Modal
-                title="Account Category"
-                onCancelHandler={onCancel}
-                onConfirmHandler={() => {
-                    return new Promise((resolve, _) => resolve());
-                }}
-                cancelBtnTxt="Cancel"
-                confirmBtnTxt="Confirm">
-                <div>{account.name}</div>
-            </Modal>
-        );
-    };
     return (
         <>
             <SettingBox
@@ -79,8 +167,8 @@ const AccountSetting: React.FC = () => {
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={accountTypes.map((x) => mapAccountTypeToString(x))}
-                modifyModal={renderModal}
+                dropdowns={allAccountTypes.map((x) => mapAccountTypeToString(x))}
+                modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
             />
         </>
     );

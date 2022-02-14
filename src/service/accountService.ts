@@ -14,7 +14,7 @@ import {
     GetAllAccountResponse,
 } from "./model/Responses/index";
 
-const GET_ALL_WALLETS = gql`
+const GET_ALL_ACCOUNTS = gql`
     query GetAllAccounts {
         accounts {
             nodes {
@@ -27,7 +27,7 @@ const GET_ALL_WALLETS = gql`
     }
 `;
 
-const GET_WALLET_BY_ID = gql`
+const GET_ACCOUNT_BY_ID = gql`
     query GetAccountById($id: Int!) {
         getAccount(id: $id) {
             id
@@ -51,7 +51,7 @@ const CREATE_WALET = gql`
     }
 `;
 
-const DELETE_WALLET_BY_ID = gql`
+const DELETE_ACCOUNT_BY_ID = gql`
     mutation DeleteAccount($id: Int!) {
         closeAccount(input: { id: $id }) {
             account {
@@ -75,7 +75,7 @@ export const accountFragment = gql`
 
 export async function getAllAccount(): Promise<GetAllAccountResponse> {
     const response = await client.query({
-        query: GET_ALL_WALLETS,
+        query: GET_ALL_ACCOUNTS,
     });
 
     if (response.errors) {
@@ -94,7 +94,7 @@ export async function getAllAccount(): Promise<GetAllAccountResponse> {
 
 export async function getAccount(request: GetAccountRequest): Promise<GetAccountResponse> {
     const response = await client.query({
-        query: GET_WALLET_BY_ID,
+        query: GET_ACCOUNT_BY_ID,
         variables: {
             id: request.id,
         },
@@ -137,7 +137,7 @@ export async function createAccount(request: CreateAccountRequest): Promise<Crea
 
 export async function deleteAccount(request: DeleteAccountRequest): Promise<DeleteAccountResponse> {
     const response = await client.mutate({
-        mutation: DELETE_WALLET_BY_ID,
+        mutation: DELETE_ACCOUNT_BY_ID,
         variables: {
             id: request.id,
         },

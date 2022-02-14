@@ -14,6 +14,8 @@ interface ModifyModalProps {
     onCancel: () => void;
 }
 
+const allCategoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TRANSFER"];
+
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
@@ -83,7 +85,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 <Dropdown
                     className="column"
                     value={type}
-                    options={["ANY", "EXPENSE", "INCOME", "TRANSFER"]}
+                    options={allCategoryTypes}
                     updateSelectedValue={categoryTypeHandler}
                 />
             </div>
@@ -94,7 +96,6 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
-    const categoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TRANSFER"];
 
     const addCategoryHandler = async (name: string, type: string) => {
         const response = await createCategory({
@@ -146,7 +147,7 @@ const CategorySetting: React.FC = () => {
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={categoryTypes}
+                dropdowns={allCategoryTypes}
             />
         </>
     );

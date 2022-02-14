@@ -94,9 +94,13 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
+    const categoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TRANSFER"];
 
-    const addCategoryHandler = async (name: string) => {
-        const response = await createCategory({ name });
+    const addCategoryHandler = async (name: string, type: string) => {
+        const response = await createCategory({
+            name,
+            type: type as CategoryType,
+        });
 
         if (!response.addedCategory) {
             setNotificationList((prevNotiList) =>
@@ -142,6 +146,7 @@ const CategorySetting: React.FC = () => {
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
+                dropdowns={categoryTypes}
             />
         </>
     );

@@ -12,11 +12,12 @@ import {
 } from "./model/Responses/index";
 
 const CREATE_CATEGORY = gql`
-    mutation CreateCategory($name: String!) {
-        createCategory(input: { name: $name }) {
+    mutation CreateCategory($name: String!, $type: CategoryType!) {
+        createCategoryV2(input: { name: $name, type: $type }) {
             category {
                 id
                 name
+                type
             }
         }
     }
@@ -30,6 +31,7 @@ const DELETE_CATEGORY = gql`
                     nodes {
                         id
                         name
+                        type
                     }
                 }
             }
@@ -64,6 +66,7 @@ export const categoryFragment = gql`
     fragment PlainCategory on Category {
         id
         name
+        type
     }
 `;
 
@@ -90,6 +93,7 @@ export async function createCategory(
         mutation: CREATE_CATEGORY,
         variables: {
             name: request.name,
+            type: request.type,
         },
     });
 
@@ -102,11 +106,7 @@ export async function createCategory(
     }
 
     return {
-        addedCategory: {
-            id: response.data.createCategory.category.id,
-            name: response.data.createCategory.category.name,
-            type: "ANY",
-        },
+        addedCategory: response.data.createCategoryV2.category,
     };
 }
 

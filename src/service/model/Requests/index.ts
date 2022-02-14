@@ -34,6 +34,7 @@ export interface DeleteTranactionRequest {
 // Category
 export interface CreateCategoryRequest {
     name: string;
+    type: CategoryType;
 }
 
 export interface DeleteCategoryRequest {

@@ -185,6 +185,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                     <span>Balance</span>
                 </div>
                 <TextBox
+                    addOn={{ position: "front", text: "฿" }}
                     className="column"
                     name="category-modify"
                     updateValue={accountBalanceHandler}

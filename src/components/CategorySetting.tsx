@@ -4,6 +4,11 @@ import { useRecoilState } from "recoil";
 import { categoriesState, toastState } from "../common/shareState";
 import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
 import { CategoryType } from "../service/constants";
+import {
+    allCategoryTypesString,
+    mapCategoryTypeToString,
+    mapStringToCategoryType,
+} from "../service/helper/categoryHelper";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
@@ -14,8 +19,6 @@ interface ModifyModalProps {
     id: number;
     onCancel: () => void;
 }
-
-const allCategoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TRANSFER"];
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories, setCategories] = useRecoilState(categoriesState);
@@ -52,7 +55,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         setName(value);
     };
     const categoryTypeHandler = (value: string) => {
-        setType(value as CategoryType);
+        setType(mapStringToCategoryType(value));
     };
 
     React.useEffect(() => {
@@ -64,7 +67,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     return (
         <Modal
-            title="Modigy Category"
+            title="Modify Category"
             onCancelHandler={props.onCancel}
             onConfirmHandler={modifyCategory}
             cancelBtnTxt="Cancel"
@@ -86,8 +89,8 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 </div>
                 <Dropdown
                     className="column"
-                    value={type}
-                    options={allCategoryTypes}
+                    value={mapCategoryTypeToString(type)}
+                    options={allCategoryTypesString}
                     updateSelectedValue={categoryTypeHandler}
                 />
             </div>
@@ -102,7 +105,7 @@ const CategorySetting: React.FC = () => {
     const addCategoryHandler = async (name: string, type: string) => {
         const response = await createCategory({
             name,
-            type: type as CategoryType,
+            type: mapStringToCategoryType(type),
         });
 
         if (!response.addedCategory) {
@@ -149,7 +152,7 @@ const CategorySetting: React.FC = () => {
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={allCategoryTypes}
+                dropdowns={allCategoryTypesString}
             />
         </>
     );

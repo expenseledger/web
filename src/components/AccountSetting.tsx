@@ -6,7 +6,11 @@ import { accountsState, categoriesState, toastState } from "../common/shareState
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
 import { AccountType } from "../service/constants";
-import { mapAccountTypeToString, mapStringToAccountType } from "../service/helper/accountHelper";
+import {
+    allAccountTypesString,
+    mapAccountTypeToString,
+    mapStringToAccountType,
+} from "../service/helper/accountHelper";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { addExpense, addIncome } from "../service/transactionService";
 import Dropdown from "./bases/Dropdown";
@@ -18,8 +22,6 @@ interface ModifyModalProps {
     id: number;
     onCancel: () => void;
 }
-
-const allAccountTypes: AccountType[] = ["BANK_ACCOUNT", "CASH", "CREDIT"];
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories] = useRecoilState(categoriesState);
@@ -133,7 +135,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         setName(value);
     };
     const accountTypeHandler = (value: string) => {
-        setType(value as AccountType);
+        setType(mapStringToAccountType(value));
     };
     const accountBalanceHandler = (value: string) => {
         setBalance(Number.parseFloat(value));
@@ -149,7 +151,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     return (
         <Modal
-            title="Modigy Category"
+            title="Modigy Account"
             onCancelHandler={props.onCancel}
             onConfirmHandler={modifyAccount}
             cancelBtnTxt="Cancel"
@@ -171,8 +173,8 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 </div>
                 <Dropdown
                     className="column"
-                    value={type}
-                    options={allAccountTypes}
+                    value={mapAccountTypeToString(type)}
+                    options={allAccountTypesString}
                     updateSelectedValue={accountTypeHandler}
                 />
             </div>
@@ -196,6 +198,7 @@ const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [, setNotificationList] = useRecoilState(toastState);
     const createAccountHandler = async (accountName: string, accountType: string) => {
+        console.log(accountType);
         const response = await createAccount({
             name: accountName,
             type: mapStringToAccountType(accountType),
@@ -247,7 +250,7 @@ const AccountSetting: React.FC = () => {
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={allAccountTypes.map((x) => mapAccountTypeToString(x))}
+                dropdowns={allAccountTypesString}
                 modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
             />
         </>

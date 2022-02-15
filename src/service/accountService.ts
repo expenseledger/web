@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { mapAccountFromServer, mapAccountTypeToString } from "./helper/accountHelper";
+import { mapAccountFromServer } from "./helper/accountHelper";
 import {
     CreateAccountRequest,
     DeleteAccountRequest,
@@ -133,7 +133,7 @@ export async function createAccount(request: CreateAccountRequest): Promise<Crea
         mutation: CREATE_ACCOUNT,
         variables: {
             name: request.name,
-            type: mapAccountTypeToString(request.type, true),
+            type: request.type,
         },
     });
 
@@ -172,13 +172,12 @@ export async function deleteAccount(request: DeleteAccountRequest): Promise<Dele
 }
 
 export async function updateAccount(request: UpdateAccountRequest): Promise<UpdateAccountResponse> {
-    console.log(request);
     const response = await client.mutate({
         mutation: UPDATE_ACCOUNT_BY_ID,
         variables: {
             id: request.id,
             name: request.name,
-            type: mapAccountTypeToString(request.type, true),
+            type: request.type,
         },
     });
 
@@ -191,6 +190,6 @@ export async function updateAccount(request: UpdateAccountRequest): Promise<Upda
     }
 
     return {
-        account: mapAccountFromServer(response.data.createAccount.updateAccount),
+        account: mapAccountFromServer(response.data.updateAccount.account),
     };
 }

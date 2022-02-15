@@ -23,6 +23,7 @@ interface ItemBoxProps {
 }
 
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
+    const [isLoading, setIsLoading] = React.useState(false);
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
     const [isModifyClick, setIsModifyClick] = React.useState(false);
     const onDeleteHandler = () => {
@@ -36,7 +37,11 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
             return;
         }
 
+        setIsLoading(true);
+
         await props.deleteFuncHandler(props.item.id);
+
+        setIsLoading(false);
         setIsClickedDelete(false);
     };
     const onModifyClick = () => {
@@ -60,6 +65,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                     </div>
                     <div className="column">
                         <Button
+                            className={`${isLoading ? "is-loading" : ""}`}
                             onClickHandler={onConfirmHandler}
                             size="small"
                             type="danger"

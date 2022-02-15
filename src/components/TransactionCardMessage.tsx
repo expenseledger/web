@@ -48,7 +48,9 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) =>
                     onCancelHandler={onCancelHandler}
                     onConfirmHandler={onConfirmHandler}
                     cancelBtnTxt="Cancel"
-                    confirmBtnTxt="Delete">
+                    cancelBtnType="default"
+                    confirmBtnTxt="Delete"
+                    confirmBtnType="danger">
                     <div className="has-text-black">Are you sure?</div>
                 </Modal>
             );

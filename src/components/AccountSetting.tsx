@@ -151,11 +151,13 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     return (
         <Modal
-            title="Modigy Account"
+            title="Modify Account"
             onCancelHandler={props.onCancel}
             onConfirmHandler={modifyAccount}
             cancelBtnTxt="Cancel"
-            confirmBtnTxt="Confirm">
+            cancelBtnType="default"
+            confirmBtnTxt="Confirm"
+            confirmBtnType="primary">
             <div className="columns is-mobile is-vcentered">
                 <div className="column is-2">
                     <span>Name</span>

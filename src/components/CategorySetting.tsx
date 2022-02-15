@@ -71,7 +71,9 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             onCancelHandler={props.onCancel}
             onConfirmHandler={modifyCategory}
             cancelBtnTxt="Cancel"
-            confirmBtnTxt="Confirm">
+            cancelBtnType="default"
+            confirmBtnTxt="Confirm"
+            confirmBtnType="primary">
             <div className="columns is-mobile is-vcentered">
                 <div className="column is-2">
                     <span>Name</span>

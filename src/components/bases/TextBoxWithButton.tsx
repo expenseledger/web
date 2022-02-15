@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { combineClassName, useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
 
 interface TextBoxWithButtonProps {
     className?: string;
-    onClick?: (value: string, dropdownValue?: string) => Promise<void> | void;
+    onClick?: (value: string, dropdownValue?: string) => Promise<void>;
     dropdown?: string[];
     name: string;
     placeholder?: string;
@@ -16,8 +16,9 @@ interface TextBoxWithButtonProps {
 }
 
 const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
+    const [isLoading, setIsLoading] = React.useState(false);
     const { bind, value, setValue } = useInput(props.defaultValue ?? "");
-    const [dropdownValue, setDropdownValue] = useState(
+    const [dropdownValue, setDropdownValue] = React.useState(
         props.dropdown && props.dropdown.length !== 0 ? props.dropdown[0] : ""
     );
     const className = combineClassName("field", "has-addons", props.className);
@@ -37,6 +38,18 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
                 </span>
             </div>
         ) : null;
+    const onClickHandler = async () => {
+        if (!props.onClick) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        await props.onClick(value, dropdownValue);
+
+        setIsLoading(false);
+        setValue("");
+    };
 
     React.useEffect(() => {
         props.value && setValue(props.value);
@@ -56,9 +69,10 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
             </div>
             <div className="control">
                 <Button
+                    className={`${isLoading ? "is-loading" : ""}`}
                     type={props.buttonType}
                     value={props.buttonText}
-                    onClickHandler={() => props.onClick && props.onClick(value, dropdownValue)}
+                    onClickHandler={onClickHandler}
                 />
             </div>
         </div>

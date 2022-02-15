@@ -1,20 +1,20 @@
 import { atom, selector } from "recoil";
 import { NotificationProps } from "../components/bases/Notification";
+import Account from "../service/model/Account";
 import Category from "../service/model/Category";
-import Wallet from "../service/model/Wallet";
 
-export const walletsState = atom<Wallet[]>({
-    key: "wallets",
+export const accountsState = atom<Account[]>({
+    key: "accounts",
     default: [],
 });
 
-export const totalWalletsBalanceState = selector<number>({
-    key: "totalWalletsBalance",
+export const totalAccountsBalanceState = selector<number>({
+    key: "totalAccountsBalance",
     get: ({ get }) => {
-        const wallets = get(walletsState);
-        return wallets.length === 0
+        const accounts = get(accountsState);
+        return accounts.length === 0
             ? 0
-            : wallets.map((x) => x.balance).reduce((acc, current) => acc + current) ?? 0;
+            : accounts.map((x) => x.balance).reduce((acc, current) => acc + current) ?? 0;
     },
 });
 

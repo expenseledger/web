@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { categoriesState, toastState, walletsState } from "../common/shareState";
+import { accountsState, categoriesState, toastState } from "../common/shareState";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -17,7 +17,7 @@ import TextBox from "./bases/TextBox";
 import "./Home.scss";
 
 interface CurrentValue {
-    walletIdx: number;
+    accountIdx: number;
     categoryIdx: number;
     amount: number;
     date: string;
@@ -29,12 +29,12 @@ const Icon = styled.span`
 
 const Home: React.FC = () => {
     const initialState = {
-        walletIdx: 0,
+        accountIdx: 0,
         categoryIdx: 0,
         amount: 0,
         date: dayjs().format("YYYY-MM-DD"),
     };
-    const [wallets, setWallets] = useRecoilState(walletsState);
+    const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
     const [, setNotificationList] = useRecoilState(toastState);
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
@@ -48,10 +48,10 @@ const Home: React.FC = () => {
         setCurrentValue(tCurrentValue);
     };
 
-    const updateSelectedWallet = (idx: number) => {
+    const updateSelectedAccount = (idx: number) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.walletIdx = idx;
+        tCurrentValue.accountIdx = idx;
         setCurrentValue(tCurrentValue);
     };
 
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
     };
 
     const addTransaction = async () => {
-        const { walletIdx, amount, date, categoryIdx } = currentValue;
+        const { accountIdx, amount, date, categoryIdx } = currentValue;
         setIsLoading(true);
 
         if (!amount || amount === 0) {
@@ -90,7 +90,7 @@ const Home: React.FC = () => {
         const request: AddExpenseRequest = {
             amount,
             categoryId: categories[categoryIdx]?.id ?? 0,
-            fromAccountId: wallets[walletIdx]?.id ?? 0,
+            fromAccountId: accounts[accountIdx]?.id ?? 0,
             description: "-",
             date,
         };
@@ -98,20 +98,20 @@ const Home: React.FC = () => {
         const response = await addExpense(request);
 
         if (response) {
-            const tWallets = R.clone(wallets);
-            const selectedWalletIdx = wallets.findIndex(
+            const tAccounts = R.clone(accounts);
+            const selectedAccountIdx = accounts.findIndex(
                 (x) => x.name === response.transaction.fromAccount.name
             );
 
-            tWallets[selectedWalletIdx].balance = response.transaction.fromAccount.balance;
-            setWallets(tWallets);
+            tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
+            setAccounts(tAccounts);
             setNotificationList((prev) =>
                 prev.concat(mapNotificationProps("AddExpense sucess", "success"))
             );
 
             setCurrentValue({
                 ...initialState,
-                walletIdx: currentValue.walletIdx,
+                accountIdx: currentValue.accountIdx,
             });
             setIsLoading(false);
             return;
@@ -128,12 +128,12 @@ const Home: React.FC = () => {
     };
 
     const renderAccountCards = () => {
-        const accountCards = wallets.map((x, idx) => (
+        const accountCards = accounts.map((x, idx) => (
             <SwiperSlide key={idx}>
                 <AccountCard
                     key={idx}
                     id={idx}
-                    balance={currentValue.walletIdx === idx ? x.balance : 0}
+                    balance={currentValue.accountIdx === idx ? x.balance : 0}
                     name={x.name}
                 />
             </SwiperSlide>
@@ -146,7 +146,7 @@ const Home: React.FC = () => {
                 pagination={true}
                 slidesPerView={"auto"}
                 centeredSlides={true}
-                onSlideChange={(swipe) => updateSelectedWallet(swipe.realIndex)}>
+                onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}>
                 {accountCards}
             </Swiper>
         );
@@ -163,8 +163,8 @@ const Home: React.FC = () => {
                     <Link
                         className="has-text-weight-bold"
                         to={{
-                            pathname: `wallet/${
-                                wallets[currentValue.walletIdx]?.id ?? 0
+                            pathname: `account/${
+                                accounts[currentValue.accountIdx]?.id ?? 0
                             }/transactionList`,
                         }}>
                         <span>Transactions</span>
@@ -198,7 +198,9 @@ const Home: React.FC = () => {
                 <span className="column is-4 has-text-weight-bold">Category</span>
                 <Dropdown
                     className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
-                    options={categories.map((category) => category.name)}
+                    options={categories
+                        .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
+                        .map((c) => c.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}
                 />

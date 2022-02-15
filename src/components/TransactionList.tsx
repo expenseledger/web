@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { toastState, walletsState } from "../common/shareState";
+import { accountsState, toastState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { mapNotificationProps } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
@@ -32,7 +32,7 @@ export const TransactionList: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>(null);
     const [notificationList, setNotificationList] = useRecoilState(toastState);
     const [isLoading, setIsLoading] = useState(true);
-    const [accounts, setAccounts] = useRecoilState(walletsState);
+    const [accounts, setAccounts] = useRecoilState(accountsState);
     const params = useParams();
     const { accountId } = params;
 

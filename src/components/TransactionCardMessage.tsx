@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { TransactionType } from "../service/constants";
+import Modal from "./bases/Modal";
 
 interface TransactionCardMessageProps {
     amount: string;
@@ -42,28 +43,16 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) =>
     const renderDelete = () => {
         if (isClickedDelete) {
             return (
-                <div className="modal is-active">
-                    <div className="modal-background" onClick={onCancelHandler}></div>
-                    <div className="modal-card">
-                        <header className="modal-card-head">
-                            <p className="modal-card-title">Delete transaction</p>
-                            <button className="delete" onClick={onCancelHandler}></button>
-                        </header>
-                        <section className="modal-card-body has-text-black">Are you sure?</section>
-                        <footer className="modal-card-foot">
-                            <button
-                                className={`button is-danger ${
-                                    isDeleteLoading ? "is-loading" : ""
-                                }`}
-                                onClick={onConfirmHandler}>
-                                Delete
-                            </button>
-                            <button className="button" onClick={onCancelHandler}>
-                                Cancel
-                            </button>
-                        </footer>
-                    </div>
-                </div>
+                <Modal
+                    title="Delete Transaction"
+                    onCancelHandler={onCancelHandler}
+                    onConfirmHandler={onConfirmHandler}
+                    cancelBtnTxt="Cancel"
+                    cancelBtnType="default"
+                    confirmBtnTxt="Delete"
+                    confirmBtnType="danger">
+                    <div className="has-text-black">Are you sure?</div>
+                </Modal>
             );
         }
 

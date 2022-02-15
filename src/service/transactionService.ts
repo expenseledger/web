@@ -1,6 +1,7 @@
 import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
+import { accountFragment } from "./accountService";
 import { categoryFragment } from "./categoryService";
 import { mapTransactionFromServer } from "./helper/transactoinHelper";
 import {
@@ -20,7 +21,6 @@ import {
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import { Transaction } from "./model/Transaction";
-import { accountFragment } from "./walletService";
 
 const transactionFragment = gql`
     fragment PlainTransaction on Transaction {

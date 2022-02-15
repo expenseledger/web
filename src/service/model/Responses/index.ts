@@ -1,6 +1,6 @@
+import Account from "../Account";
 import Category from "../Category";
 import Transaction from "../Transaction";
-import Wallet from "../Wallet";
 
 // Transaction
 export interface AddExpenseResponse {
@@ -33,21 +33,33 @@ export interface DeleteCategoryResponse {
     isSuccess: boolean;
 }
 
-export interface DeleteWalletResponse {
+export interface UpdateCategoryResponse {
+    updatedCategory: Category;
+}
+
+// Account
+
+export interface DeleteAccountResponse {
     isSuccess: boolean;
 }
 
-export interface CreateWalletResponse {
-    wallet: Wallet;
+export interface CreateAccountResponse {
+    account: Account;
 }
 
-export interface GetAllWalletResponse {
-    wallets: Wallet[];
+export interface GetAllAccountResponse {
+    accounts: Account[];
 }
 
-export interface GetWalletResponse {
-    wallet: Wallet;
+export interface GetAccountResponse {
+    account: Account;
 }
+
+export interface UpdateAccountResponse {
+    account: Account;
+}
+
+// Transaction
 
 export interface GetTransactionMonthYearListResponse {
     monthYears: string[];

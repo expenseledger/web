@@ -1,4 +1,5 @@
-import { WalletType } from "../../constants";
+import { AccountType } from "../../constants";
+import { CategoryType } from "./../../constants";
 
 // Transaction
 interface AddTransactionRequest {
@@ -33,25 +34,39 @@ export interface DeleteTranactionRequest {
 // Category
 export interface CreateCategoryRequest {
     name: string;
+    type: CategoryType;
 }
 
 export interface DeleteCategoryRequest {
     id: number;
 }
-
-// Wallet
-export interface CreateWalletRequest {
+export interface UpdateCategoryRequest {
+    id: number;
     name: string;
-    type: WalletType;
+    type: CategoryType;
 }
 
-export interface GetWalletRequest {
+// Account
+export interface CreateAccountRequest {
+    name: string;
+    type: AccountType;
+}
+
+export interface GetAccountRequest {
     id: number;
 }
 
-export interface DeleteWalletRequest {
+export interface DeleteAccountRequest {
     id: number;
 }
+
+export interface UpdateAccountRequest {
+    id: number;
+    name: string;
+    type: AccountType;
+}
+
+// Transaction
 
 export interface GetTransactionMonthYearListRequest {
     accountId: number;

@@ -2,7 +2,7 @@ interface AddTransactionDto {
     amount: number;
     date: Date;
     note: string;
-    wallet: string;
+    account: string;
     [key: string]: string | number | Date;
 }
 

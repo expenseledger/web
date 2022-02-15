@@ -1,9 +1,9 @@
+import Account from "./Account";
 import Category from "./Category";
-import Wallet from "./Wallet";
 
 interface User {
     categories: Category[];
-    wallets: Wallet[];
+    accounts: Account[];
 }
 
 export default User;

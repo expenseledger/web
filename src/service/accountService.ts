@@ -1,0 +1,195 @@
+import { gql } from "@apollo/client";
+import { log } from "../common/utils";
+import client from "../lib/apollo";
+import { mapAccountFromServer } from "./helper/accountHelper";
+import {
+    CreateAccountRequest,
+    DeleteAccountRequest,
+    GetAccountRequest,
+    UpdateAccountRequest,
+} from "./model/Requests/index";
+import {
+    CreateAccountResponse,
+    DeleteAccountResponse,
+    GetAccountResponse,
+    GetAllAccountResponse,
+    UpdateAccountResponse,
+} from "./model/Responses/index";
+
+const GET_ALL_ACCOUNTS = gql`
+    query GetAllAccounts {
+        accounts {
+            nodes {
+                id
+                balance
+                name
+                type
+            }
+        }
+    }
+`;
+
+const GET_ACCOUNT_BY_ID = gql`
+    query GetAccountById($id: Int!) {
+        getAccount(id: $id) {
+            id
+            name
+            balance
+            type
+        }
+    }
+`;
+
+const CREATE_ACCOUNT = gql`
+    mutation CreateAccount($name: String!, $type: AccountType!) {
+        createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
+
+const DELETE_ACCOUNT_BY_ID = gql`
+    mutation DeleteAccount($id: Int!) {
+        closeAccount(input: { id: $id }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
+
+const UPDATE_ACCOUNT_BY_ID = gql`
+    mutation UpdateAccount($id: Int!, $name: String!, $type: AccountType!) {
+        updateAccount(input: { id: $id, name: $name, type: $type }) {
+            account {
+                balance
+                id
+                name
+                type
+            }
+        }
+    }
+`;
+
+export const accountFragment = gql`
+    fragment PlainAccount on Account {
+        id
+        name
+        type
+        balance
+    }
+`;
+
+export async function getAllAccount(): Promise<GetAllAccountResponse> {
+    const response = await client.query({
+        query: GET_ALL_ACCOUNTS,
+    });
+
+    if (response.errors) {
+        log("Cannot get all accounts.", response.errors);
+        return {
+            accounts: [],
+        };
+    }
+
+    const toReturn = response.data.accounts.nodes.map(mapAccountFromServer);
+
+    return {
+        accounts: toReturn,
+    };
+}
+
+export async function getAccount(request: GetAccountRequest): Promise<GetAccountResponse> {
+    const response = await client.query({
+        query: GET_ACCOUNT_BY_ID,
+        variables: {
+            id: request.id,
+        },
+    });
+
+    if (response.errors) {
+        log(`Cannet get account by id: ${request.id}`, response.errors);
+
+        return {
+            account: null,
+        };
+    }
+
+    return {
+        account: mapAccountFromServer(response.data.getAccount),
+    };
+}
+
+export async function createAccount(request: CreateAccountRequest): Promise<CreateAccountResponse> {
+    const response = await client.mutate({
+        mutation: CREATE_ACCOUNT,
+        variables: {
+            name: request.name,
+            type: request.type,
+        },
+    });
+
+    if (response.errors) {
+        log(`Cannot create account`, response.errors);
+
+        return {
+            account: null,
+        };
+    }
+
+    return {
+        account: mapAccountFromServer(response.data.createAccount.account),
+    };
+}
+
+export async function deleteAccount(request: DeleteAccountRequest): Promise<DeleteAccountResponse> {
+    const response = await client.mutate({
+        mutation: DELETE_ACCOUNT_BY_ID,
+        variables: {
+            id: request.id,
+        },
+    });
+
+    if (response.errors) {
+        log(`Cannot delete account id: ${request.id}`, response.errors);
+
+        return {
+            isSuccess: false,
+        };
+    }
+
+    return {
+        isSuccess: true,
+    };
+}
+
+export async function updateAccount(request: UpdateAccountRequest): Promise<UpdateAccountResponse> {
+    const response = await client.mutate({
+        mutation: UPDATE_ACCOUNT_BY_ID,
+        variables: {
+            id: request.id,
+            name: request.name,
+            type: request.type,
+        },
+    });
+
+    if (response.errors) {
+        log(`Cannot update account`, response.errors);
+
+        return {
+            account: null,
+        };
+    }
+
+    return {
+        account: mapAccountFromServer(response.data.updateAccount.account),
+    };
+}

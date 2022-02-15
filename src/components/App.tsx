@@ -4,12 +4,12 @@ import Loading from "../components/bases/Loading";
 import { AuthProtection } from "./hoc/WithAuthProtection";
 
 const TransactionList = React.lazy(() => import("./TransactionList"));
-const Home = React.lazy(() => import("../components/Home"));
+const Home = React.lazy(() => import("./Home"));
 const More = React.lazy(() => import("../components/More"));
 const SignIn = React.lazy(() => import("../components/SignIn"));
 const Layout = React.lazy(() => import("../components/Layout"));
 const CategorySetting = React.lazy(() => import("../components/CategorySetting"));
-const WalletSetting = React.lazy(() => import("../components/WalletSetting"));
+const AccountSetting = React.lazy(() => import("./AccountSetting"));
 
 const App: React.FC = () => {
     return (
@@ -18,55 +18,20 @@ const App: React.FC = () => {
                 <Routes>
                     <Route path="/signIn" element={<SignIn />} />
                     <Route
-                        path="/"
                         element={
                             <AuthProtection>
-                                <Layout>
-                                    <Home />
-                                </Layout>
+                                <Layout />
                             </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/wallet/:accountId/transactionList"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <TransactionList />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/more"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <More />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/category/setting"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <CategorySetting />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
-                    <Route
-                        path="/wallet/setting"
-                        element={
-                            <AuthProtection>
-                                <Layout>
-                                    <WalletSetting />
-                                </Layout>
-                            </AuthProtection>
-                        }
-                    />
+                        }>
+                        <Route path="/" element={<Home />} />
+                        <Route
+                            path="/account/:accountId/transactionList"
+                            element={<TransactionList />}
+                        />
+                        <Route path="/more" element={<More />} />
+                        <Route path="/category/setting" element={<CategorySetting />} />
+                        <Route path="/account/setting" element={<AccountSetting />} />
+                    </Route>
                 </Routes>
             </React.Suspense>
         </Router>

@@ -1,16 +1,23 @@
 import { gql } from "@apollo/client";
 import { extractGraphQLErrors, log } from "../common/utils";
 import client from "../lib/apollo";
+import { CategoryType } from "./constants";
 import Category from "./model/Category";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
-import { CreateCategoryResponse, DeleteCategoryResponse } from "./model/Responses/index";
+import { UpdateCategoryRequest } from "./model/Requests/index";
+import {
+    CreateCategoryResponse,
+    DeleteCategoryResponse,
+    UpdateCategoryResponse,
+} from "./model/Responses/index";
 
 const CREATE_CATEGORY = gql`
-    mutation CreateCategory($name: String!) {
-        createCategory(input: { name: $name }) {
+    mutation CreateCategory($name: String!, $type: CategoryType!) {
+        createCategoryV2(input: { name: $name, type: $type }) {
             category {
                 id
                 name
+                type
             }
         }
     }
@@ -24,8 +31,20 @@ const DELETE_CATEGORY = gql`
                     nodes {
                         id
                         name
+                        type
                     }
                 }
+            }
+        }
+    }
+`;
+const UPDATE_CATEGORY = gql`
+    mutation UpdateCategory($id: Int!, $name: String!, $type: CategoryType!) {
+        updateCategory(input: { id: $id, name: $name, type: $type }) {
+            category {
+                id
+                name
+                type
             }
         }
     }
@@ -37,6 +56,7 @@ const GET_ALL_CATEGORIES = gql`
             nodes {
                 id
                 name
+                type
             }
         }
     }
@@ -46,6 +66,7 @@ export const categoryFragment = gql`
     fragment PlainCategory on Category {
         id
         name
+        type
     }
 `;
 
@@ -72,6 +93,7 @@ export async function createCategory(
         mutation: CREATE_CATEGORY,
         variables: {
             name: request.name,
+            type: request.type,
         },
     });
 
@@ -84,10 +106,7 @@ export async function createCategory(
     }
 
     return {
-        addedCategory: {
-            id: response.data.createCategory.category.id,
-            name: response.data.createCategory.category.name,
-        },
+        addedCategory: response.data.createCategoryV2.category,
     };
 }
 
@@ -111,5 +130,34 @@ export async function deleteCategory(
 
     return {
         isSuccess: true,
+    };
+}
+
+export async function updateCategory(
+    request: UpdateCategoryRequest
+): Promise<UpdateCategoryResponse> {
+    const response = await client.mutate({
+        mutation: UPDATE_CATEGORY,
+        variables: {
+            id: request.id,
+            name: request.name,
+            type: request.type,
+        },
+    });
+
+    if (response.errors) {
+        log("Cannot update category", response.errors);
+
+        return {
+            updatedCategory: null,
+        };
+    }
+
+    return {
+        updatedCategory: {
+            id: response.data.updateCategory.category.id,
+            name: response.data.updateCategory.category.name,
+            type: response.data.updateCategory.category.type as CategoryType,
+        },
     };
 }

@@ -12,7 +12,7 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import "./Layout.scss";
 
-const Layout: React.FC = (props) => {
+const Layout: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [, setCategories] = useRecoilState(categoriesState);
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);

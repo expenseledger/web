@@ -198,7 +198,9 @@ const Home: React.FC = () => {
                 <span className="column is-4 has-text-weight-bold">Category</span>
                 <Dropdown
                     className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
-                    options={categories.map((category) => category.name)}
+                    options={categories
+                        .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
+                        .map((c) => c.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}
                 />

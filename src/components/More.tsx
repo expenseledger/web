@@ -2,10 +2,10 @@ import * as R from "ramda";
 import React from "react";
 import { useLocation } from "react-router";
 import { useRecoilState } from "recoil";
-import { accountsState, categoriesState, toastState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { formatNumber } from "../common/utils";
 import { TransactionType } from "../service/constants";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
 import { addExpense, addIncome, addTransfer } from "../service/transactionService";
@@ -35,7 +35,7 @@ interface HomeProps {
 const More: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const locatoin = useLocation();
     const homeProps = locatoin.state as HomeProps;
@@ -113,15 +113,11 @@ const More: React.FC = () => {
 
     const validateAmount = (amount: number) => {
         if (!amount || amount === 0) {
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("Please add amount", "danger"))
-            );
+            addNotification("Please add amount", "danger");
 
             return false;
         } else if (!amount || amount < 0) {
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("Amount should be more than 0", "danger"))
-            );
+            addNotification("Amount should be more than 0", "danger");
 
             return false;
         }
@@ -130,11 +126,7 @@ const More: React.FC = () => {
     };
     const validateTransferAccount = (fromAcccountId: number, toAccountId: number) => {
         if (fromAcccountId === toAccountId) {
-            setNotificationList((prev) =>
-                prev.concat(
-                    mapNotificationProps("Please select different destination account", "danger")
-                )
-            );
+            addNotification("Please select different destination account", "danger");
 
             return false;
         }
@@ -170,16 +162,12 @@ const More: React.FC = () => {
 
             tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
             setAccounts(tAccounts);
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("AddExpense sucess", "success"))
-            );
+            addNotification("AddExpense sucess", "success");
 
             return true;
         }
 
-        setNotificationList((prev) =>
-            prev.concat(mapNotificationProps("AddExpense failed", "danger"))
-        );
+        addNotification("AddExpense failed", "danger");
 
         return false;
     };
@@ -212,16 +200,12 @@ const More: React.FC = () => {
 
             tAccounts[selectedAccountIdx].balance = response.transaction.toAccount.balance;
             setAccounts(tAccounts);
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("AddIncome sucess", "success"))
-            );
+            addNotification("AddIncome sucess", "success");
 
             return true;
         }
 
-        setNotificationList((prev) =>
-            prev.concat(mapNotificationProps("AddIncome failed", "danger"))
-        );
+        addNotification("AddIncome failed", "danger");
 
         return false;
     };
@@ -262,16 +246,12 @@ const More: React.FC = () => {
             tAccounts[toAccountIdx].balance = response.transaction.toAccount.balance;
 
             setAccounts(tAccounts);
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("AddTransfer success", "success"))
-            );
+            addNotification("AddTransfer success", "success");
 
             return true;
         }
 
-        setNotificationList((prev) =>
-            prev.concat(mapNotificationProps("AddTransfer failed", "danger"))
-        );
+        addNotification("AddTransfer failed", "danger");
 
         return false;
     };

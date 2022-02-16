@@ -5,15 +5,16 @@ import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, toastState } from "../common/shareState";
+import { accountsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
     getTransactionMonthYearList,
     listTransactions,
 } from "../service/transactionService";
+import AmountTxt from "./bases/AmountTxt";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -30,7 +31,7 @@ export const TransactionList: React.FC = () => {
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>(null);
     const [transactions, setTransactions] = useState<Transaction[]>(null);
-    const [notificationList, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const params = useParams();
@@ -62,15 +63,11 @@ export const TransactionList: React.FC = () => {
         });
 
         if (!response.isSuccess) {
-            setNotificationList(
-                notificationList.concat(mapNotificationProps("Delete transaction failed", "danger"))
-            );
+            addNotification("Delete transaction failed", "danger");
             return;
         }
 
-        setNotificationList(
-            notificationList.concat(mapNotificationProps("Delete transaction succes", "success"))
-        );
+        addNotification("Delete transaction succes", "success");
 
         const updatedAccounts = accounts.map((ac) => {
             if (ac.id === Number.parseInt(accountId)) {
@@ -88,22 +85,21 @@ export const TransactionList: React.FC = () => {
         setTransactions(transactions.filter((x) => x.id !== id));
         setAccounts(updatedAccounts);
     };
-
-    const getCards = () => {
+    const getAmount = (tx: Transaction) => {
+        switch (tx.type) {
+            case "EXPENSE":
+                return -tx.amount;
+            case "TRANSFER":
+                return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
+            case "INCOME":
+            default:
+                return tx.amount;
+        }
+    };
+    const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
         transactions.forEach((x) => dateSet.add(x.date.toString()));
-        const getAmount = (tx: Transaction) => {
-            switch (tx.type) {
-                case "EXPENSE":
-                    return -tx.amount;
-                case "TRANSFER":
-                    return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
-                case "INCOME":
-                default:
-                    return tx.amount;
-            }
-        };
 
         dateSet.forEach((x, idx) =>
             toReturn.push(
@@ -127,14 +123,26 @@ export const TransactionList: React.FC = () => {
 
         return toReturn;
     };
-    const renderCards = () => {
-        const cards = getCards();
+    const renderTransactionCards = () => {
+        const cards = getTransactionCards();
 
         if (cards.length > 0) {
             return <>{cards}</>;
         }
 
         return <NoData className="notification is-danger">No data</NoData>;
+    };
+    const renderSummaryCard = () => {
+        const totalAmount = transactions.map(getAmount).reduce((prev, cur) => prev + cur, 0);
+
+        return (
+            <div className="box">
+                <div className="is-flex is-flex-direction-row is-justify-content-space-between">
+                    <div className="has-text-weight-bold">Total</div>
+                    <AmountTxt amount={totalAmount} />
+                </div>
+            </div>
+        );
     };
 
     const renderMonthYear = () => {
@@ -162,7 +170,8 @@ export const TransactionList: React.FC = () => {
     ) : (
         <div className="mb-5">
             {renderMonthYear()}
-            {renderCards()}
+            {renderSummaryCard()}
+            {renderTransactionCards()}
         </div>
     );
 };

@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
 import { TransactionType } from "../service/constants";
+import AmountTxt from "./bases/AmountTxt";
+import MessageBox from "./bases/MessageBox";
 import Modal from "./bases/Modal";
 
 interface TransactionCardMessageProps {
-    amount: string;
+    amount: number;
     type: TransactionType;
     category: string;
     description?: string;
@@ -15,10 +17,6 @@ const DeleteBox = styled.div`
     position: absolute;
     right: 5px;
     top: 5px;
-`;
-
-const MessageBox = styled.div`
-    position: relative;
 `;
 
 const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) => {
@@ -66,31 +64,31 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) =>
     };
 
     return (
-        <article className={`message ${props.amount.startsWith("-") ? "is-dark" : "is-success"}`}>
-            <MessageBox className="message-body">
-                {renderDelete()}
-                <div className="columns is-mobile is-gapless is-multiline">
-                    <div className="column is-half">
-                        <span className="has-text-weight-bold">Type:</span>
-                    </div>
-                    <div className="column is-half">{props.type}</div>
-                    <div className="column is-half">
-                        <span className="has-text-weight-bold">Amount:</span>
-                    </div>
-                    <div className="column is-half">฿ {props.amount}</div>
-                    <div className="column is-half">
-                        <span className="has-text-weight-bold">Category:</span>
-                    </div>
-                    <div className="column is-half">{props.category}</div>
-                    <div className="column is-half">
-                        <span className="has-text-weight-bold">Description:</span>
-                    </div>
-                    <div className="column is-half">
-                        {!props.description || props.description === "" ? "-" : props.description}
-                    </div>
+        <MessageBox type={props.amount < 0 ? "dark" : "success"}>
+            {renderDelete()}
+            <div className="columns is-mobile is-gapless is-multiline">
+                <div className="column is-half">
+                    <span className="has-text-weight-bold">Type:</span>
                 </div>
-            </MessageBox>
-        </article>
+                <div className="column is-half">{props.type}</div>
+                <div className="column is-half">
+                    <span className="has-text-weight-bold">Amount:</span>
+                </div>
+                <div className="column is-half">
+                    <AmountTxt amount={props.amount} />
+                </div>
+                <div className="column is-half">
+                    <span className="has-text-weight-bold">Category:</span>
+                </div>
+                <div className="column is-half">{props.category}</div>
+                <div className="column is-half">
+                    <span className="has-text-weight-bold">Description:</span>
+                </div>
+                <div className="column is-half">
+                    {!props.description || props.description === "" ? "-" : props.description}
+                </div>
+            </div>
+        </MessageBox>
     );
 };
 

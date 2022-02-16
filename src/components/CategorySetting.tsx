@@ -1,7 +1,7 @@
 import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { categoriesState, toastState } from "../common/shareState";
+import { categoriesState } from "../common/shareState";
 import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
 import { CategoryType } from "../service/constants";
 import {
@@ -9,7 +9,7 @@ import {
     mapCategoryTypeToString,
     mapStringToCategoryType,
 } from "../service/helper/categoryHelper";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
 import SettingBox from "./bases/SettingBox";
@@ -22,7 +22,7 @@ interface ModifyModalProps {
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories, setCategories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
     const [type, setType] = React.useState<CategoryType>("ANY");
     const modifyCategory = async () => {
@@ -40,13 +40,9 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             tCategories[idx].type = response.updatedCategory.type;
 
             setCategories(tCategories);
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Update category success", "success"))
-            );
+            addNotification("Update category success", "success");
         } else {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Update category failed", "danger"))
-            );
+            addNotification("Update category failed", "danger");
         }
 
         props.onCancel();
@@ -102,7 +98,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
 
     const addCategoryHandler = async (name: string, type: string) => {
         const response = await createCategory({
@@ -111,9 +107,7 @@ const CategorySetting: React.FC = () => {
         });
 
         if (!response.addedCategory) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Create category failed", "danger"))
-            );
+            addNotification("Create category failed", "danger");
 
             return;
         }
@@ -121,18 +115,14 @@ const CategorySetting: React.FC = () => {
         const newCategories = categories.concat(response.addedCategory);
 
         setCategories(newCategories);
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(mapNotificationProps("Create category successful", "success"))
-        );
+        addNotification("Create category successful", "success");
     };
 
     const removeCategoryHandler = async (id: string | number) => {
         const response = await deleteCategory({ id: id as number });
 
         if (!response.isSuccess) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Delete category failed", "danger"))
-            );
+            addNotification("Delete category failed", "danger");
 
             return;
         }
@@ -140,9 +130,7 @@ const CategorySetting: React.FC = () => {
         const newCategories = categories.filter((x) => x.id !== id);
 
         setCategories(newCategories);
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(mapNotificationProps("Delete category successful", "success"))
-        );
+        addNotification("Delete category successful", "success");
     };
 
     return (

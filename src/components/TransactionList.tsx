@@ -138,7 +138,7 @@ export const TransactionList: React.FC = () => {
         return (
             <div className="box">
                 <div className="is-flex is-flex-direction-row is-justify-content-space-between">
-                    <div>Total</div>
+                    <div className="has-text-weight-bold">Total</div>
                     <AmountTxt amount={totalAmount} />
                 </div>
             </div>

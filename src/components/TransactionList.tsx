@@ -14,6 +14,7 @@ import {
     getTransactionMonthYearList,
     listTransactions,
 } from "../service/transactionService";
+import AmountTxt from "./bases/AmountTxt";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -88,22 +89,21 @@ export const TransactionList: React.FC = () => {
         setTransactions(transactions.filter((x) => x.id !== id));
         setAccounts(updatedAccounts);
     };
-
-    const getCards = () => {
+    const getAmount = (tx: Transaction) => {
+        switch (tx.type) {
+            case "EXPENSE":
+                return -tx.amount;
+            case "TRANSFER":
+                return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
+            case "INCOME":
+            default:
+                return tx.amount;
+        }
+    };
+    const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
         transactions.forEach((x) => dateSet.add(x.date.toString()));
-        const getAmount = (tx: Transaction) => {
-            switch (tx.type) {
-                case "EXPENSE":
-                    return -tx.amount;
-                case "TRANSFER":
-                    return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
-                case "INCOME":
-                default:
-                    return tx.amount;
-            }
-        };
 
         dateSet.forEach((x, idx) =>
             toReturn.push(
@@ -127,14 +127,26 @@ export const TransactionList: React.FC = () => {
 
         return toReturn;
     };
-    const renderCards = () => {
-        const cards = getCards();
+    const renderTransactionCards = () => {
+        const cards = getTransactionCards();
 
         if (cards.length > 0) {
             return <>{cards}</>;
         }
 
         return <NoData className="notification is-danger">No data</NoData>;
+    };
+    const renderSummaryCard = () => {
+        const totalAmount = transactions.map(getAmount).reduce((prev, cur) => prev + cur, 0);
+
+        return (
+            <div className="box">
+                <div className="is-flex is-flex-direction-row is-justify-content-space-between">
+                    <div>Total</div>
+                    <AmountTxt amount={totalAmount} />
+                </div>
+            </div>
+        );
     };
 
     const renderMonthYear = () => {
@@ -162,7 +174,8 @@ export const TransactionList: React.FC = () => {
     ) : (
         <div className="mb-5">
             {renderMonthYear()}
-            {renderCards()}
+            {renderSummaryCard()}
+            {renderTransactionCards()}
         </div>
     );
 };

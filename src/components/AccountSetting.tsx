@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { accountsState, categoriesState, toastState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
 import { AccountType } from "../service/constants";
@@ -11,7 +11,7 @@ import {
     mapAccountTypeToString,
     mapStringToAccountType,
 } from "../service/helper/accountHelper";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 import { addExpense, addIncome } from "../service/transactionService";
 import Dropdown from "./bases/Dropdown";
 import Modal from "./bases/Modal";
@@ -26,7 +26,7 @@ interface ModifyModalProps {
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories] = useRecoilState(categoriesState);
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
     const [balance, setBalance] = React.useState(0);
     const [type, setType] = React.useState<AccountType>("CASH");
@@ -40,11 +40,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             });
 
             if (!response.addedCategory) {
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(
-                        mapNotificationProps("Create Other category failed", "danger")
-                    )
-                );
+                addNotification("Create Other category failed", "danger");
                 return;
             }
 
@@ -64,9 +60,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         });
 
         if (!response.account) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
-            );
+            addNotification("Update account failed", "danger");
 
             return;
         }
@@ -89,13 +83,9 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 tAccounts[idx].type = type;
 
                 setAccounts(tAccounts);
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update account success", "success"))
-                );
+                addNotification("Update account success", "success");
             } else {
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
-                );
+                addNotification("Update account failed", "danger");
             }
         } else if (balance > account.balance) {
             const response = await addIncome({
@@ -115,18 +105,12 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 tAccounts[idx].type = type;
 
                 setAccounts(tAccounts);
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update account success", "success"))
-                );
+                addNotification("Update account success", "success");
             } else {
-                setNotificationList((prevNotiList) =>
-                    prevNotiList.concat(mapNotificationProps("Update account failed", "danger"))
-                );
+                addNotification("Update account failed", "danger");
             }
         } else {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Update account success", "success"))
-            );
+            addNotification("Update account success", "success");
         }
 
         props.onCancel();
@@ -199,7 +183,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const createAccountHandler = async (accountName: string, accountType: string) => {
         console.log(accountType);
         const response = await createAccount({
@@ -208,9 +192,7 @@ const AccountSetting: React.FC = () => {
         });
 
         if (!response.account) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Create account failed", "danger"))
-            );
+            addNotification("Create account failed", "danger");
             return;
         }
 
@@ -222,9 +204,7 @@ const AccountSetting: React.FC = () => {
                 balance: response.account.balance,
             })
         );
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(mapNotificationProps("Create account success", "success"))
-        );
+        addNotification("Create account success", "success");
     };
 
     const deleteAccountHandler = async (id: string | number) => {
@@ -233,16 +213,12 @@ const AccountSetting: React.FC = () => {
         });
 
         if (!isSuccess) {
-            setNotificationList((prevNotiList) =>
-                prevNotiList.concat(mapNotificationProps("Delete account failed", "danger"))
-            );
+            addNotification("Delete account failed", "danger");
             return;
         }
 
         setAccounts(accounts.filter((x) => x.id !== id));
-        setNotificationList((prevNotiList) =>
-            prevNotiList.concat(mapNotificationProps("Delete account success", "success"))
-        );
+        addNotification("Delete account success", "success");
     };
 
     return (

@@ -5,9 +5,9 @@ import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, toastState } from "../common/shareState";
+import { accountsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 import { Transaction } from "../service/model/Transaction";
 import {
     deleteTransaction,
@@ -31,7 +31,7 @@ export const TransactionList: React.FC = () => {
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>(null);
     const [transactions, setTransactions] = useState<Transaction[]>(null);
-    const [notificationList, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const params = useParams();
@@ -63,15 +63,11 @@ export const TransactionList: React.FC = () => {
         });
 
         if (!response.isSuccess) {
-            setNotificationList(
-                notificationList.concat(mapNotificationProps("Delete transaction failed", "danger"))
-            );
+            addNotification("Delete transaction failed", "danger");
             return;
         }
 
-        setNotificationList(
-            notificationList.concat(mapNotificationProps("Delete transaction succes", "success"))
-        );
+        addNotification("Delete transaction succes", "success");
 
         const updatedAccounts = accounts.map((ac) => {
             if (ac.id === Number.parseInt(accountId)) {

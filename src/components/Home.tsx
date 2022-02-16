@@ -5,8 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, categoriesState, toastState } from "../common/shareState";
-import { mapNotificationProps } from "../service/helper/notificationHelper";
+import { accountsState, categoriesState } from "../common/shareState";
+import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
 import AccountCard from "./AccountCard";
@@ -36,7 +36,7 @@ const Home: React.FC = () => {
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
-    const [, setNotificationList] = useRecoilState(toastState);
+    const { addNotification } = useNotification();
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
@@ -74,15 +74,11 @@ const Home: React.FC = () => {
         setIsLoading(true);
 
         if (!amount || amount === 0) {
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("Please add amount", "danger"))
-            );
+            addNotification("Please add amount", "danger");
             setIsLoading(false);
             return;
         } else if (!amount || amount < 0) {
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("Amount should be more than 0", "danger"))
-            );
+            addNotification("Amount should be more than 0", "danger");
             setIsLoading(false);
             return;
         }
@@ -105,9 +101,7 @@ const Home: React.FC = () => {
 
             tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
             setAccounts(tAccounts);
-            setNotificationList((prev) =>
-                prev.concat(mapNotificationProps("AddExpense sucess", "success"))
-            );
+            addNotification("AddExpense sucess", "success");
 
             setCurrentValue({
                 ...initialState,
@@ -117,9 +111,7 @@ const Home: React.FC = () => {
             return;
         }
 
-        setNotificationList((prev) =>
-            prev.concat(mapNotificationProps("AddExpense is failed", "danger"))
-        );
+        addNotification("AddExpense is failed", "danger");
         setIsLoading(false);
     };
 

@@ -266,20 +266,6 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
             toAccountId: request.toAccountId,
             occurredAt: request.date,
         },
-        refetchQueries: [
-            {
-                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-                variables: {
-                    accountId: request.toAccountId,
-                },
-            },
-            {
-                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
-                variables: {
-                    accountId: request.toAccountId,
-                },
-            },
-        ],
     });
 
     if (response.errors) {
@@ -303,20 +289,6 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
             toAccountId: request.toAccountId,
             occurredAt: request.date,
         },
-        refetchQueries: [
-            {
-                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-                variables: {
-                    accountId: request.fromAccountId,
-                },
-            },
-            {
-                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
-                variables: {
-                    accountId: request.toAccountId,
-                },
-            },
-        ],
     });
 
     if (response.errors) {
@@ -341,6 +313,7 @@ export async function listTransactions(
                 from: request.from,
                 until: request.until,
             },
+            fetchPolicy: request.useCache ? "cache-first" : "network-only",
         }),
         client.query({
             query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
@@ -349,6 +322,7 @@ export async function listTransactions(
                 from: request.from,
                 until: request.until,
             },
+            fetchPolicy: request.useCache ? "cache-first" : "network-only",
         }),
     ]);
     const result = {

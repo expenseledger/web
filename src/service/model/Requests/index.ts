@@ -25,6 +25,7 @@ export interface ListTransactionsRequest {
     accountId: number;
     from: Date;
     until: Date;
+    useCache?: boolean;
 }
 
 export interface DeleteTranactionRequest {

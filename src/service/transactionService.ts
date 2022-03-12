@@ -229,20 +229,6 @@ export async function addExpense(request: AddExpenseRequest): Promise<AddExpense
             fromAccountId: request.fromAccountId,
             occurredAt: request.date,
         },
-        refetchQueries: [
-            {
-                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-                variables: {
-                    accountId: request.fromAccountId,
-                },
-            },
-            {
-                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
-                variables: {
-                    accountId: request.fromAccountId,
-                },
-            },
-        ],
     });
 
     if (response.errors) {

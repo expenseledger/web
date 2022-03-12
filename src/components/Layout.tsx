@@ -94,7 +94,9 @@ const Layout: React.FC = () => {
                 </div>
             </div>
             <div className="container is-mobile is-fluid mt-4">
-                <Outlet />
+                <React.Suspense fallback={<Loading />}>
+                    <Outlet />
+                </React.Suspense>
             </div>
             <Toast position="top-right" />
         </>

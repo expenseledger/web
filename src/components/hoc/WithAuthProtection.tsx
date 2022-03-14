@@ -1,6 +1,8 @@
 import { onAuthStateChanged } from "firebase/auth";
 import React from "react";
 import { useNavigate } from "react-router";
+import { useRecoilState } from "recoil";
+import { IsSignInState } from "../../common/shareState";
 import { auth } from "../../lib/firebase";
 import Loading from "../bases/Loading";
 
@@ -50,4 +52,29 @@ export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
     }, [navigate, props.isTest, props.redirectPath]);
 
     return isSignin || props.isTest ? <>{props.children}</> : <Loading />;
+};
+
+export const useSignIn = (
+    redirectPath = "/signIn"
+): { isSignIn: boolean; redirect: () => void } => {
+    const [isSignIn, setIsSignin] = useRecoilState(IsSignInState);
+    const navigate = useNavigate();
+    const redirect = () => {
+        if (isSignIn) {
+            return;
+        }
+
+        navigate(redirectPath);
+    };
+
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (user) => {
+            setIsSignin(!!user);
+        });
+    }, [setIsSignin]);
+
+    return {
+        isSignIn,
+        redirect,
+    };
 };

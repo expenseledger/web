@@ -10,6 +10,7 @@ import { getUserData } from "../service/userService";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
+import { useSignIn } from "./hoc/WithAuthProtection";
 import "./Layout.scss";
 
 const Layout: React.FC = () => {
@@ -17,6 +18,7 @@ const Layout: React.FC = () => {
     const [, setCategories] = useRecoilState(categoriesState);
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
+    const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
 
     const renderBurgerMenuContent = (accounts: Account[]) => {
         return (
@@ -63,6 +65,11 @@ const Layout: React.FC = () => {
     };
 
     React.useEffect(() => {
+        if (!isSignInLoading && !isSignIn) {
+            redirectToSignIn();
+            return;
+        }
+
         getUserData()
             .then(({ categories, accounts }) => {
                 setCategories(categories);
@@ -70,9 +77,7 @@ const Layout: React.FC = () => {
                 setIsLoading(false);
             })
             .catch((err) => log(err));
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [isSignIn, isSignInLoading, redirectToSignIn, setAccounts, setCategories]);
 
     return isLoading ? (
         <Loading />

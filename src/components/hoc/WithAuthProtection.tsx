@@ -1,5 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
 import { IsSignInState } from "../../common/shareState";
@@ -19,7 +19,6 @@ export const withAuthProtection = (WrappedComponent: any) =>
         const navigate = useNavigate();
 
         React.useEffect(() => {
-            console.log(isSignin);
             if (props.isTest) {
                 return;
             }
@@ -54,27 +53,38 @@ export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
     return isSignin || props.isTest ? <>{props.children}</> : <Loading />;
 };
 
-export const useSignIn = (
-    redirectPath = "/signIn"
-): { isSignIn: boolean; redirect: () => void } => {
+export const useSignIn = (): {
+    isSignIn: boolean;
+    redirectToSignIn: () => void;
+    isSignInLoading: boolean;
+} => {
     const [isSignIn, setIsSignin] = useRecoilState(IsSignInState);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
-    const redirect = () => {
+    const redirectToSignIn = React.useCallback(() => {
         if (isSignIn) {
             return;
         }
 
-        navigate(redirectPath);
-    };
+        navigate("/signIn");
+    }, [isSignIn, navigate]);
 
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
             setIsSignin(!!user);
+            setIsLoading(false);
         });
+
+        const loadingTimeout = setTimeout(() => setIsLoading(false), 1000);
+
+        return () => {
+            clearTimeout(loadingTimeout);
+        };
     }, [setIsSignin]);
 
     return {
         isSignIn,
-        redirect,
+        redirectToSignIn,
+        isSignInLoading: isLoading,
     };
 };

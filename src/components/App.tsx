@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { AuthProtection } from "./hoc/WithAuthProtection";
 import Layout from "./Layout";
 import SignIn from "./SignIn";
 
@@ -15,12 +14,7 @@ const App: React.FC = () => {
         <Router>
             <Routes>
                 <Route path="/signIn" element={<SignIn />} />
-                <Route
-                    element={
-                        <AuthProtection>
-                            <Layout />
-                        </AuthProtection>
-                    }>
+                <Route element={<Layout />}>
                     <Route path="/" element={<Home />} />
                     <Route
                         path="/account/:accountId/transactionList"

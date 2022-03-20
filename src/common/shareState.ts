@@ -27,3 +27,8 @@ export const toastState = atom<NotificationProps[]>({
     key: "toastState",
     default: [],
 });
+
+export const IsSignInState = atom<boolean>({
+    key: "isSingIn",
+    default: false,
+});

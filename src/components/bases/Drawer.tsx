@@ -47,6 +47,10 @@ const Background = styled.div`
         forwards;
 `;
 
+const Icon = styled.span`
+    cursor: pointer;
+`;
+
 const Drawer: React.FC = (props) => {
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
@@ -63,9 +67,9 @@ const Drawer: React.FC = (props) => {
 
     return (
         <>
-            <span className="icon" onClick={btnClickHandler}>
+            <Icon className="icon" onClick={btnClickHandler}>
                 <i className="fas fa-lg fa-ellipsis-h"></i>
-            </span>
+            </Icon>
             {isShowPanel ? (
                 <Background isShow={!isAnimationUnmount && isShowPanel} onClick={closePanelHandler}>
                     <Panel isShow={!isAnimationUnmount && isShowPanel}>{props.children}</Panel>

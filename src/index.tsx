@@ -2,7 +2,7 @@ import { ApolloProvider } from "@apollo/client";
 import "@fortawesome/fontawesome-free/css/all.css";
 import "bulma/css/bulma.css";
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import SwiperCore, { Navigation, Pagination } from "swiper";
 import "swiper/css";
@@ -15,13 +15,15 @@ import { register } from "./serviceWorkerRegistration";
 
 SwiperCore.use([Pagination, Navigation]);
 
-ReactDOM.render(
+const container = document.getElementById("root");
+const root = createRoot(container);
+
+root.render(
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
             <App />
         </ApolloProvider>
-    </RecoilRoot>,
-    document.getElementById("root") as HTMLElement
+    </RecoilRoot>
 );
 
 register();

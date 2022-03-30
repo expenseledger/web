@@ -75,7 +75,7 @@ export const useSignIn = (): {
             setIsLoading(false);
         });
 
-        const loadingTimeout = setTimeout(() => setIsLoading(false), 1000);
+        const loadingTimeout = setTimeout(() => setIsLoading(false), 3000);
 
         return () => {
             clearTimeout(loadingTimeout);

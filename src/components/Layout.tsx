@@ -56,9 +56,14 @@ const Layout: React.FC = () => {
                             </ul>
                         </li>
                     </ul>
-                    <p className="menu-label menu-label__signout" onClick={() => auth.signOut()}>
-                        Sign out
-                    </p>
+                    <p className="menu-label">Misc</p>
+                    <ul className="menu-list">
+                        <li>
+                            <ul>
+                                <a onClick={() => auth.signOut()}>Sign out</a>
+                            </ul>
+                        </li>
+                    </ul>
                 </aside>
             </div>
         );

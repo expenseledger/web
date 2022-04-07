@@ -138,9 +138,7 @@ const Home: React.FC = () => {
                 pagination={true}
                 slidesPerView={"auto"}
                 centeredSlides={true}
-                onSlideChange={(swipe) =>
-                    setTimeout(() => updateSelectedAccount(swipe.realIndex), 300)
-                }>
+                onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}>
                 {accountCards}
             </Swiper>
         );

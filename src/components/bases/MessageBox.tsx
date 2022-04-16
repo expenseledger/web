@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-interface MessageBoxProps {
+interface Props {
     type: MessageBoxType;
 }
 
@@ -18,6 +18,8 @@ type MessageBoxType =
 const Body = styled.div`
     position: relative;
 `;
+
+type MessageBoxProps = React.PropsWithChildren<Props>;
 
 const MessageBox: React.FC<MessageBoxProps> = (props) => {
     return (

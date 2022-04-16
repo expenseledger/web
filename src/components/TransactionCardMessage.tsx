@@ -19,7 +19,7 @@ const DeleteBox = styled.div`
     top: 5px;
 `;
 
-const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) => {
+const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (props) => {
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
     const [isDeleteLoading, setIsDeleteLoading] = React.useState(false);
     const onDeleteHandler = () => {
@@ -91,5 +91,7 @@ const TransactionCardMessage: React.FC<TransactionCardMessageProps> = (props) =>
         </MessageBox>
     );
 };
+
+const TransactionCardMessage = React.memo(TransactionCardMessageComponent);
 
 export default TransactionCardMessage;

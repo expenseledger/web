@@ -1,6 +1,6 @@
 import { EmailAuthProvider, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
-import StyledFirebaseAuth from "react-firebaseui/StyledFirebaseAuth";
+import { StyledFirebaseAuth } from "react-firebaseui";
 import { useNavigate } from "react-router";
 import Logo from "../assets/pics/logo.svg";
 import { auth } from "../lib/firebase";

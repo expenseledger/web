@@ -51,7 +51,9 @@ const Icon = styled.span`
     cursor: pointer;
 `;
 
-const Drawer: React.FC = (props) => {
+type DrawerProps = React.PropsWithChildren<any>;
+
+const Drawer: React.FC<DrawerProps> = (props) => {
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const btnClickHandler = () => {

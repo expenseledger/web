@@ -36,7 +36,7 @@ interface AuthProtectionProps {
     isTest?: boolean;
 }
 
-export const AuthProtection: React.FC<AuthProtectionProps> = (props) => {
+export const AuthProtection: React.FC<React.PropsWithChildren<AuthProtectionProps>> = (props) => {
     const [isSignin, setIsSignin] = React.useState(false);
     const navigate = useNavigate();
 

@@ -36,7 +36,7 @@ const Cards = [
     `,
 ];
 
-const AccountCard: React.FC<AccountCardProps> = (props) => {
+const AccountCardComponent: React.FC<AccountCardProps> = (props) => {
     const { number } = useSpring({
         reset: false,
         from: { number: 0 },
@@ -56,5 +56,7 @@ const AccountCard: React.FC<AccountCardProps> = (props) => {
         </Card>
     );
 };
+
+const AccountCard = React.memo(AccountCardComponent);
 
 export default AccountCard;

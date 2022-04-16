@@ -1,7 +1,7 @@
 import * as React from "react";
 import Button, { ButtonType } from "./Button";
 
-interface ModalProps {
+interface Props {
     title: string;
     confirmBtnTxt: string;
     confirmBtnType: ButtonType;
@@ -10,6 +10,8 @@ interface ModalProps {
     onConfirmHandler: () => Promise<void>;
     onCancelHandler: () => void;
 }
+
+type ModalProps = React.PropsWithChildren<Props>;
 
 const Modal: React.FC<ModalProps> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);

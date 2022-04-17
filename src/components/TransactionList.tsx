@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
-import React, { useEffect, useState } from "react";
+import React, { startTransition, useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
@@ -26,36 +26,75 @@ const NoData = styled.div`
 const MonthYear = styled.h4`
     text-align: center;
 `;
+const SwitchContainer = styled.div`
+    display: inline-block;
+`;
+const TotalText = styled.div`
+    display: inline-block;
+`;
+
+interface HideAbleTransaction extends Transaction {
+    isHide: boolean;
+}
 
 export const TransactionList: React.FC = () => {
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>(null);
-    const [transactions, setTransactions] = useState<Transaction[]>(null);
+    const [transactions, setTransactions] = useState<HideAbleTransaction[]>(null);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const params = useParams();
     const { accountId } = params;
+    const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
+    const mapPaidOnly = useCallback(
+        (tx: HideAbleTransaction) => {
+            if (!isPaidOnly || tx.type == "EXPENSE" || tx.type == "TRANSFER") {
+                tx.isHide = false;
+                return tx;
+            }
+
+            tx.isHide = true;
+            return tx;
+        },
+        [isPaidOnly]
+    );
+
+    useEffect(() => {
+        getTransactionMonthYearList({ accountId: +accountId }).then((response) => {
+            setMonthYearList(response.monthYears);
+        });
+    }, [accountId]);
 
     useEffect(() => {
         if (!monthYearList) {
-            getTransactionMonthYearList({ accountId: +accountId }).then((response) => {
-                setMonthYearList(response.monthYears);
-            });
-        } else {
-            const from = dayjs(monthYearList[monthYearIdx]);
-            const until = from.add(1, "M");
-
-            listTransactions({
-                accountId: +accountId,
-                from: from.toDate(),
-                until: until.toDate(),
-            }).then((response) => {
-                setTransactions(response.items);
-                setIsLoading(false);
-            });
+            return;
         }
+
+        const from = dayjs(monthYearList[monthYearIdx]);
+        const until = from.add(1, "M");
+
+        listTransactions({
+            accountId: +accountId,
+            from: from.toDate(),
+            until: until.toDate(),
+        }).then((response) => {
+            const hideAbleTransactions: HideAbleTransaction[] = response.items.map((x) => {
+                return {
+                    ...x,
+                    isHide: false,
+                };
+            });
+            setTransactions(hideAbleTransactions);
+            setIsLoading(false);
+        });
     }, [accountId, monthYearIdx, monthYearList]);
+
+    useEffect(() => {
+        startTransition(() => {
+            setTransactions((prevState) => prevState && prevState.map(mapPaidOnly));
+        });
+    }, [mapPaidOnly, isPaidOnly]);
 
     const removeTransaction = async (id: number) => {
         const response = await deleteTransaction({
@@ -85,7 +124,7 @@ export const TransactionList: React.FC = () => {
         setTransactions(transactions.filter((x) => x.id !== id));
         setAccounts(updatedAccounts);
     };
-    const getAmount = (tx: Transaction) => {
+    const getAmount = (tx: HideAbleTransaction) => {
         switch (tx.type) {
             case "EXPENSE":
                 return -tx.amount;
@@ -96,10 +135,14 @@ export const TransactionList: React.FC = () => {
                 return tx.amount;
         }
     };
+
+    const paidOnlyOnChangeHandler = () => {
+        setIsPaidOnly((prevState) => !prevState);
+    };
     const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
-        transactions.forEach((x) => dateSet.add(x.date.toString()));
+        transactions.filter((x) => !x.isHide).forEach((x) => dateSet.add(x.date.toString()));
 
         dateSet.forEach((x, idx) =>
             toReturn.push(
@@ -107,6 +150,7 @@ export const TransactionList: React.FC = () => {
                     key={idx}
                     date={new Date(x)}
                     items={transactions
+                        .filter((x) => !x.isHide)
                         .filter((y) => x === y.date.toString())
                         .map((y) => {
                             return {
@@ -133,12 +177,28 @@ export const TransactionList: React.FC = () => {
         return <NoData className="notification is-danger">No data</NoData>;
     };
     const renderSummaryCard = () => {
-        const totalAmount = transactions.map(getAmount).reduce((prev, cur) => prev + cur, 0);
+        const totalAmount = transactions
+            .filter((x) => !x.isHide)
+            .map(getAmount)
+            .reduce((prev, cur) => prev + cur, 0);
 
         return (
-            <div className="box">
+            <div className="box mt-3">
                 <div className="is-flex is-flex-direction-row is-justify-content-space-between">
-                    <div className="has-text-weight-bold">Total</div>
+                    <div>
+                        <TotalText className="has-text-weight-bold">Total</TotalText>
+                        <SwitchContainer className="field ml-3">
+                            <input
+                                id="switchRoundedOutlinedDefault"
+                                type="checkbox"
+                                name="switchRoundedOutlinedDefault"
+                                className="switch is-rounded is-outlined is-small"
+                                checked={isPaidOnly}
+                                onChange={paidOnlyOnChangeHandler}
+                            />
+                            <label htmlFor="switchRoundedOutlinedDefault">Paid only</label>
+                        </SwitchContainer>
+                    </div>
                     <AmountTxt amount={totalAmount} />
                 </div>
             </div>

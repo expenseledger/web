@@ -48,14 +48,18 @@ export const TransactionList: React.FC = () => {
     const { accountId } = params;
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const mapPaidOnly = useCallback(
-        (tx: HideAbleTransaction) => {
+        (tx: HideAbleTransaction | Transaction) => {
             if (!isPaidOnly || tx.type == "EXPENSE" || tx.type == "TRANSFER") {
-                tx.isHide = false;
-                return tx;
+                return {
+                    ...tx,
+                    isHide: false,
+                };
             }
 
-            tx.isHide = true;
-            return tx;
+            return {
+                ...tx,
+                isHide: true,
+            };
         },
         [isPaidOnly]
     );
@@ -79,16 +83,11 @@ export const TransactionList: React.FC = () => {
             from: from.toDate(),
             until: until.toDate(),
         }).then((response) => {
-            const hideAbleTransactions: HideAbleTransaction[] = response.items.map((x) => {
-                return {
-                    ...x,
-                    isHide: false,
-                };
-            });
+            const hideAbleTransactions: HideAbleTransaction[] = response.items.map(mapPaidOnly);
             setTransactions(hideAbleTransactions);
             setIsLoading(false);
         });
-    }, [accountId, monthYearIdx, monthYearList]);
+    }, [accountId, mapPaidOnly, monthYearIdx, monthYearList]);
 
     useEffect(() => {
         startTransition(() => {

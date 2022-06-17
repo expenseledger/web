@@ -105,14 +105,16 @@ const ADD_TRANSFER = gql`
     mutation AddTransfer(
         $amount: Float!
         $description: String!
+        $categoryId: Int!
         $fromAccountId: Int!
         $toAccountId: Int!
         $occurredAt: Datetime!
     ) {
-        transfer(
+        transferV2(
             input: {
                 amount: $amount
                 description: $description
+                categoryId: $categoryId
                 fromAccountId: $fromAccountId
                 toAccountId: $toAccountId
                 occurredAt: $occurredAt
@@ -271,6 +273,7 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
         variables: {
             amount: request.amount,
             description: request.description,
+            categoryId: request.categoryId,
             fromAccountId: request.fromAccountId,
             toAccountId: request.toAccountId,
             occurredAt: request.date,
@@ -284,7 +287,7 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
     }
 
     return {
-        transaction: mapTransactionFromServer(response.data.transfer.transaction),
+        transaction: mapTransactionFromServer(response.data.transferV2.transaction),
     };
 }
 

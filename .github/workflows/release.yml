@@ -41,15 +41,4 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            - uses: actions/checkout@v3
-
-            - name: Setup Node.js environment
-              uses: actions/setup-node@v2.3.0
-              with:
-                  node-version: "16"
-
-            - name: Install package
-              run: yarn install
-
-            - name: Deploy
-              run: yarn vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
+            - uses: ./.github/workflows/deploy

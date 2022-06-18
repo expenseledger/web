@@ -17,7 +17,7 @@ jobs:
         # Steps represent a sequence of tasks that will be executed as part of the job
         steps:
             # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-            - uses: actions/checkout@v2
+            - uses: actions/checkout@v3
 
             - name: Set GitHub user
               run: |
@@ -29,9 +29,6 @@ jobs:
               with:
                   node-version: "16"
 
-            - name: Install yarn
-              run: npm install -g yarn
-
             - name: Install package
               run: yarn install
 
@@ -39,3 +36,20 @@ jobs:
               run: yarn release -- minor --ci
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    deploy:
+        needs: release
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v3
+
+            - name: Setup Node.js environment
+              uses: actions/setup-node@v2.3.0
+              with:
+                  node-version: "16"
+
+            - name: Install package
+              run: yarn install
+
+            - name: Deploy
+              run: yarn vercel --prod --token ${{ secrets.VERCEL_TOKEN }}

@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
-import { useRecoilState } from "recoil";
-import { accountsState, categoriesState } from "../common/shareState";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
 import { AccountType } from "../service/constants";
@@ -30,6 +30,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [name, setName] = React.useState("");
     const [balance, setBalance] = React.useState(0);
     const [type, setType] = React.useState<AccountType>("CASH");
+    const currency = useRecoilValue(currencyState);
     const getOtherCategory = async () => {
         const other = categories.find((x) => x.name.toLowerCase() === "other");
 
@@ -169,7 +170,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                     <span>Balance</span>
                 </div>
                 <TextBox
-                    addOn={{ position: "front", text: "฿" }}
+                    addOn={{ position: "front", text: currency }}
                     className="column"
                     name="category-modify"
                     updateValue={accountBalanceHandler}

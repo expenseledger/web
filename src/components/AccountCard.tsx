@@ -1,6 +1,8 @@
 import React from "react";
 import { animated, config, useSpring } from "react-spring";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { currencyState } from "../common/shareState";
 import { formatNumber } from "../common/utils";
 
 interface AccountCardProps {
@@ -44,13 +46,14 @@ const AccountCardComponent: React.FC<AccountCardProps> = (props) => {
         delay: 200,
         config: config.default,
     });
+    const currency = useRecoilValue(currencyState);
     const Card = Cards[props.id % Cards.length];
 
     return (
         <Card className="box has-text-right has-text-white p-5">
             <div className="is-size-3 has-text-weight-bold">{props.name}</div>
             <div className="is-size-5">
-                <span>฿</span>
+                <span>{currency}</span>
                 <animated.span>{number.to((x) => formatNumber(x))}</animated.span>
             </div>
         </Card>

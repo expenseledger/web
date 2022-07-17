@@ -184,7 +184,7 @@ const Home: React.FC = () => {
                     name="expnese"
                     type="number"
                     value={currentValue.amount.toString()}
-                    addOn={{ text: "฿", position: "front" }}
+                    addOn={{ text: currency, position: "front" }}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">

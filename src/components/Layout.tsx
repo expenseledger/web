@@ -6,9 +6,7 @@ import Logo from "../assets/pics/logo.svg";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
 import { log } from "../common/utils";
 import { auth } from "../lib/firebase";
-import Account from "../service/model/Account";
 import { getUserData } from "../service/userService";
-import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
@@ -21,15 +19,6 @@ const Layout: React.FC = () => {
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
     const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
-
-    const renderBurgerMenuContent = (accounts: Account[]) => (
-        <Menu
-            accounts={accounts}
-            totalAccountBalance={totalAccountsBalance}
-            signOutFunc={() => auth.signOut()}
-            version={pj.version}
-        />
-    );
 
     React.useEffect(() => {
         console.log(process.env);
@@ -54,7 +43,12 @@ const Layout: React.FC = () => {
             <div className="header">
                 <div className="columns is-mobile is-vcentered">
                     <div className="column is-narrow">
-                        <Drawer>{renderBurgerMenuContent(accounts)}</Drawer>
+                        <Menu
+                            accounts={accounts}
+                            totalAccountBalance={totalAccountsBalance}
+                            signOutFunc={() => auth.signOut()}
+                            version={pj.version}
+                        />
                     </div>
                     <div className="column">
                         <Link to="/">

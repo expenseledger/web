@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Account from "../service/model/Account";
 import BalanceWithCurrency from "./bases/BalanceWithCurrency";
+import Drawer from "./bases/Drawer";
 
 interface MenuProps {
     accounts: Account[];
@@ -18,8 +19,12 @@ const Version = styled.div`
     margin-right: 5px;
 `;
 
+const CurrencySelect = styled.select`
+    display: inline-block;
+`;
+
 const Menu: React.FC<MenuProps> = (props) => (
-    <>
+    <Drawer>
         <div className="container is-mobile is-fluid mt-5">
             <aside className="menu">
                 <p className="menu-label">Accounts</p>
@@ -67,7 +72,7 @@ const Menu: React.FC<MenuProps> = (props) => (
             </aside>
         </div>
         <Version>v{props.version}</Version>
-    </>
+    </Drawer>
 );
 
 export default Menu;

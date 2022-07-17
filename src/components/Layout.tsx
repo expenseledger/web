@@ -21,7 +21,6 @@ const Layout: React.FC = () => {
     const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
 
     React.useEffect(() => {
-        console.log(process.env);
         if (!isSignInLoading && !isSignIn) {
             redirectToSignIn();
             return;

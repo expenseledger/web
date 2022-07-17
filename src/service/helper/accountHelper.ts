@@ -4,6 +4,8 @@ import { allAccountTypes } from "./../constants";
 
 export const allAccountTypesString = allAccountTypes.map(mapAccountTypeToString);
 
+export const allCurrencies = ["฿", "€"];
+
 export function mapAccountTypeToString(accountType: AccountType): string {
     switch (accountType) {
         case "BANK":

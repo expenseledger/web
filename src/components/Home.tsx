@@ -127,6 +127,7 @@ const Home: React.FC = () => {
                     key={idx}
                     id={idx}
                     balance={currentValue.accountIdx === idx ? x.balance : 0}
+                    currency={currency}
                     name={x.name}
                 />
             </SwiperSlide>

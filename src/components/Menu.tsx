@@ -13,7 +13,7 @@ interface MenuProps {
 
 const Version = styled.div`
     position: absolute;
-    bottom: 0;
+    bottom: 16px;
     right: 0;
     font-size: 0.5em;
     margin-right: 5px;

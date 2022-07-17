@@ -1,27 +1,34 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
-import { useRecoilState } from "recoil";
-import { accountsState, categoriesState } from "../common/shareState";
+import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
+import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
-import { AccountType } from "../service/constants";
+import { AccountType, Currency } from "../service/constants";
 import {
     allAccountTypesString,
+    allCurrencies,
     mapAccountTypeToString,
     mapStringToAccountType,
 } from "../service/helper/accountHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import { addExpense, addIncome } from "../service/transactionService";
 import Dropdown from "./bases/Dropdown";
+import EditAndDeleteSetting from "./bases/EditAndDeleteSetting";
 import Modal from "./bases/Modal";
-import SettingBox from "./bases/SettingBox";
 import TextBox from "./bases/TextBox";
+import TextBoxWithButton from "./bases/TextBoxWithButton";
 
 interface ModifyModalProps {
     id: number;
     onCancel: () => void;
 }
+
+const CurrencyPanel = styled.nav`
+    background-color: white;
+`;
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories] = useRecoilState(categoriesState);
@@ -30,6 +37,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [name, setName] = React.useState("");
     const [balance, setBalance] = React.useState(0);
     const [type, setType] = React.useState<AccountType>("CASH");
+    const currency = useRecoilValue(currencyState);
     const getOtherCategory = async () => {
         const other = categories.find((x) => x.name.toLowerCase() === "other");
 
@@ -49,6 +57,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
         return other;
     };
+
     const modifyAccount = async () => {
         const account = accounts.find((x) => x.id === props.id);
         const otherCategory = await getOtherCategory();
@@ -169,7 +178,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                     <span>Balance</span>
                 </div>
                 <TextBox
-                    addOn={{ position: "front", text: "฿" }}
+                    addOn={{ position: "front", text: currency }}
                     className="column"
                     name="category-modify"
                     updateValue={accountBalanceHandler}
@@ -183,9 +192,13 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
+    const [currency, setCurrency] = useRecoilState(currencyState);
     const { addNotification } = useNotification();
+    const currencyHandler = (currency: string) => {
+        setCurrency(currency as Currency);
+        window.localStorage.setItem("currency", currency);
+    };
     const createAccountHandler = async (accountName: string, accountType: string) => {
-        console.log(accountType);
         const response = await createAccount({
             name: accountName,
             type: mapStringToAccountType(accountType),
@@ -220,19 +233,40 @@ const AccountSetting: React.FC = () => {
         setAccounts(accounts.filter((x) => x.id !== id));
         addNotification("Delete account success", "success");
     };
+    const renderCurrencySelectionPanel = (
+        <div className="column is-full mb-3">
+            <CurrencyPanel className="panel">
+                <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
+                    <span>Currency</span>
+                    <Dropdown
+                        options={allCurrencies}
+                        updateSelectedValue={currencyHandler}
+                        value={currency}
+                    />
+                </div>
+            </CurrencyPanel>
+        </div>
+    );
 
     return (
-        <>
-            <SettingBox
-                createFuncHandler={createAccountHandler}
+        <div className="columns is-mobile is-centered is-multiline">
+            <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={allAccountTypesString}
                 modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
             />
-        </>
+            {renderCurrencySelectionPanel}
+            <TextBoxWithButton
+                name="add"
+                type="text"
+                buttonType="link"
+                buttonText="Create"
+                onClick={createAccountHandler}
+                dropdown={allAccountTypesString}
+            />
+        </div>
     );
 };
 

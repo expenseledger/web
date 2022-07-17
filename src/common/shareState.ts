@@ -2,6 +2,7 @@ import { atom, selector } from "recoil";
 import { NotificationProps } from "../components/bases/Notification";
 import Account from "../service/model/Account";
 import Category from "../service/model/Category";
+import { Currency } from "./../service/constants";
 
 export const accountsState = atom<Account[]>({
     key: "accounts",
@@ -28,7 +29,16 @@ export const toastState = atom<NotificationProps[]>({
     default: [],
 });
 
-export const IsSignInState = atom<boolean>({
+export const isSignInState = atom<boolean>({
     key: "isSingIn",
     default: false,
+});
+
+export const currencyState = atom<Currency>({
+    key: "currency",
+    default:
+        window.localStorage.getItem("currency") === null ||
+        window.localStorage.getItem("currency") === undefined
+            ? "฿"
+            : (window.localStorage.getItem("currency") as Currency),
 });

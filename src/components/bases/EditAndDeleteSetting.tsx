@@ -1,19 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
-import TextBoxWithButton from "./TextBoxWithButton";
 
 export interface Item {
     id: number;
     name: string;
 }
 
-export interface SettingBoxProps {
-    createFuncHandler: (value: string, dropdownValue?: string) => Promise<void>;
+export interface EditAndDelteSettingProps {
     deleteFuncHandler: (value: number) => Promise<void>;
     modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
     items: Item[];
-    dropdowns?: string[];
 }
 
 interface ItemBoxProps {
@@ -109,31 +106,21 @@ const ItemContainer = styled.nav`
     background-color: white;
 `;
 
-const SettingBox: React.FC<SettingBoxProps> = (props) => {
+const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
     return (
-        <div className="columns is-mobile is-centered is-multiline">
-            <div className="column is-full">
-                <ItemContainer className="panel">
-                    {props.items.map((i) => (
-                        <ItemBox
-                            deleteFuncHandler={props.deleteFuncHandler}
-                            key={i.id}
-                            item={i}
-                            modifyModal={props.modifyModal}
-                        />
-                    ))}
-                </ItemContainer>
-            </div>
-            <TextBoxWithButton
-                name="add"
-                type="text"
-                buttonType="link"
-                buttonText="Create"
-                onClick={props.createFuncHandler}
-                dropdown={props.dropdowns}
-            />
+        <div className="column is-full">
+            <ItemContainer className="panel">
+                {props.items.map((i) => (
+                    <ItemBox
+                        deleteFuncHandler={props.deleteFuncHandler}
+                        key={i.id}
+                        item={i}
+                        modifyModal={props.modifyModal}
+                    />
+                ))}
+            </ItemContainer>
         </div>
     );
 };
 
-export default SettingBox;
+export default EditAndDeleteSetting;

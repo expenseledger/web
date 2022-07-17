@@ -7,6 +7,7 @@ interface AccountCardProps {
     id: number;
     name: string;
     balance: number;
+    currency: string;
 }
 
 const Cards = [
@@ -50,7 +51,7 @@ const AccountCardComponent: React.FC<AccountCardProps> = (props) => {
         <Card className="box has-text-right has-text-white p-5">
             <div className="is-size-3 has-text-weight-bold">{props.name}</div>
             <div className="is-size-5">
-                <span>฿</span>
+                <span>{props.currency}</span>
                 <animated.span>{number.to((x) => formatNumber(x))}</animated.span>
             </div>
         </Card>

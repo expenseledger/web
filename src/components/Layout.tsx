@@ -1,27 +1,17 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
 import pj from "../../package.json";
 import Logo from "../assets/pics/logo.svg";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
-import { formatNumber, log } from "../common/utils";
+import { log } from "../common/utils";
 import { auth } from "../lib/firebase";
-import Account from "../service/model/Account";
 import { getUserData } from "../service/userService";
-import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
 import "./Layout.scss";
-
-const Version = styled.div`
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    font-size: 0.5em;
-    margin-right: 5px;
-`;
+import Menu from "./Menu";
 
 const Layout: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
@@ -30,60 +20,7 @@ const Layout: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(true);
     const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
 
-    const renderBurgerMenuContent = (accounts: Account[]) => {
-        return (
-            <>
-                <div className="container is-mobile is-fluid mt-5">
-                    <aside className="menu">
-                        <p className="menu-label">Accounts</p>
-                        <ul className="menu-list">
-                            {accounts.map((x) => (
-                                <li key={x.name}>
-                                    <div className="columns is-mobile">
-                                        <div className="column is-half">{x.name}</div>
-                                        <div className="column">฿ {formatNumber(x.balance)}</div>
-                                    </div>
-                                </li>
-                            ))}
-                            <li>
-                                <div className="columns is-mobile">
-                                    <div className="column is-half menu__totalBalance">=</div>
-                                    <div className="column has-text-weight-bold">
-                                        ฿ {formatNumber(totalAccountsBalance)}
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
-                        <p className="menu-label">Setting</p>
-                        <ul className="menu-list">
-                            <li>
-                                <ul>
-                                    <li>
-                                        <Link to="/account/setting">Account</Link>
-                                    </li>
-                                    <li>
-                                        <Link to="/category/setting">Category</Link>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <p className="menu-label">Misc</p>
-                        <ul className="menu-list">
-                            <li>
-                                <ul>
-                                    <a onClick={() => auth.signOut()}>Sign out</a>
-                                </ul>
-                            </li>
-                        </ul>
-                    </aside>
-                </div>
-                <Version>v{pj.version}</Version>
-            </>
-        );
-    };
-
     React.useEffect(() => {
-        console.log(process.env);
         if (!isSignInLoading && !isSignIn) {
             redirectToSignIn();
             return;
@@ -105,7 +42,12 @@ const Layout: React.FC = () => {
             <div className="header">
                 <div className="columns is-mobile is-vcentered">
                     <div className="column is-narrow">
-                        <Drawer>{renderBurgerMenuContent(accounts)}</Drawer>
+                        <Menu
+                            accounts={accounts}
+                            totalAccountBalance={totalAccountsBalance}
+                            signOutFunc={() => auth.signOut()}
+                            version={pj.version}
+                        />
                     </div>
                     <div className="column">
                         <Link to="/">

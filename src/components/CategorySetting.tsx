@@ -11,9 +11,10 @@ import {
 } from "../service/helper/categoryHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import Dropdown from "./bases/Dropdown";
+import EditAndDeleteSetting from "./bases/EditAndDeleteSetting";
 import Modal from "./bases/Modal";
-import SettingBox from "./bases/SettingBox";
 import TextBox from "./bases/TextBox";
+import TextBoxWithButton from "./bases/TextBoxWithButton";
 
 interface ModifyModalProps {
     id: number;
@@ -134,17 +135,23 @@ const CategorySetting: React.FC = () => {
     };
 
     return (
-        <>
-            <SettingBox
-                createFuncHandler={addCategoryHandler}
+        <div className="columns is-mobile is-centered is-multiline">
+            <EditAndDeleteSetting
                 deleteFuncHandler={removeCategoryHandler}
                 modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                dropdowns={allCategoryTypesString}
             />
-        </>
+            <TextBoxWithButton
+                name="add"
+                type="text"
+                buttonType="link"
+                buttonText="Create"
+                onClick={addCategoryHandler}
+                dropdown={allCategoryTypesString}
+            />
+        </div>
     );
 };
 

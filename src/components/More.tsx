@@ -1,14 +1,14 @@
 import * as R from "ramda";
 import React from "react";
 import { useLocation } from "react-router";
-import { useRecoilState } from "recoil";
-import { accountsState, categoriesState } from "../common/shareState";
-import { formatNumber } from "../common/utils";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { TransactionType } from "../service/constants";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
 import { addExpense, addIncome, addTransfer } from "../service/transactionService";
+import BalanceWithCurrency from "./bases/BalanceWithCurrency";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -38,6 +38,7 @@ const More: React.FC = () => {
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const locatoin = useLocation();
+    const currency = useRecoilValue(currencyState);
     const homeProps = locatoin.state as HomeProps;
     const initialCurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,
@@ -315,7 +316,9 @@ const More: React.FC = () => {
                     updateSelectedValue={updateAccount}
                     value={value}
                 />
-                <span className="column is-narrow">฿ {formatNumber(balance)}</span>
+                <div className="column is-narrow">
+                    <BalanceWithCurrency balance={balance} />
+                </div>
             </div>
         );
 
@@ -396,7 +399,7 @@ const More: React.FC = () => {
                         name="expnese"
                         type="number"
                         value={currentValue.amount.toString()}
-                        addOn={{ text: "฿", position: "front" }}
+                        addOn={{ text: currency, position: "front" }}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

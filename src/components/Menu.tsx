@@ -19,10 +19,6 @@ const Version = styled.div`
     margin-right: 5px;
 `;
 
-const CurrencySelect = styled.select`
-    display: inline-block;
-`;
-
 const Menu: React.FC<MenuProps> = (props) => (
     <Drawer>
         <div className="container is-mobile is-fluid mt-5">

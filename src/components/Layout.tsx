@@ -5,10 +5,11 @@ import styled from "styled-components";
 import pj from "../../package.json";
 import Logo from "../assets/pics/logo.svg";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
-import { formatNumber, log } from "../common/utils";
+import { log } from "../common/utils";
 import { auth } from "../lib/firebase";
 import Account from "../service/model/Account";
 import { getUserData } from "../service/userService";
+import BalanceWithCurrency from "./bases/BalanceWithCurrency";
 import Drawer from "./bases/Drawer";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
@@ -41,7 +42,9 @@ const Layout: React.FC = () => {
                                 <li key={x.name}>
                                     <div className="columns is-mobile">
                                         <div className="column is-half">{x.name}</div>
-                                        <div className="column">฿ {formatNumber(x.balance)}</div>
+                                        <div className="column">
+                                            <BalanceWithCurrency balance={x.balance} />
+                                        </div>
                                     </div>
                                 </li>
                             ))}
@@ -49,7 +52,7 @@ const Layout: React.FC = () => {
                                 <div className="columns is-mobile">
                                     <div className="column is-half menu__totalBalance">=</div>
                                     <div className="column has-text-weight-bold">
-                                        ฿ {formatNumber(totalAccountsBalance)}
+                                        <BalanceWithCurrency balance={totalAccountsBalance} />
                                     </div>
                                 </div>
                             </li>

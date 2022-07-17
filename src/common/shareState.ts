@@ -32,3 +32,8 @@ export const IsSignInState = atom<boolean>({
     key: "isSingIn",
     default: false,
 });
+
+export const CurrencyState = atom<string>({
+    key: "currency",
+    default: "฿",
+});

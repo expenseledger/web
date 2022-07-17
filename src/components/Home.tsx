@@ -2,10 +2,10 @@ import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, categoriesState } from "../common/shareState";
+import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -40,6 +40,7 @@ const Home: React.FC = () => {
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
+    const currency = useRecoilValue(currencyState);
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);

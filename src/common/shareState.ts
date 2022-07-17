@@ -28,12 +28,12 @@ export const toastState = atom<NotificationProps[]>({
     default: [],
 });
 
-export const IsSignInState = atom<boolean>({
+export const isSignInState = atom<boolean>({
     key: "isSingIn",
     default: false,
 });
 
-export const CurrencyState = atom<string>({
+export const currencyState = atom<string>({
     key: "currency",
     default: "฿",
 });

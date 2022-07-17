@@ -1,5 +1,5 @@
 import { useRecoilValue } from "recoil";
-import { CurrencyState } from "../../common/shareState";
+import { currencyState } from "../../common/shareState";
 import { formatNumber } from "../../common/utils";
 
 interface BalanceWithCurrecyProps {
@@ -7,7 +7,7 @@ interface BalanceWithCurrecyProps {
 }
 
 const BalanceWithCurrency: React.FC<BalanceWithCurrecyProps> = (props) => {
-    const currency = useRecoilValue(CurrencyState);
+    const currency = useRecoilValue(currencyState);
 
     return (
         <>

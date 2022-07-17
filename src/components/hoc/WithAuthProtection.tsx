@@ -2,7 +2,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useRecoilState } from "recoil";
-import { IsSignInState } from "../../common/shareState";
+import { isSignInState } from "../../common/shareState";
 import { auth } from "../../lib/firebase";
 import Loading from "../bases/Loading";
 
@@ -58,7 +58,7 @@ export const useSignIn = (): {
     redirectToSignIn: () => void;
     isSignInLoading: boolean;
 } => {
-    const [isSignIn, setIsSignin] = useRecoilState(IsSignInState);
+    const [isSignIn, setIsSignin] = useRecoilState(isSignInState);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const redirectToSignIn = React.useCallback(() => {

@@ -47,8 +47,18 @@ const Background = styled.div`
         forwards;
 `;
 
-const Icon = styled.span`
+const Draw = styled.div`
+    position: fixed;
     cursor: pointer;
+    top: 40%;
+    width: 24px;
+    height: 100px;
+    background-color: white;
+    border-radius: 0 8px 8px 0;
+    z-index: 10;
+`;
+const Icon = styled.span`
+    margin-top: 38px;
 `;
 
 type DrawerProps = React.PropsWithChildren<any>;
@@ -69,9 +79,11 @@ const Drawer: React.FC<DrawerProps> = (props) => {
 
     return (
         <>
-            <Icon className="icon" onClick={btnClickHandler}>
-                <i className="fas fa-lg fa-ellipsis-h"></i>
-            </Icon>
+            <Draw onClick={btnClickHandler}>
+                <Icon className="icon">
+                    <i className="fas fa-greater-than"></i>
+                </Icon>
+            </Draw>
             {isShowPanel ? (
                 <Background isShow={!isAnimationUnmount && isShowPanel} onClick={closePanelHandler}>
                     <Panel isShow={!isAnimationUnmount && isShowPanel}>{props.children}</Panel>

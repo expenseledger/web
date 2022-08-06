@@ -18,6 +18,12 @@ const Version = styled.div`
     font-size: 0.5em;
     margin-right: 5px;
 `;
+const EqualSign = styled.div`
+    text-align: right;
+`;
+const SignOut = styled.a`
+    cursor: pointer;
+`;
 
 const Menu: React.FC<MenuProps> = (props) => (
     <Drawer>
@@ -37,7 +43,7 @@ const Menu: React.FC<MenuProps> = (props) => (
                     ))}
                     <li>
                         <div className="columns is-mobile">
-                            <div className="column is-half menu__totalBalance">=</div>
+                            <EqualSign className="column is-half">=</EqualSign>
                             <div className="column has-text-weight-bold">
                                 <BalanceWithCurrency balance={props.totalAccountBalance} />
                             </div>
@@ -61,7 +67,7 @@ const Menu: React.FC<MenuProps> = (props) => (
                 <ul className="menu-list">
                     <li>
                         <ul>
-                            <a onClick={props.signOutFunc}>Sign out</a>
+                            <SignOut onClick={props.signOutFunc}>Sign out</SignOut>
                         </ul>
                     </li>
                 </ul>

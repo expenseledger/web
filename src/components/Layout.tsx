@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, Outlet } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
+import styled from "styled-components";
 import pj from "../../package.json";
-import Logo from "../assets/pics/logo.svg";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
 import { log } from "../common/utils";
 import { auth } from "../lib/firebase";
@@ -10,8 +10,20 @@ import { getUserData } from "../service/userService";
 import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
-import "./Layout.scss";
 import Menu from "./Menu";
+
+const Header = styled.div`
+    margin-top: 12px;
+    top: 0px;
+    z-index: 10;
+`;
+const Title = styled.div`
+    text-align: center;
+`;
+const TitleText = styled.span`
+    font-weight: 800;
+    cursor: pointer;
+`;
 
 const Layout: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
@@ -39,26 +51,19 @@ const Layout: React.FC = () => {
         <Loading />
     ) : (
         <>
-            <div className="header">
-                <div className="columns is-mobile is-vcentered">
-                    <div className="column is-narrow">
-                        <Menu
-                            accounts={accounts}
-                            totalAccountBalance={totalAccountsBalance}
-                            signOutFunc={() => auth.signOut()}
-                            version={pj.version}
-                        />
-                    </div>
-                    <div className="column">
-                        <Link to="/">
-                            <span className="has-text-weight-bold is-size-4 has-text-dark header__title">
-                                Expense ledger
-                            </span>
-                            <img className="ml-2" src={Logo} width="25px" alt="website logo" />
-                        </Link>
-                    </div>
-                </div>
-            </div>
+            <Header>
+                <Menu
+                    accounts={accounts}
+                    totalAccountBalance={totalAccountsBalance}
+                    signOutFunc={() => auth.signOut()}
+                    version={pj.version}
+                />
+                <Title className="py-2">
+                    <Link to="/">
+                        <TitleText className="is-size-2 has-text-link">Expense Ledger</TitleText>
+                    </Link>
+                </Title>
+            </Header>
             <div className="container is-mobile is-fluid mt-4">
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />

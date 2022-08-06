@@ -60,9 +60,7 @@ const Layout: React.FC = () => {
                 />
                 <Title className="py-2">
                     <Link to="/">
-                        <TitleText className="is-size-2 has-text-link-dark">
-                            Expense Ledger
-                        </TitleText>
+                        <TitleText className="is-size-2 has-text-info">Expense Ledger</TitleText>
                     </Link>
                 </Title>
             </Header>

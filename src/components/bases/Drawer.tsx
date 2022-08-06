@@ -81,7 +81,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         <>
             <Draw onClick={btnClickHandler}>
                 <Icon className="icon">
-                    <i className="fas fa-greater-than"></i>
+                    <i className="fas fa-ellipsis-vertical"></i>
                 </Icon>
             </Draw>
             {isShowPanel ? (

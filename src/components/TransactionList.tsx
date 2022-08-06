@@ -15,6 +15,7 @@ import {
     listTransactions,
 } from "../service/transactionService";
 import AmountTxt from "./bases/AmountTxt";
+import Button from "./bases/Button";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -31,6 +32,9 @@ const SwitchContainer = styled.div`
 `;
 const TotalText = styled.div`
     display: inline-block;
+`;
+const Root = styled.div`
+    text-align: center;
 `;
 
 interface HideAbleTransaction extends Transaction {
@@ -224,14 +228,28 @@ export const TransactionList: React.FC = () => {
         );
     };
 
+    const renderScrollToTop = () => {
+        return (
+            <Button
+                value="To Top"
+                onClickHandler={() => {
+                    document.body.scrollTop = 0; // For Safari
+                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                }}
+                type="primary"
+            />
+        );
+    };
+
     return isLoading ? (
         <Loading />
     ) : (
-        <div className="mb-5">
+        <Root className="mb-5">
             {renderMonthYear()}
             {renderSummaryCard()}
             {renderTransactionCards()}
-        </div>
+            {renderScrollToTop()}
+        </Root>
     );
 };
 

@@ -89,107 +89,146 @@ export const accountFragment = gql`
 `;
 
 export async function getAllAccount(): Promise<GetAllAccountResponse> {
-    const response = await client.query({
-        query: GET_ALL_ACCOUNTS,
-    });
+    try {
+        const response = await client.query({
+            query: GET_ALL_ACCOUNTS,
+        });
 
-    if (response.errors) {
-        log("Cannot get all accounts.", response.errors);
+        if (response.errors) {
+            log("cannot get all accounts.", response.errors);
+            return {
+                accounts: [],
+            };
+        }
+
+        const toReturn = response.data.accounts.nodes.map(mapAccountFromServer);
+
+        return {
+            accounts: toReturn,
+        };
+    } catch (err) {
+        log("cannot get all accounts, unexpected error", err);
         return {
             accounts: [],
         };
     }
-
-    const toReturn = response.data.accounts.nodes.map(mapAccountFromServer);
-
-    return {
-        accounts: toReturn,
-    };
 }
 
 export async function getAccount(request: GetAccountRequest): Promise<GetAccountResponse> {
-    const response = await client.query({
-        query: GET_ACCOUNT_BY_ID,
-        variables: {
-            id: request.id,
-        },
-    });
+    try {
+        const response = await client.query({
+            query: GET_ACCOUNT_BY_ID,
+            variables: {
+                id: request.id,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannet get account by id: ${request.id}`, response.errors);
+        if (response.errors) {
+            log(`cannot get account by id: ${request.id}`, response.errors);
+
+            return {
+                account: null,
+            };
+        }
+
+        return {
+            account: mapAccountFromServer(response.data.getAccount),
+        };
+    } catch (err) {
+        log(`cannot get account by id: ${request.id}, unexpected error`, err);
 
         return {
             account: null,
         };
     }
-
-    return {
-        account: mapAccountFromServer(response.data.getAccount),
-    };
 }
 
 export async function createAccount(request: CreateAccountRequest): Promise<CreateAccountResponse> {
-    const response = await client.mutate({
-        mutation: CREATE_ACCOUNT,
-        variables: {
-            name: request.name,
-            type: request.type,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: CREATE_ACCOUNT,
+            variables: {
+                name: request.name,
+                type: request.type,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannot create account`, response.errors);
+        if (response.errors) {
+            log("cannot create account", response.errors);
+
+            return {
+                account: null,
+            };
+        }
+
+        return {
+            account: mapAccountFromServer(response.data.createAccount.account),
+        };
+    } catch (err) {
+        log("cannot create account, unexpected error", err);
 
         return {
             account: null,
         };
     }
-
-    return {
-        account: mapAccountFromServer(response.data.createAccount.account),
-    };
 }
 
 export async function deleteAccount(request: DeleteAccountRequest): Promise<DeleteAccountResponse> {
-    const response = await client.mutate({
-        mutation: DELETE_ACCOUNT_BY_ID,
-        variables: {
-            id: request.id,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: DELETE_ACCOUNT_BY_ID,
+            variables: {
+                id: request.id,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannot delete account id: ${request.id}`, response.errors);
+        if (response.errors) {
+            log(`Cannot delete account id: ${request.id}`, response.errors);
+
+            return {
+                isSuccess: false,
+            };
+        }
+
+        return {
+            isSuccess: true,
+        };
+    } catch (err) {
+        log(`cannot delete account id: ${request.id}, unexpected error`, err);
 
         return {
             isSuccess: false,
         };
     }
-
-    return {
-        isSuccess: true,
-    };
 }
 
 export async function updateAccount(request: UpdateAccountRequest): Promise<UpdateAccountResponse> {
-    const response = await client.mutate({
-        mutation: UPDATE_ACCOUNT_BY_ID,
-        variables: {
-            id: request.id,
-            name: request.name,
-            type: request.type,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: UPDATE_ACCOUNT_BY_ID,
+            variables: {
+                id: request.id,
+                name: request.name,
+                type: request.type,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannot update account`, response.errors);
+        if (response.errors) {
+            log(`Cannot update account`, response.errors);
+
+            return {
+                account: null,
+            };
+        }
+
+        return {
+            account: mapAccountFromServer(response.data.updateAccount.account),
+        };
+    } catch (err) {
+        log("cannot update account, unexpected error", err);
 
         return {
             account: null,
         };
     }
-
-    return {
-        account: mapAccountFromServer(response.data.updateAccount.account),
-    };
 }

@@ -222,185 +222,232 @@ const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
 `;
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
-    const response = await client.mutate({
-        mutation: ADD_EXPENSE,
-        variables: {
-            amount: request.amount,
-            categoryId: request.categoryId,
-            description: request.description,
-            fromAccountId: request.fromAccountId,
-            occurredAt: request.date,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: ADD_EXPENSE,
+            variables: {
+                amount: request.amount,
+                categoryId: request.categoryId,
+                description: request.description,
+                fromAccountId: request.fromAccountId,
+                occurredAt: request.date,
+            },
+        });
 
-    if (response.errors) {
-        log(`Add expense failed`, response.errors);
+        if (response.errors) {
+            log(`Add expense failed`, response.errors);
+
+            return null;
+        }
+
+        return {
+            transaction: mapTransactionFromServer(response.data.spend.transaction),
+        };
+    } catch (err) {
+        log("Add expense failed, unexpected error", err);
 
         return null;
     }
-
-    return {
-        transaction: mapTransactionFromServer(response.data.spend.transaction),
-    };
 }
 
 export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeResponse> {
-    const response = await client.mutate({
-        mutation: ADD_INCOME,
-        variables: {
-            amount: request.amount,
-            description: request.description,
-            categoryId: request.categoryId,
-            toAccountId: request.toAccountId,
-            occurredAt: request.date,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: ADD_INCOME,
+            variables: {
+                amount: request.amount,
+                description: request.description,
+                categoryId: request.categoryId,
+                toAccountId: request.toAccountId,
+                occurredAt: request.date,
+            },
+        });
 
-    if (response.errors) {
-        log("Add income failed", response.errors);
+        if (response.errors) {
+            log("Add income failed", response.errors);
+
+            return null;
+        }
+
+        return {
+            transaction: mapTransactionFromServer(response.data.receive.transaction),
+        };
+    } catch (err) {
+        log("Add income failed, unexpected error", err);
 
         return null;
     }
-
-    return {
-        transaction: mapTransactionFromServer(response.data.receive.transaction),
-    };
 }
 
 export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse> {
-    const response = await client.mutate({
-        mutation: ADD_TRANSFER,
-        variables: {
-            amount: request.amount,
-            description: request.description,
-            categoryId: request.categoryId,
-            fromAccountId: request.fromAccountId,
-            toAccountId: request.toAccountId,
-            occurredAt: request.date,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: ADD_TRANSFER,
+            variables: {
+                amount: request.amount,
+                description: request.description,
+                categoryId: request.categoryId,
+                fromAccountId: request.fromAccountId,
+                toAccountId: request.toAccountId,
+                occurredAt: request.date,
+            },
+        });
 
-    if (response.errors) {
-        log("Add transfer failed", response.errors);
+        if (response.errors) {
+            log("Add transfer failed", response.errors);
+
+            return null;
+        }
+
+        return {
+            transaction: mapTransactionFromServer(response.data.transferV2.transaction),
+        };
+    } catch (err) {
+        log("Add transfer failed, unexpected error", err);
 
         return null;
     }
-
-    return {
-        transaction: mapTransactionFromServer(response.data.transferV2.transaction),
-    };
 }
 
 export async function listTransactions(
     request: ListTransactionsRequest
 ): Promise<ListTransactionsResponse> {
-    const [resToAcc, resFromAcc] = await Promise.all([
-        client.query({
-            query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
-            variables: {
-                accountId: request.accountId,
-                from: request.from,
-                until: request.until,
-            },
-            fetchPolicy: request.useCache ? "cache-first" : "network-only",
-        }),
-        client.query({
-            query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-            variables: {
-                accountId: request.accountId,
-                from: request.from,
-                until: request.until,
-            },
-            fetchPolicy: request.useCache ? "cache-first" : "network-only",
-        }),
-    ]);
-    const result = {
-        transactions: [...resToAcc.data.transactions.nodes, ...resFromAcc.data.transactions.nodes],
-        totalCount: resToAcc.data.transactions.totalCount + resFromAcc.data.transactions.totalCount,
-    };
+    try {
+        const [resToAcc, resFromAcc] = await Promise.all([
+            client.query({
+                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+                variables: {
+                    accountId: request.accountId,
+                    from: request.from,
+                    until: request.until,
+                },
+                fetchPolicy: request.useCache ? "cache-first" : "network-only",
+            }),
+            client.query({
+                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
+                variables: {
+                    accountId: request.accountId,
+                    from: request.from,
+                    until: request.until,
+                },
+                fetchPolicy: request.useCache ? "cache-first" : "network-only",
+            }),
+        ]);
+        const result = {
+            transactions: [
+                ...resToAcc.data.transactions.nodes,
+                ...resFromAcc.data.transactions.nodes,
+            ],
+            totalCount:
+                resToAcc.data.transactions.totalCount + resFromAcc.data.transactions.totalCount,
+        };
 
-    if (resToAcc.errors || resFromAcc.errors) {
-        if (resToAcc.errors) {
-            log("list transactions failed", resToAcc.errors);
+        if (resToAcc.errors || resFromAcc.errors) {
+            if (resToAcc.errors) {
+                log("list transactions failed", resToAcc.errors);
+            }
+            if (resFromAcc.errors) {
+                log("list transactions failed", resFromAcc.errors);
+            }
+
+            return {
+                length: 0,
+                items: [],
+            };
         }
-        if (resFromAcc.errors) {
-            log("list transactions failed", resFromAcc.errors);
-        }
+
+        return {
+            length: result.totalCount,
+            items: result.transactions
+                .map(mapTransactionFromServer)
+                .sort((a: Transaction, b: Transaction) => {
+                    if (b.date > a.date) {
+                        return 1;
+                    }
+
+                    if (b.date < a.date) {
+                        return -1;
+                    }
+
+                    if (b.id > a.id) {
+                        return 1;
+                    }
+
+                    if (b.id < a.id) {
+                        return -1;
+                    }
+
+                    return 0;
+                }),
+        };
+    } catch (err) {
+        log("list transactions failed, unexpected error", err);
 
         return {
             length: 0,
             items: [],
         };
     }
-
-    return {
-        length: result.totalCount,
-        items: result.transactions
-            .map(mapTransactionFromServer)
-            .sort((a: Transaction, b: Transaction) => {
-                if (b.date > a.date) {
-                    return 1;
-                }
-
-                if (b.date < a.date) {
-                    return -1;
-                }
-
-                if (b.id > a.id) {
-                    return 1;
-                }
-
-                if (b.id < a.id) {
-                    return -1;
-                }
-
-                return 0;
-            }),
-    };
 }
 
 export async function deleteTransaction(
     request: DeleteTranactionRequest
 ): Promise<DeleteTransactionResponse> {
-    const response = await client.mutate({
-        mutation: DELETE_TRANSACTION,
-        variables: {
-            transactionId: request.id,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: DELETE_TRANSACTION,
+            variables: {
+                transactionId: request.id,
+            },
+        });
 
-    if (response.errors) {
-        log("list transactions failed", response.errors);
+        if (response.errors) {
+            log("delete transaction failed", response.errors);
+
+            return {
+                isSuccess: false,
+            };
+        }
+
+        return {
+            isSuccess: true,
+        };
+    } catch (err) {
+        log("delete transaction failed, unexpected error", err);
 
         return {
             isSuccess: false,
         };
     }
-
-    return {
-        isSuccess: true,
-    };
 }
 
 export async function getTransactionMonthYearList(
     request: GetTransactionMonthYearListRequest
 ): Promise<GetTransactionMonthYearListResponse> {
-    const response = await client.query({
-        query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
-        variables: {
-            accountId: request.accountId,
-        },
-    });
+    try {
+        const response = await client.query({
+            query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
+            variables: {
+                accountId: request.accountId,
+            },
+        });
 
-    if (response.errors) {
-        log("get transaction month year list failed", response.errors);
+        if (response.errors) {
+            log("get transaction month year list failed", response.errors);
+
+            return {
+                monthYears: [],
+            };
+        }
+
+        return {
+            monthYears: response.data.transactionMonthYearListByAccountId.nodes,
+        };
+    } catch (err) {
+        log("get transaction month year list failed, unexpected error", err);
 
         return {
             monthYears: [],
         };
     }
-
-    return {
-        monthYears: response.data.transactionMonthYearListByAccountId.nodes,
-    };
 }

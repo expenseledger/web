@@ -36,8 +36,12 @@ export function useInput(
     };
 }
 
-export function log(message: string, errors?: readonly GraphQLError[]): void {
-    console.log(message, extractGraphQLErrors(errors));
+export function log(message: string, error?: unknown): void {
+    if (error && Array.isArray(error) && error.every((e) => e instanceof GraphQLError)) {
+        console.log(message, extractGraphQLErrors(error as unknown as GraphQLError[]));
+    } else {
+        console.log(message, error);
+    }
 }
 
 export function formatNumber(value: number): string {

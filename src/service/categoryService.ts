@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { extractGraphQLErrors, log } from "../common/utils";
+import { log } from "../common/utils";
 import client from "../lib/apollo";
 import { CategoryType } from "./constants";
 import Category from "./model/Category";
@@ -71,93 +71,122 @@ export const categoryFragment = gql`
 `;
 
 export async function getAllCategories(): Promise<Category[]> {
-    const response = await client.query({
-        query: GET_ALL_CATEGORIES,
-    });
+    try {
+        const response = await client.query({
+            query: GET_ALL_CATEGORIES,
+        });
 
-    if (response.errors) {
-        log(`Cannot get all categories`, response.errors);
+        if (response.errors) {
+            log("cannot get all categories", response.errors);
+
+            return [];
+        }
+
+        const toReturn = response.data.categories.nodes as Category[];
+
+        return toReturn;
+    } catch (err) {
+        log("cannot get all categories, unexpected error", err);
 
         return [];
     }
-
-    const toReturn = response.data.categories.nodes as Category[];
-
-    return toReturn;
 }
 
 export async function createCategory(
     request: CreateCategoryRequest
 ): Promise<CreateCategoryResponse> {
-    const response = await client.mutate({
-        mutation: CREATE_CATEGORY,
-        variables: {
-            name: request.name,
-            type: request.type,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: CREATE_CATEGORY,
+            variables: {
+                name: request.name,
+                type: request.type,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannot add category, ${extractGraphQLErrors(response.errors)}`);
+        if (response.errors) {
+            log("cannot add category", response.errors);
 
+            return {
+                addedCategory: null,
+            };
+        }
+
+        return {
+            addedCategory: response.data.createCategoryV2.category,
+        };
+    } catch (err) {
+        log("cannot add category, unexpected error", err);
         return {
             addedCategory: null,
         };
     }
-
-    return {
-        addedCategory: response.data.createCategoryV2.category,
-    };
 }
 
 export async function deleteCategory(
     request: DeleteCategoryRequest
 ): Promise<DeleteCategoryResponse> {
-    const response = await client.mutate({
-        mutation: DELETE_CATEGORY,
-        variables: {
-            id: request.id,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: DELETE_CATEGORY,
+            variables: {
+                id: request.id,
+            },
+        });
 
-    if (response.errors) {
-        log(`Cannot remove category`, response.errors);
+        if (response.errors) {
+            log("cannot remove category", response.errors);
+
+            return {
+                isSuccess: false,
+            };
+        }
+
+        return {
+            isSuccess: true,
+        };
+    } catch (err) {
+        log("cannot remove category, unexpected error", err);
 
         return {
             isSuccess: false,
         };
     }
-
-    return {
-        isSuccess: true,
-    };
 }
 
 export async function updateCategory(
     request: UpdateCategoryRequest
 ): Promise<UpdateCategoryResponse> {
-    const response = await client.mutate({
-        mutation: UPDATE_CATEGORY,
-        variables: {
-            id: request.id,
-            name: request.name,
-            type: request.type,
-        },
-    });
+    try {
+        const response = await client.mutate({
+            mutation: UPDATE_CATEGORY,
+            variables: {
+                id: request.id,
+                name: request.name,
+                type: request.type,
+            },
+        });
 
-    if (response.errors) {
-        log("Cannot update category", response.errors);
+        if (response.errors) {
+            log("Cannot update category", response.errors);
+
+            return {
+                updatedCategory: null,
+            };
+        }
+
+        return {
+            updatedCategory: {
+                id: response.data.updateCategory.category.id,
+                name: response.data.updateCategory.category.name,
+                type: response.data.updateCategory.category.type as CategoryType,
+            },
+        };
+    } catch (err) {
+        log("cannot update category, unexpected error", err);
 
         return {
             updatedCategory: null,
         };
     }
-
-    return {
-        updatedCategory: {
-            id: response.data.updateCategory.category.id,
-            name: response.data.updateCategory.category.name,
-            type: response.data.updateCategory.category.type as CategoryType,
-        },
-    };
 }

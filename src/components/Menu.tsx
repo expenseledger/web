@@ -25,6 +25,9 @@ const EqualSign = styled.div`
 const SignOut = styled.a`
     cursor: pointer;
 `;
+const HideBalanceContainer = styled.div`
+    text-align: right;
+`;
 const hideBalanceSwitchId = "hideBalanceSwitch";
 const preventDrawerCloseIdList = [hideBalanceSwitchId];
 
@@ -72,20 +75,19 @@ const Menu: React.FC<MenuProps> = (props) => {
                         </li>
                         <li>
                             <div className="columns is-mobile">
-                                <div className="column is-half">Hide balance</div>
-                                <div className="column field hideBalanceSwitch">
+                                <HideBalanceContainer className="column field hideBalanceSwitch mr-6">
                                     <input
                                         id={hideBalanceSwitchId}
                                         type="checkbox"
                                         name={hideBalanceSwitchId}
-                                        className="switch is-rounded is-outlined is-small"
+                                        className="switch is-rounded is-outlined is-small is-rtl"
                                         checked={isHideBalance}
                                         onChange={onHideBalanceChangeHandler}
                                     />
-                                    <label
-                                        id={hideBalanceSwitchId}
-                                        htmlFor={hideBalanceSwitchId}></label>
-                                </div>
+                                    <label id={hideBalanceSwitchId} htmlFor={hideBalanceSwitchId}>
+                                        Hide balance
+                                    </label>
+                                </HideBalanceContainer>
                             </div>
                         </li>
                     </ul>

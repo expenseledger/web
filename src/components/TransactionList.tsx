@@ -192,14 +192,14 @@ export const TransactionList: React.FC = () => {
                         <TotalText className="has-text-weight-bold">Total</TotalText>
                         <SwitchContainer className="field ml-3">
                             <input
-                                id="switchRoundedOutlinedDefault"
+                                id="paidOnlySwitch"
                                 type="checkbox"
-                                name="switchRoundedOutlinedDefault"
+                                name="paidOnlySwitch"
                                 className="switch is-rounded is-outlined is-small"
                                 checked={isPaidOnly}
                                 onChange={paidOnlyOnChangeHandler}
                             />
-                            <label htmlFor="switchRoundedOutlinedDefault">Paid only</label>
+                            <label htmlFor="paidOnlySwitch">Paid only</label>
                         </SwitchContainer>
                     </div>
                     <AmountTxt amount={totalAmount} />

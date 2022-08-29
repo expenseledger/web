@@ -61,7 +61,11 @@ const Icon = styled.span`
     margin-top: 38px;
 `;
 
-type DrawerProps = React.PropsWithChildren<any>;
+interface OwnProps {
+    preventCloseIdList?: string[];
+}
+
+type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
     const [isShowPanel, setIsShowPanel] = React.useState(false);
@@ -69,7 +73,13 @@ const Drawer: React.FC<DrawerProps> = (props) => {
     const btnClickHandler = () => {
         setIsShowPanel(true);
     };
-    const closePanelHandler = () => {
+    const closePanelHandler = (event: React.MouseEvent<HTMLDivElement>) => {
+        const target = event.target as HTMLElement;
+
+        if (props.preventCloseIdList?.some((x) => x === target.id) ?? false) {
+            return;
+        }
+
         setIsAnimationUnmount(true);
         setTimeout(() => {
             setIsShowPanel(false);

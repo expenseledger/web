@@ -62,7 +62,7 @@ const Icon = styled.span`
 `;
 
 interface OwnProps {
-    preventCloseIdList?: string[];
+    preventCloseIdOrClassList?: string[];
 }
 
 type DrawerProps = React.PropsWithChildren<OwnProps>;
@@ -75,8 +75,12 @@ const Drawer: React.FC<DrawerProps> = (props) => {
     };
     const closePanelHandler = (event: React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLElement;
+        const shouldPrevent =
+            props.preventCloseIdOrClassList?.some(
+                (x) => x === target.id || x === target.className
+            ) ?? false;
 
-        if (props.preventCloseIdList?.some((x) => x === target.id) ?? false) {
+        if (shouldPrevent) {
             return;
         }
 

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Account from "../service/model/Account";
@@ -24,12 +25,23 @@ const EqualSign = styled.div`
 const SignOut = styled.a`
     cursor: pointer;
 `;
-
-const preventDrawerCloseIdList = ["hideBalanceSwitchLabel"];
+const hideBalanceSwitchId = "hideBalanceSwitch";
+const preventDrawerCloseIdList = [hideBalanceSwitchId];
 
 const Menu: React.FC<MenuProps> = (props) => {
+    const [isHideBalance, setIsHideBalance] = useState<boolean>(
+        window.localStorage.getItem("isHideBalanceOnMenu") === "true"
+    );
+    const onHideBalanceChangeHandler = () => {
+        setIsHideBalance((prevState) => {
+            const nextState = !prevState;
+            window.localStorage.setItem("isHideBalanceOnMenu", nextState.toString());
+            return nextState;
+        });
+    };
+
     return (
-        <Drawer preventCloseIdList={preventDrawerCloseIdList}>
+        <Drawer preventCloseIdOrClassList={preventDrawerCloseIdList}>
             <div className="container is-mobile is-fluid mt-5">
                 <aside className="menu">
                     <p className="menu-label">Accounts</p>
@@ -39,7 +51,10 @@ const Menu: React.FC<MenuProps> = (props) => {
                                 <div className="columns is-mobile">
                                     <div className="column is-half">{x.name}</div>
                                     <div className="column">
-                                        <BalanceWithCurrency balance={x.balance} />
+                                        <BalanceWithCurrency
+                                            balance={x.balance}
+                                            isHideBalance={isHideBalance}
+                                        />
                                     </div>
                                 </div>
                             </li>
@@ -48,26 +63,28 @@ const Menu: React.FC<MenuProps> = (props) => {
                             <div className="columns is-mobile">
                                 <EqualSign className="column is-half">=</EqualSign>
                                 <div className="column has-text-weight-bold">
-                                    <BalanceWithCurrency balance={props.totalAccountBalance} />
+                                    <BalanceWithCurrency
+                                        balance={props.totalAccountBalance}
+                                        isHideBalance={isHideBalance}
+                                    />
                                 </div>
                             </div>
                         </li>
                         <li>
                             <div className="columns is-mobile">
                                 <div className="column is-half">Hide balance</div>
-                                <div className="column field">
+                                <div className="column field hideBalanceSwitch">
                                     <input
-                                        id="hideBalanceSwitch"
+                                        id={hideBalanceSwitchId}
                                         type="checkbox"
-                                        name="hideBalanceSwitch"
+                                        name={hideBalanceSwitchId}
                                         className="switch is-rounded is-outlined is-small"
-                                        checked={true}
-                                        onClick={(e) => e.stopPropagation()}
-                                        // onChange={}
+                                        checked={isHideBalance}
+                                        onChange={onHideBalanceChangeHandler}
                                     />
                                     <label
-                                        id="hideBalanceSwitchLabel"
-                                        htmlFor="hideBalanceSwitch"></label>
+                                        id={hideBalanceSwitchId}
+                                        htmlFor={hideBalanceSwitchId}></label>
                                 </div>
                             </div>
                         </li>

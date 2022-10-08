@@ -31,7 +31,7 @@ const Home: React.FC = () => {
     const initialState = {
         accountIdx: 0,
         categoryIdx: 0,
-        amount: "0",
+        amount: "",
         date: dayjs().format("YYYY-MM-DD"),
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);

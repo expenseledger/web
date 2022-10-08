@@ -49,7 +49,7 @@ const More: React.FC = () => {
                 ? accounts.length - homeProps.accountIdx + 1
                 : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
-        amount: homeProps?.amount ?? "0",
+        amount: homeProps?.amount ?? "",
         date: homeProps?.date ?? Date.now.toString(),
         description: "",
     };

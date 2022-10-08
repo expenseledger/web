@@ -19,7 +19,7 @@ import "./Home.scss";
 interface CurrentValue {
     accountIdx: number;
     categoryIdx: number;
-    amount: number;
+    amount: string;
     date: string;
 }
 
@@ -31,7 +31,7 @@ const Home: React.FC = () => {
     const initialState = {
         accountIdx: 0,
         categoryIdx: 0,
-        amount: 0,
+        amount: "0",
         date: dayjs().format("YYYY-MM-DD"),
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);
@@ -66,54 +66,61 @@ const Home: React.FC = () => {
     const updateExpense = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.amount = Number.parseFloat(value);
+        tCurrentValue.amount = value;
         setCurrentValue(tCurrentValue);
     };
 
     const addTransaction = async () => {
         const { accountIdx, amount, date, categoryIdx } = currentValue;
+
         setIsLoading(true);
 
-        if (!amount || amount === 0) {
+        try {
+            const numberedAmount = Number.parseFloat(amount);
+
+            if (!numberedAmount || numberedAmount === 0) {
+                addNotification("Please add amount", "danger");
+                setIsLoading(false);
+                return;
+            } else if (!numberedAmount || numberedAmount < 0) {
+                addNotification("Amount should be more than 0", "danger");
+                setIsLoading(false);
+                return;
+            }
+            const request: AddExpenseRequest = {
+                amount: numberedAmount,
+                categoryId: categories[categoryIdx]?.id ?? 0,
+                fromAccountId: accounts[accountIdx]?.id ?? 0,
+                description: "-",
+                date,
+            };
+
+            const response = await addExpense(request);
+
+            if (response) {
+                const tAccounts = R.clone(accounts);
+                const selectedAccountIdx = accounts.findIndex(
+                    (x) => x.name === response.transaction.fromAccount.name
+                );
+
+                tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
+                setAccounts(tAccounts);
+                addNotification("AddExpense sucess", "success");
+
+                setCurrentValue({
+                    ...initialState,
+                    accountIdx: currentValue.accountIdx,
+                });
+                setIsLoading(false);
+                return;
+            }
+
+            addNotification("AddExpense is failed", "danger");
+            setIsLoading(false);
+        } catch {
             addNotification("Please add amount", "danger");
             setIsLoading(false);
-            return;
-        } else if (!amount || amount < 0) {
-            addNotification("Amount should be more than 0", "danger");
-            setIsLoading(false);
-            return;
         }
-
-        const request: AddExpenseRequest = {
-            amount,
-            categoryId: categories[categoryIdx]?.id ?? 0,
-            fromAccountId: accounts[accountIdx]?.id ?? 0,
-            description: "-",
-            date,
-        };
-
-        const response = await addExpense(request);
-
-        if (response) {
-            const tAccounts = R.clone(accounts);
-            const selectedAccountIdx = accounts.findIndex(
-                (x) => x.name === response.transaction.fromAccount.name
-            );
-
-            tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
-            setAccounts(tAccounts);
-            addNotification("AddExpense sucess", "success");
-
-            setCurrentValue({
-                ...initialState,
-                accountIdx: currentValue.accountIdx,
-            });
-            setIsLoading(false);
-            return;
-        }
-
-        addNotification("AddExpense is failed", "danger");
-        setIsLoading(false);
     };
 
     const toMorePage = () => {
@@ -184,7 +191,7 @@ const Home: React.FC = () => {
                     updateValue={updateExpense}
                     name="expnese"
                     type="number"
-                    value={currentValue.amount.toString()}
+                    value={currentValue.amount}
                     addOn={{ text: currency, position: "front" }}
                 />
             </div>

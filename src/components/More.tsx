@@ -20,7 +20,7 @@ interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
     categoryIdx: number;
-    amount: number;
+    amount: string;
     date: string;
     description: string;
     [key: string]: any;
@@ -28,7 +28,7 @@ interface CurrentValue {
 interface HomeProps {
     accountIdx: number;
     categoryIdx: number;
-    amount: number;
+    amount: string;
     date: string;
 }
 
@@ -49,7 +49,7 @@ const More: React.FC = () => {
                 ? accounts.length - homeProps.accountIdx + 1
                 : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
-        amount: homeProps?.amount ?? 0,
+        amount: homeProps?.amount ?? "0",
         date: homeProps?.date ?? Date.now.toString(),
         description: "",
     };
@@ -101,7 +101,7 @@ const More: React.FC = () => {
     const updateExpense = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.amount = Number.parseFloat(value);
+        tCurrentValue.amount = value;
         setCurrentValue(tCurrentValue);
     };
 
@@ -138,37 +138,40 @@ const More: React.FC = () => {
     const doAddExpense = async () => {
         const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
-        const isValid = validateAmount(amount);
+        try {
+            const numberedAmount = Number.parseFloat(amount);
+            const isValid = validateAmount(numberedAmount);
 
-        if (!isValid) {
-            setIsLoading(false);
-            return;
+            if (!isValid) {
+                setIsLoading(false);
+                return false;
+            }
+
+            const request: AddExpenseRequest = {
+                amount: numberedAmount,
+                categoryId: categories[categoryIdx]?.id ?? 0,
+                date,
+                description,
+                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+            };
+
+            const response = await addExpense(request);
+
+            if (response) {
+                const tAccounts = R.clone(accounts);
+                const selectedAccountIdx = accounts.findIndex(
+                    (x) => x.name === response.transaction.fromAccount.name
+                );
+
+                tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
+                setAccounts(tAccounts);
+                addNotification("AddExpense sucess", "success");
+
+                return true;
+            }
+        } catch {
+            addNotification("AddExpense failed", "danger");
         }
-
-        const request: AddExpenseRequest = {
-            amount,
-            categoryId: categories[categoryIdx]?.id ?? 0,
-            date,
-            description,
-            fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
-        };
-
-        const response = await addExpense(request);
-
-        if (response) {
-            const tAccounts = R.clone(accounts);
-            const selectedAccountIdx = accounts.findIndex(
-                (x) => x.name === response.transaction.fromAccount.name
-            );
-
-            tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
-            setAccounts(tAccounts);
-            addNotification("AddExpense sucess", "success");
-
-            return true;
-        }
-
-        addNotification("AddExpense failed", "danger");
 
         return false;
     };
@@ -176,37 +179,42 @@ const More: React.FC = () => {
     const doAddIncome = async () => {
         const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
-        const isValid = validateAmount(amount);
+        try {
+            const numberedAmount = Number.parseFloat(amount);
+            const isValid = validateAmount(numberedAmount);
 
-        if (!isValid) {
-            setIsLoading(false);
-            return;
+            if (!isValid) {
+                setIsLoading(false);
+                return false;
+            }
+
+            const request: AddIncomeRequest = {
+                amount: numberedAmount,
+                categoryId: categories[categoryIdx]?.id ?? 0,
+                date,
+                description,
+                toAccountId: accounts[fromAccountIdx]?.id ?? 0,
+            };
+
+            const response = await addIncome(request);
+
+            if (response) {
+                const tAccounts = R.clone(accounts);
+                const selectedAccountIdx = accounts.findIndex(
+                    (x) => x.name === response.transaction.toAccount.name
+                );
+
+                tAccounts[selectedAccountIdx].balance = response.transaction.toAccount.balance;
+                setAccounts(tAccounts);
+                addNotification("AddIncome sucess", "success");
+
+                return true;
+            }
+
+            addNotification("AddIncome failed", "danger");
+        } catch {
+            addNotification("AddIncome failed", "danger");
         }
-
-        const request: AddIncomeRequest = {
-            amount,
-            categoryId: categories[categoryIdx]?.id ?? 0,
-            date,
-            description,
-            toAccountId: accounts[fromAccountIdx]?.id ?? 0,
-        };
-
-        const response = await addIncome(request);
-
-        if (response) {
-            const tAccounts = R.clone(accounts);
-            const selectedAccountIdx = accounts.findIndex(
-                (x) => x.name === response.transaction.toAccount.name
-            );
-
-            tAccounts[selectedAccountIdx].balance = response.transaction.toAccount.balance;
-            setAccounts(tAccounts);
-            addNotification("AddIncome sucess", "success");
-
-            return true;
-        }
-
-        addNotification("AddIncome failed", "danger");
 
         return false;
     };
@@ -215,44 +223,48 @@ const More: React.FC = () => {
         const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
             currentValue;
 
-        const isValid =
-            validateAmount(amount) && validateTransferAccount(fromAccountIdx, toAccountIdx);
+        try {
+            const numberedAmount = Number.parseFloat(amount);
+            const isValid =
+                validateAmount(numberedAmount) &&
+                validateTransferAccount(fromAccountIdx, toAccountIdx);
 
-        if (!isValid) {
-            setIsLoading(false);
-            return;
+            if (!isValid) {
+                setIsLoading(false);
+                return false;
+            }
+
+            const request: AddTransferRequest = {
+                amount: numberedAmount,
+                categoryId: categories[categoryIdx]?.id ?? 0,
+                date,
+                description,
+                toAccountId: accounts[toAccountIdx]?.id ?? 0,
+                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+            };
+
+            const response = await addTransfer(request);
+
+            if (response) {
+                const tAccounts = R.clone(accounts);
+                const fromAccountIdx = accounts.findIndex(
+                    (x) => x.name === response.transaction.fromAccount.name
+                );
+                const toAccountIdx = accounts.findIndex(
+                    (x) => x.name === response.transaction.toAccount.name
+                );
+
+                tAccounts[fromAccountIdx].balance = response.transaction.fromAccount.balance;
+                tAccounts[toAccountIdx].balance = response.transaction.toAccount.balance;
+
+                setAccounts(tAccounts);
+                addNotification("AddTransfer success", "success");
+
+                return true;
+            }
+        } catch {
+            addNotification("AddTransfer failed", "danger");
         }
-
-        const request: AddTransferRequest = {
-            amount,
-            categoryId: categories[categoryIdx]?.id ?? 0,
-            date,
-            description,
-            toAccountId: accounts[toAccountIdx]?.id ?? 0,
-            fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
-        };
-
-        const response = await addTransfer(request);
-
-        if (response) {
-            const tAccounts = R.clone(accounts);
-            const fromAccountIdx = accounts.findIndex(
-                (x) => x.name === response.transaction.fromAccount.name
-            );
-            const toAccountIdx = accounts.findIndex(
-                (x) => x.name === response.transaction.toAccount.name
-            );
-
-            tAccounts[fromAccountIdx].balance = response.transaction.fromAccount.balance;
-            tAccounts[toAccountIdx].balance = response.transaction.toAccount.balance;
-
-            setAccounts(tAccounts);
-            addNotification("AddTransfer success", "success");
-
-            return true;
-        }
-
-        addNotification("AddTransfer failed", "danger");
 
         return false;
     };
@@ -398,7 +410,7 @@ const More: React.FC = () => {
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
-                        value={currentValue.amount.toString()}
+                        value={currentValue.amount}
                         addOn={{ text: currency, position: "front" }}
                     />
                 </div>

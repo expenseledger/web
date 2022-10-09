@@ -9,15 +9,14 @@ on:
     workflow_call:
         secrets:
             VERCEL_TOKEN:
-                description: 'vercel token'
+                description: "vercel token"
                 required: true
             VERCEL_ORG_ID:
-                description: 'vercel organization id'
+                description: "vercel organization id"
                 required: true
             VERCEL_PROJECT_ID:
-                description: 'vercel project id'
+                description: "vercel project id"
                 required: true
-            
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -26,6 +25,8 @@ jobs:
 
         steps:
             - uses: actions/checkout@v3
+              with:
+                  fetch-depth: 0
 
             - name: Setup Node.js environment
               uses: actions/setup-node@v2.3.0

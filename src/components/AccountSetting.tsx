@@ -4,6 +4,7 @@ import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { formatNumber } from "../common/utils";
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
 import { AccountType, Currency } from "../service/constants";
@@ -35,7 +36,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
-    const [balance, setBalance] = React.useState(0);
+    const [balanceText, setBalanceText] = React.useState("");
     const [type, setType] = React.useState<AccountType>("CASH");
     const currency = useRecoilValue(currencyState);
     const getOtherCategory = async () => {
@@ -73,6 +74,8 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
             return;
         }
+
+        const balance = Number.parseFloat(balanceText);
 
         if (balance < account.balance) {
             const response = await addExpense({
@@ -131,7 +134,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         setType(mapStringToAccountType(value));
     };
     const accountBalanceHandler = (value: string) => {
-        setBalance(Number.parseFloat(value));
+        setBalanceText(value);
     };
 
     React.useEffect(() => {
@@ -139,7 +142,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
         setName(account.name);
         setType(account.type);
-        setBalance(account.balance);
+        setBalanceText(formatNumber(account.balance));
     }, [accounts, props.id]);
 
     return (
@@ -182,8 +185,8 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                     className="column"
                     name="category-modify"
                     updateValue={accountBalanceHandler}
-                    type="number"
-                    value={balance.toString()}
+                    // type="number"
+                    value={balanceText}
                 />
             </div>
         </Modal>

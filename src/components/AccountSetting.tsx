@@ -185,7 +185,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                     className="column"
                     name="category-modify"
                     updateValue={accountBalanceHandler}
-                    // type="number"
+                    type="number"
                     value={balanceText}
                 />
             </div>

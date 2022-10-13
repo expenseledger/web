@@ -248,10 +248,10 @@ const More: React.FC = () => {
             if (response) {
                 const tAccounts = R.clone(accounts);
                 const fromAccountIdx = accounts.findIndex(
-                    (x) => x.name === response.transaction.fromAccount.name
+                    (x) => x.id === response.transaction.fromAccount.id
                 );
                 const toAccountIdx = accounts.findIndex(
-                    (x) => x.name === response.transaction.toAccount.name
+                    (x) => x.id === response.transaction.toAccount.id
                 );
 
                 tAccounts[fromAccountIdx].balance = response.transaction.fromAccount.balance;

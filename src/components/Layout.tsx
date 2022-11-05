@@ -44,7 +44,7 @@ const Layout: React.FC = () => {
                 setAccounts(accounts);
                 setIsLoading(false);
             })
-            .catch((err) => log(err));
+            .catch((err) => log("getUserData failed", err));
     }, [isSignIn, isSignInLoading, redirectToSignIn, setAccounts, setCategories]);
 
     return isLoading ? (

@@ -38,6 +38,10 @@ const Layout: React.FC = () => {
             return;
         }
 
+        if (isSignInLoading || !isSignIn) {
+            return;
+        }
+
         getUserData()
             .then(({ categories, accounts }) => {
                 setCategories(categories);

@@ -30,7 +30,7 @@ const Layout: React.FC = () => {
     const [, setCategories] = useRecoilState(categoriesState);
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
-    const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
+    const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
 
     React.useEffect(() => {
         if (!isSignInLoading && !isSignIn) {

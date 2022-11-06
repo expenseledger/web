@@ -30,11 +30,15 @@ const Layout: React.FC = () => {
     const [, setCategories] = useRecoilState(categoriesState);
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
-    const { isSignIn, redirectToSignIn, isSignInLoading } = useSignIn();
+    const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
 
     React.useEffect(() => {
         if (!isSignInLoading && !isSignIn) {
             redirectToSignIn();
+            return;
+        }
+
+        if (isSignInLoading || !isSignIn) {
             return;
         }
 
@@ -44,7 +48,7 @@ const Layout: React.FC = () => {
                 setAccounts(accounts);
                 setIsLoading(false);
             })
-            .catch((err) => log(err));
+            .catch((err) => log("getUserData failed", err));
     }, [isSignIn, isSignInLoading, redirectToSignIn, setAccounts, setCategories]);
 
     return isLoading ? (

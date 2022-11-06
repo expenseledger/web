@@ -53,11 +53,7 @@ export const AuthProtection: React.FC<React.PropsWithChildren<AuthProtectionProp
     return isSignin || props.isTest ? <>{props.children}</> : <Loading />;
 };
 
-export const useSignIn = (): {
-    isSignIn: boolean;
-    redirectToSignIn: () => void;
-    isSignInLoading: boolean;
-} => {
+export const useSignIn = (): [boolean, () => void, boolean] => {
     const [isSignIn, setIsSignin] = useRecoilState(isSignInState);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
@@ -67,7 +63,8 @@ export const useSignIn = (): {
         }
 
         navigate("/signIn");
-    }, [isSignIn, navigate]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isSignIn]);
 
     React.useEffect(() => {
         onAuthStateChanged(auth, (user) => {
@@ -82,9 +79,5 @@ export const useSignIn = (): {
         };
     }, [setIsSignin]);
 
-    return {
-        isSignIn,
-        redirectToSignIn,
-        isSignInLoading: isLoading,
-    };
+    return [isSignIn, redirectToSignIn, isLoading];
 };

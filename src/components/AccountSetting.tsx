@@ -155,7 +155,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             confirmBtnTxt="Confirm"
             confirmBtnType="primary">
             <div className="columns is-mobile is-vcentered">
-                <div className="column is-2">
+                <div className="column is-3">
                     <span>Name</span>
                 </div>
                 <TextBox
@@ -166,7 +166,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <div className="column is-2">
+                <div className="column is-3">
                     <span>Type</span>
                 </div>
                 <Dropdown
@@ -177,7 +177,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <div className="column is-2">
+                <div className="column is-3">
                     <span>Balance</span>
                 </div>
                 <TextBox

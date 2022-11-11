@@ -6,6 +6,7 @@ import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { toNumber } from "../common/utils";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -76,7 +77,7 @@ const Home: React.FC = () => {
         setIsLoading(true);
 
         try {
-            const numberedAmount = Number.parseFloat(amount);
+            const numberedAmount = toNumber(amount);
 
             if (!numberedAmount || numberedAmount === 0) {
                 addNotification("Please add amount", "danger");

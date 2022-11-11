@@ -3,6 +3,7 @@ import React from "react";
 import { useLocation } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { toNumber } from "../common/utils";
 import { TransactionType } from "../service/constants";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
@@ -139,7 +140,7 @@ const More: React.FC = () => {
         const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         try {
-            const numberedAmount = Number.parseFloat(amount);
+            const numberedAmount = toNumber(amount);
             const isValid = validateAmount(numberedAmount);
 
             if (!isValid) {
@@ -180,7 +181,7 @@ const More: React.FC = () => {
         const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         try {
-            const numberedAmount = Number.parseFloat(amount);
+            const numberedAmount = toNumber(amount);
             const isValid = validateAmount(numberedAmount);
 
             if (!isValid) {
@@ -224,7 +225,7 @@ const More: React.FC = () => {
             currentValue;
 
         try {
-            const numberedAmount = Number.parseFloat(amount);
+            const numberedAmount = toNumber(amount);
             const isValid =
                 validateAmount(numberedAmount) &&
                 validateTransferAccount(fromAccountIdx, toAccountIdx);

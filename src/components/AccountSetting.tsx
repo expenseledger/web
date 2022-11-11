@@ -4,7 +4,7 @@ import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
-import { formatNumber } from "../common/utils";
+import { toNumber } from "../common/utils";
 import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
 import { createCategory } from "../service/categoryService";
 import { AccountType, Currency } from "../service/constants";
@@ -36,7 +36,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
-    const [balanceText, setBalanceText] = React.useState("");
+    const [balanceText, setBalanceText] = React.useState<string>("");
     const [type, setType] = React.useState<AccountType>("CASH");
     const currency = useRecoilValue(currencyState);
     const getOtherCategory = async () => {
@@ -75,7 +75,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             return;
         }
 
-        const balance = Number.parseFloat(balanceText);
+        const balance = toNumber(balanceText);
 
         if (balance < account.balance) {
             const response = await addExpense({
@@ -139,10 +139,9 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     React.useEffect(() => {
         const account = accounts.find((x) => x.id === props.id);
-
         setName(account.name);
         setType(account.type);
-        setBalanceText(formatNumber(account.balance));
+        setBalanceText(account.balance.toString());
     }, [accounts, props.id]);
 
     return (

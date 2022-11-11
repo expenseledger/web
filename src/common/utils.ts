@@ -51,6 +51,10 @@ export function formatNumber(value: number): string {
     }).format(value);
 }
 
+export function toNumber(value: string): number {
+    return toNumber(value.replace(",", ""));
+}
+
 export function extractGraphQLErrors(errors?: readonly GraphQLError[]): string {
     return errors?.map((x) => x.message).join("\n") ?? "";
 }

@@ -52,7 +52,7 @@ export function formatNumber(value: number): string {
 }
 
 export function toNumber(value: string): number {
-    return toNumber(value.replace(",", ""));
+    return Number.parseFloat(value.replace(",", ""));
 }
 
 export function extractGraphQLErrors(errors?: readonly GraphQLError[]): string {

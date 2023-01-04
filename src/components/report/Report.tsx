@@ -1,0 +1,47 @@
+import dayjs from "dayjs";
+import { useEffect, useState } from "react";
+import { useLocation } from "react-router";
+import Transaction from "../../service/model/Transaction";
+import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
+import Loading from "../bases/Loading";
+
+const Report: React.FC = (props) => {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
+    const [monthYearList, setMonthYearList] = useState<string[]>([]);
+    const location = useLocation();
+    const initialAccountId: number | null = location.state?.accountId;
+
+    useEffect(() => {
+        if (!initialAccountId || monthYearList.length != 0) {
+            return;
+        }
+
+        getTransactionMonthYearList({ accountId: initialAccountId }).then((response) => {
+            setMonthYearList(response.monthYears);
+        });
+    }, [initialAccountId, monthYearList.length]);
+
+    useEffect(() => {
+        if (monthYearList.length == 0) {
+            return;
+        }
+
+        const from = dayjs(monthYearList[monthYearIdx]);
+        const until = from.add(1, "M");
+
+        listTransactions({
+            accountId: initialAccountId,
+            from: from.toDate(),
+            until: until.toDate(),
+        }).then((response) => {
+            setTransactions(response.items);
+            setIsLoading(false);
+        });
+    });
+
+    return isLoading ? <Loading /> : <div></div>;
+};
+
+export default Report;

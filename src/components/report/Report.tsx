@@ -4,11 +4,12 @@ import { useLocation } from "react-router";
 import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
+import BarChartReport from "./BarChartReport";
 
-const Report: React.FC = (props) => {
+const Report: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(1);
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
     const location = useLocation();
     const initialAccountId: number | null = location.state?.accountId;
@@ -39,9 +40,15 @@ const Report: React.FC = (props) => {
             setTransactions(response.items);
             setIsLoading(false);
         });
-    });
+    }, [initialAccountId, monthYearIdx, monthYearList]);
 
-    return isLoading ? <Loading /> : <div></div>;
+    return isLoading ? (
+        <Loading />
+    ) : (
+        <div>
+            <BarChartReport transactions={transactions} />
+        </div>
+    );
 };
 
 export default Report;

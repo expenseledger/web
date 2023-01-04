@@ -174,6 +174,15 @@ const Home: React.FC = () => {
                             <i className="fas fa-chevron-right" aria-hidden="true"></i>
                         </Icon>
                     </Link>
+                    <Link
+                        className="has-text-weight-bold"
+                        to="/report"
+                        state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>
+                        <span>Report</span>
+                        <Icon className="icon">
+                            <i className="fas fa-chevron-right" aria-hidden="true"></i>
+                        </Icon>
+                    </Link>
                 </div>
             </div>
             <div className="columns is-mobile is-vcentered">

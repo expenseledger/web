@@ -5,6 +5,7 @@ import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
 import BarChartReport from "./BarChartReport";
+import PieChartReport from "./PieChartReport";
 
 const Report: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -46,7 +47,17 @@ const Report: React.FC = () => {
         <Loading />
     ) : (
         <div>
-            <BarChartReport transactions={transactions} />
+            <BarChartReport transactions={transactions} accountIds={[initialAccountId]} />
+            <PieChartReport
+                transactions={transactions}
+                accountIds={[initialAccountId]}
+                isExpense={false}
+            />
+            <PieChartReport
+                transactions={transactions}
+                accountIds={[initialAccountId]}
+                isExpense={true}
+            />
         </div>
     );
 };

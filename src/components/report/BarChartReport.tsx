@@ -12,9 +12,11 @@ import {
     YAxis,
 } from "recharts";
 import Transaction from "../../service/model/Transaction";
+import { getAmount } from "./reportHelper";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
+    accountIds: number[];
 }
 
 interface BarChartData {
@@ -25,15 +27,19 @@ interface BarChartData {
 
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
-    const transfromTransactions = (transactions: Transaction[]): BarChartData[] => {
+    const transfromTransactions = (
+        transactions: Transaction[],
+        accountIds: number[]
+    ): BarChartData[] => {
         const toReturn: BarChartData[] = [];
         const byName = R.groupBy((data: BarChartData) => data.name);
         const dirtyData = byName(
             transactions.reverse().map((t) => {
+                const amount = getAmount(t, accountIds);
                 return {
                     name: dayjs(t.date).format("D MMM"),
-                    income: t.type === "INCOME" ? Math.abs(t.amount) : 0,
-                    expense: t.type !== "INCOME" ? Math.abs(t.amount) : 0,
+                    income: amount >= 0 ? Math.abs(t.amount) : 0,
+                    expense: amount < 0 ? Math.abs(t.amount) : 0,
                 };
             })
         );
@@ -50,14 +56,12 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
             toReturn.push(aggregatedData);
         }
 
-        console.log(toReturn);
-
         return toReturn;
     };
 
     useEffect(() => {
-        setData(transfromTransactions(props.transactions));
-    }, [props.transactions]);
+        setData(transfromTransactions(props.transactions, props.accountIds));
+    }, [props.accountIds, props.transactions]);
 
     return !data ? null : (
         <div style={{ width: "100%", height: 200 }}>

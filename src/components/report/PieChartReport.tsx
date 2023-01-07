@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
 import Transaction from "../../service/model/Transaction";
 import { getAmount } from "./reportHelper";
@@ -17,6 +17,7 @@ interface PieChartData {
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
+    const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
     const getPieChartData = (
         transactions: Transaction[],
@@ -49,7 +50,14 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
             toReturn.push(aggregatedData);
         }
 
-        return toReturn;
+        return toReturn.length !== 0
+            ? toReturn
+            : [
+                  {
+                      name: "No data",
+                      value: 1,
+                  },
+              ];
     };
     const renderActiveShape = (props: any) => {
         const RADIAN = Math.PI / 180;
@@ -90,30 +98,39 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                     endAngle={endAngle}
                     fill={fill}
                 />
-                <Sector
-                    cx={cx}
-                    cy={cy}
-                    startAngle={startAngle}
-                    endAngle={endAngle}
-                    innerRadius={outerRadius + 6}
-                    outerRadius={outerRadius + 10}
-                    fill={fill}
-                />
-                <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-                <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-                <text
-                    x={ex + (cos >= 0 ? 1 : -1) * 12}
-                    y={ey}
-                    textAnchor={textAnchor}
-                    fill="#333">{`${value}`}</text>
-                <text
-                    x={ex + (cos >= 0 ? 1 : -1) * 12}
-                    y={ey}
-                    dy={18}
-                    textAnchor={textAnchor}
-                    fill="#999">
-                    {`(${(percent * 100).toFixed(2)}%)`}
-                </text>
+
+                {payload.name !== "No data" ? (
+                    <>
+                        <Sector
+                            cx={cx}
+                            cy={cy}
+                            startAngle={startAngle}
+                            endAngle={endAngle}
+                            innerRadius={outerRadius + 6}
+                            outerRadius={outerRadius + 10}
+                            fill={fill}
+                        />
+                        <path
+                            d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+                            stroke={fill}
+                            fill="none"
+                        />
+                        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+                        <text
+                            x={ex + (cos >= 0 ? 1 : -1) * 12}
+                            y={ey}
+                            textAnchor={textAnchor}
+                            fill="#333">{`${value}`}</text>
+                        <text
+                            x={ex + (cos >= 0 ? 1 : -1) * 12}
+                            y={ey}
+                            dy={18}
+                            textAnchor={textAnchor}
+                            fill="#999">
+                            {`(${(percent * 100).toFixed(2)}%)`}
+                        </text>
+                    </>
+                ) : null}
             </g>
         );
     };
@@ -121,23 +138,35 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
         setActiveIndex(index);
     };
 
+    useEffect(() => {
+        setPieChartData(getPieChartData(props.transactions, props.accountIds, props.isExpense));
+    }, [props.accountIds, props.isExpense, props.transactions]);
+
     return (
-        <ResponsiveContainer width="100%" height={200}>
-            <PieChart>
-                <Pie
-                    activeIndex={activeIndex}
-                    activeShape={renderActiveShape}
-                    data={getPieChartData(props.transactions, props.accountIds, props.isExpense)}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    onMouseEnter={onPieEnter}
-                />
-            </PieChart>
-        </ResponsiveContainer>
+        <div>
+            <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                    <Pie
+                        activeIndex={activeIndex}
+                        activeShape={renderActiveShape}
+                        data={pieChartData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={60}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                        onMouseEnter={onPieEnter}
+                    />
+                </PieChart>
+            </ResponsiveContainer>
+            <span>{props.isExpense ? "Expense" : "Income"}</span>
+            <span>
+                {pieChartData.filter((p) => p.name !== "No data").length !== 0
+                    ? pieChartData.map((p) => p.value).reduce((acc, current) => acc + current)
+                    : 0}
+            </span>
+        </div>
     );
 };
 

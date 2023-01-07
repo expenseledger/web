@@ -4,13 +4,14 @@ import { useLocation } from "react-router";
 import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
+import MonthYearSwiper from "../bases/MonthYearSwiper";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 
 const Report: React.FC = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [monthYearIdx, setMonthYearIdx] = useState<number>(1);
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
     const location = useLocation();
     const initialAccountId: number | null = location.state?.accountId;
@@ -46,7 +47,11 @@ const Report: React.FC = () => {
     return isLoading ? (
         <Loading />
     ) : (
-        <div>
+        <>
+            <MonthYearSwiper
+                monthYearList={monthYearList}
+                onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
+            />
             <BarChartReport transactions={transactions} accountIds={[initialAccountId]} />
             <PieChartReport
                 transactions={transactions}
@@ -58,7 +63,7 @@ const Report: React.FC = () => {
                 accountIds={[initialAccountId]}
                 isExpense={true}
             />
-        </div>
+        </>
     );
 };
 

@@ -4,7 +4,6 @@ import React, { startTransition, useCallback, useEffect, useState } from "react"
 import { useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
-import { Swiper, SwiperSlide } from "swiper/react";
 import { accountsState } from "../common/shareState";
 import Loading from "../components/bases/Loading";
 import { useNotification } from "../service/helper/notificationHelper";
@@ -16,6 +15,7 @@ import {
 } from "../service/transactionService";
 import AmountTxt from "./bases/AmountTxt";
 import Button from "./bases/Button";
+import MonthYearSwiper from "./bases/MonthYearSwiper";
 import { TransactionCard } from "./TransactionCard";
 import "./TransactionList.scss";
 
@@ -23,9 +23,6 @@ const NoData = styled.div`
     font-weight: bold;
     text-align: center;
     margin-top: 30px;
-`;
-const MonthYear = styled.h4`
-    text-align: center;
 `;
 const SwitchContainer = styled.div`
     display: inline-block;
@@ -210,21 +207,10 @@ export const TransactionList: React.FC = () => {
 
     const renderMonthYear = () => {
         return (
-            <Swiper
-                dir="rtl"
-                spaceBetween={10}
-                slidesPerView={"auto"}
-                centeredSlides={true}
-                navigation={true}
-                onSlideChange={(swipe) => setMonthYearIdx(swipe.realIndex)}>
-                {monthYearList.map((x) => (
-                    <SwiperSlide key={x}>
-                        <MonthYear key={x} className="title is-4 px-5 py-5">
-                            {dayjs(x).format("MMMM YYYY")}
-                        </MonthYear>
-                    </SwiperSlide>
-                ))}
-            </Swiper>
+            <MonthYearSwiper
+                monthYearList={monthYearList}
+                onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
+            />
         );
     };
 

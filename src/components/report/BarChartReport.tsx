@@ -64,26 +64,24 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     }, [props.accountIds, props.transactions]);
 
     return !data ? null : (
-        <div style={{ width: "100%", height: 200 }}>
-            <ResponsiveContainer>
-                <BarChart
-                    data={data}
-                    margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 5,
-                    }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <Legend />
-                    <Bar dataKey="income" fill="#8884d8" />
-                    <Bar dataKey="expense" fill="#82ca9d" />
-                </BarChart>
-            </ResponsiveContainer>
-        </div>
+        <ResponsiveContainer width="100%" height={200}>
+            <BarChart
+                data={data}
+                margin={{
+                    top: 5,
+                    right: 30,
+                    left: 20,
+                    bottom: 5,
+                }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="income" fill="#8884d8" />
+                <Bar dataKey="expense" fill="#82ca9d" />
+            </BarChart>
+        </ResponsiveContainer>
     );
 };
 

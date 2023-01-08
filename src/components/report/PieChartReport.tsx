@@ -1,7 +1,11 @@
 import * as R from "ramda";
 import { useEffect, useState } from "react";
-import { Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
+import { useRecoilValue } from "recoil";
+import { currencyState } from "../../common/shareState";
+import { formatNumber } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
+import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { getAmount } from "./reportHelper";
 
 interface PieChartReportProps {
@@ -15,7 +19,10 @@ interface PieChartData {
     value: number;
 }
 
+const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#c786ff", "#ff7285"];
+
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
+    const currency = useRecoilValue(currencyState);
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
@@ -78,15 +85,15 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
         const cos = Math.cos(-RADIAN * midAngle);
         const sx = cx + (outerRadius + 10) * cos;
         const sy = cy + (outerRadius + 10) * sin;
-        const mx = cx + (outerRadius + 30) * cos;
-        const my = cy + (outerRadius + 30) * sin;
-        const ex = mx + (cos >= 0 ? 1 : -1) * 22;
+        const mx = cx + (outerRadius + 15) * cos;
+        const my = cy + (outerRadius + 15) * sin;
+        const ex = mx + (cos >= 0 ? 1 : -1) * 10;
         const ey = my;
         const textAnchor = cos >= 0 ? "start" : "end";
 
         return (
             <g>
-                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
+                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} fontSize="12px">
                     {payload.name}
                 </text>
                 <Sector
@@ -120,14 +127,16 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                             x={ex + (cos >= 0 ? 1 : -1) * 12}
                             y={ey}
                             textAnchor={textAnchor}
-                            fill="#333">{`${value}`}</text>
+                            fill="#333"
+                            fontSize="10px">{`${currency} ${formatNumber(value)}`}</text>
                         <text
                             x={ex + (cos >= 0 ? 1 : -1) * 12}
                             y={ey}
                             dy={18}
                             textAnchor={textAnchor}
-                            fill="#999">
-                            {`(${(percent * 100).toFixed(2)}%)`}
+                            fill="#999"
+                            fontSize="8px">
+                            {`(${(percent * 100).toFixed(1)}%)`}
                         </text>
                     </>
                 ) : null}
@@ -144,7 +153,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
 
     return (
         <div>
-            <ResponsiveContainer width="100%" height={200}>
+            <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                     <Pie
                         activeIndex={activeIndex}
@@ -152,20 +161,29 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                         data={pieChartData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={60}
-                        outerRadius={80}
+                        innerRadius={50}
+                        outerRadius={70}
                         fill="#8884d8"
                         dataKey="value"
-                        onMouseEnter={onPieEnter}
-                    />
+                        onMouseEnter={onPieEnter}>
+                        {pieChartData.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                    </Pie>
                 </PieChart>
             </ResponsiveContainer>
-            <span>{props.isExpense ? "Expense" : "Income"}</span>
-            <span>
-                {pieChartData.filter((p) => p.name !== "No data").length !== 0
-                    ? pieChartData.map((p) => p.value).reduce((acc, current) => acc + current)
-                    : 0}
-            </span>
+            <div>
+                <span>{props.isExpense ? "Expense" : "Income"}</span>
+                <BalanceWithCurrency
+                    balance={
+                        pieChartData.filter((p) => p.name !== "No data").length !== 0
+                            ? pieChartData
+                                  .map((p) => p.value)
+                                  .reduce((acc, current) => acc + current)
+                            : 0
+                    }
+                />
+            </div>
         </div>
     );
 };

@@ -2,11 +2,12 @@ import * as R from "ramda";
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
 import { useRecoilValue } from "recoil";
+import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
 import { formatNumber } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
-import { getAmount } from "./reportHelper";
+import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
 
 interface PieChartReportProps {
     transactions: Transaction[];
@@ -20,6 +21,11 @@ interface PieChartData {
 }
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#c786ff", "#ff7285"];
+const TotalAmountDiv = styled.div<{ isExpense: boolean }>`
+    text-align: center;
+    font-weight: 700;
+    color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+`;
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     const currency = useRecoilValue(currencyState);
@@ -152,7 +158,19 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     }, [props.accountIds, props.isExpense, props.transactions]);
 
     return (
-        <div>
+        <>
+            <TotalAmountDiv isExpense={props.isExpense}>
+                <div>{props.isExpense ? "Expense" : "Income"}</div>
+                <BalanceWithCurrency
+                    balance={
+                        pieChartData.filter((p) => p.name !== "No data").length !== 0
+                            ? pieChartData
+                                  .map((p) => p.value)
+                                  .reduce((acc, current) => acc + current)
+                            : 0
+                    }
+                />
+            </TotalAmountDiv>
             <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                     <Pie
@@ -163,7 +181,6 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                         cy="50%"
                         innerRadius={50}
                         outerRadius={70}
-                        fill="#8884d8"
                         dataKey="value"
                         onMouseEnter={onPieEnter}>
                         {pieChartData.map((entry, index) => (
@@ -172,19 +189,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                     </Pie>
                 </PieChart>
             </ResponsiveContainer>
-            <div>
-                <span>{props.isExpense ? "Expense" : "Income"}</span>
-                <BalanceWithCurrency
-                    balance={
-                        pieChartData.filter((p) => p.name !== "No data").length !== 0
-                            ? pieChartData
-                                  .map((p) => p.value)
-                                  .reduce((acc, current) => acc + current)
-                            : 0
-                    }
-                />
-            </div>
-        </div>
+        </>
     );
 };
 

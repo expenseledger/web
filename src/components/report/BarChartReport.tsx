@@ -11,8 +11,12 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
+import { useRecoilValue } from "recoil";
+import styled from "styled-components";
+import { currencyState } from "../../common/shareState";
 import Transaction from "../../service/model/Transaction";
-import { getAmount } from "./reportHelper";
+import BalanceWithCurrency from "../bases/BalanceWithCurrency";
+import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
@@ -25,8 +29,14 @@ interface BarChartData {
     expense: number;
 }
 
+const TotalAmountDiv = styled.div`
+    text-align: center;
+    font-weight: 700;
+`;
+
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
+    const currency = useRecoilValue(currencyState);
     const transfromTransactions = (
         transactions: Transaction[],
         accountIds: number[]
@@ -64,24 +74,34 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     }, [props.accountIds, props.transactions]);
 
     return !data ? null : (
-        <ResponsiveContainer width="100%" height={200}>
-            <BarChart
-                data={data}
-                margin={{
-                    top: 5,
-                    right: 30,
-                    left: 20,
-                    bottom: 5,
-                }}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="income" fill="#8884d8" />
-                <Bar dataKey="expense" fill="#82ca9d" />
-            </BarChart>
-        </ResponsiveContainer>
+        <>
+            <TotalAmountDiv className="mb-5">
+                <div>Total balance</div>
+                <BalanceWithCurrency
+                    balance={data
+                        .map((d) => d.income - d.expense)
+                        .reduce((acc, current) => acc + current)}
+                />
+            </TotalAmountDiv>
+            <ResponsiveContainer width="100%" height={250}>
+                <BarChart
+                    data={data}
+                    margin={{
+                        top: 5,
+                        right: 30,
+                        left: 20,
+                        bottom: 5,
+                    }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="income" fill={INCOME_COLOR} name="Income" />
+                    <Bar dataKey="expense" fill={EXPENSE_COLOR} name="Expense" />
+                </BarChart>
+            </ResponsiveContainer>
+        </>
     );
 };
 

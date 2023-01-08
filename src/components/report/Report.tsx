@@ -39,7 +39,7 @@ const Report: React.FC = () => {
             from: from.toDate(),
             until: until.toDate(),
         }).then((response) => {
-            setTransactions(response.items);
+            setTransactions(response.items.reverse());
             setIsLoading(false);
         });
     }, [initialAccountId, monthYearIdx, monthYearList]);

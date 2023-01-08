@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
     Bar,
     BarChart,
@@ -34,41 +34,61 @@ const TotalAmountDiv = styled.div`
 
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
-    const transfromTransactions = (
-        transactions: Transaction[],
-        accountIds: number[]
-    ): BarChartData[] => {
-        const toReturn: BarChartData[] = [];
-        const byName = R.groupBy((data: BarChartData) => data.name);
-        const dirtyData = byName(
-            transactions.reverse().map((t) => {
-                const amount = getAmount(t, accountIds);
-                return {
-                    name: dayjs(t.date).format("D MMM"),
-                    income: amount >= 0 ? Math.abs(t.amount) : 0,
-                    expense: amount < 0 ? Math.abs(t.amount) : 0,
-                };
-            })
-        );
+    const getXAxis = (daysInMonth: number): string[] => {
+        const toReturn = [];
+        let counter = 1;
 
-        for (const key in dirtyData) {
-            const aggregatedData = dirtyData[key].reduce((acc, current) => {
-                return {
-                    name: key,
-                    income: acc.income + current.income,
-                    expense: acc.expense + current.expense,
-                };
-            });
-
-            toReturn.push(aggregatedData);
+        while (counter <= daysInMonth) {
+            const end = counter + 6;
+            toReturn.push(`${counter} - ${end > daysInMonth ? daysInMonth : end}`);
+            counter += 7;
         }
 
         return toReturn;
     };
+    const transfromTransactions = useCallback(
+        (transactions: Transaction[], accountIds: number[]): BarChartData[] => {
+            const toReturn: BarChartData[] = [];
+
+            if (transactions.length === 0) {
+                return toReturn;
+            }
+            const daysInMonth = dayjs(transactions[0].date).daysInMonth();
+            const xAxis = getXAxis(daysInMonth);
+            const byName = R.groupBy((data: BarChartData) => data.name);
+            const dirtyData = byName(
+                transactions.map((t) => {
+                    const amount = getAmount(t, accountIds);
+                    const idx = Math.floor(dayjs(t.date).date() / 7);
+
+                    return {
+                        name: xAxis[idx],
+                        income: amount >= 0 ? Math.abs(t.amount) : 0,
+                        expense: amount < 0 ? Math.abs(t.amount) : 0,
+                    };
+                })
+            );
+
+            for (const key in dirtyData) {
+                const aggregatedData = dirtyData[key].reduce((acc, current) => {
+                    return {
+                        name: key,
+                        income: acc.income + current.income,
+                        expense: acc.expense + current.expense,
+                    };
+                });
+
+                toReturn.push(aggregatedData);
+            }
+
+            return toReturn;
+        },
+        []
+    );
 
     useEffect(() => {
         setData(transfromTransactions(props.transactions, props.accountIds));
-    }, [props.accountIds, props.transactions]);
+    }, [props.accountIds, props.transactions, transfromTransactions]);
 
     return !data ? null : (
         <>
@@ -93,7 +113,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />
-                    <Legend />
+                    <Legend align="center" />
                     <Bar dataKey="income" fill={INCOME_COLOR} name="Income" />
                     <Bar dataKey="expense" fill={EXPENSE_COLOR} name="Expense" />
                 </BarChart>

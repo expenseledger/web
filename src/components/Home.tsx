@@ -27,6 +27,9 @@ interface CurrentValue {
 const Icon = styled.span`
     vertical-align: middle;
 `;
+const LinkText = styled.span`
+    vertical-align: middle;
+`;
 
 const Home: React.FC = () => {
     const initialState = {
@@ -161,7 +164,7 @@ const Home: React.FC = () => {
             </div>
 
             <div className="columns is-mobile is-vcentered">
-                <div className="column is-7">
+                <div className="column">
                     <Link
                         className="has-text-weight-bold"
                         to={{
@@ -169,10 +172,19 @@ const Home: React.FC = () => {
                                 accounts[currentValue.accountIdx]?.id ?? 0
                             }/transactionList`,
                         }}>
-                        <span>Transactions</span>
                         <Icon className="icon">
-                            <i className="fas fa-chevron-right" aria-hidden="true"></i>
+                            <i className="fas fa-list-ul" aria-hidden="true"></i>
                         </Icon>
+                        <LinkText>Transactions</LinkText>
+                    </Link>
+                    <Link
+                        className="has-text-weight-bold ml-5"
+                        to="/report"
+                        state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>
+                        <Icon className="icon">
+                            <i className="fas fa-file" aria-hidden="true"></i>
+                        </Icon>
+                        <LinkText>Report</LinkText>
                     </Link>
                 </div>
             </div>

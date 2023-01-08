@@ -11,9 +11,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { currencyState } from "../../common/shareState";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
@@ -36,7 +34,6 @@ const TotalAmountDiv = styled.div`
 
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
-    const currency = useRecoilValue(currencyState);
     const transfromTransactions = (
         transactions: Transaction[],
         accountIds: number[]

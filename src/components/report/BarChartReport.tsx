@@ -93,7 +93,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     return !data ? null : (
         <>
             <TotalAmountDiv className="mb-5">
-                <div>Total balance</div>
+                <div>Net Income</div>
                 <BalanceWithCurrency
                     balance={data
                         .map((d) => d.income - d.expense)

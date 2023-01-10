@@ -99,7 +99,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
 
         return (
             <g>
-                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} fontSize="12px">
+                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} fontSize="10px">
                     {payload.name}
                 </text>
                 <Sector
@@ -134,7 +134,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                             y={ey}
                             textAnchor={textAnchor}
                             fill="#333"
-                            fontSize="10px">{`${currency} ${formatNumber(value)}`}</text>
+                            fontSize="10px">{`${currency} ${formatNumber(value, 1)}`}</text>
                         <text
                             x={ex + (cos >= 0 ? 1 : -1) * 12}
                             y={ey}
@@ -179,8 +179,8 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                         data={pieChartData}
                         cx="50%"
                         cy="50%"
-                        innerRadius={50}
-                        outerRadius={70}
+                        innerRadius={40}
+                        outerRadius={60}
                         dataKey="value"
                         onMouseEnter={onPieEnter}>
                         {pieChartData.map((entry, index) => (

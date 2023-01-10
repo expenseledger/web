@@ -44,10 +44,10 @@ export function log(message: string, error?: unknown): void {
     }
 }
 
-export function formatNumber(value: number): string {
+export function formatNumber(value: number, decimalScale = 2): string {
     return new Intl.NumberFormat("th-TH", {
-        maximumFractionDigits: 2,
-        minimumFractionDigits: 2,
+        maximumFractionDigits: decimalScale,
+        minimumFractionDigits: decimalScale,
     }).format(value);
 }
 

@@ -55,15 +55,15 @@ const Report: React.FC = () => {
             <div className="box mb-5">
                 <BarChartReport transactions={transactions} accountIds={[initialAccountId]} />
             </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 box">
-                <div className="column">
+            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
+                <div className="column px-0">
                     <PieChartReport
                         transactions={transactions}
                         accountIds={[initialAccountId]}
                         isExpense={false}
                     />
                 </div>
-                <div className="column">
+                <div className="column px-0">
                     <PieChartReport
                         transactions={transactions}
                         accountIds={[initialAccountId]}

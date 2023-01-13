@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
-import Account from "../service/model/Account";
-import BalanceWithCurrency from "./bases/BalanceWithCurrency";
-import Drawer from "./bases/Drawer";
+import Account from "../../service/model/Account";
+import BalanceWithCurrency from "../bases/BalanceWithCurrency";
+import Drawer from "../bases/Drawer";
 
 interface MenuProps {
     accounts: Account[];

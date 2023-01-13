@@ -1,7 +1,7 @@
 import React from "react";
 import { animated, config, useSpring } from "react-spring";
 import styled from "styled-components";
-import { formatNumber } from "../common/utils";
+import { formatNumber } from "../../common/utils";
 
 interface AccountCardProps {
     id: number;

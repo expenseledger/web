@@ -2,8 +2,8 @@ import { EmailAuthProvider, GoogleAuthProvider, onAuthStateChanged, User } from 
 import React from "react";
 import { StyledFirebaseAuth } from "react-firebaseui";
 import { useNavigate } from "react-router";
-import Logo from "../assets/pics/logo.svg";
-import { auth } from "../lib/firebase";
+import Logo from "../../assets/pics/logo.svg";
+import { auth } from "../../lib/firebase";
 import "./SignIn.scss";
 
 const SignIn: React.FC = () => {

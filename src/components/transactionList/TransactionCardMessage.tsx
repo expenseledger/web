@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { TransactionType } from "../service/constants";
-import AmountTxt from "./bases/AmountTxt";
-import MessageBox from "./bases/MessageBox";
-import Modal from "./bases/Modal";
+import { TransactionType } from "../../service/constants";
+import AmountTxt from "../bases/AmountTxt";
+import MessageBox from "../bases/MessageBox";
+import Modal from "../bases/Modal";
 
 interface TransactionCardMessageProps {
     amount: number;

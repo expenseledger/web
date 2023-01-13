@@ -2,13 +2,13 @@ import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Layout from "./Layout";
 import Report from "./report/Report";
-import SignIn from "./SignIn";
+import SignIn from "./signIn/SignIn";
 
-const TransactionList = React.lazy(() => import("./TransactionList"));
+const TransactionList = React.lazy(() => import("./transactionList/TransactionList"));
 const Home = React.lazy(() => import("./Home"));
 const More = React.lazy(() => import("./More"));
-const CategorySetting = React.lazy(() => import("./CategorySetting"));
-const AccountSetting = React.lazy(() => import("./AccountSetting"));
+const CategorySetting = React.lazy(() => import("./setting/CategorySetting"));
+const AccountSetting = React.lazy(() => import("./setting/AccountSetting"));
 
 const App: React.FC = () => {
     return (

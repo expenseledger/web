@@ -3,24 +3,24 @@ import * as R from "ramda";
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
-import { accountsState, categoriesState, currencyState } from "../common/shareState";
-import { toNumber } from "../common/utils";
-import { createAccount, deleteAccount, updateAccount } from "../service/accountService";
-import { createCategory } from "../service/categoryService";
-import { AccountType, Currency } from "../service/constants";
+import { accountsState, categoriesState, currencyState } from "../../common/shareState";
+import { toNumber } from "../../common/utils";
+import { createAccount, deleteAccount, updateAccount } from "../../service/accountService";
+import { createCategory } from "../../service/categoryService";
+import { AccountType, Currency } from "../../service/constants";
 import {
     allAccountTypesString,
     allCurrencies,
     mapAccountTypeToString,
     mapStringToAccountType,
-} from "../service/helper/accountHelper";
-import { useNotification } from "../service/helper/notificationHelper";
-import { addExpense, addIncome } from "../service/transactionService";
-import Dropdown from "./bases/Dropdown";
-import EditAndDeleteSetting from "./bases/EditAndDeleteSetting";
-import Modal from "./bases/Modal";
-import TextBox from "./bases/TextBox";
-import TextBoxWithButton from "./bases/TextBoxWithButton";
+} from "../../service/helper/accountHelper";
+import { useNotification } from "../../service/helper/notificationHelper";
+import { addExpense, addIncome } from "../../service/transactionService";
+import Dropdown from "../bases/Dropdown";
+import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
+import Modal from "../bases/Modal";
+import TextBox from "../bases/TextBox";
+import TextBoxWithButton from "../bases/TextBoxWithButton";
 
 interface ModifyModalProps {
     id: number;

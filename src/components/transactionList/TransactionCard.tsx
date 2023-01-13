@@ -1,8 +1,8 @@
 import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
-import { TransactionType } from "../service/constants";
-import AmountTxt from "./bases/AmountTxt";
+import { TransactionType } from "../../service/constants";
+import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
 
 interface TransactoinCardItem {

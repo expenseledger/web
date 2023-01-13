@@ -1,20 +1,20 @@
 import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
-import { categoriesState } from "../common/shareState";
-import { createCategory, deleteCategory, updateCategory } from "../service/categoryService";
-import { CategoryType } from "../service/constants";
+import { categoriesState } from "../../common/shareState";
+import { createCategory, deleteCategory, updateCategory } from "../../service/categoryService";
+import { CategoryType } from "../../service/constants";
 import {
     allCategoryTypesString,
     mapCategoryTypeToString,
     mapStringToCategoryType,
-} from "../service/helper/categoryHelper";
-import { useNotification } from "../service/helper/notificationHelper";
-import Dropdown from "./bases/Dropdown";
-import EditAndDeleteSetting from "./bases/EditAndDeleteSetting";
-import Modal from "./bases/Modal";
-import TextBox from "./bases/TextBox";
-import TextBoxWithButton from "./bases/TextBoxWithButton";
+} from "../../service/helper/categoryHelper";
+import { useNotification } from "../../service/helper/notificationHelper";
+import Dropdown from "../bases/Dropdown";
+import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
+import Modal from "../bases/Modal";
+import TextBox from "../bases/TextBox";
+import TextBoxWithButton from "../bases/TextBoxWithButton";
 
 interface ModifyModalProps {
     id: number;

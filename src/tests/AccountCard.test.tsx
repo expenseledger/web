@@ -1,7 +1,7 @@
 import Enzyme, { shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import toJson from "enzyme-to-json";
-import AccountCard from "../components/AccountCard";
+import AccountCard from "../components/setting/AccountCard";
 
 Enzyme.configure({ adapter: new Adapter() });
 

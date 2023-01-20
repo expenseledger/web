@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router";
+import { useCallback, useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
 import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
@@ -15,16 +15,23 @@ const Report: React.FC = () => {
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
     const location = useLocation();
     const initialAccountId: number | null = location.state?.accountId;
+    const navigate = useNavigate();
+
+    const backToHome = useCallback(() => {
+        navigate("/");
+    }, [navigate]);
 
     useEffect(() => {
         if (!initialAccountId || monthYearList.length != 0) {
             return;
         }
 
-        getTransactionMonthYearList({ accountId: initialAccountId }).then((response) => {
-            setMonthYearList(response.monthYears);
-        });
-    }, [initialAccountId, monthYearList.length]);
+        getTransactionMonthYearList({ accountId: initialAccountId })
+            .then((response) => {
+                setMonthYearList(response.monthYears);
+            })
+            .catch(backToHome);
+    }, [backToHome, initialAccountId, monthYearList.length]);
 
     useEffect(() => {
         if (monthYearList.length == 0) {
@@ -38,11 +45,13 @@ const Report: React.FC = () => {
             accountId: initialAccountId,
             from: from.toDate(),
             until: until.toDate(),
-        }).then((response) => {
-            setTransactions(response.items.reverse());
-            setIsLoading(false);
-        });
-    }, [initialAccountId, monthYearIdx, monthYearList]);
+        })
+            .then((response) => {
+                setTransactions(response.items.reverse());
+                setIsLoading(false);
+            })
+            .catch(backToHome);
+    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate]);
 
     return isLoading ? (
         <Loading />

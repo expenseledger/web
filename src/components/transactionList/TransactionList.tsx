@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { startTransition, useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
@@ -48,6 +48,7 @@ export const TransactionList: React.FC = () => {
     const params = useParams();
     const { accountId } = params;
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
+    const navigate = useNavigate();
     const mapPaidOnly = useCallback(
         (tx: HideAbleTransaction | Transaction) => {
             if (!isPaidOnly || tx.type == "EXPENSE" || tx.type == "TRANSFER") {
@@ -64,12 +65,17 @@ export const TransactionList: React.FC = () => {
         },
         [isPaidOnly]
     );
+    const backToHome = useCallback(() => {
+        navigate("/");
+    }, [navigate]);
 
     useEffect(() => {
-        getTransactionMonthYearList({ accountId: +accountId }).then((response) => {
-            setMonthYearList(response.monthYears);
-        });
-    }, [accountId]);
+        getTransactionMonthYearList({ accountId: +accountId })
+            .then((response) => {
+                setMonthYearList(response.monthYears);
+            })
+            .catch(backToHome);
+    }, [accountId, backToHome]);
 
     useEffect(() => {
         if (!monthYearList) {

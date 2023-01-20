@@ -91,6 +91,16 @@ const Menu: React.FC<MenuProps> = (props) => {
                             </div>
                         </li>
                     </ul>
+                    <p className="menu-label">Page</p>
+                    <ul className="menu-list">
+                        <li>
+                            <ul>
+                                <li>
+                                    <Link to="/">Home</Link>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
                     <p className="menu-label">Setting</p>
                     <ul className="menu-list">
                         <li>

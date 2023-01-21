@@ -202,7 +202,7 @@ const Home: React.FC = () => {
                 <TextBox
                     className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
                     updateValue={updateExpense}
-                    name="expnese"
+                    name="expense"
                     type="number"
                     value={currentValue.amount}
                     addOn={{ text: currency, position: "front" }}

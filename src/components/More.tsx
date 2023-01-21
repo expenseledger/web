@@ -321,18 +321,22 @@ const More: React.FC = () => {
             value: string,
             overrideOptions: Account[]
         ) => (
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">{title}</span>
-                <Dropdown
-                    className="column is-4 is-narrow"
-                    options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
-                    updateSelectedValue={updateAccount}
-                    value={value}
-                />
-                <div className="column is-narrow">
-                    <BalanceWithCurrency balance={balance} />
+            <>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">{title}</span>
                 </div>
-            </div>
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <Dropdown
+                        className="column is-narrow pt-0"
+                        options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
+                        updateSelectedValue={updateAccount}
+                        value={value}
+                    />
+                    <div className="column is-narrow pt-0">
+                        <BalanceWithCurrency balance={balance} />
+                    </div>
+                </div>
+            </>
         );
 
         return isTransfer ? (
@@ -386,28 +390,34 @@ const More: React.FC = () => {
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
                 {renderAccountSection()}
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Category</span>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Category</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
                     <Dropdown
-                        className="column"
+                        className="column pt-0"
                         options={getCategoriesByTransactionType().map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
                         value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Date</span>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Date</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
                     <DateBox
-                        className="column"
+                        className="column pt-0"
                         name="date"
                         updateValue={updateSelectedDate}
                         value={currentValue.date}
                     />
                 </div>
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Amount</span>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Amount</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
                     <TextBox
-                        className="column"
+                        className="column pt-0"
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
@@ -415,10 +425,12 @@ const More: React.FC = () => {
                         addOn={{ text: currency, position: "front" }}
                     />
                 </div>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Description</span>
+                </div>
                 <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Description</span>
                     <TextField
-                        className="column more__textArea"
+                        className="column more__textArea pt-0"
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}

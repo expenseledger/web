@@ -24,8 +24,10 @@ interface CurrentValue {
     amount: string;
     date: string;
     description: string;
+
     [key: string]: any;
 }
+
 interface HomeProps {
     accountIdx: number;
     categoryIdx: number;

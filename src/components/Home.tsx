@@ -112,8 +112,8 @@ const Home: React.FC = () => {
                 addNotification("AddExpense sucess", "success");
 
                 setCurrentValue({
-                    ...initialState,
-                    accountIdx: currentValue.accountIdx,
+                    ...currentValue,
+                    amount: "",
                 });
                 setIsLoading(false);
                 return;

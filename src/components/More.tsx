@@ -14,7 +14,6 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import TextField from "./bases/TextField";
 import "./More.scss";
 
 interface CurrentValue {
@@ -23,7 +22,7 @@ interface CurrentValue {
     categoryIdx: number;
     amount: string;
     date: string;
-    description: string;
+    title: string;
 
     [key: string]: any;
 }
@@ -43,7 +42,7 @@ const More: React.FC = () => {
     const locatoin = useLocation();
     const currency = useRecoilValue(currencyState);
     const homeProps = locatoin.state as HomeProps;
-    const initialCurrentValue = {
+    const initialCurrentValue: CurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,
         toAccountIdx:
             (homeProps?.accountIdx ?? 0) == 0
@@ -54,7 +53,7 @@ const More: React.FC = () => {
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
         date: homeProps?.date ?? Date.now.toString(),
-        description: "",
+        title: "",
     };
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialCurrentValue);
     const [transactionTypeTabActive, setTransactionTypeTabActive] = React.useState([
@@ -108,10 +107,10 @@ const More: React.FC = () => {
         setCurrentValue(tCurrentValue);
     };
 
-    const updateDescription = (value: string) => {
+    const updateTitle = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.description = value;
+        tCurrentValue.title = value;
         setCurrentValue(tCurrentValue);
     };
 
@@ -139,7 +138,7 @@ const More: React.FC = () => {
     };
 
     const doAddExpense = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, title } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -154,7 +153,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: title,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -180,7 +179,7 @@ const More: React.FC = () => {
     };
 
     const doAddIncome = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, title } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -195,7 +194,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: title,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -223,8 +222,7 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
-            currentValue;
+        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, title } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -241,7 +239,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: title,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -428,14 +426,14 @@ const More: React.FC = () => {
                     />
                 </div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Description</span>
+                    <span className="column is-size-7 pb-1">Title</span>
                 </div>
                 <div className="columns is-mobile is-vcentered">
-                    <TextField
-                        className="column more__textArea pt-0"
-                        name="description"
-                        updateValue={updateDescription}
-                        value={currentValue.description}
+                    <TextBox
+                        className="column pt-0"
+                        name="title"
+                        updateValue={updateTitle}
+                        value={currentValue.title}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

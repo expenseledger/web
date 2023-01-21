@@ -389,27 +389,15 @@ const More: React.FC = () => {
         <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
-                {renderAccountSection()}
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Category</span>
+                    <span className="column is-size-7 pb-1">Title</span>
                 </div>
-                <div className="columns is-mobile is-vcentered mb-0">
-                    <Dropdown
+                <div className="columns is-mobile mb-0">
+                    <TextBox
                         className="column pt-0"
-                        options={getCategoriesByTransactionType().map((x) => x.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
-                    />
-                </div>
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Date</span>
-                </div>
-                <div className="columns is-mobile is-vcentered mb-0">
-                    <DateBox
-                        className="column pt-0"
-                        name="date"
-                        updateValue={updateSelectedDate}
-                        value={currentValue.date}
+                        name="title"
+                        updateValue={updateTitle}
+                        value={currentValue.title}
                     />
                 </div>
                 <div className="columns is-mobile">
@@ -426,14 +414,26 @@ const More: React.FC = () => {
                     />
                 </div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Title</span>
+                    <span className="column is-size-7 pb-1">Date</span>
                 </div>
-                <div className="columns is-mobile is-vcentered">
-                    <TextBox
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <DateBox
                         className="column pt-0"
-                        name="title"
-                        updateValue={updateTitle}
-                        value={currentValue.title}
+                        name="date"
+                        updateValue={updateSelectedDate}
+                        value={currentValue.date}
+                    />
+                </div>
+                {renderAccountSection()}
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Category</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <Dropdown
+                        className="column pt-0"
+                        options={getCategoriesByTransactionType().map((x) => x.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

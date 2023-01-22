@@ -22,7 +22,7 @@ interface CurrentValue {
     categoryIdx: number;
     amount: string;
     date: string;
-    title: string;
+    description: string;
 }
 
 const Icon = styled.span`
@@ -38,7 +38,7 @@ const Home: React.FC = () => {
         categoryIdx: 0,
         amount: "",
         date: dayjs().format("YYYY-MM-DD"),
-        title: "",
+        description: "",
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
@@ -48,10 +48,10 @@ const Home: React.FC = () => {
     const navigate = useNavigate();
     const currency = useRecoilValue(currencyState);
 
-    const updateTitle = (value: string) => {
+    const updateDescription = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.title = value;
+        tCurrentValue.description = value;
         setCurrentValue(tCurrentValue);
     };
 
@@ -84,7 +84,7 @@ const Home: React.FC = () => {
     };
 
     const addTransaction = async () => {
-        const { accountIdx, amount, date, categoryIdx, title } = currentValue;
+        const { accountIdx, amount, date, categoryIdx, description } = currentValue;
 
         setIsLoading(true);
 
@@ -104,7 +104,7 @@ const Home: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: title,
+                description: description,
                 date,
             };
 
@@ -122,7 +122,7 @@ const Home: React.FC = () => {
 
                 setCurrentValue({
                     ...currentValue,
-                    title: "",
+                    description: "",
                     amount: "",
                 });
                 setIsLoading(false);
@@ -199,15 +199,6 @@ const Home: React.FC = () => {
                 </div>
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Title</span>
-                <TextBox
-                    className="column pt-0"
-                    name="title"
-                    updateValue={updateTitle}
-                    value={currentValue.title}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Amount</span>
                 <TextBox
                     className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
@@ -236,6 +227,16 @@ const Home: React.FC = () => {
                         .map((c) => c.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">Description</span>
+                <TextBox
+                    className="column pt-0"
+                    name="title"
+                    updateValue={updateDescription}
+                    value={currentValue.description}
+                    placeholder="Optional"
                 />
             </div>
             <div className="columns is-mobile">

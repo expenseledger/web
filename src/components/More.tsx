@@ -14,7 +14,6 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import TextField from "./bases/TextField";
 import "./More.scss";
 
 interface CurrentValue {
@@ -24,8 +23,10 @@ interface CurrentValue {
     amount: string;
     date: string;
     description: string;
+
     [key: string]: any;
 }
+
 interface HomeProps {
     accountIdx: number;
     categoryIdx: number;
@@ -41,7 +42,7 @@ const More: React.FC = () => {
     const locatoin = useLocation();
     const currency = useRecoilValue(currencyState);
     const homeProps = locatoin.state as HomeProps;
-    const initialCurrentValue = {
+    const initialCurrentValue: CurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,
         toAccountIdx:
             (homeProps?.accountIdx ?? 0) == 0
@@ -152,7 +153,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -193,7 +194,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -239,7 +240,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -290,9 +291,9 @@ const More: React.FC = () => {
 
         if (result) {
             setCurrentValue({
-                ...initialCurrentValue,
-                toAccountIdx: currentValue.toAccountIdx,
-                fromAccountIdx: currentValue.fromAccountIdx,
+                ...currentValue,
+                description: "",
+                amount: "",
             });
         }
 
@@ -321,18 +322,22 @@ const More: React.FC = () => {
             value: string,
             overrideOptions: Account[]
         ) => (
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">{title}</span>
-                <Dropdown
-                    className="column is-4 is-narrow"
-                    options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
-                    updateSelectedValue={updateAccount}
-                    value={value}
-                />
-                <div className="column is-narrow">
-                    <BalanceWithCurrency balance={balance} />
+            <>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">{title}</span>
                 </div>
-            </div>
+                <div className="account columns is-mobile is-vcentered mb-0">
+                    <Dropdown
+                        className="account__dropdown column is-4-desktop is-4-tablet is-4-widescreen is-narrow pt-0"
+                        options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
+                        updateSelectedValue={updateAccount}
+                        value={value}
+                    />
+                    <div className="column is-narrow pt-0">
+                        <BalanceWithCurrency balance={balance} />
+                    </div>
+                </div>
+            </>
         );
 
         return isTransfer ? (
@@ -385,29 +390,12 @@ const More: React.FC = () => {
         <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
-                {renderAccountSection()}
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Category</span>
-                    <Dropdown
-                        className="column"
-                        options={getCategoriesByTransactionType().map((x) => x.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
-                    />
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1 has-text-weight-bold">Amount</span>
                 </div>
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Date</span>
-                    <DateBox
-                        className="column"
-                        name="date"
-                        updateValue={updateSelectedDate}
-                        value={currentValue.date}
-                    />
-                </div>
-                <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Amount</span>
+                <div className="amount columns is-mobile is-vcentered mb-0">
                     <TextBox
-                        className="column"
+                        className="amount__box  is-4-desktop is-4-tablet is-4-widescreen column pt-0"
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
@@ -415,13 +403,39 @@ const More: React.FC = () => {
                         addOn={{ text: currency, position: "front" }}
                     />
                 </div>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Date</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <DateBox
+                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
+                        name="date"
+                        updateValue={updateSelectedDate}
+                        value={currentValue.date}
+                    />
+                </div>
+                {renderAccountSection()}
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Category</span>
+                </div>
+                <div className="category columns is-mobile is-vcentered mb-0">
+                    <Dropdown
+                        className="category__dropdown column is-4-desktop is-4-tablet is-4-widescreen pt-0"
+                        options={getCategoriesByTransactionType().map((x) => x.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
+                    />
+                </div>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Description</span>
+                </div>
                 <div className="columns is-mobile is-vcentered">
-                    <span className="column is-4 has-text-weight-bold">Description</span>
-                    <TextField
-                        className="column more__textArea"
+                    <TextBox
+                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}
+                        placeholder="Optional"
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

@@ -25,3 +25,35 @@
         }
     }
 }
+
+.amount {
+    &__box {
+        > div {
+            width: 100%;
+        }
+    }
+}
+
+.category {
+    &__dropdown {
+        >div {
+            width: 70%;
+        }
+
+        select {
+            width: 100%;
+        }
+    }
+}
+
+.account {
+    &__dropdown {
+        >div {
+            width: 100%;
+        }
+
+        select {
+            width: 100%;
+        }
+    }
+}

@@ -47,7 +47,7 @@ const Report: React.FC = () => {
             until: until.toDate(),
         })
             .then((response) => {
-                setTransactions(response.items.reverse());
+                setTransactions(response.items.filter((t) => t.type !== "TRANSFER").reverse());
                 setIsLoading(false);
             })
             .catch(backToHome);

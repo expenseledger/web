@@ -22,6 +22,7 @@ interface CurrentValue {
     categoryIdx: number;
     amount: string;
     date: string;
+    description: string;
 }
 
 const Icon = styled.span`
@@ -32,11 +33,12 @@ const LinkText = styled.span`
 `;
 
 const Home: React.FC = () => {
-    const initialState = {
+    const initialState: CurrentValue = {
         accountIdx: 0,
         categoryIdx: 0,
         amount: "",
         date: dayjs().format("YYYY-MM-DD"),
+        description: "",
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
@@ -45,6 +47,13 @@ const Home: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
     const currency = useRecoilValue(currencyState);
+
+    const updateDescription = (value: string) => {
+        const tCurrentValue = R.clone(currentValue);
+
+        tCurrentValue.description = value;
+        setCurrentValue(tCurrentValue);
+    };
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -75,7 +84,7 @@ const Home: React.FC = () => {
     };
 
     const addTransaction = async () => {
-        const { accountIdx, amount, date, categoryIdx } = currentValue;
+        const { accountIdx, amount, date, categoryIdx, description } = currentValue;
 
         setIsLoading(true);
 
@@ -95,7 +104,7 @@ const Home: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: "-",
+                description: description === "" ? "-" : description,
                 date,
             };
 
@@ -112,8 +121,9 @@ const Home: React.FC = () => {
                 addNotification("AddExpense sucess", "success");
 
                 setCurrentValue({
-                    ...initialState,
-                    accountIdx: currentValue.accountIdx,
+                    ...currentValue,
+                    description: "",
+                    amount: "",
                 });
                 setIsLoading(false);
                 return;
@@ -189,23 +199,23 @@ const Home: React.FC = () => {
                 </div>
             </div>
             <div className="columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">Amount</span>
+                <TextBox
+                    className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
+                    updateValue={updateExpense}
+                    name="expense"
+                    type="number"
+                    value={currentValue.amount}
+                    addOn={{ text: currency, position: "front" }}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Date</span>
                 <DateBox
                     className="column is-4-desktop is-4-tablet is-2-widescreen"
                     name="date"
                     updateValue={updateSelectedDate}
                     value={currentValue.date}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Amount</span>
-                <TextBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
-                    updateValue={updateExpense}
-                    name="expnese"
-                    type="number"
-                    value={currentValue.amount}
-                    addOn={{ text: currency, position: "front" }}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
@@ -217,6 +227,16 @@ const Home: React.FC = () => {
                         .map((c) => c.name)}
                     updateSelectedValue={updateSelectedCategory}
                     value={categories[currentValue.categoryIdx].name}
+                />
+            </div>
+            <div className="description columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">Description</span>
+                <TextBox
+                    className="column is-4-desktop is-4-tablet is-2-widescreen description__box"
+                    name="description"
+                    updateValue={updateDescription}
+                    value={currentValue.description}
+                    placeholder="Optional"
                 />
             </div>
             <div className="columns is-mobile">

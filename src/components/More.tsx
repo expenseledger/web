@@ -390,16 +390,17 @@ const More: React.FC = () => {
         <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
-                {renderAccountSection()}
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Category</span>
+                    <span className="column is-size-7 pb-1">Amount</span>
                 </div>
                 <div className="columns is-mobile is-vcentered mb-0">
-                    <Dropdown
+                    <TextBox
                         className="column pt-0"
-                        options={getCategoriesByTransactionType().map((x) => x.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
+                        updateValue={updateExpense}
+                        name="expnese"
+                        type="number"
+                        value={currentValue.amount}
+                        addOn={{ text: currency, position: "front" }}
                     />
                 </div>
                 <div className="columns is-mobile">
@@ -413,17 +414,16 @@ const More: React.FC = () => {
                         value={currentValue.date}
                     />
                 </div>
+                {renderAccountSection()}
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Amount</span>
+                    <span className="column is-size-7 pb-1">Category</span>
                 </div>
                 <div className="columns is-mobile is-vcentered mb-0">
-                    <TextBox
+                    <Dropdown
                         className="column pt-0"
-                        updateValue={updateExpense}
-                        name="expnese"
-                        type="number"
-                        value={currentValue.amount}
-                        addOn={{ text: currency, position: "front" }}
+                        options={getCategoriesByTransactionType().map((x) => x.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
                 <div className="columns is-mobile">

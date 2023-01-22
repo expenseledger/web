@@ -153,7 +153,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                title,
+                description: title,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -194,7 +194,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                title,
+                description: title,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -239,7 +239,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                title,
+                description: title,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };

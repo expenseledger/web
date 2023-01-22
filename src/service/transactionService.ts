@@ -228,7 +228,7 @@ export async function addExpense(request: AddExpenseRequest): Promise<AddExpense
             variables: {
                 amount: request.amount,
                 categoryId: request.categoryId,
-                description: request.title,
+                description: request.description,
                 fromAccountId: request.fromAccountId,
                 occurredAt: request.date,
             },
@@ -256,7 +256,7 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
             mutation: ADD_INCOME,
             variables: {
                 amount: request.amount,
-                description: request.title,
+                description: request.description,
                 categoryId: request.categoryId,
                 toAccountId: request.toAccountId,
                 occurredAt: request.date,
@@ -285,7 +285,7 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
             mutation: ADD_TRANSFER,
             variables: {
                 amount: request.amount,
-                description: request.title,
+                description: request.description,
                 categoryId: request.categoryId,
                 fromAccountId: request.fromAccountId,
                 toAccountId: request.toAccountId,

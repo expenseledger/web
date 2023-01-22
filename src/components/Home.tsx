@@ -22,6 +22,7 @@ interface CurrentValue {
     categoryIdx: number;
     amount: string;
     date: string;
+    title: string;
 }
 
 const Icon = styled.span`
@@ -32,11 +33,12 @@ const LinkText = styled.span`
 `;
 
 const Home: React.FC = () => {
-    const initialState = {
+    const initialState: CurrentValue = {
         accountIdx: 0,
         categoryIdx: 0,
         amount: "",
         date: dayjs().format("YYYY-MM-DD"),
+        title: "",
     };
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [categories] = useRecoilState(categoriesState);
@@ -45,6 +47,13 @@ const Home: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
     const currency = useRecoilValue(currencyState);
+
+    const updateTitle = (value: string) => {
+        const tCurrentValue = R.clone(currentValue);
+
+        tCurrentValue.title = value;
+        setCurrentValue(tCurrentValue);
+    };
 
     const updateSelectedDate = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
@@ -75,7 +84,7 @@ const Home: React.FC = () => {
     };
 
     const addTransaction = async () => {
-        const { accountIdx, amount, date, categoryIdx } = currentValue;
+        const { accountIdx, amount, date, categoryIdx, title } = currentValue;
 
         setIsLoading(true);
 
@@ -95,7 +104,7 @@ const Home: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: "-",
+                description: title,
                 date,
             };
 
@@ -113,6 +122,7 @@ const Home: React.FC = () => {
 
                 setCurrentValue({
                     ...currentValue,
+                    title: "",
                     amount: "",
                 });
                 setIsLoading(false);
@@ -187,6 +197,15 @@ const Home: React.FC = () => {
                         <LinkText>Report</LinkText>
                     </Link>
                 </div>
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">Title</span>
+                <TextBox
+                    className="column pt-0"
+                    name="title"
+                    updateValue={updateTitle}
+                    value={currentValue.title}
+                />
             </div>
             <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Date</span>

@@ -435,6 +435,7 @@ const More: React.FC = () => {
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}
+                        placeholder="Optional"
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

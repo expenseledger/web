@@ -153,7 +153,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -194,7 +194,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -240,7 +240,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description,
+                description: description === "" ? "-" : description,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -324,11 +324,11 @@ const More: React.FC = () => {
         ) => (
             <>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">{title}</span>
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">{title}</span>
                 </div>
-                <div className="columns is-mobile is-vcentered mb-0">
+                <div className="account columns is-mobile is-vcentered mb-0">
                     <Dropdown
-                        className="column is-narrow pt-0"
+                        className="account__dropdown column is-4-desktop is-4-tablet is-4-widescreen is-narrow pt-0"
                         options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
                         updateSelectedValue={updateAccount}
                         value={value}
@@ -391,11 +391,11 @@ const More: React.FC = () => {
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Amount</span>
+                    <span className="column is-size-7 pb-1 has-text-weight-bold">Amount</span>
                 </div>
-                <div className="columns is-mobile is-vcentered mb-0">
+                <div className="amount columns is-mobile is-vcentered mb-0">
                     <TextBox
-                        className="column pt-0"
+                        className="amount__box  is-4-desktop is-4-tablet is-4-widescreen column pt-0"
                         updateValue={updateExpense}
                         name="expnese"
                         type="number"
@@ -404,11 +404,11 @@ const More: React.FC = () => {
                     />
                 </div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Date</span>
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Date</span>
                 </div>
                 <div className="columns is-mobile is-vcentered mb-0">
                     <DateBox
-                        className="column pt-0"
+                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
                         name="date"
                         updateValue={updateSelectedDate}
                         value={currentValue.date}
@@ -416,22 +416,22 @@ const More: React.FC = () => {
                 </div>
                 {renderAccountSection()}
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Category</span>
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Category</span>
                 </div>
-                <div className="columns is-mobile is-vcentered mb-0">
+                <div className="category columns is-mobile is-vcentered mb-0">
                     <Dropdown
-                        className="column pt-0"
+                        className="category__dropdown column is-4-desktop is-4-tablet is-4-widescreen pt-0"
                         options={getCategoriesByTransactionType().map((x) => x.name)}
                         updateSelectedValue={updateSelectedCategory}
                         value={categories[currentValue.categoryIdx].name}
                     />
                 </div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Description</span>
+                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Description</span>
                 </div>
                 <div className="columns is-mobile is-vcentered">
                     <TextBox
-                        className="column pt-0"
+                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}

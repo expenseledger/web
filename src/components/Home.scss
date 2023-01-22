@@ -27,6 +27,14 @@
     }
 }
 
+.description {
+    &__box {
+        > div {
+            width: 100%;
+        }
+    }
+}
+
 .category {
     &__dropdown {
         > div {
@@ -36,9 +44,5 @@
         select {
             width: 100%;
         }
-    }
-
-    &__addBtn {
-        margin-left: 3px;
     }
 }

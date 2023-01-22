@@ -229,11 +229,11 @@ const Home: React.FC = () => {
                     value={categories[currentValue.categoryIdx].name}
                 />
             </div>
-            <div className="columns is-mobile is-vcentered">
+            <div className="description columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Description</span>
                 <TextBox
-                    className="column pt-0"
-                    name="title"
+                    className="column is-4-desktop is-4-tablet is-2-widescreen description__box"
+                    name="description"
                     updateValue={updateDescription}
                     value={currentValue.description}
                     placeholder="Optional"

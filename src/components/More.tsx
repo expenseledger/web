@@ -290,9 +290,9 @@ const More: React.FC = () => {
 
         if (result) {
             setCurrentValue({
-                ...initialCurrentValue,
-                toAccountIdx: currentValue.toAccountIdx,
-                fromAccountIdx: currentValue.fromAccountIdx,
+                ...currentValue,
+                title: "",
+                amount: "",
             });
         }
 

@@ -208,15 +208,6 @@ const Home: React.FC = () => {
                 />
             </div>
             <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Date</span>
-                <DateBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen"
-                    name="date"
-                    updateValue={updateSelectedDate}
-                    value={currentValue.date}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
                 <span className="column is-4 has-text-weight-bold">Amount</span>
                 <TextBox
                     className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
@@ -225,6 +216,15 @@ const Home: React.FC = () => {
                     type="number"
                     value={currentValue.amount}
                     addOn={{ text: currency, position: "front" }}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered">
+                <span className="column is-4 has-text-weight-bold">Date</span>
+                <DateBox
+                    className="column is-4-desktop is-4-tablet is-2-widescreen"
+                    name="date"
+                    updateValue={updateSelectedDate}
+                    value={currentValue.date}
                 />
             </div>
             <div className="columns is-mobile is-vcentered">

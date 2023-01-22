@@ -5,7 +5,7 @@ import { CategoryType } from "./../../constants";
 interface AddTransactionRequest {
     amount: number;
     categoryId?: number;
-    description?: string;
+    title?: string;
     date: string;
 }
 export interface AddExpenseRequest extends AddTransactionRequest {

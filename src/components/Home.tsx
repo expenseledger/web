@@ -104,7 +104,7 @@ const Home: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: title,
+                title,
                 date,
             };
 

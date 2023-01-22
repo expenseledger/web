@@ -22,7 +22,7 @@ interface CurrentValue {
     categoryIdx: number;
     amount: string;
     date: string;
-    title: string;
+    description: string;
 
     [key: string]: any;
 }
@@ -53,7 +53,7 @@ const More: React.FC = () => {
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
         date: homeProps?.date ?? Date.now.toString(),
-        title: "",
+        description: "",
     };
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialCurrentValue);
     const [transactionTypeTabActive, setTransactionTypeTabActive] = React.useState([
@@ -107,10 +107,10 @@ const More: React.FC = () => {
         setCurrentValue(tCurrentValue);
     };
 
-    const updateTitle = (value: string) => {
+    const updateDescription = (value: string) => {
         const tCurrentValue = R.clone(currentValue);
 
-        tCurrentValue.title = value;
+        tCurrentValue.description = value;
         setCurrentValue(tCurrentValue);
     };
 
@@ -138,7 +138,7 @@ const More: React.FC = () => {
     };
 
     const doAddExpense = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, title } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -153,7 +153,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description: title,
+                description,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -179,7 +179,7 @@ const More: React.FC = () => {
     };
 
     const doAddIncome = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, title } = currentValue;
+        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -194,7 +194,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description: title,
+                description,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
 
@@ -222,7 +222,8 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, title } = currentValue;
+        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
+            currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -239,7 +240,7 @@ const More: React.FC = () => {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 date,
-                description: title,
+                description,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -291,7 +292,7 @@ const More: React.FC = () => {
         if (result) {
             setCurrentValue({
                 ...currentValue,
-                title: "",
+                description: "",
                 amount: "",
             });
         }
@@ -389,15 +390,27 @@ const More: React.FC = () => {
         <>
             <div className="mt-5 more">
                 <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
+                {renderAccountSection()}
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Title</span>
+                    <span className="column is-size-7 pb-1">Category</span>
                 </div>
-                <div className="columns is-mobile mb-0">
-                    <TextBox
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <Dropdown
                         className="column pt-0"
-                        name="title"
-                        updateValue={updateTitle}
-                        value={currentValue.title}
+                        options={getCategoriesByTransactionType().map((x) => x.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
+                    />
+                </div>
+                <div className="columns is-mobile">
+                    <span className="column is-size-7 pb-1">Date</span>
+                </div>
+                <div className="columns is-mobile is-vcentered mb-0">
+                    <DateBox
+                        className="column pt-0"
+                        name="date"
+                        updateValue={updateSelectedDate}
+                        value={currentValue.date}
                     />
                 </div>
                 <div className="columns is-mobile">
@@ -414,26 +427,14 @@ const More: React.FC = () => {
                     />
                 </div>
                 <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Date</span>
+                    <span className="column is-size-7 pb-1">Description</span>
                 </div>
-                <div className="columns is-mobile is-vcentered mb-0">
-                    <DateBox
+                <div className="columns is-mobile is-vcentered">
+                    <TextBox
                         className="column pt-0"
-                        name="date"
-                        updateValue={updateSelectedDate}
-                        value={currentValue.date}
-                    />
-                </div>
-                {renderAccountSection()}
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1">Category</span>
-                </div>
-                <div className="columns is-mobile is-vcentered mb-0">
-                    <Dropdown
-                        className="column pt-0"
-                        options={getCategoriesByTransactionType().map((x) => x.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
+                        name="description"
+                        updateValue={updateDescription}
+                        value={currentValue.description}
                     />
                 </div>
                 <div className="columns is-mobile is-vcentered">

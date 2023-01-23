@@ -49,38 +49,40 @@ const Home: React.FC = () => {
     const currency = useRecoilValue(currencyState);
 
     const updateDescription = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.description = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            description: value,
+        });
     };
 
     const updateSelectedDate = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.date = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            date: value,
+        });
     };
 
     const updateSelectedAccount = (idx: number) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.accountIdx = idx;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            accountIdx: idx,
+        });
     };
 
     const updateSelectedCategory = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
+        const idx = categories.findIndex((x) => x.name === value);
 
-        tCurrentValue.categoryIdx = categories.findIndex((x) => x.name === value);
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            categoryIdx: idx,
+        });
     };
 
     const updateExpense = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.amount = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            amount: value,
+        });
     };
 
     const addTransaction = async () => {

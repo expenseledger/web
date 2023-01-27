@@ -73,45 +73,50 @@ const More: React.FC = () => {
     };
 
     const updateSelectedCategory = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.categoryIdx = categories.findIndex((x) => x.name === value);
-        setCurrentValue(tCurrentValue);
+        const idx = categories.findIndex((x) => x.name === value);
+        setCurrentValue({
+            ...currentValue,
+            categoryIdx: idx,
+        });
     };
 
     const updateSelectedFromAccount = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
+        const idx = accounts.findIndex((x) => x.name === value);
 
-        tCurrentValue.fromAccountIdx = accounts.findIndex((x) => x.name === value);
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            fromAccountIdx: idx,
+        });
     };
 
     const updateSelectedToAccount = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
+        const idx = accounts.findIndex((x) => x.name === value);
 
-        tCurrentValue.toAccountIdx = accounts.findIndex((x) => x.name === value);
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            toAccountIdx: idx,
+        });
     };
 
     const updateSelectedDate = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.date = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            date: value,
+        });
     };
 
     const updateExpense = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.amount = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            amount: value,
+        });
     };
 
     const updateDescription = (value: string) => {
-        const tCurrentValue = R.clone(currentValue);
-
-        tCurrentValue.description = value;
-        setCurrentValue(tCurrentValue);
+        setCurrentValue({
+            ...currentValue,
+            description: value,
+        });
     };
 
     const validateAmount = (amount: number) => {

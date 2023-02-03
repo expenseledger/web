@@ -251,7 +251,7 @@ const AccountSetting: React.FC = () => {
     );
 
     return (
-        <div className="columns is-mobile is-centered is-multiline">
+        <div className="columns is-mobile is-centered is-multiline mb-3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
                 items={accounts.map((x) => {

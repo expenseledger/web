@@ -75,8 +75,8 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         return (
             <div>
-                <a>
-                    <span className="icon" onClick={onModifyClick}>
+                <a className="mr-1" onClick={onModifyClick}>
+                    <span className="icon">
                         <i className="fas fa-lg fa-edit" aria-hidden="true"></i>
                     </span>
                 </a>

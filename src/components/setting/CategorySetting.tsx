@@ -135,7 +135,7 @@ const CategorySetting: React.FC = () => {
     };
 
     return (
-        <div className="columns is-mobile is-centered is-multiline">
+        <div className="columns is-mobile is-centered is-multiline mb-3">
             <EditAndDeleteSetting
                 deleteFuncHandler={removeCategoryHandler}
                 modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}

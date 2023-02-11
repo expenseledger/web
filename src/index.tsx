@@ -1,6 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
 import "@fortawesome/fontawesome-free/css/all.css";
-import React from "react";
 import { createRoot } from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import SwiperCore, { Navigation, Pagination } from "swiper";
@@ -18,13 +17,13 @@ const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 
 root.render(
-    <React.StrictMode>
-        <RecoilRoot>
-            <ApolloProvider client={apolloClient}>
-                <App />
-            </ApolloProvider>
-        </RecoilRoot>
-    </React.StrictMode>
+    // <React.StrictMode>
+    <RecoilRoot>
+        <ApolloProvider client={apolloClient}>
+            <App />
+        </ApolloProvider>
+    </RecoilRoot>
+    // </React.StrictMode>
 );
 
 register();

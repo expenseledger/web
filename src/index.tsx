@@ -9,7 +9,6 @@ import "swiper/css/pagination";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
-import { register } from "./serviceWorkerRegistration";
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -25,5 +24,3 @@ root.render(
     </RecoilRoot>
     // </React.StrictMode>
 );
-
-register();

@@ -30,6 +30,7 @@
         "dev": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
+        "compile": "tsc",
         "test": "jest",
         "release": "release-it",
         "lint": "eslint ./src/",

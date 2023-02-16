@@ -9,19 +9,18 @@ import "swiper/css/pagination";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
-import { register } from "./serviceWorkerRegistration";
 
 SwiperCore.use([Pagination, Navigation]);
 
-const container = document.getElementById("root");
+const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
 
 root.render(
+    // <React.StrictMode>
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
             <App />
         </ApolloProvider>
     </RecoilRoot>
+    // </React.StrictMode>
 );
-
-register();

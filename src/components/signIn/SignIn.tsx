@@ -21,7 +21,7 @@ const SignIn: React.FC = () => {
     );
 
     React.useEffect(() => {
-        onAuthStateChanged(auth, (user) => executeAfterLogin(user));
+        onAuthStateChanged(auth, (user) => user && executeAfterLogin(user));
     }, [executeAfterLogin, navigate]);
 
     const uiConfig: firebaseui.auth.Config = {

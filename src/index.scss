@@ -1,5 +1,5 @@
-@import 'bulma';
-@import '~bulma-switch';
+@import "../node_modules/bulma/bulma.sass";
+@import './node_modules/bulma-switch/src/sass/index.sass';
 
 $line-seed-font-path: "./assets/fonts/line_seed";
 

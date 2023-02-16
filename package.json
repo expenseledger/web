@@ -27,7 +27,7 @@
         "uuid": "^8.3.2"
     },
     "scripts": {
-        "dev": "vite",
+        "start": "vite",
         "build": "tsc && vite build",
         "preview": "vite preview",
         "compile": "tsc",

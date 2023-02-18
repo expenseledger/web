@@ -62,22 +62,14 @@ const Report: React.FC = () => {
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
             />
             <div className="box mt-3 mb-5">
-                <BarChartReport transactions={transactions} accountIds={[initialAccountId]} />
+                <BarChartReport transactions={transactions} />
             </div>
             <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
                 <div className="column px-0">
-                    <PieChartReport
-                        transactions={transactions}
-                        accountIds={[initialAccountId]}
-                        isExpense={false}
-                    />
+                    <PieChartReport transactions={transactions} isExpense={false} />
                 </div>
                 <div className="column px-0">
-                    <PieChartReport
-                        transactions={transactions}
-                        accountIds={[initialAccountId]}
-                        isExpense={true}
-                    />
+                    <PieChartReport transactions={transactions} isExpense={true} />
                 </div>
             </div>
         </>

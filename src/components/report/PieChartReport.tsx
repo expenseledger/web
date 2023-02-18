@@ -11,7 +11,6 @@ import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
 
 interface PieChartReportProps {
     transactions: Transaction[];
-    accountIds: number[];
     isExpense: boolean;
 }
 
@@ -32,15 +31,11 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
-    const getPieChartData = (
-        transactions: Transaction[],
-        accountIds: number[],
-        isExpense: boolean
-    ): PieChartData[] => {
+    const getPieChartData = (transactions: Transaction[], isExpense: boolean): PieChartData[] => {
         const toReturn: PieChartData[] = [];
         const byName = R.groupBy((data: PieChartData) => data.name);
-        const expenseFilter = (t: Transaction) => getAmount(t, accountIds) < 0;
-        const incomeFilter = (t: Transaction) => getAmount(t, accountIds) >= 0;
+        const expenseFilter = (t: Transaction) => getAmount(t) < 0;
+        const incomeFilter = (t: Transaction) => getAmount(t) >= 0;
         const dirtyData = byName(
             transactions
                 .filter((t) => (isExpense ? expenseFilter(t) : incomeFilter(t)))

@@ -7,20 +7,27 @@ import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
 import MonthYearSwiper from "../bases/MonthYearSwiper";
-import AccountSelection from "./AccountSelection";
+import AccountSelection, { SelectableAccount } from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 
 const Report: React.FC = () => {
     const accounts = useRecoilValue(accountsState);
     const location = useLocation();
+    const initalSelectedAccounts: SelectableAccount[] = location?.state?.accountId
+        ? accounts.map((a) => {
+              return {
+                  ...a,
+                  isSelected: a.id === location.state.accountId,
+              };
+          })
+        : [];
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
-    const [selectedAccountIds, setSelectedAccountIds] = useState<number[]>(
-        location?.state?.accountId ? [location.state.accountId] : []
-    );
+    const [selectedAccounts, setSelectedAccounts] =
+        useState<SelectableAccount[]>(initalSelectedAccounts);
     const initialAccountId: number | null = location.state?.accountId;
     const navigate = useNavigate();
 
@@ -34,14 +41,16 @@ const Report: React.FC = () => {
         }
 
         Promise.all(
-            selectedAccountIds.map((accountId) => getTransactionMonthYearList({ accountId }))
+            selectedAccounts
+                .filter((a) => a.isSelected)
+                .map((a) => getTransactionMonthYearList({ accountId: a.id }))
         )
             .then((responses) => {
                 const monthYears = responses.map((response) => response.monthYears).flat();
-                setMonthYearList([...new Set(monthYears)]);
+                setMonthYearList([...new Set(monthYears)].sort((a, b) => b.localeCompare(a)));
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearList.length, selectedAccountIds]);
+    }, [backToHome, initialAccountId, monthYearList.length, selectedAccounts]);
 
     useEffect(() => {
         if (monthYearList.length == 0) {
@@ -52,9 +61,15 @@ const Report: React.FC = () => {
         const until = from.add(1, "M");
 
         Promise.all(
-            selectedAccountIds.map((accountId) =>
-                listTransactions({ accountId, from: from.toDate(), until: until.toDate() })
-            )
+            selectedAccounts
+                .filter((a) => a.isSelected)
+                .map((a) =>
+                    listTransactions({
+                        accountId: a.id,
+                        from: from.toDate(),
+                        until: until.toDate(),
+                    })
+                )
         ).then((responses) => {
             const transactions = responses
                 .map((response) => response.items)
@@ -75,7 +90,7 @@ const Report: React.FC = () => {
                 setIsLoading(false);
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectedAccountIds]);
+    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectedAccounts]);
 
     return isLoading ? (
         <Loading />
@@ -86,7 +101,10 @@ const Report: React.FC = () => {
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
             />
             <div className="mt-3 mb-5">
-                <AccountSelection accounts={accounts} />
+                <AccountSelection
+                    accounts={selectedAccounts}
+                    onChangeHanlder={setSelectedAccounts}
+                />
             </div>
             <div className="box mt-3 mb-5">
                 <BarChartReport transactions={transactions} />

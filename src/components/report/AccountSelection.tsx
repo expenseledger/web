@@ -1,7 +1,11 @@
 import Account from "../../service/model/Account";
 
+export interface SelectableAccount extends Account {
+    isSelected: boolean;
+}
+
 interface AccountSelectionProps {
-    accounts: Account[];
+    accounts: SelectableAccount[];
 }
 
 const AccountSelection: React.FC<AccountSelectionProps> = (props) => {

@@ -13,11 +13,14 @@ import PieChartReport from "./PieChartReport";
 
 const Report: React.FC = () => {
     const accounts = useRecoilValue(accountsState);
+    const location = useLocation();
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
-    const location = useLocation();
+    const [selectedAccountIds, setSelectedAccountIds] = useState<number[]>(
+        location?.state?.accountId ? [location.state.accountId] : []
+    );
     const initialAccountId: number | null = location.state?.accountId;
     const navigate = useNavigate();
 
@@ -30,12 +33,15 @@ const Report: React.FC = () => {
             return;
         }
 
-        getTransactionMonthYearList({ accountId: initialAccountId })
-            .then((response) => {
-                setMonthYearList(response.monthYears);
+        Promise.all(
+            selectedAccountIds.map((accountId) => getTransactionMonthYearList({ accountId }))
+        )
+            .then((responses) => {
+                const monthYears = responses.map((response) => response.monthYears).flat();
+                setMonthYearList([...new Set(monthYears)]);
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearList.length]);
+    }, [backToHome, initialAccountId, monthYearList.length, selectedAccountIds]);
 
     useEffect(() => {
         if (monthYearList.length == 0) {
@@ -45,6 +51,20 @@ const Report: React.FC = () => {
         const from = dayjs(monthYearList[monthYearIdx]);
         const until = from.add(1, "M");
 
+        Promise.all(
+            selectedAccountIds.map((accountId) =>
+                listTransactions({ accountId, from: from.toDate(), until: until.toDate() })
+            )
+        ).then((responses) => {
+            const transactions = responses
+                .map((response) => response.items)
+                .flat()
+                .filter((t) => t.type !== "TRANSFER")
+                .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+            setTransactions(transactions);
+            setIsLoading(false);
+        });
         listTransactions({
             accountId: initialAccountId,
             from: from.toDate(),
@@ -55,7 +75,7 @@ const Report: React.FC = () => {
                 setIsLoading(false);
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate]);
+    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectedAccountIds]);
 
     return isLoading ? (
         <Loading />

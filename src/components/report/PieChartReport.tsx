@@ -149,8 +149,8 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     };
 
     useEffect(() => {
-        setPieChartData(getPieChartData(props.transactions, props.accountIds, props.isExpense));
-    }, [props.accountIds, props.isExpense, props.transactions]);
+        setPieChartData(getPieChartData(props.transactions, props.isExpense));
+    }, [props.isExpense, props.transactions]);
 
     return (
         <>

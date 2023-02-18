@@ -83,8 +83,8 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     }, []);
 
     useEffect(() => {
-        setData(transfromTransactions(props.transactions, props.accountIds));
-    }, [props.accountIds, props.transactions, transfromTransactions]);
+        setData(transfromTransactions(props.transactions));
+    }, [props.transactions, transfromTransactions]);
 
     return !data ? null : (
         <>

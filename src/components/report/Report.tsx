@@ -1,14 +1,18 @@
 import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { useRecoilValue } from "recoil";
+import { accountsState } from "../../common/shareState";
 import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
 import MonthYearSwiper from "../bases/MonthYearSwiper";
+import AccountSelection from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 
 const Report: React.FC = () => {
+    const accounts = useRecoilValue(accountsState);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
@@ -61,6 +65,9 @@ const Report: React.FC = () => {
                 monthYearList={monthYearList}
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
             />
+            <div className="mt-3 mb-5">
+                <AccountSelection accounts={accounts} />
+            </div>
             <div className="box mt-3 mb-5">
                 <BarChartReport transactions={transactions} />
             </div>

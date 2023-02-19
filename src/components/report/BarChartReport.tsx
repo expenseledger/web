@@ -18,7 +18,6 @@ import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
-    accountIds: number[];
 }
 
 interface BarChartData {
@@ -30,6 +29,16 @@ interface BarChartData {
 const TotalAmountDiv = styled.div`
     text-align: center;
     font-weight: 700;
+`;
+
+const NoDataDiv = styled.div`
+    text-align: center;
+    height: 250px;
+    width: 100%;
+`;
+const NoDatatext = styled.span`
+    position: relative;
+    top: 100px;
 `;
 
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
@@ -46,51 +55,53 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
 
         return toReturn;
     };
-    const transfromTransactions = useCallback(
-        (transactions: Transaction[], accountIds: number[]): BarChartData[] => {
-            const toReturn: BarChartData[] = [];
+    const transfromTransactions = useCallback((transactions: Transaction[]): BarChartData[] => {
+        const toReturn: BarChartData[] = [];
 
-            if (transactions.length === 0) {
-                return toReturn;
-            }
-            const daysInMonth = dayjs(transactions[0].date).daysInMonth();
-            const xAxis = getXAxis(daysInMonth);
-            const byName = R.groupBy((data: BarChartData) => data.name);
-            const dirtyData = byName(
-                transactions.map((t) => {
-                    const amount = getAmount(t, accountIds);
-                    const idx = Math.floor(dayjs(t.date).date() / 7);
-
-                    return {
-                        name: xAxis[idx],
-                        income: amount >= 0 ? Math.abs(t.amount) : 0,
-                        expense: amount < 0 ? Math.abs(t.amount) : 0,
-                    };
-                })
-            );
-
-            for (const key in dirtyData) {
-                const aggregatedData = dirtyData[key].reduce((acc, current) => {
-                    return {
-                        name: key,
-                        income: acc.income + current.income,
-                        expense: acc.expense + current.expense,
-                    };
-                });
-
-                toReturn.push(aggregatedData);
-            }
-
+        if ((transactions?.length ?? 0) === 0) {
             return toReturn;
-        },
-        []
-    );
+        }
+
+        const daysInMonth = dayjs(transactions[0].date).daysInMonth();
+        const xAxis = getXAxis(daysInMonth);
+        const byName = R.groupBy((data: BarChartData) => data.name);
+        const dirtyData = byName(
+            transactions.map((t) => {
+                const amount = getAmount(t);
+                const idx = Math.floor(dayjs(t.date).date() / 7);
+
+                return {
+                    name: xAxis[idx],
+                    income: amount >= 0 ? Math.abs(t.amount) : 0,
+                    expense: amount < 0 ? Math.abs(t.amount) : 0,
+                };
+            })
+        );
+
+        for (const key in dirtyData) {
+            const aggregatedData = dirtyData[key].reduce((acc, current) => {
+                return {
+                    name: key,
+                    income: acc.income + current.income,
+                    expense: acc.expense + current.expense,
+                };
+            });
+
+            toReturn.push(aggregatedData);
+        }
+
+        return toReturn;
+    }, []);
 
     useEffect(() => {
-        setData(transfromTransactions(props.transactions, props.accountIds));
-    }, [props.accountIds, props.transactions, transfromTransactions]);
+        setData(transfromTransactions(props.transactions));
+    }, [props.transactions, transfromTransactions]);
 
-    return !data ? null : (
+    return (data?.length ?? 0) === 0 ? (
+        <NoDataDiv>
+            <NoDatatext className="title">No data</NoDatatext>
+        </NoDataDiv>
+    ) : (
         <>
             <TotalAmountDiv className="mb-5">
                 <div>Net Income</div>

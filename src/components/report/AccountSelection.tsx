@@ -1,3 +1,5 @@
+import * as R from "ramda";
+import styled from "styled-components";
 import Account from "../../service/model/Account";
 
 export interface SelectableAccount extends Account {
@@ -8,6 +10,10 @@ interface AccountSelectionProps {
     accounts: SelectableAccount[];
     onChangeHanlder: (accounts: SelectableAccount[]) => void;
 }
+
+const AccountsText = styled.div`
+    text-align: center;
+`;
 
 const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
     const onChangeHandler = (accountId: number, e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,12 +42,33 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
                     onChange={(e) => onChangeHandler(account.id, e)}
                     checked={account.isSelected}
                 />
-                {account.name}
+                <span className="ml-1">{account.name}</span>
             </label>
         );
     });
 
-    return <div className="box">{listOfCheckbox}</div>;
+    const renderCheckbox = () => {
+        return R.splitEvery(2, listOfCheckbox).map((l, idx) => {
+            return (
+                <div className="columns is-mobile" key={idx}>
+                    {l.map((c) => {
+                        return (
+                            <div className="column" key={c.key}>
+                                {c}
+                            </div>
+                        );
+                    })}
+                </div>
+            );
+        });
+    };
+
+    return (
+        <div className="box">
+            <AccountsText className="title is-5">Accounts</AccountsText>
+            <div>{renderCheckbox()}</div>
+        </div>
+    );
 };
 
 export default AccountSelection;

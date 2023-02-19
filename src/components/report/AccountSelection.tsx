@@ -21,9 +21,9 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
             return account;
         });
 
-        // if (!newAccounts.some((a) => a.isSelected)) {
-        //     return;
-        // }
+        if (!newAccounts.some((a) => a.isSelected)) {
+            return;
+        }
 
         props.onChangeHanlder(newAccounts);
     };

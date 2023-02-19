@@ -28,7 +28,6 @@ const Report: React.FC = () => {
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
     const [selectableAccounts, setSelectableAccounts] =
         useState<SelectableAccount[]>(initalSelectedAccounts);
-    const initialAccountId: number | null = location.state?.accountId;
     const navigate = useNavigate();
 
     const backToHome = useCallback(() => {
@@ -76,27 +75,19 @@ const Report: React.FC = () => {
                     until: until.toDate(),
                 })
             )
-        ).then((responses) => {
-            const transactions = responses
-                .map((response) => response.items)
-                .flat()
-                .filter((t) => t.type !== "TRANSFER")
-                .sort((a, b) => a.date.getTime() - b.date.getTime());
+        )
+            .then((responses) => {
+                const transactions = responses
+                    .map((response) => response.items)
+                    .flat()
+                    .filter((t) => t.type !== "TRANSFER")
+                    .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-            setTransactions(transactions);
-            setIsLoading(false);
-        });
-        listTransactions({
-            accountId: initialAccountId,
-            from: from.toDate(),
-            until: until.toDate(),
-        })
-            .then((response) => {
-                setTransactions(response.items.filter((t) => t.type !== "TRANSFER").reverse());
+                setTransactions(transactions);
                 setIsLoading(false);
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectableAccounts]);
+    }, [backToHome, monthYearIdx, monthYearList, navigate, selectableAccounts]);
 
     return isLoading ? (
         <Loading />

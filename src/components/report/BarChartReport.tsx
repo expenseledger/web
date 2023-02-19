@@ -36,6 +36,10 @@ const NoDataDiv = styled.div`
     height: 250px;
     width: 100%;
 `;
+const NoDatatext = styled.span`
+    position: relative;
+    top: 100px;
+`;
 
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
@@ -95,7 +99,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
 
     return (data?.length ?? 0) === 0 ? (
         <NoDataDiv>
-            <span>No data</span>
+            <NoDatatext className="title">No data</NoDatatext>
         </NoDataDiv>
     ) : (
         <>

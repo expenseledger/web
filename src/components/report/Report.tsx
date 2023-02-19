@@ -26,7 +26,7 @@ const Report: React.FC = () => {
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>([]);
-    const [selectedAccounts, setSelectedAccounts] =
+    const [selectableAccounts, setSelectableAccounts] =
         useState<SelectableAccount[]>(initalSelectedAccounts);
     const initialAccountId: number | null = location.state?.accountId;
     const navigate = useNavigate();
@@ -35,41 +35,47 @@ const Report: React.FC = () => {
         navigate("/");
     }, [navigate]);
 
+    const selectableAccountsChangeHandler = (newAccount: SelectableAccount[]) => {
+        if (newAccount.filter((a) => a.isSelected).length === 0) {
+            setMonthYearList([]);
+            setTransactions([]);
+        }
+
+        setSelectableAccounts(newAccount);
+    };
+
     useEffect(() => {
-        if (!initialAccountId || monthYearList.length != 0) {
+        const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
+
+        if (selectedAccounts.length === 0) {
             return;
         }
 
-        Promise.all(
-            selectedAccounts
-                .filter((a) => a.isSelected)
-                .map((a) => getTransactionMonthYearList({ accountId: a.id }))
-        )
+        Promise.all(selectedAccounts.map((a) => getTransactionMonthYearList({ accountId: a.id })))
             .then((responses) => {
                 const monthYears = responses.map((response) => response.monthYears).flat();
                 setMonthYearList([...new Set(monthYears)].sort((a, b) => b.localeCompare(a)));
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearList.length, selectedAccounts]);
+    }, [backToHome, selectableAccounts]);
 
     useEffect(() => {
         if (monthYearList.length == 0) {
             return;
         }
 
+        const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
         const from = dayjs(monthYearList[monthYearIdx]);
         const until = from.add(1, "M");
 
         Promise.all(
-            selectedAccounts
-                .filter((a) => a.isSelected)
-                .map((a) =>
-                    listTransactions({
-                        accountId: a.id,
-                        from: from.toDate(),
-                        until: until.toDate(),
-                    })
-                )
+            selectedAccounts.map((a) =>
+                listTransactions({
+                    accountId: a.id,
+                    from: from.toDate(),
+                    until: until.toDate(),
+                })
+            )
         ).then((responses) => {
             const transactions = responses
                 .map((response) => response.items)
@@ -90,7 +96,7 @@ const Report: React.FC = () => {
                 setIsLoading(false);
             })
             .catch(backToHome);
-    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectedAccounts]);
+    }, [backToHome, initialAccountId, monthYearIdx, monthYearList, navigate, selectableAccounts]);
 
     return isLoading ? (
         <Loading />
@@ -102,8 +108,8 @@ const Report: React.FC = () => {
             />
             <div className="mt-3 mb-5">
                 <AccountSelection
-                    accounts={selectedAccounts}
-                    onChangeHanlder={setSelectedAccounts}
+                    accounts={selectableAccounts}
+                    onChangeHanlder={selectableAccountsChangeHandler}
                 />
             </div>
             <div className="box mt-3 mb-5">

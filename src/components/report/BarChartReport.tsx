@@ -31,6 +31,12 @@ const TotalAmountDiv = styled.div`
     font-weight: 700;
 `;
 
+const NoDataDiv = styled.div`
+    text-align: center;
+    height: 250px;
+    width: 100%;
+`;
+
 const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const [data, setData] = useState<BarChartData[]>(null);
     const getXAxis = (daysInMonth: number): string[] => {
@@ -48,9 +54,10 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
     const transfromTransactions = useCallback((transactions: Transaction[]): BarChartData[] => {
         const toReturn: BarChartData[] = [];
 
-        if (transactions.length === 0) {
+        if ((transactions?.length ?? 0) === 0) {
             return toReturn;
         }
+
         const daysInMonth = dayjs(transactions[0].date).daysInMonth();
         const xAxis = getXAxis(daysInMonth);
         const byName = R.groupBy((data: BarChartData) => data.name);
@@ -86,7 +93,11 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
         setData(transfromTransactions(props.transactions));
     }, [props.transactions, transfromTransactions]);
 
-    return !data ? null : (
+    return (data?.length ?? 0) === 0 ? (
+        <NoDataDiv>
+            <span>No data</span>
+        </NoDataDiv>
+    ) : (
         <>
             <TotalAmountDiv className="mb-5">
                 <div>Net Income</div>

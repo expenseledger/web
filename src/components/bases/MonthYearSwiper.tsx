@@ -21,13 +21,17 @@ const MonthYearSwiper: React.FC<MonthYearSwiperProps> = (props) => {
             centeredSlides={true}
             navigation={true}
             onSlideChange={props.onSlideChange}>
-            {props.monthYearList.map((x) => (
-                <SwiperSlide key={x}>
-                    <MonthYear key={x} className="title is-4 px-5 py-5">
-                        {dayjs(x).format("MMMM YYYY")}
-                    </MonthYear>
-                </SwiperSlide>
-            ))}
+            {props.monthYearList.length === 0 ? (
+                <MonthYear className="title is-4 px-5 py-5">No data</MonthYear>
+            ) : (
+                props.monthYearList.map((x) => (
+                    <SwiperSlide key={x}>
+                        <MonthYear key={x} className="title is-4 px-5 py-5">
+                            {dayjs(x).format("MMMM YYYY")}
+                        </MonthYear>
+                    </SwiperSlide>
+                ))
+            )}
         </Swiper>
     );
 };

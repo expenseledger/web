@@ -68,7 +68,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
         const dirtyData = byName(
             transactions.map((t) => {
                 const amount = getAmount(t);
-                const idx = Math.floor(dayjs(t.date).date() / 7);
+                const idx = Math.floor((dayjs(t.date).date() - 1) / 7);
 
                 return {
                     name: xAxis[idx],

@@ -10,6 +10,7 @@ import MonthYearSwiper from "../bases/MonthYearSwiper";
 import AccountSelection, { SelectableAccount } from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
+import TableReport from "./TableReport";
 
 const Report: React.FC = () => {
     const accounts = useRecoilValue(accountsState);
@@ -113,6 +114,12 @@ const Report: React.FC = () => {
                 <div className="column px-0">
                     <PieChartReport transactions={transactions} isExpense={true} />
                 </div>
+            </div>
+            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
+                <TableReport transations={transactions} isExpense={false} />
+            </div>
+            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
+                <TableReport transations={transactions} isExpense={true} />
             </div>
         </>
     );

@@ -115,10 +115,10 @@ const Report: React.FC = () => {
                     <PieChartReport transactions={transactions} isExpense={true} />
                 </div>
             </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
+            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 box">
                 <TableReport transations={transactions} isExpense={false} />
             </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
+            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 box">
                 <TableReport transations={transactions} isExpense={true} />
             </div>
         </>

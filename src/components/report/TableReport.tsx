@@ -20,6 +20,7 @@ const NoDataDiv = styled.div<{ isExpense: boolean }>`
     text-align: center;
     color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     font-weight: 700;
+    width: 100%;
 `;
 const StyledTable = styled.table<{ isExpense: boolean }>`
     color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};

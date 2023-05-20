@@ -111,6 +111,9 @@ const Menu: React.FC<MenuProps> = (props) => {
                                 <li>
                                     <Link to="/category/setting">Category</Link>
                                 </li>
+                                <li>
+                                    <Link to="/page/setting">Page</Link>
+                                </li>
                             </ul>
                         </li>
                     </ul>

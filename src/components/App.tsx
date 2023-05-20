@@ -1,7 +1,8 @@
 import React from "react";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import Layout from "./Layout";
 import Report from "./report/Report";
+import PageSetting from "./setting/PageSetting";
 import SignIn from "./signIn/SignIn";
 
 const TransactionList = React.lazy(() => import("./transactionList/TransactionList"));
@@ -24,6 +25,7 @@ const App: React.FC = () => {
                     <Route path="/more" element={<More />} />
                     <Route path="/category/setting" element={<CategorySetting />} />
                     <Route path="/account/setting" element={<AccountSetting />} />
+                    <Route path="/page/setting" element={<PageSetting />} />
                     <Route path="/report" element={<Report />} />
                 </Route>
             </Routes>

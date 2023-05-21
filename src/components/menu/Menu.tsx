@@ -4,6 +4,7 @@ import styled from "styled-components";
 import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
+import Switch from "../bases/Switch";
 
 interface MenuProps {
     accounts: Account[];
@@ -75,18 +76,17 @@ const Menu: React.FC<MenuProps> = (props) => {
                         </li>
                         <li>
                             <div className="columns is-mobile">
-                                <HideBalanceContainer className="column field hideBalanceSwitch mr-6">
-                                    <input
-                                        id={hideBalanceSwitchId}
-                                        type="checkbox"
+                                <HideBalanceContainer className="column field hideBalanceSwitch">
+                                    <Switch
                                         name={hideBalanceSwitchId}
-                                        className="switch is-rounded is-outlined is-small is-rtl"
-                                        checked={isHideBalance}
+                                        isOutlined
+                                        isRounded
+                                        isOn={isHideBalance}
                                         onChange={onHideBalanceChangeHandler}
+                                        label="Hide balance"
+                                        size="small"
+                                        isRtl
                                     />
-                                    <label id={hideBalanceSwitchId} htmlFor={hideBalanceSwitchId}>
-                                        Hide balance
-                                    </label>
                                 </HideBalanceContainer>
                             </div>
                         </li>

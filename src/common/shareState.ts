@@ -2,6 +2,7 @@ import { atom, selector } from "recoil";
 import { NotificationProps } from "../components/bases/Notification";
 import Account from "../service/model/Account";
 import Category from "../service/model/Category";
+import PageSetting from "../service/model/configs/PageSetting";
 import { Currency } from "./../service/constants";
 
 export const accountsState = atom<Account[]>({
@@ -41,4 +42,11 @@ export const currencyState = atom<Currency>({
         window.localStorage.getItem("currency") === undefined
             ? "฿"
             : (window.localStorage.getItem("currency") as Currency),
+});
+
+export const pageSettingState = atom<PageSetting>({
+    key: "pageSetting",
+    default: {
+        isMenuOnRightSide: window.localStorage.getItem("isMenuOnRightSide") === "true",
+    },
 });

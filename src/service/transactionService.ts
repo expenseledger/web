@@ -221,6 +221,39 @@ const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
     }
 `;
 
+const UPDATE_TRANSACTION = gql`
+    mutation UpdateTransaction(
+        $transactionId: Int!
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $occurredAt: Datetime!
+    ) {
+        updateTransaction(
+            input: {
+                id: $transactionId
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                occurredAt: $occurredAt
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+                toAccount {
+                    ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
+                }
+            }
+        }
+    }
+`;
+
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
     try {
         const response = await client.mutate({
@@ -449,5 +482,36 @@ export async function getTransactionMonthYearList(
         return {
             monthYears: [],
         };
+    }
+}
+
+export async function updateTransaction(
+    request: UpdateTransactionRequest
+): Promise<UpdateTransactionResponse> {
+    try {
+        const response = await client.mutate({
+            mutation: UPDATE_TRANSACTION,
+            variables: {
+                transactionId: request.id,
+                amount: request.amount,
+                description: request.description,
+                categoryId: request.categoryId,
+                occurredAt: request.date,
+            },
+        });
+
+        if (response.errors) {
+            log("update transaction failed", response.errors);
+
+            return null;
+        }
+
+        return {
+            transaction: mapTransactionFromServer(response.data.updateTransaction.transaction),
+        };
+    } catch (err) {
+        log("update transaction failed, unexpected error", err);
+
+        return null;
     }
 }

@@ -80,3 +80,15 @@ export interface GetTransactionMonthYearListRequest {
 export interface GetTransactionMonthYearListResponse {
     isSuccess: boolean;
 }
+
+export interface UpdateTransactionRequest {
+    id: number;
+    amount: number;
+    categoryId: number;
+    description: string;
+    occuredAt: Date;
+}
+
+export interface UpdateTransactionResponse {
+    isSuccess: boolean;
+}

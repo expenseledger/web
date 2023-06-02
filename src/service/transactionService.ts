@@ -11,6 +11,8 @@ import {
     DeleteTranactionRequest,
     GetTransactionMonthYearListRequest,
     ListTransactionsRequest,
+    UpdateTransactionRequest,
+    UpdateTransactionResponse,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
@@ -496,22 +498,26 @@ export async function updateTransaction(
                 amount: request.amount,
                 description: request.description,
                 categoryId: request.categoryId,
-                occurredAt: request.date,
+                occurredAt: request.occuredAt,
             },
         });
 
         if (response.errors) {
             log("update transaction failed", response.errors);
 
-            return null;
+            return {
+                isSuccess: false,
+            };
         }
 
         return {
-            transaction: mapTransactionFromServer(response.data.updateTransaction.transaction),
+            isSuccess: true,
         };
     } catch (err) {
         log("update transaction failed, unexpected error", err);
 
-        return null;
+        return {
+            isSuccess: false,
+        };
     }
 }

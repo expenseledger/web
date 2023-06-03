@@ -2,13 +2,14 @@ import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
 import { TransactionType } from "../../service/constants";
+import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
 
 interface TransactoinCardItem {
     amount: number;
     type: TransactionType;
-    category: string;
+    category?: Category;
     description?: string;
     onDelete: () => Promise<void>;
 }

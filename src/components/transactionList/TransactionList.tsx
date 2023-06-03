@@ -163,7 +163,7 @@ export const TransactionList: React.FC = () => {
                                 amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
-                                category: y.category?.name ?? "-",
+                                category: y.category,
                                 onDelete: () => removeTransaction(y.id),
                             };
                         })}

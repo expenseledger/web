@@ -82,7 +82,7 @@ export interface UpdateTransactionRequest {
     amount: number;
     categoryId: number;
     description: string;
-    occuredAt: Date;
+    occurredAt: Date;
 }
 
 export interface UpdateTransactionResponse {

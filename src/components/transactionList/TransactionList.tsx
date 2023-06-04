@@ -136,14 +136,14 @@ export const TransactionList: React.FC = () => {
         amount: number,
         categoryId: number,
         description: string,
-        occuredAt: Date
+        occurredAt: Date
     ) => {
         const result = await updateTransaction({
             id,
             amount,
             categoryId,
             description,
-            occuredAt,
+            occurredAt,
         });
 
         if (!result.isSuccess) {
@@ -158,7 +158,7 @@ export const TransactionList: React.FC = () => {
                     amount,
                     categoryId,
                     description,
-                    occuredAt,
+                    occurredAt,
                 };
             }
 
@@ -202,14 +202,15 @@ export const TransactionList: React.FC = () => {
                                 type: y.type,
                                 description: y.description,
                                 category: y.category,
+                                date: y.date,
                                 onDelete: () => removeTransactionHandler(y.id),
-                                onUpdate: (amount, categoryId, description, occuredAt) =>
+                                onUpdate: (amount, categoryId, description, occurredAt) =>
                                     updateTransactionHandler(
                                         y.id,
                                         amount,
                                         categoryId,
                                         description,
-                                        occuredAt
+                                        occurredAt
                                     ),
                             };
                         })}

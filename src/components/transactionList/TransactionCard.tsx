@@ -11,6 +11,7 @@ interface TransactionCardItem {
     type: TransactionType;
     category?: Category;
     description?: string;
+    date: Date;
     onDelete: () => Promise<void>;
     onUpdate: (
         amount: number,
@@ -39,6 +40,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 description: x.description ?? "-",
                 amount: x.amount,
                 type: x.type,
+                date: x.date,
                 onDelete: x.onDelete,
                 onUpdate: x.onUpdate,
             };
@@ -52,7 +54,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 amount={x.amount}
                 type={x.type}
                 onDelete={x.onDelete}
-                occuredAt={props.date}
+                occurredAt={x.date}
                 onUpdate={x.onUpdate}
             />
         ));

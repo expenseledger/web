@@ -233,7 +233,7 @@ const UPDATE_TRANSACTION = gql`
     ) {
         updateTransaction(
             input: {
-                id: $transactionId
+                transactionId: $transactionId
                 amount: $amount
                 description: $description
                 categoryId: $categoryId
@@ -498,7 +498,7 @@ export async function updateTransaction(
                 amount: request.amount,
                 description: request.description,
                 categoryId: request.categoryId,
-                occurredAt: request.occuredAt,
+                occurredAt: request.occurredAt,
             },
         });
 

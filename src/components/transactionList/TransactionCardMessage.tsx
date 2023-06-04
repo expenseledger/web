@@ -17,7 +17,8 @@ interface UpdateTransactionModalProps {
     amount: number;
     category: Category;
     description: string;
-    occuredAt: Date;
+    occurredAt: Date;
+    transactionType: TransactionType;
     onCancel: () => void;
     onConfirm: (
         amount: number,
@@ -39,7 +40,7 @@ interface TransactionCardMessageProps {
         description: string,
         occuredAt: Date
     ) => Promise<void>;
-    occuredAt: Date;
+    occurredAt: Date;
 }
 
 const DeleteBox = styled.div`
@@ -60,10 +61,14 @@ const Content = styled.div`
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
     const categoryOptions = useRecoilValue(categoriesState);
     const currency = useRecoilValue(currencyState);
-    const [updatedAmountText, setUpdatedAmountText] = React.useState(props.amount.toString());
+    const [updatedAmountText, setUpdatedAmountText] = React.useState(
+        Math.abs(props.amount).toString()
+    );
     const [updateCategory, setUpdatCategory] = React.useState(props.category);
     const [updatedDescription, setUpdatedDescription] = React.useState(props.description);
-    const [updatedOccuredAt, setUpdatedOccuredAt] = React.useState(props.occuredAt.toString());
+    const [updatedOccuredAt, setUpdatedOccuredAt] = React.useState(
+        dayjs(props.occurredAt).format("YYYY-MM-DD")
+    );
     const updateCategoryHandler = (value: string) => {
         const category = categoryOptions.find((c) => c.name === value);
         if (!category) return;
@@ -87,8 +92,8 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
             cancelBtnType="default"
             confirmBtnTxt="Confirm"
             confirmBtnType="primary">
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
                     <span>Amount</span>
                 </div>
                 <TextBox
@@ -100,19 +105,21 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                     value={updatedAmountText}
                 />
             </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
                     <span>Category</span>
                 </div>
                 <Dropdown
                     className="column"
                     value={updateCategory.name}
-                    options={categoryOptions.map((c) => c.name)}
+                    options={categoryOptions
+                        .filter((c) => c.type === props.transactionType || c.type === "ANY")
+                        .map((c) => c.name)}
                     updateSelectedValue={updateCategoryHandler}
                 />
             </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
                     <span>Description</span>
                 </div>
                 <TextBox
@@ -122,9 +129,9 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                     value={updatedDescription}
                 />
             </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Description</span>
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
+                    <span>Date</span>
                 </div>
                 <DateBox
                     className="column is-4-desktop is-4-tablet is-2-widescreen"
@@ -218,7 +225,8 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     amount={props.amount}
                     category={props.category}
                     description={props.description}
-                    occuredAt={props.occuredAt}
+                    occurredAt={props.occurredAt}
+                    transactionType={props.type}
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
                 />

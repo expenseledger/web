@@ -64,7 +64,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     return (
         <Modal
-            title="Modify Category"
+            title="Update Category"
             onCancelHandler={props.onCancel}
             onConfirmHandler={modifyCategory}
             cancelBtnTxt="Cancel"

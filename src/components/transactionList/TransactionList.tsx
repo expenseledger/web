@@ -12,6 +12,7 @@ import {
     deleteTransaction,
     getTransactionMonthYearList,
     listTransactions,
+    updateTransaction,
 } from "../../service/transactionService";
 import AmountTxt from "../bases/AmountTxt";
 import Button from "../bases/Button";
@@ -102,7 +103,7 @@ export const TransactionList: React.FC = () => {
         });
     }, [mapPaidOnly, isPaidOnly]);
 
-    const removeTransaction = async (id: number) => {
+    const removeTransactionHandler = async (id: number) => {
         const response = await deleteTransaction({
             id,
         });
@@ -129,6 +130,43 @@ export const TransactionList: React.FC = () => {
         });
         setTransactions(transactions.filter((x) => x.id !== id));
         setAccounts(updatedAccounts);
+    };
+    const updateTransactionHandler = async (
+        id: number,
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => {
+        const result = await updateTransaction({
+            id,
+            amount,
+            categoryId,
+            description,
+            occuredAt,
+        });
+
+        if (!result.isSuccess) {
+            addNotification("Update transaction failed", "danger");
+            return;
+        }
+
+        const updatedTransactions = transactions.map((tx) => {
+            if (tx.id === id) {
+                return {
+                    ...tx,
+                    amount,
+                    categoryId,
+                    description,
+                    occuredAt,
+                };
+            }
+
+            return tx;
+        });
+
+        setTransactions(updatedTransactions);
+        addNotification("Update transaction success", "success");
     };
     const getAmount = (tx: HideAbleTransaction) => {
         switch (tx.type) {
@@ -164,7 +202,15 @@ export const TransactionList: React.FC = () => {
                                 type: y.type,
                                 description: y.description,
                                 category: y.category,
-                                onDelete: () => removeTransaction(y.id),
+                                onDelete: () => removeTransactionHandler(y.id),
+                                onUpdate: (amount, categoryId, description, occuredAt) =>
+                                    updateTransactionHandler(
+                                        y.id,
+                                        amount,
+                                        categoryId,
+                                        description,
+                                        occuredAt
+                                    ),
                             };
                         })}
                 />

@@ -6,17 +6,23 @@ import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
 
-interface TransactoinCardItem {
+interface TransactionCardItem {
     amount: number;
     type: TransactionType;
     category?: Category;
     description?: string;
     onDelete: () => Promise<void>;
+    onUpdate: (
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => Promise<void>;
 }
 
 interface TransactionCardProps {
     date: Date;
-    items: TransactoinCardItem[];
+    items: TransactionCardItem[];
 }
 
 const Title = styled.h1`
@@ -34,6 +40,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 amount: x.amount,
                 type: x.type,
                 onDelete: x.onDelete,
+                onUpdate: x.onUpdate,
             };
         });
 
@@ -45,6 +52,8 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 amount={x.amount}
                 type={x.type}
                 onDelete={x.onDelete}
+                occuredAt={props.date}
+                onUpdate={x.onUpdate}
             />
         ));
     };

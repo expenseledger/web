@@ -1,6 +1,8 @@
 import dayjs from "dayjs";
 import React from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import { TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
@@ -13,11 +15,9 @@ import TextBox from "../bases/TextBox";
 
 interface UpdateTransactionModalProps {
     amount: number;
-    category?: Category;
-    description?: string;
+    category: Category;
+    description: string;
     occuredAt: Date;
-    categoryOptions: Category[];
-    currency: string;
     onCancel: () => void;
     onConfirm: (
         amount: number,
@@ -30,8 +30,8 @@ interface UpdateTransactionModalProps {
 interface TransactionCardMessageProps {
     amount: number;
     type: TransactionType;
-    category?: Category;
-    description?: string;
+    category: Category;
+    description: string;
     onDelete: () => Promise<void>;
     onUpdate: (
         amount: number,
@@ -39,9 +39,7 @@ interface TransactionCardMessageProps {
         description: string,
         occuredAt: Date
     ) => Promise<void>;
-    categoryOptions: Category[];
     occuredAt: Date;
-    currency: string;
 }
 
 const DeleteBox = styled.div`
@@ -60,14 +58,14 @@ const Content = styled.div`
 `;
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
+    const categoryOptions = useRecoilValue(categoriesState);
+    const currency = useRecoilValue(currencyState);
     const [updatedAmountText, setUpdatedAmountText] = React.useState(props.amount.toString());
-    const [updateCategory, setUpdatCategory] = React.useState(
-        props.category ?? props.categoryOptions[0]
-    );
-    const [updatedDescription, setUpdatedDescription] = React.useState(props.description ?? "-");
+    const [updateCategory, setUpdatCategory] = React.useState(props.category);
+    const [updatedDescription, setUpdatedDescription] = React.useState(props.description);
     const [updatedOccuredAt, setUpdatedOccuredAt] = React.useState(props.occuredAt.toString());
     const updateCategoryHandler = (value: string) => {
-        const category = props.categoryOptions.find((c) => c.name === value);
+        const category = categoryOptions.find((c) => c.name === value);
         if (!category) return;
 
         setUpdatCategory(category);
@@ -75,7 +73,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
 
     return (
         <Modal
-            title="Modify Account"
+            title="Update Transaction"
             onCancelHandler={props.onCancel}
             onConfirmHandler={() =>
                 props.onConfirm(
@@ -94,7 +92,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                     <span>Amount</span>
                 </div>
                 <TextBox
-                    addOn={{ position: "front", text: props.currency }}
+                    addOn={{ position: "front", text: currency }}
                     className="column"
                     name="category-modify"
                     updateValue={setUpdatedAmountText}
@@ -109,7 +107,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                 <Dropdown
                     className="column"
                     value={updateCategory.name}
-                    options={props.categoryOptions.map((c) => c.name)}
+                    options={categoryOptions.map((c) => c.name)}
                     updateSelectedValue={updateCategoryHandler}
                 />
             </div>
@@ -146,6 +144,9 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
 
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
+    };
+    const onUpdateHandler = () => {
+        setIsClickedUpdate(true);
     };
     const onCancelDeleteHandler = () => {
         if (isLoading) return;
@@ -218,8 +219,6 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     category={props.category}
                     description={props.description}
                     occuredAt={props.occuredAt}
-                    categoryOptions={props.categoryOptions}
-                    currency={props.currency}
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
                 />
@@ -227,7 +226,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
         }
 
         return (
-            <UpdateBox onClick={onDeleteHandler}>
+            <UpdateBox onClick={onUpdateHandler}>
                 <span className="icon">
                     <i className="fas fa-lg fa-edit has-text-link" aria-hidden="true"></i>
                 </span>

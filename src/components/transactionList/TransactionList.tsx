@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import * as R from "ramda";
 import React, { startTransition, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,6 +5,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
+import dayjs from "../../lib/dayjs";
 import { useNotification } from "../../service/helper/notificationHelper";
 import { Transaction } from "../../service/model/Transaction";
 import {

@@ -1,9 +1,9 @@
-import dayjs from "dayjs";
 import React from "react";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
+import dayjs from "../../lib/dayjs";
 import { TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";

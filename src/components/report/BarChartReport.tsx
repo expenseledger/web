@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import * as R from "ramda";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -12,9 +11,10 @@ import {
     YAxis,
 } from "recharts";
 import styled from "styled-components";
+import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
-import { EXPENSE_COLOR, getAmount, INCOME_COLOR } from "./reportHelper";
+import { EXPENSE_COLOR, INCOME_COLOR, getAmount } from "./reportHelper";
 
 export interface BarChartReportProps {
     transactions: Transaction[];

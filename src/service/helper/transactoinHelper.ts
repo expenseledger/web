@@ -1,4 +1,4 @@
-import dayjs from "dayjs";
+import dayjs from "../../lib/dayjs";
 import { TransactionType } from "../constants";
 import { Transaction } from "../model/Transaction";
 

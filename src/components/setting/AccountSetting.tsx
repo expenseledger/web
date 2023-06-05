@@ -1,10 +1,10 @@
-import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { accountsState, categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
+import dayjs from "../../lib/dayjs";
 import { createAccount, deleteAccount, updateAccount } from "../../service/accountService";
 import { createCategory } from "../../service/categoryService";
 import { AccountType, Currency } from "../../service/constants";
@@ -83,7 +83,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 categoryId: otherCategory.id,
                 fromAccountId: account.id,
                 description: "Adjust balance",
-                date: dayjs().format("YYYY-MM-DD"),
+                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
             });
 
             if (response.transaction) {
@@ -105,7 +105,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 categoryId: otherCategory.id,
                 toAccountId: account.id,
                 description: "Adjust balance",
-                date: dayjs().format("YYYY-MM-DD"),
+                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
             });
 
             if (response.transaction) {

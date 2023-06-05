@@ -1,7 +1,7 @@
-import dayjs from "dayjs";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperClass } from "swiper/types";
+import dayjs from "../../lib/dayjs";
 
 interface MonthYearSwiperProps {
     monthYearList: string[];

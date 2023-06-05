@@ -4,17 +4,18 @@ import { useLocation } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";
+import dayjs from "../lib/dayjs";
 import { TransactionType } from "../service/constants";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
 import { addExpense, addIncome, addTransfer } from "../service/transactionService";
+import "./More.scss";
 import BalanceWithCurrency from "./bases/BalanceWithCurrency";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import "./More.scss";
 
 interface CurrentValue {
     fromAccountIdx: number;
@@ -157,7 +158,7 @@ const More: React.FC = () => {
             const request: AddExpenseRequest = {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
-                date,
+                date: dayjs(date).toDate(),
                 description: description === "" ? "-" : description,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -198,7 +199,7 @@ const More: React.FC = () => {
             const request: AddIncomeRequest = {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
-                date,
+                date: dayjs(date).toDate(),
                 description: description === "" ? "-" : description,
                 toAccountId: accounts[fromAccountIdx]?.id ?? 0,
             };
@@ -244,7 +245,7 @@ const More: React.FC = () => {
             const request: AddTransferRequest = {
                 amount: numberedAmount,
                 categoryId: categories[categoryIdx]?.id ?? 0,
-                date,
+                date: dayjs(date).toDate(),
                 description: description === "" ? "-" : description,
                 toAccountId: accounts[toAccountIdx]?.id ?? 0,
                 fromAccountId: accounts[fromAccountIdx]?.id ?? 0,

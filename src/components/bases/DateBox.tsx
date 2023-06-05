@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
 import React from "react";
 import { combineClassName, useInput } from "../../common/utils";
+import dayjs from "../../lib/dayjs";
 
 interface DateBoxProps {
     name: string;

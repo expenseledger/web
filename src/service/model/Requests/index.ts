@@ -6,7 +6,7 @@ interface AddTransactionRequest {
     amount: number;
     categoryId?: number;
     description?: string;
-    date: string;
+    date: Date;
 }
 export interface AddExpenseRequest extends AddTransactionRequest {
     fromAccountId: number;

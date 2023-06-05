@@ -48,5 +48,6 @@ export const pageSettingState = atom<PageSetting>({
     key: "pageSetting",
     default: {
         isMenuOnRightSide: window.localStorage.getItem("isMenuOnRightSide") === "true",
+        isDarkMenu: window.localStorage.getItem("isDarkMenu") === "true",
     },
 });

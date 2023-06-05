@@ -134,7 +134,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                     <span>Date</span>
                 </div>
                 <DateBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen"
+                    className="column"
                     name="date"
                     updateValue={setUpdatedOccuredAt}
                     value={updatedOccuredAt}

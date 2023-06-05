@@ -225,7 +225,7 @@ const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
 
 const UPDATE_TRANSACTION = gql`
     mutation UpdateTransaction(
-        $transactionId: Int!
+        $id: Int!
         $amount: Float!
         $description: String!
         $categoryId: Int!
@@ -233,7 +233,7 @@ const UPDATE_TRANSACTION = gql`
     ) {
         updateTransaction(
             input: {
-                transactionId: $transactionId
+                id: $id
                 amount: $amount
                 description: $description
                 categoryId: $categoryId
@@ -254,6 +254,9 @@ const UPDATE_TRANSACTION = gql`
             }
         }
     }
+    ${transactionFragment}
+    ${accountFragment}
+    ${categoryFragment}
 `;
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
@@ -494,7 +497,7 @@ export async function updateTransaction(
         const response = await client.mutate({
             mutation: UPDATE_TRANSACTION,
             variables: {
-                transactionId: request.id,
+                id: request.id,
                 amount: request.amount,
                 description: request.description,
                 categoryId: request.categoryId,

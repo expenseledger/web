@@ -1,8 +1,8 @@
-import dayjs from "dayjs";
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { useRecoilValue } from "recoil";
 import { accountsState } from "../../common/shareState";
+import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
 import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";

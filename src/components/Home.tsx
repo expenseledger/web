@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 import * as R from "ramda";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -7,15 +6,16 @@ import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";
+import dayjs from "../lib/dayjs";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
 import AccountCard from "./AccountCard";
+import "./Home.scss";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import "./Home.scss";
 
 interface CurrentValue {
     accountIdx: number;
@@ -107,7 +107,7 @@ const Home: React.FC = () => {
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
                 description: description === "" ? "-" : description,
-                date,
+                dayjs(date).toDate(),
             };
 
             const response = await addExpense(request);

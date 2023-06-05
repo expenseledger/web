@@ -1,6 +1,6 @@
-import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
+import dayjs from "../../lib/dayjs";
 import { TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";

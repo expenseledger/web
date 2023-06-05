@@ -12,6 +12,7 @@ import {
     deleteTransaction,
     getTransactionMonthYearList,
     listTransactions,
+    updateTransaction,
 } from "../../service/transactionService";
 import AmountTxt from "../bases/AmountTxt";
 import Button from "../bases/Button";
@@ -102,7 +103,7 @@ export const TransactionList: React.FC = () => {
         });
     }, [mapPaidOnly, isPaidOnly]);
 
-    const removeTransaction = async (id: number) => {
+    const removeTransactionHandler = async (id: number) => {
         const response = await deleteTransaction({
             id,
         });
@@ -130,6 +131,40 @@ export const TransactionList: React.FC = () => {
         setTransactions(transactions.filter((x) => x.id !== id));
         setAccounts(updatedAccounts);
     };
+    const updateTransactionHandler = async (
+        id: number,
+        amount: number,
+        categoryId: number,
+        description: string,
+        occurredAt: Date
+    ) => {
+        const result = await updateTransaction({
+            id,
+            amount,
+            categoryId,
+            description,
+            occurredAt,
+        });
+
+        if (!result.updatedTransaction) {
+            addNotification("Update transaction failed", "danger");
+            return;
+        }
+
+        const updatedTransactions = transactions.map((tx) => {
+            if (tx.id === id) {
+                return {
+                    ...tx,
+                    ...result.updatedTransaction,
+                };
+            }
+
+            return tx;
+        });
+
+        setTransactions(updatedTransactions);
+        addNotification("Update transaction success", "success");
+    };
     const getAmount = (tx: HideAbleTransaction) => {
         switch (tx.type) {
             case "EXPENSE":
@@ -148,7 +183,9 @@ export const TransactionList: React.FC = () => {
     const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
-        transactions.filter((x) => !x.isHide).forEach((x) => dateSet.add(x.date.toString()));
+        transactions
+            .filter((x) => !x.isHide)
+            .forEach((x) => dateSet.add(dayjs(x.date).format("YYYY-MM-DD")));
 
         dateSet.forEach((x, idx) =>
             toReturn.push(
@@ -157,14 +194,23 @@ export const TransactionList: React.FC = () => {
                     date={new Date(x)}
                     items={transactions
                         .filter((x) => !x.isHide)
-                        .filter((y) => x === y.date.toString())
+                        .filter((y) => x === dayjs(y.date).format("YYYY-MM-DD"))
                         .map((y) => {
                             return {
                                 amount: getAmount(y),
                                 type: y.type,
                                 description: y.description,
-                                category: y.category?.name ?? "-",
-                                onDelete: () => removeTransaction(y.id),
+                                category: y.category,
+                                date: y.date,
+                                onDelete: () => removeTransactionHandler(y.id),
+                                onUpdate: (amount, categoryId, description, occurredAt) =>
+                                    updateTransactionHandler(
+                                        y.id,
+                                        amount,
+                                        categoryId,
+                                        description,
+                                        occurredAt
+                                    ),
                             };
                         })}
                 />

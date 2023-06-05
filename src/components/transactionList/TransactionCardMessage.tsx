@@ -1,16 +1,46 @@
+import dayjs from "dayjs";
 import React from "react";
+import { useRecoilValue } from "recoil";
 import styled from "styled-components";
+import { categoriesState, currencyState } from "../../common/shareState";
+import { toNumber } from "../../common/utils";
 import { TransactionType } from "../../service/constants";
+import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
+import DateBox from "../bases/DateBox";
+import Dropdown from "../bases/Dropdown";
 import MessageBox from "../bases/MessageBox";
 import Modal from "../bases/Modal";
+import TextBox from "../bases/TextBox";
+
+interface UpdateTransactionModalProps {
+    amount: number;
+    category: Category;
+    description: string;
+    occurredAt: Date;
+    transactionType: TransactionType;
+    onCancel: () => void;
+    onConfirm: (
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => Promise<void>;
+}
 
 interface TransactionCardMessageProps {
     amount: number;
     type: TransactionType;
-    category: string;
-    description?: string;
+    category: Category;
+    description: string;
     onDelete: () => Promise<void>;
+    onUpdate: (
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => Promise<void>;
+    occurredAt: Date;
 }
 
 const DeleteBox = styled.div`
@@ -18,33 +48,159 @@ const DeleteBox = styled.div`
     right: 5px;
     top: 5px;
 `;
+const UpdateBox = styled.div`
+    position: absolute;
+    right: 5px;
+    top: 30px;
+`;
+
+const Content = styled.div`
+    text-align: left;
+`;
+
+const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
+    const categoryOptions = useRecoilValue(categoriesState);
+    const currency = useRecoilValue(currencyState);
+    const [updatedAmountText, setUpdatedAmountText] = React.useState(
+        Math.abs(props.amount).toString()
+    );
+    const [updateCategory, setUpdatCategory] = React.useState(props.category);
+    const [updatedDescription, setUpdatedDescription] = React.useState(props.description);
+    const [updatedOccuredAt, setUpdatedOccuredAt] = React.useState(
+        dayjs(props.occurredAt).format("YYYY-MM-DD")
+    );
+    const updateCategoryHandler = (value: string) => {
+        const category = categoryOptions.find((c) => c.name === value);
+        if (!category) return;
+
+        setUpdatCategory(category);
+    };
+
+    return (
+        <Modal
+            title="Update Transaction"
+            onCancelHandler={props.onCancel}
+            onConfirmHandler={() =>
+                props.onConfirm(
+                    toNumber(updatedAmountText),
+                    updateCategory.id,
+                    updatedDescription,
+                    dayjs(updatedOccuredAt).toDate()
+                )
+            }
+            cancelBtnTxt="Cancel"
+            cancelBtnType="default"
+            confirmBtnTxt="Confirm"
+            confirmBtnType="primary">
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
+                    <span>Amount</span>
+                </div>
+                <TextBox
+                    addOn={{ position: "front", text: currency }}
+                    className="column"
+                    name="category-modify"
+                    updateValue={setUpdatedAmountText}
+                    type="number"
+                    value={updatedAmountText}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
+                    <span>Category</span>
+                </div>
+                <Dropdown
+                    className="column"
+                    value={updateCategory.name}
+                    options={categoryOptions
+                        .filter((c) => c.type === props.transactionType || c.type === "ANY")
+                        .map((c) => c.name)}
+                    updateSelectedValue={updateCategoryHandler}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
+                    <span>Description</span>
+                </div>
+                <TextBox
+                    className="column"
+                    name="description-modify"
+                    updateValue={setUpdatedDescription}
+                    value={updatedDescription}
+                />
+            </div>
+            <div className="columns is-mobile is-vcentered has-text-left">
+                <div className="column is-4">
+                    <span>Date</span>
+                </div>
+                <DateBox
+                    className="column"
+                    name="date"
+                    updateValue={setUpdatedOccuredAt}
+                    value={updatedOccuredAt}
+                />
+            </div>
+        </Modal>
+    );
+};
 
 const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (props) => {
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
-    const [isDeleteLoading, setIsDeleteLoading] = React.useState(false);
+    const [isClickedUpdate, setIsClickedUpdate] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
     };
-    const onCancelHandler = () => {
-        if (isDeleteLoading) return;
+    const onUpdateHandler = () => {
+        setIsClickedUpdate(true);
+    };
+    const onCancelDeleteHandler = () => {
+        if (isLoading) return;
+
         setIsClickedDelete(false);
     };
-    const onConfirmHandler = async () => {
+    const onCancelUpdateHandler = () => {
+        if (isLoading) return;
+
+        setIsClickedUpdate(false);
+    };
+    const onConfirmDeleteHandler = async () => {
         if (!props.onDelete) {
             return;
         }
-        setIsDeleteLoading(true);
+
+        setIsLoading(true);
+
         await props.onDelete();
-        setIsDeleteLoading(false);
+
+        setIsLoading(false);
         setIsClickedDelete(false);
+    };
+    const onConfirmUpdateHandler = async (
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => {
+        if (!props.onUpdate) {
+            return;
+        }
+
+        setIsLoading(true);
+
+        await props.onUpdate(amount, categoryId, description, occuredAt);
+
+        setIsLoading(false);
+        setIsClickedUpdate(false);
     };
     const renderDelete = () => {
         if (isClickedDelete) {
             return (
                 <Modal
                     title="Delete Transaction"
-                    onCancelHandler={onCancelHandler}
-                    onConfirmHandler={onConfirmHandler}
+                    onCancelHandler={onCancelDeleteHandler}
+                    onConfirmHandler={onConfirmDeleteHandler}
                     cancelBtnTxt="Cancel"
                     cancelBtnType="default"
                     confirmBtnTxt="Delete"
@@ -62,11 +218,35 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
             </DeleteBox>
         );
     };
+    const renderUpdate = () => {
+        if (isClickedUpdate) {
+            return (
+                <UpdateTransactionModal
+                    amount={props.amount}
+                    category={props.category}
+                    description={props.description}
+                    occurredAt={props.occurredAt}
+                    transactionType={props.type}
+                    onCancel={onCancelUpdateHandler}
+                    onConfirm={onConfirmUpdateHandler}
+                />
+            );
+        }
+
+        return (
+            <UpdateBox onClick={onUpdateHandler}>
+                <span className="icon">
+                    <i className="fas fa-lg fa-edit has-text-link" aria-hidden="true"></i>
+                </span>
+            </UpdateBox>
+        );
+    };
 
     return (
         <MessageBox type={props.amount < 0 ? "dark" : "success"}>
             {renderDelete()}
-            <div className="columns is-mobile is-gapless is-multiline">
+            {renderUpdate()}
+            <Content className="columns is-mobile is-gapless is-multiline">
                 <div className="column is-half">
                     <span className="has-text-weight-bold">Type:</span>
                 </div>
@@ -80,14 +260,14 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                 <div className="column is-half">
                     <span className="has-text-weight-bold">Category:</span>
                 </div>
-                <div className="column is-half">{props.category}</div>
+                <div className="column is-half">{props.category?.name ?? "-"}</div>
                 <div className="column is-half">
                     <span className="has-text-weight-bold">Description:</span>
                 </div>
                 <div className="column is-half">
                     {!props.description || props.description === "" ? "-" : props.description}
                 </div>
-            </div>
+            </Content>
         </MessageBox>
     );
 };

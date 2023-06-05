@@ -11,6 +11,7 @@ import {
     DeleteTranactionRequest,
     GetTransactionMonthYearListRequest,
     ListTransactionsRequest,
+    UpdateTransactionRequest,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
@@ -18,6 +19,7 @@ import {
     AddTransferResponse,
     GetTransactionMonthYearListResponse,
     ListTransactionsResponse,
+    UpdateTransactionResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import { Transaction } from "./model/Transaction";
@@ -219,6 +221,42 @@ const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
             nodes
         }
     }
+`;
+
+const UPDATE_TRANSACTION = gql`
+    mutation UpdateTransaction(
+        $id: Int!
+        $amount: Float!
+        $description: String!
+        $categoryId: Int!
+        $occurredAt: Datetime!
+    ) {
+        updateTransaction(
+            input: {
+                id: $id
+                amount: $amount
+                description: $description
+                categoryId: $categoryId
+                occurredAt: $occurredAt
+            }
+        ) {
+            transaction {
+                ...PlainTransaction
+                fromAccount {
+                    ...PlainAccount
+                }
+                toAccount {
+                    ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
+                }
+            }
+        }
+    }
+    ${transactionFragment}
+    ${accountFragment}
+    ${categoryFragment}
 `;
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
@@ -448,6 +486,43 @@ export async function getTransactionMonthYearList(
 
         return {
             monthYears: [],
+        };
+    }
+}
+
+export async function updateTransaction(
+    request: UpdateTransactionRequest
+): Promise<UpdateTransactionResponse> {
+    try {
+        const response = await client.mutate({
+            mutation: UPDATE_TRANSACTION,
+            variables: {
+                id: request.id,
+                amount: request.amount,
+                description: request.description,
+                categoryId: request.categoryId,
+                occurredAt: request.occurredAt,
+            },
+        });
+
+        if (response.errors) {
+            log("update transaction failed", response.errors);
+
+            return {
+                updatedTransaction: null,
+            };
+        }
+
+        return {
+            updatedTransaction: mapTransactionFromServer(
+                response.data.updateTransaction.transaction
+            ),
+        };
+    } catch (err) {
+        log("update transaction failed, unexpected error", err);
+
+        return {
+            updatedTransaction: null,
         };
     }
 }

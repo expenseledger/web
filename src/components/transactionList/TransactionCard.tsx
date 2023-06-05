@@ -2,20 +2,28 @@ import dayjs from "dayjs";
 import React from "react";
 import styled from "styled-components";
 import { TransactionType } from "../../service/constants";
+import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
 
-interface TransactoinCardItem {
+interface TransactionCardItem {
     amount: number;
     type: TransactionType;
-    category: string;
+    category?: Category;
     description?: string;
+    date: Date;
     onDelete: () => Promise<void>;
+    onUpdate: (
+        amount: number,
+        categoryId: number,
+        description: string,
+        occuredAt: Date
+    ) => Promise<void>;
 }
 
 interface TransactionCardProps {
     date: Date;
-    items: TransactoinCardItem[];
+    items: TransactionCardItem[];
 }
 
 const Title = styled.h1`
@@ -32,7 +40,9 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 description: x.description ?? "-",
                 amount: x.amount,
                 type: x.type,
+                date: x.date,
                 onDelete: x.onDelete,
+                onUpdate: x.onUpdate,
             };
         });
 
@@ -44,6 +54,8 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 amount={x.amount}
                 type={x.type}
                 onDelete={x.onDelete}
+                occurredAt={x.date}
+                onUpdate={x.onUpdate}
             />
         ));
     };

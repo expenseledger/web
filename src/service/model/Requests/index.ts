@@ -72,3 +72,11 @@ export interface UpdateAccountRequest {
 export interface GetTransactionMonthYearListRequest {
     accountId: number;
 }
+
+export interface UpdateTransactionRequest {
+    id: number;
+    amount: number;
+    categoryId: number;
+    description: string;
+    occurredAt: Date;
+}

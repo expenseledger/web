@@ -146,7 +146,7 @@ export const TransactionList: React.FC = () => {
             occurredAt,
         });
 
-        if (!result.isSuccess) {
+        if (!result.updatedTransaction) {
             addNotification("Update transaction failed", "danger");
             return;
         }
@@ -155,10 +155,7 @@ export const TransactionList: React.FC = () => {
             if (tx.id === id) {
                 return {
                     ...tx,
-                    amount,
-                    categoryId,
-                    description,
-                    occurredAt,
+                    ...result.updatedTransaction,
                 };
             }
 
@@ -186,7 +183,9 @@ export const TransactionList: React.FC = () => {
     const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
         const toReturn: JSX.Element[] = [];
-        transactions.filter((x) => !x.isHide).forEach((x) => dateSet.add(x.date.toString()));
+        transactions
+            .filter((x) => !x.isHide)
+            .forEach((x) => dateSet.add(dayjs(x.date).format("YYYY-MM-DD")));
 
         dateSet.forEach((x, idx) =>
             toReturn.push(
@@ -195,7 +194,7 @@ export const TransactionList: React.FC = () => {
                     date={new Date(x)}
                     items={transactions
                         .filter((x) => !x.isHide)
-                        .filter((y) => x === y.date.toString())
+                        .filter((y) => x === dayjs(y.date).format("YYYY-MM-DD"))
                         .map((y) => {
                             return {
                                 amount: getAmount(y),

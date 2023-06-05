@@ -12,7 +12,6 @@ import {
     GetTransactionMonthYearListRequest,
     ListTransactionsRequest,
     UpdateTransactionRequest,
-    UpdateTransactionResponse,
 } from "./model/Requests";
 import {
     AddExpenseResponse,
@@ -20,6 +19,7 @@ import {
     AddTransferResponse,
     GetTransactionMonthYearListResponse,
     ListTransactionsResponse,
+    UpdateTransactionResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import { Transaction } from "./model/Transaction";
@@ -509,18 +509,20 @@ export async function updateTransaction(
             log("update transaction failed", response.errors);
 
             return {
-                isSuccess: false,
+                updatedTransaction: null,
             };
         }
 
         return {
-            isSuccess: true,
+            updatedTransaction: mapTransactionFromServer(
+                response.data.updateTransaction.transaction
+            ),
         };
     } catch (err) {
         log("update transaction failed, unexpected error", err);
 
         return {
-            isSuccess: false,
+            updatedTransaction: null,
         };
     }
 }

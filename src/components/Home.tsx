@@ -107,7 +107,7 @@ const Home: React.FC = () => {
                 categoryId: categories[categoryIdx]?.id ?? 0,
                 fromAccountId: accounts[accountIdx]?.id ?? 0,
                 description: description === "" ? "-" : description,
-                dayjs(date).toDate(),
+                date: dayjs(date).toDate(),
             };
 
             const response = await addExpense(request);

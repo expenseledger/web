@@ -83,7 +83,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 categoryId: otherCategory.id,
                 fromAccountId: account.id,
                 description: "Adjust balance",
-                date: dayjs().toDate(),
+                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
             });
 
             if (response.transaction) {
@@ -105,7 +105,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 categoryId: otherCategory.id,
                 toAccountId: account.id,
                 description: "Adjust balance",
-                date: dayjs().format("YYYY-MM-DD"),
+                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
             });
 
             if (response.transaction) {

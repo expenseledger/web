@@ -1,11 +1,11 @@
-import { useEffect } from "react";
 import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 
 const Block = styled.div`
-    border-radius: 6px; // remove when we have more than 1 option
+    border-radius: ${(props: { isFirst: boolean }) =>
+        props.isFirst ? "6px 6px 0 0" : "0 0 6px 6px"};
     background-color: white;
 `;
 const SwtichContainer = styled.div`
@@ -15,7 +15,6 @@ const SwtichContainer = styled.div`
 const PageSetting: React.FC = () => {
     const [pageSetting, setPageSetting] = useRecoilState(pageSettingState);
     const onMoveMenuToRightSideChangeHandler = () => {
-        console.log("test");
         setPageSetting((prevState) => {
             const nextState = {
                 ...prevState,
@@ -29,14 +28,21 @@ const PageSetting: React.FC = () => {
             return nextState;
         });
     };
+    const onMenuColorChangeHandler = () => {
+        setPageSetting((prevState) => {
+            const nextState = {
+                ...prevState,
+                isDarkMenu: !prevState.isDarkMenu,
+            };
+            window.localStorage.setItem("isDarkMenu", nextState.isDarkMenu.toString());
 
-    useEffect(() => {
-        console.log(pageSetting);
-    }, [pageSetting]);
+            return nextState;
+        });
+    };
 
     return (
         <div className="panel">
-            <Block className="panel-block is-justify-content-space-between">
+            <Block className="panel-block is-justify-content-space-between" isFirst={true}>
                 <span>Move menu to the right</span>
                 <SwtichContainer>
                     <Switch
@@ -46,6 +52,19 @@ const PageSetting: React.FC = () => {
                         isRounded
                         isOutlined
                         onChange={onMoveMenuToRightSideChangeHandler}
+                    />
+                </SwtichContainer>
+            </Block>
+            <Block className="panel-block is-justify-content-space-between" isFirst={false}>
+                <span>Change menu to dark color</span>
+                <SwtichContainer>
+                    <Switch
+                        name="changeMenuColor"
+                        isOn={pageSetting.isDarkMenu}
+                        size="small"
+                        isRounded
+                        isOutlined
+                        onChange={onMenuColorChangeHandler}
                     />
                 </SwtichContainer>
             </Block>

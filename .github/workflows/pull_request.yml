@@ -46,15 +46,23 @@ jobs:
                   yarn build
                   yarn test
 
-            - name: Deploy
+            - name: Deploy preview
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID yarn vercel --scope oat9002 --token $VERCEL_TOKEN > deployment_url.txt
               env:
                   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
                   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
-            - name: Comment Prelive url
+            - name: Read deployment url
+              id: read_deployment_url
+              run: |
+                url=$(cat deployment_url.txt)
+                echo "PREVIEW_URL=$url" >> $GITHUB_ENV
+
+            - name: Comment preview url
               uses: thollander/actions-comment-pull-request@v2
               with:
                 message: |
-                  Prelive url: $(cat deployment_url.txt)
+                  Prelive url: ${{ steps.read_deployment_url.outputs.PREVIEW_URL }}
+                reactions: eyes, rocket
+

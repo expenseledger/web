@@ -2,7 +2,7 @@
 
 exports[`<AccountCard> renders without crashing 1`] = `
 <div
-  className="sc-gTRrQi jCQzeF box has-text-right has-text-white p-5"
+  className="sc-gEvEer esQTuZ box has-text-right has-text-white p-5"
 >
   <div
     className="is-size-3 has-text-weight-bold"

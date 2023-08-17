@@ -13,6 +13,9 @@ on:
                 type: boolean
                 default: false
         secrets:
+            IS_PRODUCTION:
+                description: "is production"
+                required: true
             VERCEL_TOKEN:
                 description: "vercel token"
                 required: true
@@ -43,9 +46,23 @@ jobs:
             - name: Install package
               run: yarn install
 
-            - name: Deploy
-              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID yarn vercel --prod --scope oat9002 --token $VERCEL_TOKEN
+            - name: Install Vercel CLI
+              run: yarn global add vercel@latest
+
+            - name: Deploy Preview
+              if: env.IS_PRODUCTION == false
+              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
-                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+                IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
+                VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+            - name: Deploy Production
+              if: env.IS_PRODUCTION == true
+              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --prod --scope oat9002 --token $VERCEL_TOKEN
+              env:
+                IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
+                VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

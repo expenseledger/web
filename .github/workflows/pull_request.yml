@@ -47,27 +47,18 @@ jobs:
                   yarn test
 
             - name: Deploy preview
-              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID yarn vercel --scope oat9002 --token $VERCEL_TOKEN > deployment_url.txt
+              uses: ./.github/workflows/deploy.yml
+              with:
+                  pull-latest: true
               env:
+                  IS_PRODUCTION: false
                   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
                   VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-
-            # - name: Read deployment url
-            #   id: read_deployment_url
-            #   run: |
-            #     url=$(cat deployment_url.txt)
-            #     echo "PREVIEW_URL=$url" >> $GITHUB_ENV
-
-            # - name: Comment preview url
-            #   uses: thollander/actions-comment-pull-request@v2
-            #   with:
-            #     message: |
-            #       Prelive url: ${{ steps.read_deployment_url.outputs.PREVIEW_URL }}
-            #     reactions: eyes, rocket
 
             - name: Comment preview url
               uses: thollander/actions-comment-pull-request@v2
               with:
                 filePath: deployment_url.txt
+                reactions: rocket
 

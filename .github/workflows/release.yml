@@ -21,8 +21,8 @@ jobs:
 
             - name: Set GitHub user
               run: |
-                  git config --global user.name 'oat9002'
-                  git config --global user.email 'oat9002@hotmail.com'
+                git config --global user.name 'github-actions[bot]'
+                git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
             - name: Setup Node.js environment
               uses: actions/setup-node@v2.3.0

@@ -51,16 +51,15 @@ jobs:
               run: yarn global add vercel@latest
 
             - name: Deploy Preview
-              if: ${{ !inputs.is-production }}
+              if: ${{ inputs.is-production == false }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
-                IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
                 VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                 VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
                 VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
             
             - name: Comment preview url
-              if: ${{ !inputs.is-production }}
+              if: ${{ inputs.is-production == false }}
               uses: thollander/actions-comment-pull-request@v2
               with:
                   filePath: deployment.txt

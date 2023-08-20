@@ -15,7 +15,7 @@ on:
             is-production:
                 required: true
                 type: boolean
-                default: false
+                default: true
         secrets:
             VERCEL_TOKEN:
                 description: "vercel token"

@@ -1,6 +1,6 @@
 interface PageSetting {
     isMenuOnRightSide: boolean;
-    isDarkMenu: boolean;
+    isLightMenu: boolean;
 }
 
 export default PageSetting;

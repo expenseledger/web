@@ -32,9 +32,9 @@ const PageSetting: React.FC = () => {
         setPageSetting((prevState) => {
             const nextState = {
                 ...prevState,
-                isDarkMenu: !prevState.isDarkMenu,
+                isLightMenu: !prevState.isLightMenu,
             };
-            window.localStorage.setItem("isDarkMenu", nextState.isDarkMenu.toString());
+            window.localStorage.setItem("isLightMenu", nextState.isLightMenu.toString());
 
             return nextState;
         });
@@ -56,11 +56,11 @@ const PageSetting: React.FC = () => {
                 </SwtichContainer>
             </Block>
             <Block className="panel-block is-justify-content-space-between" isFirst={false}>
-                <span>Change menu to dark color</span>
+                <span>Change menu to light color</span>
                 <SwtichContainer>
                     <Switch
                         name="changeMenuColor"
-                        isOn={pageSetting.isDarkMenu}
+                        isOn={pageSetting.isLightMenu}
                         size="small"
                         isRounded
                         isOutlined

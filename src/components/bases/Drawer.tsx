@@ -10,7 +10,7 @@ interface StyledProps {
 
 interface DrawStyledProps {
     isMenuOnRightSide: boolean;
-    isDarkMenu: boolean;
+    isLightMenu: boolean;
 }
 
 const animationDuration = 0.5;
@@ -77,8 +77,8 @@ const Draw = styled.div`
     top: 40%;
     width: 24px;
     height: 100px;
-    background-color: ${(props: DrawStyledProps) => (props.isDarkMenu ? "#363636" : "white")};
-    color: ${(props: DrawStyledProps) => (props.isDarkMenu ? "white" : "black")};
+    background-color: ${(props: DrawStyledProps) => (props.isLightMenu ? "white" : "#363636")};
+    color: ${(props: DrawStyledProps) => (props.isLightMenu ? "black" : "white")};
     border-radius: ${(props: DrawStyledProps) =>
         props.isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0"};
     z-index: 10;
@@ -95,7 +95,7 @@ interface OwnProps {
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isMenuOnRightSide, isDarkMenu } = useRecoilValue(pageSettingState);
+    const { isMenuOnRightSide, isLightMenu } = useRecoilValue(pageSettingState);
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const btnClickHandler = () => {
@@ -124,7 +124,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
             <Draw
                 onClick={btnClickHandler}
                 isMenuOnRightSide={isMenuOnRightSide}
-                isDarkMenu={isDarkMenu}>
+                isLightMenu={isLightMenu}>
                 <Icon className="icon">
                     <i className="fas fa-ellipsis-vertical"></i>
                 </Icon>

@@ -6,6 +6,15 @@ name: deploy
 on:
     # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
+      inputs:
+        pull-latest:
+            required: false
+            type: boolean
+            default: false
+        is-production:
+            required: true
+            type: boolean
+            default: true
     workflow_call:
         inputs:
             pull-latest:
@@ -41,7 +50,7 @@ jobs:
                   node-version: "16"
 
             - name: Pull latest
-              if: ${{ inputs.pull-latest == 'true' }}
+              if: ${{ inputs.pull-latest }}
               run: git pull
 
             - name: Install package
@@ -51,7 +60,7 @@ jobs:
               run: yarn global add vercel@latest
 
             - name: Deploy Preview
-              if: ${{ inputs.is-production == 'false' }}
+              if: ${{ !inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
                 VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
@@ -59,14 +68,14 @@ jobs:
                 VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
             
             - name: Comment preview url
-              if: ${{ inputs.is-production == 'false' }}
+              if: ${{ !inputs.is-production }}
               uses: thollander/actions-comment-pull-request@v2
               with:
                   filePath: deployment.txt
                   reactions: rocket
 
             - name: Deploy Production
-              if: ${{ inputs.is-production == 'true' }}
+              if: ${{ inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --prod --scope oat9002 --token $VERCEL_TOKEN
               env:
                 VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}

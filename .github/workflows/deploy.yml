@@ -12,10 +12,11 @@ on:
                 required: false
                 type: boolean
                 default: false
-        secrets:
-            IS_PRODUCTION:
-                description: "is production"
+            is-production:
                 required: true
+                type: boolean
+                default: false
+        secrets:
             VERCEL_TOKEN:
                 description: "vercel token"
                 required: true
@@ -50,7 +51,7 @@ jobs:
               run: yarn global add vercel@latest
 
             - name: Deploy Preview
-              if: env.IS_PRODUCTION == false
+              if: ${{ !inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
                 IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
@@ -59,19 +60,16 @@ jobs:
                 VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
             
             - name: Comment preview url
-              if: env.IS_PRODUCTION == false
+              if: ${{ !inputs.is-production }}
               uses: thollander/actions-comment-pull-request@v2
-              env:
-                IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
               with:
                   filePath: deployment.txt
                   reactions: rocket
 
             - name: Deploy Production
-              if: env.IS_PRODUCTION == true
+              if: ${{ inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --prod --scope oat9002 --token $VERCEL_TOKEN
               env:
-                IS_PRODUCTION: ${{ secrets.IS_PRODUCTION }}
                 VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                 VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
                 VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

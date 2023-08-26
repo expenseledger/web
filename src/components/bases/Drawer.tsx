@@ -1,16 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRecoilValue } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 
 interface StyledProps {
-    isMenuOnRightSide: boolean;
-    isShow: boolean;
+    $isMenuOnRightSide: boolean;
+    $isShow: boolean;
 }
 
 interface DrawStyledProps {
-    isMenuOnRightSide: boolean;
-    isLightMenu: boolean;
+    $isMenuOnRightSide: boolean;
+    $isLightMenu: boolean;
 }
 
 const animationDuration = 0.5;
@@ -37,52 +37,50 @@ const fadeOut = keyframes`
     100% {background-color: rgba(0, 0, 0, 0);}
 `;
 
-const Panel = styled.div`
+const Panel = styled.div<StyledProps>`
     z-index: ${zIndex};
     position: fixed;
     top: 0;
-    left: ${(props: StyledProps) => (props.isMenuOnRightSide ? "initial" : 0)};
-    right: ${(props: StyledProps) => (props.isMenuOnRightSide ? 0 : "initial")};
+    left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
+    right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
     height: 100%;
     width: 30%;
     min-width: 350px;
     background-color: white;
-    animation: ${(props: StyledProps) =>
-            props.isShow
-                ? props.isMenuOnRightSide
+    animation: ${(props) =>
+            props.$isShow
+                ? props.$isMenuOnRightSide
                     ? slideInRtl
                     : slideIn
-                : props.isMenuOnRightSide
+                : props.$isMenuOnRightSide
                 ? slideOutRtl
                 : slideOut}
         ${animationDuration}s forwards;
 `;
 
-const Background = styled.div`
+const Background = styled.div<StyledProps>`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
-    left: ${(props: StyledProps) => (props.isMenuOnRightSide ? "initial" : 0)};
-    right: ${(props: StyledProps) => (props.isMenuOnRightSide ? 0 : "initial")};
+    left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
+    right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.8);
-    animation: ${(props: StyledProps) => (props.isShow ? fadeIn : fadeOut)} ${animationDuration}s
-        forwards;
+    animation: ${(props) => (props.$isShow ? fadeIn : fadeOut)} ${animationDuration}s forwards;
 `;
 
-const Draw = styled.div`
+const Draw = styled.div<DrawStyledProps>`
     position: fixed;
     cursor: pointer;
     top: 40%;
     width: 24px;
     height: 100px;
-    background-color: ${(props: DrawStyledProps) => (props.isLightMenu ? "white" : "#363636")};
-    color: ${(props: DrawStyledProps) => (props.isLightMenu ? "black" : "white")};
-    border-radius: ${(props: DrawStyledProps) =>
-        props.isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0"};
+    background-color: ${(props) => (props.$isLightMenu ? "white" : "#363636")};
+    color: ${(props) => (props.$isLightMenu ? "black" : "white")};
+    border-radius: ${(props) => (props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0")};
     z-index: 10;
-    right: ${(props: DrawStyledProps) => (props.isMenuOnRightSide ? "0" : "initial")};
+    right: ${(props) => (props.$isMenuOnRightSide ? "0" : "initial")};
 `;
 const Icon = styled.span`
     margin-top: 38px;
@@ -119,24 +117,28 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         }, animationDuration * 1000);
     };
 
+    useEffect(() => {
+        console.log("Drawer render", isLightMenu, isMenuOnRightSide);
+    });
+
     return (
         <>
             <Draw
                 onClick={btnClickHandler}
-                isMenuOnRightSide={isMenuOnRightSide}
-                isLightMenu={isLightMenu}>
+                $isMenuOnRightSide={isMenuOnRightSide}
+                $isLightMenu={isLightMenu}>
                 <Icon className="icon">
                     <i className="fas fa-ellipsis-vertical"></i>
                 </Icon>
             </Draw>
             {isShowPanel ? (
                 <Background
-                    isShow={!isAnimationUnmount && isShowPanel}
+                    $isShow={!isAnimationUnmount && isShowPanel}
                     onClick={closePanelHandler}
-                    isMenuOnRightSide={isMenuOnRightSide}>
+                    $isMenuOnRightSide={isMenuOnRightSide}>
                     <Panel
-                        isShow={!isAnimationUnmount && isShowPanel}
-                        isMenuOnRightSide={isMenuOnRightSide}>
+                        $isShow={!isAnimationUnmount && isShowPanel}
+                        $isMenuOnRightSide={isMenuOnRightSide}>
                         {props.children}
                     </Panel>
                 </Background>

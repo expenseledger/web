@@ -3,9 +3,8 @@ import styled from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 
-const Block = styled.div`
-    border-radius: ${(props: { isFirst: boolean }) =>
-        props.isFirst ? "6px 6px 0 0" : "0 0 6px 6px"};
+const Block = styled.div<{ isFirst: boolean }>`
+    border-radius: ${(props) => (props.isFirst ? "6px 6px 0 0" : "0 0 6px 6px")};
     background-color: white;
 `;
 const SwtichContainer = styled.div`

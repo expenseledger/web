@@ -6,15 +6,15 @@ name: deploy
 on:
     # Allows you to run this workflow manually from the Actions tab
     workflow_dispatch:
-      inputs:
-        pull-latest:
-            required: false
-            type: boolean
-            default: false
-        is-production:
-            required: true
-            type: boolean
-            default: true
+        inputs:
+            pull-latest:
+                required: false
+                type: boolean
+                default: false
+            is-production:
+                required: true
+                type: boolean
+                default: true
     workflow_call:
         inputs:
             pull-latest:
@@ -45,9 +45,9 @@ jobs:
             - uses: actions/checkout@v3
 
             - name: Setup Node.js environment
-              uses: actions/setup-node@v2.3.0
+              uses: actions/setup-node@v3
               with:
-                  node-version: "16"
+                  node-version: 18
 
             - name: Pull latest
               if: ${{ inputs.pull-latest }}
@@ -63,10 +63,10 @@ jobs:
               if: ${{ !inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
-                VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-            
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
             - name: Comment preview url
               if: ${{ !inputs.is-production }}
               uses: thollander/actions-comment-pull-request@v2
@@ -78,6 +78,6 @@ jobs:
               if: ${{ inputs.is-production }}
               run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --prod --scope oat9002 --token $VERCEL_TOKEN
               env:
-                VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-                VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-                VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+                  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+                  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+                  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}

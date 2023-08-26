@@ -13,9 +13,9 @@ interface AmountBoxProps {
     textAlign?: TextAlign;
 }
 
-const AmountBox = styled.div`
+const AmountBox = styled.div<AmountBoxProps>`
     display: inline-block;
-    text-align: ${(props: AmountBoxProps) => props.textAlign ?? "left"};
+    text-align: ${(props) => props.textAlign ?? "left"};
 `;
 
 const AmountTxt: React.FC<AmountTxtProps> = (props) => (

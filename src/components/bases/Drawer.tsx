@@ -117,10 +117,6 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         }, animationDuration * 1000);
     };
 
-    useEffect(() => {
-        console.log("Drawer render", isLightMenu, isMenuOnRightSide);
-    });
-
     return (
         <>
             <Draw

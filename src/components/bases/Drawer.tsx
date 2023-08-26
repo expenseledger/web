@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useRecoilValue } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";

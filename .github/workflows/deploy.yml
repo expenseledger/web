@@ -57,7 +57,7 @@ jobs:
               run: yarn install
 
             - name: Install Vercel CLI
-              run: yarn global add vercel@latest
+              run: yarn dlx add vercel@latest
 
             - name: Deploy Preview
               if: ${{ !inputs.is-production }}

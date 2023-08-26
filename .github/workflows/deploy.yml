@@ -56,12 +56,9 @@ jobs:
             - name: Install package
               run: yarn install
 
-            - name: Install Vercel CLI
-              run: yarn dlx add vercel@latest
-
             - name: Deploy Preview
               if: ${{ !inputs.is-production }}
-              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
+              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID yarn dlx vercel --scope oat9002 --token $VERCEL_TOKEN > deployment.txt
               env:
                   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
@@ -76,7 +73,7 @@ jobs:
 
             - name: Deploy Production
               if: ${{ inputs.is-production }}
-              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID vercel --prod --scope oat9002 --token $VERCEL_TOKEN
+              run: VERCEL_ORG_ID=$VERCEL_ORG_ID VERCEL_PROJECT_ID=$VERCEL_PROJECT_ID yarn dlx vercel --prod --scope oat9002 --token $VERCEL_TOKEN
               env:
                   VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
                   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}

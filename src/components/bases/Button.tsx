@@ -49,6 +49,7 @@ const Button: React.FC<ButtonProps> = (props) => {
 
     return (
         <RadixButton
+            className={props.className}
             onClick={props.onClickHandler}
             size={getSize()}
             color={getColor()}

@@ -1,5 +1,6 @@
 import React from "react";
 import { combineClassName, useInput } from "../../common/utils";
+import { TextField } from "@radix-ui/themes";
 
 type Position = "front" | "back" | "none";
 
@@ -21,7 +22,6 @@ interface TextBoxProps {
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
     const { bind, setValue } = useInput(props.defaultValue ?? "", props.updateValue);
-    const rootClassName = combineClassName("field", props.addOn && "has-addons", props.className);
     const addonPosition = props.addOn?.position ?? "none";
 
     React.useEffect(() => {
@@ -29,28 +29,27 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <div className={rootClassName}>
+        <TextField.Root>
             {addonPosition === "front" && (
-                <p className="control">
-                    <a className="button is-static">{props.addOn.text}</a>
-                </p>
+                <TextField.Slot>
+                    <span>{props.addOn.text}</span>
+                </TextField.Slot>
             )}
-            <div className="control">
-                <input
-                    className="input"
-                    name={props.name}
-                    type={props.type ?? "text"}
-                    {...(props.type === "number" ? { inputMode: "decimal" } : null)}
-                    placeholder={props.placeholder}
-                    {...bind}
-                />
-            </div>
+            <TextField.Input
+                className={props.className}
+                placeholder={props.placeholder}
+                size="3"
+                type={props.type ?? "text"}
+                name={props.name}
+                {...(props.type === "number" ? { inputMode: "decimal" } : null)}
+                {...bind}
+            />
             {addonPosition === "back" && (
-                <p className="control">
-                    <a className="button is-static">{props.addOn.text}</a>
-                </p>
+                <TextField.Slot>
+                    <span>{props.addOn.text}</span>
+                </TextField.Slot>
             )}
-        </div>
+        </TextField.Root>
     );
 };
 

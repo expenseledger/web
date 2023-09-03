@@ -10,6 +10,8 @@ import "swiper/css/pagination";
 import App from "./components/App";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
+import { Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -20,7 +22,9 @@ root.render(
     // <React.StrictMode>
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
-            <App />
+            <Theme>
+                <App />
+            </Theme>
         </ApolloProvider>
     </RecoilRoot>
     // </React.StrictMode>

@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName } from "../../common/utils";
+import { Button as RadixButton } from "@radix-ui/themes";
 
 interface ButtonProps {
     value: string;
@@ -15,18 +15,46 @@ export type ButtonType = "primary" | "info" | "link" | "success" | "danger" | "d
 export type ButtonSize = "small" | "normal" | "medium" | "large";
 
 const Button: React.FC<ButtonProps> = (props) => {
-    const classNames = combineClassName(
-        "button",
-        props.type ? `is-${props.type}` : "",
-        props.outlined ? "is-outlined" : "",
-        props.className ?? "",
-        props.size ? `is-${props.size}` : ""
-    );
+    const getSize = () => {
+        switch (props.size) {
+            case "small":
+                return "1";
+            case "normal":
+                return "2";
+            case "medium":
+                return "3";
+            case "large":
+                return "4";
+            default:
+                return "2";
+        }
+    };
+
+    const getColor = () => {
+        switch (props.type) {
+            case "info":
+                return "sky";
+            case "link":
+                return "blue";
+            case "success":
+                return "green";
+            case "danger":
+                return "red";
+            case "primary":
+                return "grass";
+            default:
+                return "indigo";
+        }
+    };
 
     return (
-        <button className={classNames} onClick={props.onClickHandler}>
+        <RadixButton
+            onClick={props.onClickHandler}
+            size={getSize()}
+            color={getColor()}
+            variant={props.outlined ? "outline" : "solid"}>
             {props.value}
-        </button>
+        </RadixButton>
     );
 };
 

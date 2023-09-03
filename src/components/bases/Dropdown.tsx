@@ -1,5 +1,5 @@
 import React from "react";
-import { combineClassName } from "../../common/utils";
+import { Select } from "@radix-ui/themes";
 
 interface DropdownProps {
     options: string[];
@@ -9,23 +9,24 @@ interface DropdownProps {
 }
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
-    const onChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        props.updateSelectedValue(e.target.value);
+    const onChangeHandler = (value: string) => {
+        props.updateSelectedValue(value);
     };
 
-    const classNames = combineClassName("field", !!props.className ? props.className : "");
-
     const renderOptions = (options: string[]): JSX.Element[] =>
-        options.map((option, idx) => <option key={idx}>{option}</option>);
+        options.map((option, idx) => (
+            <Select.Item key={idx} value={option}>
+                {option}
+            </Select.Item>
+        ));
 
     return (
-        <div className={classNames}>
-            <div className="control select">
-                <select onChange={onChangeHandler} value={props.value}>
-                    {renderOptions(props.options)}
-                </select>
-            </div>
-        </div>
+        <Select.Root onValueChange={onChangeHandler} defaultValue={props.options[0]} size="3">
+            <Select.Trigger />
+            <Select.Content className={props.className}>
+                {renderOptions(props.options)}
+            </Select.Content>
+        </Select.Root>
     );
 };
 

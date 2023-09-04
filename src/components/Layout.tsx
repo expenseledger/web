@@ -11,6 +11,7 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
 import Menu from "./menu/Menu";
+import { Container } from "@radix-ui/themes";
 
 const Header = styled.div`
     margin-top: 12px;
@@ -68,11 +69,11 @@ const Layout: React.FC = () => {
                     </Link>
                 </Title>
             </Header>
-            <div className="container is-mobile is-fluid mt-4">
+            <Container size="4" px="6">
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>
-            </div>
+            </Container>
             <Toast position="top-right" />
         </>
     );

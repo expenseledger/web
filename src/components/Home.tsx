@@ -16,6 +16,7 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
+import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 
 interface CurrentValue {
     accountIdx: number;
@@ -30,6 +31,12 @@ const Icon = styled.span`
 `;
 const LinkText = styled.span`
     vertical-align: middle;
+`;
+const LinkStyled = styled(Link)`
+    text-weight: bold;
+`;
+const InputBox = styled(Box)`
+    grid-column: 2 / span 2;
 `;
 
 const Home: React.FC = () => {
@@ -171,14 +178,10 @@ const Home: React.FC = () => {
 
     return (
         <>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-12">{renderAccountCards()}</div>
-            </div>
-
-            <div className="columns is-mobile is-vcentered">
-                <div className="column">
+            <Box width="100%">{renderAccountCards()}</Box>
+            <Flex gap="4" my="4">
+                <Text weight="bold">
                     <Link
-                        className="has-text-weight-bold"
                         to={{
                             pathname: `account/${
                                 accounts[currentValue.accountIdx]?.id ?? 0
@@ -189,8 +192,9 @@ const Home: React.FC = () => {
                         </Icon>
                         <LinkText>Transactions</LinkText>
                     </Link>
+                </Text>
+                <Text weight="bold">
                     <Link
-                        className="has-text-weight-bold ml-5"
                         to="/report"
                         state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>
                         <Icon className="icon">
@@ -198,66 +202,76 @@ const Home: React.FC = () => {
                         </Icon>
                         <LinkText>Report</LinkText>
                     </Link>
-                </div>
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Amount</span>
-                <TextBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
-                    updateValue={updateExpense}
-                    name="expense"
-                    type="number"
-                    value={currentValue.amount}
-                    addOn={{ text: currency, position: "front" }}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Date</span>
-                <DateBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen"
-                    name="date"
-                    updateValue={updateSelectedDate}
-                    value={currentValue.date}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Category</span>
-                <Dropdown
-                    className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
-                    options={categories
-                        .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
-                        .map((c) => c.name)}
-                    updateSelectedValue={updateSelectedCategory}
-                    value={categories[currentValue.categoryIdx].name}
-                />
-            </div>
-            <div className="description columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Description</span>
-                <TextBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen description__box"
-                    name="description"
-                    updateValue={updateDescription}
-                    value={currentValue.description}
-                    placeholder="Optional"
-                />
-            </div>
-            <div className="columns is-mobile">
-                <div className="column is-narrow">
+                </Text>
+            </Flex>
+            <Grid columns="3" gap="4" align="center">
+                <Box>
+                    <Text weight="bold">Amount</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        className="amount__box"
+                        updateValue={updateExpense}
+                        name="expense"
+                        type="number"
+                        value={currentValue.amount}
+                        addOn={{ text: currency, position: "front" }}
+                    />
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Date</Text>
+                </Box>
+                <InputBox>
+                    <DateBox
+                        name="date"
+                        updateValue={updateSelectedDate}
+                        value={currentValue.date}
+                    />
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Category</Text>
+                </Box>
+                <InputBox>
+                    <Dropdown
+                        className="category__dropdown"
+                        options={categories
+                            .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
+                            .map((c) => c.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                        value={categories[currentValue.categoryIdx].name}
+                    />
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Description</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        className="description__box"
+                        name="description"
+                        updateValue={updateDescription}
+                        value={currentValue.description}
+                        placeholder="Optional"
+                    />
+                </InputBox>
+            </Grid>
+            <Flex pt="4">
+                <Box>
                     <Button
-                        className={`content__button--add ${isLoading ? "is-loading" : ""}`}
+                        className="content__button--add"
                         onClickHandler={addTransaction}
                         value="Add"
                         type="primary"
+                        isLoading={isLoading}
                     />
-                </div>
-                <div className="column">
+                </Box>
+                <Box ml="4">
                     <Button
-                        className="content__button--more is-dark is-narrow"
+                        className="content__button--more"
                         onClickHandler={toMorePage}
                         value="More"
                     />
-                </div>
-            </div>
+                </Box>
+            </Flex>
         </>
     );
 };

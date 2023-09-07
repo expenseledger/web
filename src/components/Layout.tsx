@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
                     </Link>
                 </Title>
             </Header>
-            <Container size="4" px="6">
+            <Container size="2" px="6">
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>

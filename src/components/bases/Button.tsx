@@ -1,5 +1,6 @@
 import React from "react";
 import { Button as RadixButton } from "@radix-ui/themes";
+import "./Button.scss";
 
 interface ButtonProps {
     value: string;
@@ -8,6 +9,7 @@ interface ButtonProps {
     onClickHandler?: (e: React.MouseEvent) => void;
     className?: string;
     size?: ButtonSize;
+    isLoading?: boolean;
 }
 
 export type ButtonType = "primary" | "info" | "link" | "success" | "danger" | "default";
@@ -54,8 +56,19 @@ const Button: React.FC<ButtonProps> = (props) => {
             size={getSize()}
             color={getColor()}
             variant={props.outlined ? "outline" : "solid"}>
-            {props.value}
+            {props.isLoading ? <LoadingRing /> : props.value}
         </RadixButton>
+    );
+};
+
+const LoadingRing: React.FC = () => {
+    return (
+        <div className="lds-ring">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
     );
 };
 

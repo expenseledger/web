@@ -1,5 +1,4 @@
 import { ApolloProvider } from "@apollo/client";
-import "@fortawesome/fontawesome-free/css/all.css";
 import { createRoot } from "react-dom/client";
 import { RecoilRoot } from "recoil";
 import SwiperCore from "swiper";

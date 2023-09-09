@@ -17,6 +17,7 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 
 interface CurrentValue {
     accountIdx: number;
@@ -31,9 +32,6 @@ const Icon = styled.span`
 `;
 const LinkText = styled.span`
     vertical-align: middle;
-`;
-const LinkStyled = styled(Link)`
-    text-weight: bold;
 `;
 const InputBox = styled(Box)`
     grid-column: 2 / span 2;
@@ -187,20 +185,20 @@ const Home: React.FC = () => {
                                 accounts[currentValue.accountIdx]?.id ?? 0
                             }/transactionList`,
                         }}>
-                        <Icon className="icon">
-                            <i className="fas fa-list-ul" aria-hidden="true"></i>
-                        </Icon>
-                        <LinkText>Transactions</LinkText>
+                        <Flex align="center" gap="1">
+                            <ListBulletIcon />
+                            <LinkText>Transactions</LinkText>
+                        </Flex>
                     </Link>
                 </Text>
                 <Text weight="bold">
                     <Link
                         to="/report"
                         state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>
-                        <Icon className="icon">
-                            <i className="fas fa-file" aria-hidden="true"></i>
-                        </Icon>
-                        <LinkText>Report</LinkText>
+                        <Flex align="center" gap="1">
+                            <FileIcon />
+                            <LinkText>Report</LinkText>
+                        </Flex>
                     </Link>
                 </Text>
             </Flex>
@@ -210,7 +208,6 @@ const Home: React.FC = () => {
                 </Box>
                 <InputBox>
                     <TextBox
-                        className="amount__box"
                         updateValue={updateExpense}
                         name="expense"
                         type="number"
@@ -233,7 +230,6 @@ const Home: React.FC = () => {
                 </Box>
                 <InputBox>
                     <Dropdown
-                        className="category__dropdown"
                         options={categories
                             .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
                             .map((c) => c.name)}
@@ -246,7 +242,6 @@ const Home: React.FC = () => {
                 </Box>
                 <InputBox>
                     <TextBox
-                        className="description__box"
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}

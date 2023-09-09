@@ -1,48 +1,11 @@
-@import "_base.scss";
-
 .content {
-    &__hero {
-        .inline {
-            display: inline;
-        }
-    }
-
     &__button {
-        @include line-margin();
         &--add {
             width: 100px;
         }
 
         &--more {
             width: 100px;
-        }
-    }
-}
-
-.amount {
-    &__box {
-        > div {
-            width: 100%;
-        }
-    }
-}
-
-.description {
-    &__box {
-        > div {
-            width: 100%;
-        }
-    }
-}
-
-.category {
-    &__dropdown {
-        > div {
-            width: 100%;
-        }
-
-        select {
-            width: 100%;
         }
     }
 }

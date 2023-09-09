@@ -1,6 +1,7 @@
 import React from "react";
 import { combineClassName, useInput } from "../../common/utils";
 import { TextField } from "@radix-ui/themes";
+import { styled } from "styled-components";
 
 type Position = "front" | "back" | "none";
 
@@ -20,6 +21,10 @@ interface TextBoxProps {
     addOn?: AddOn;
 }
 
+const Input = styled(TextField.Input)`
+    padding-right: var(--space-3);
+`;
+
 const TextBox: React.FC<TextBoxProps> = (props) => {
     const { bind, setValue } = useInput(props.defaultValue ?? "", props.updateValue);
     const addonPosition = props.addOn?.position ?? "none";
@@ -35,7 +40,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
                     <span>{props.addOn.text}</span>
                 </TextField.Slot>
             )}
-            <TextField.Input
+            <Input
                 className={props.className}
                 placeholder={props.placeholder}
                 size="3"

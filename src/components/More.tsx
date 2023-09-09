@@ -16,8 +16,8 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
-import { Box, Flex, Grid, Text } from "@radix-ui/themes";
-import * as ToggleGroup from "@radix-ui/react-toggle-group";
+import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
+import { get } from "http";
 
 interface CurrentValue {
     fromAccountIdx: number;
@@ -39,7 +39,7 @@ interface HomeProps {
 
 const More: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [categories] = useRecoilState(categoriesState);
+    const [categories, setCategories] = useRecoilState(categoriesState);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const locatoin = useLocation();
@@ -67,10 +67,10 @@ const More: React.FC = () => {
     const transactionTypes: TransactionType[] = ["EXPENSE", "INCOME", "TRANSFER"];
 
     const transactionTypeTabOnClickHandler = (e: any) => {
-        const currentTabActive = [...transactionTypeTabActive];
+        const previousTabActive = [...transactionTypeTabActive];
         const currentTarget = e.currentTarget;
         const currentTabIdx = Number.parseInt(currentTarget.dataset.id, 10);
-        const tabActive = currentTabActive.map((_, idx) => idx === currentTabIdx);
+        const tabActive = previousTabActive.map((_, idx) => idx === currentTabIdx);
 
         setTransactionTypeTabActive(tabActive);
     };
@@ -383,23 +383,27 @@ const More: React.FC = () => {
 
     const renderTransactionTypeTab = () => {
         const transactionTypes = ["Expense", "Income", "Transfer"];
-
-        return transactionTypes.map((t, idx) => (
-            <ToggleGroup.Item
-                className={transactionTypeTabActive[idx] ? "is-active" : ""}
+        const renderTabsTrigger = transactionTypes.map((t, idx) => (
+            <Tabs.Trigger
                 key={t}
                 data-id={idx}
                 onClick={transactionTypeTabOnClickHandler}
                 value={t}>
                 <Text>{t}</Text>
-            </ToggleGroup.Item>
+            </Tabs.Trigger>
         ));
+
+        return (
+            <Tabs.Root defaultValue="Expense">
+                <Tabs.List style={{ justifyContent: "center" }}>{renderTabsTrigger}</Tabs.List>
+            </Tabs.Root>
+        );
     };
 
     return (
         <>
-            <ToggleGroup.Root type="single">{renderTransactionTypeTab()}</ToggleGroup.Root>
-            <Grid rows="5" gap="3">
+            {renderTransactionTypeTab()}
+            <Grid rows="5" gap="3" mt="3">
                 <Flex direction="column">
                     <Box>
                         <Text weight="bold" size="1">

@@ -21,7 +21,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
         ));
 
     return (
-        <Select.Root onValueChange={onChangeHandler} defaultValue={props.options[0]} size="3">
+        <Select.Root onValueChange={onChangeHandler} defaultValue={props.value} size="3">
             <Select.Trigger />
             <Select.Content className={props.className}>
                 {renderOptions(props.options)}

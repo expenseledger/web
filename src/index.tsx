@@ -7,10 +7,10 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import App from "./components/App";
+import "@radix-ui/themes/styles.css";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
 import { Theme } from "@radix-ui/themes";
-import "@radix-ui/themes/styles.css";
 
 SwiperCore.use([Pagination, Navigation]);
 

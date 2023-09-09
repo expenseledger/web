@@ -12,6 +12,7 @@ import Dropdown from "../bases/Dropdown";
 import MessageBox from "../bases/MessageBox";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
+import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -212,9 +213,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
 
         return (
             <DeleteBox onClick={onDeleteHandler}>
-                <span className="icon">
-                    <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
-                </span>
+                <Cross2Icon />
             </DeleteBox>
         );
     };
@@ -235,9 +234,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
 
         return (
             <UpdateBox onClick={onUpdateHandler}>
-                <span className="icon">
-                    <i className="fas fa-lg fa-edit has-text-link" aria-hidden="true"></i>
-                </span>
+                <Pencil1Icon />
             </UpdateBox>
         );
     };

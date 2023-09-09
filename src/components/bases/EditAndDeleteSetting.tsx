@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
+import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 
 export interface Item {
     id: number;
@@ -76,14 +77,10 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         return (
             <div>
                 <a className="mr-1" onClick={onModifyClick}>
-                    <span className="icon">
-                        <i className="fas fa-lg fa-edit" aria-hidden="true"></i>
-                    </span>
+                    <Pencil1Icon />
                 </a>
                 <a onClick={onDeleteHandler}>
-                    <span className="icon">
-                        <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
-                    </span>
+                    <Cross2Icon />
                 </a>
             </div>
         );

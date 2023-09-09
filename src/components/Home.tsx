@@ -248,25 +248,25 @@ const Home: React.FC = () => {
                         placeholder="Optional"
                     />
                 </InputBox>
+                <Flex mt="2">
+                    <Box>
+                        <Button
+                            className="content__button--add"
+                            onClickHandler={addTransaction}
+                            value="Add"
+                            type="primary"
+                            isLoading={isLoading}
+                        />
+                    </Box>
+                    <Box ml="4">
+                        <Button
+                            className="content__button--more"
+                            onClickHandler={toMorePage}
+                            value="More"
+                        />
+                    </Box>
+                </Flex>
             </Grid>
-            <Flex pt="4">
-                <Box>
-                    <Button
-                        className="content__button--add"
-                        onClickHandler={addTransaction}
-                        value="Add"
-                        type="primary"
-                        isLoading={isLoading}
-                    />
-                </Box>
-                <Box ml="4">
-                    <Button
-                        className="content__button--more"
-                        onClickHandler={toMorePage}
-                        value="More"
-                    />
-                </Box>
-            </Flex>
         </>
     );
 };

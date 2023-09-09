@@ -1,59 +1,7 @@
-@import "_base.scss";
-
-@mixin title-center {
-    position: relative;
-    display: inline-block;
-    top: 7px;
-    font-weight: bold;
-    width: 100px;
-}
-
 .more {
-    .field {
-        margin: unset;
-    }
-
     &__button {
         &--add {
             width: 100px;
-        }
-    }
-
-    &__textArea {
-        .input {
-            height: 100px;
-        }
-    }
-}
-
-.amount {
-    &__box {
-        > div {
-            width: 100%;
-        }
-    }
-}
-
-.category {
-    &__dropdown {
-        >div {
-            width: 70%;
-        }
-
-        select {
-            width: 100%;
-        }
-    }
-}
-
-.account {
-    &__dropdown {
-        >div {
-            width: 100%;
-        }
-
-        select {
-            width: 100%;
         }
     }
 }

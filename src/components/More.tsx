@@ -16,6 +16,8 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
+import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import * as ToggleGroup from "@radix-ui/react-toggle-group";
 
 interface CurrentValue {
     fromAccountIdx: number;
@@ -328,22 +330,27 @@ const More: React.FC = () => {
             value: string,
             overrideOptions: Account[]
         ) => (
-            <>
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1 has-text-weight-bold	">{title}</span>
-                </div>
-                <div className="account columns is-mobile is-vcentered mb-0">
-                    <Dropdown
-                        className="account__dropdown column is-4-desktop is-4-tablet is-4-widescreen is-narrow pt-0"
-                        options={overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)}
-                        updateSelectedValue={updateAccount}
-                        value={value}
-                    />
-                    <div className="column is-narrow pt-0">
+            <Flex direction="column">
+                <Box>
+                    <Text weight="bold" size="1">
+                        {title}
+                    </Text>
+                </Box>
+                <Flex align="center" gap="3">
+                    <Box>
+                        <Dropdown
+                            options={
+                                overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)
+                            }
+                            updateSelectedValue={updateAccount}
+                            value={value}
+                        />
+                    </Box>
+                    <Box>
                         <BalanceWithCurrency balance={balance} />
-                    </div>
-                </div>
-            </>
+                    </Box>
+                </Flex>
+            </Flex>
         );
 
         return isTransfer ? (
@@ -377,84 +384,92 @@ const More: React.FC = () => {
     const renderTransactionTypeTab = () => {
         const transactionTypes = ["Expense", "Income", "Transfer"];
 
-        return (
-            <ul>
-                {transactionTypes.map((t, idx) => (
-                    <li
-                        className={transactionTypeTabActive[idx] ? "is-active" : ""}
-                        key={t}
-                        data-id={idx}
-                        onClick={transactionTypeTabOnClickHandler}>
-                        <a>{t}</a>
-                    </li>
-                ))}
-            </ul>
-        );
+        return transactionTypes.map((t, idx) => (
+            <ToggleGroup.Item
+                className={transactionTypeTabActive[idx] ? "is-active" : ""}
+                key={t}
+                data-id={idx}
+                onClick={transactionTypeTabOnClickHandler}
+                value={t}>
+                <Text>{t}</Text>
+            </ToggleGroup.Item>
+        ));
     };
 
     return (
         <>
-            <div className="mt-5 more">
-                <div className="tabs is-toggle is-fullwidth">{renderTransactionTypeTab()}</div>
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1 has-text-weight-bold">Amount</span>
-                </div>
-                <div className="amount columns is-mobile is-vcentered mb-0">
-                    <TextBox
-                        className="amount__box  is-4-desktop is-4-tablet is-4-widescreen column pt-0"
-                        updateValue={updateExpense}
-                        name="expnese"
-                        type="number"
-                        value={currentValue.amount}
-                        addOn={{ text: currency, position: "front" }}
-                    />
-                </div>
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Date</span>
-                </div>
-                <div className="columns is-mobile is-vcentered mb-0">
-                    <DateBox
-                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
-                        name="date"
-                        updateValue={updateSelectedDate}
-                        value={currentValue.date}
-                    />
-                </div>
-                {renderAccountSection()}
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Category</span>
-                </div>
-                <div className="category columns is-mobile is-vcentered mb-0">
-                    <Dropdown
-                        className="category__dropdown column is-4-desktop is-4-tablet is-4-widescreen pt-0"
-                        options={getCategoriesByTransactionType().map((x) => x.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
-                    />
-                </div>
-                <div className="columns is-mobile">
-                    <span className="column is-size-7 pb-1 has-text-weight-bold	">Description</span>
-                </div>
-                <div className="columns is-mobile is-vcentered">
-                    <TextBox
-                        className="column is-4-desktop is-4-tablet is-4-widescreen pt-0"
-                        name="description"
-                        updateValue={updateDescription}
-                        value={currentValue.description}
-                        placeholder="Optional"
-                    />
-                </div>
-                <div className="columns is-mobile is-vcentered">
-                    <div className="column">
-                        <Button
-                            className={`more__button--add ${isLoading ? "is-loading" : ""}`}
-                            onClickHandler={addTransaction}
-                            value="Add"
-                            type="primary"
+            <ToggleGroup.Root type="single">{renderTransactionTypeTab()}</ToggleGroup.Root>
+            <Grid rows="5" gap="3">
+                <Flex direction="column">
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Amount
+                        </Text>
+                    </Box>
+                    <Box>
+                        <TextBox
+                            updateValue={updateExpense}
+                            name="expnese"
+                            type="number"
+                            value={currentValue.amount}
+                            addOn={{ text: currency, position: "front" }}
                         />
-                    </div>
-                </div>
-            </div>
+                    </Box>
+                </Flex>
+                <Flex direction="column">
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Date
+                        </Text>
+                    </Box>
+                    <Box>
+                        <DateBox
+                            name="date"
+                            updateValue={updateSelectedDate}
+                            value={currentValue.date}
+                        />
+                    </Box>
+                </Flex>
+                {renderAccountSection()}
+                <Flex direction="column">
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Category
+                        </Text>
+                    </Box>
+                    <Box>
+                        <Dropdown
+                            options={getCategoriesByTransactionType().map((x) => x.name)}
+                            updateSelectedValue={updateSelectedCategory}
+                            value={categories[currentValue.categoryIdx].name}
+                        />
+                    </Box>
+                </Flex>
+                <Flex direction="column">
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Description
+                        </Text>
+                    </Box>
+                    <Box>
+                        <TextBox
+                            name="description"
+                            updateValue={updateDescription}
+                            value={currentValue.description}
+                            placeholder="Optional"
+                        />
+                    </Box>
+                </Flex>
+                <Flex mt="2">
+                    <Button
+                        className="more__button--add"
+                        onClickHandler={addTransaction}
+                        value="Add"
+                        type="primary"
+                        isLoading={isLoading}
+                    />
+                </Flex>
+            </Grid>
         </>
     );
 };

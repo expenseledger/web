@@ -388,7 +388,7 @@ const More: React.FC = () => {
                 data-id={idx}
                 onClick={transactionTypeTabOnClickHandler}
                 value={t}>
-                <Text>{t}</Text>
+                <Text size="3">{t}</Text>
             </Tabs.Trigger>
         ));
 

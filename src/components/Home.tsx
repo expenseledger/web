@@ -27,9 +27,6 @@ interface CurrentValue {
     description: string;
 }
 
-const Icon = styled.span`
-    vertical-align: middle;
-`;
 const LinkText = styled.span`
     vertical-align: middle;
 `;

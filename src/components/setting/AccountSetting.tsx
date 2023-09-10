@@ -170,7 +170,6 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 </div>
                 <Dropdown
                     className="column"
-                    value={mapAccountTypeToString(type)}
                     options={allAccountTypesString}
                     updateSelectedValue={accountTypeHandler}
                 />
@@ -240,11 +239,7 @@ const AccountSetting: React.FC = () => {
             <CurrencyPanel className="panel">
                 <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
                     <span>Currency</span>
-                    <Dropdown
-                        options={allCurrencies}
-                        updateSelectedValue={currencyHandler}
-                        value={currency}
-                    />
+                    <Dropdown options={allCurrencies} updateSelectedValue={currencyHandler} />
                 </div>
             </CurrencyPanel>
         </div>

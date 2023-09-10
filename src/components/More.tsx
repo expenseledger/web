@@ -39,7 +39,7 @@ interface HomeProps {
 
 const More: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [categories] = useRecoilState(categoriesState);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const locatoin = useLocation();
@@ -343,7 +343,6 @@ const More: React.FC = () => {
                                 overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)
                             }
                             updateSelectedValue={updateAccount}
-                            value={value}
                         />
                     </Box>
                     <Box>
@@ -445,7 +444,6 @@ const More: React.FC = () => {
                         <Dropdown
                             options={getCategoriesByTransactionType().map((x) => x.name)}
                             updateSelectedValue={updateSelectedCategory}
-                            value={categories[currentValue.categoryIdx].name}
                         />
                     </Box>
                 </Flex>

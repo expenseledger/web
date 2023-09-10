@@ -5,12 +5,13 @@ interface DropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
-    value: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
+    const [value, setValue] = React.useState(props.options[0]);
     const onChangeHandler = (value: string) => {
         props.updateSelectedValue(value);
+        setValue(value);
     };
 
     const renderOptions = (options: string[]): JSX.Element[] =>
@@ -20,8 +21,21 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             </Select.Item>
         ));
 
+    React.useEffect(() => {
+        const isExist = props.options.includes(value);
+
+        if (!isExist) {
+            setValue(props.options[0]);
+            props.updateSelectedValue(props.options[0]);
+        }
+    }, [props, value]);
+
     return (
-        <Select.Root onValueChange={onChangeHandler} defaultValue={props.value} size="3">
+        <Select.Root
+            onValueChange={onChangeHandler}
+            defaultValue={props.options[0]}
+            size="3"
+            value={value}>
             <Select.Trigger />
             <Select.Content className={props.className}>
                 {renderOptions(props.options)}

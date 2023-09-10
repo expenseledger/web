@@ -112,7 +112,6 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                 </div>
                 <Dropdown
                     className="column"
-                    value={updateCategory.name}
                     options={categoryOptions
                         .filter((c) => c.type === props.transactionType || c.type === "ANY")
                         .map((c) => c.name)}

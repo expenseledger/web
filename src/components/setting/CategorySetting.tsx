@@ -88,7 +88,6 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                 </div>
                 <Dropdown
                     className="column"
-                    value={mapCategoryTypeToString(type)}
                     options={allCategoryTypesString}
                     updateSelectedValue={categoryTypeHandler}
                 />

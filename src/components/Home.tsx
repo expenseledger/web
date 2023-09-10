@@ -231,7 +231,6 @@ const Home: React.FC = () => {
                             .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
                             .map((c) => c.name)}
                         updateSelectedValue={updateSelectedCategory}
-                        value={categories[currentValue.categoryIdx].name}
                     />
                 </InputBox>
                 <Box>

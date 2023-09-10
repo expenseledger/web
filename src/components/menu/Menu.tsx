@@ -5,6 +5,7 @@ import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
+import { Box, Container, Flex, Grid, Text } from "@radix-ui/themes";
 
 interface MenuProps {
     accounts: Account[];
@@ -19,9 +20,6 @@ const Version = styled.div`
     right: 0;
     font-size: 0.5em;
     margin-right: 5px;
-`;
-const EqualSign = styled.div`
-    text-align: right;
 `;
 const SignOut = styled.a`
     cursor: pointer;
@@ -46,40 +44,47 @@ const Menu: React.FC<MenuProps> = (props) => {
 
     return (
         <Drawer preventCloseIdOrClassList={preventDrawerCloseIdList}>
+            <Container mt="6" px="6">
+                <Grid columns="2" gap="2">
+                    <Box style={{ gridColumn: "1 / 3" }}>
+                        <Text>Accounts</Text>
+                    </Box>
+                    {props.accounts.map((x) => (
+                        <>
+                            <Box key={x.name}>
+                                <Text key={x.name + "TextName"}>{x.name}</Text>
+                            </Box>
+                            <Box ml="2" key={x.name + "Balance"}>
+                                <BalanceWithCurrency
+                                    balance={x.balance}
+                                    isHideBalance={isHideBalance}
+                                />
+                            </Box>
+                        </>
+                    ))}
+                    <Flex justify="end">
+                        <Text mr="2">=</Text>
+                    </Flex>
+                    <Box ml="2">
+                        <Text weight="bold">
+                            <BalanceWithCurrency
+                                balance={props.totalAccountBalance}
+                                isHideBalance={isHideBalance}
+                            />
+                        </Text>
+                    </Box>
+                </Grid>
+            </Container>
+
             <div className="container is-mobile is-fluid mt-5">
                 <aside className="menu">
-                    <p className="menu-label">Accounts</p>
+                    <p className="menu-label"></p>
                     <ul className="menu-list">
-                        {props.accounts.map((x) => (
-                            <li key={x.name}>
-                                <div className="columns is-mobile">
-                                    <div className="column is-half">{x.name}</div>
-                                    <div className="column">
-                                        <BalanceWithCurrency
-                                            balance={x.balance}
-                                            isHideBalance={isHideBalance}
-                                        />
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                        <li>
-                            <div className="columns is-mobile">
-                                <EqualSign className="column is-half">=</EqualSign>
-                                <div className="column has-text-weight-bold">
-                                    <BalanceWithCurrency
-                                        balance={props.totalAccountBalance}
-                                        isHideBalance={isHideBalance}
-                                    />
-                                </div>
-                            </div>
-                        </li>
                         <li>
                             <div className="columns is-mobile">
                                 <HideBalanceContainer className="column field hideBalanceSwitch">
                                     <Switch
                                         name={hideBalanceSwitchId}
-                                        isOutlined
                                         isRounded
                                         isOn={isHideBalance}
                                         onChange={onHideBalanceChangeHandler}

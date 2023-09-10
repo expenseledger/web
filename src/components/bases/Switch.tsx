@@ -1,37 +1,46 @@
+import { Switch as RadixSwitch, Text, Flex } from "@radix-ui/themes";
+
 interface SwitchProps {
     name: string;
     label?: string;
     isOn: boolean;
     onChange: () => void;
     isRounded?: boolean;
-    isOutlined?: boolean;
     isRtl?: boolean;
     size?: Size;
 }
 
-type Size = "default" | "small" | "mediem" | "large";
+type Size = "default" | "small" | "medium" | "large";
 
 const Switch: React.FC<SwitchProps> = (props) => {
-    const size = props.size && props.size !== "default" ? `is-${props.size}` : "";
-    const rounded = props.isRounded ? "is-rounded" : "";
-    const outlined = props.isOutlined ? "is-outlined" : "";
-    const rtl = props.isRtl ? "is-rtl" : "";
-    const className = `switch ${size} ${rounded} ${outlined} ${rtl}`.trim();
+    const getSize = () => {
+        switch (props.size) {
+            case "small":
+                return "1";
+            case "medium":
+                return "2";
+            case "large":
+                return "3";
+            default:
+                return "2";
+        }
+    };
+    const rounded = props.isRounded ? "full" : "medium";
 
     return (
-        <>
-            <input
-                id={props.name}
-                type="checkbox"
-                name={props.name}
-                className={className}
-                checked={props.isOn}
-                onChange={props.onChange}
-            />
-            <label id={props.name} htmlFor={props.name}>
-                {props.label ?? " "}
+        <Text size={getSize()}>
+            <label>
+                {props.isRtl && <Text mr="2">{props.label}</Text>}
+                <RadixSwitch
+                    checked={props.isOn}
+                    size={getSize()}
+                    radius={rounded}
+                    name={props.name}
+                    onChange={props.onChange}
+                />
+                {!props.isRtl && <Text ml="2">{props.label}</Text>}
             </label>
-        </>
+        </Text>
     );
 };
 

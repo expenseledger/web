@@ -106,8 +106,10 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         const target = event.target as HTMLElement;
         const shouldPrevent =
             props.preventCloseIdOrClassList?.some(
-                (x) => x === target.id || x === target.className
+                (x) => x === target.id || target.className.includes(x)
             ) ?? false;
+
+        console.log(target, shouldPrevent);
 
         if (shouldPrevent) {
             return;

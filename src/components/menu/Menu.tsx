@@ -74,28 +74,20 @@ const Menu: React.FC<MenuProps> = (props) => {
                         </Text>
                     </Box>
                 </Grid>
+                <Flex justify="end" mt="3">
+                    <Switch
+                        name={hideBalanceSwitchId}
+                        isRounded
+                        isOn={isHideBalance}
+                        onChange={onHideBalanceChangeHandler}
+                        label="Hide balance"
+                        size="small"
+                        isRtl
+                    />
+                </Flex>
             </Container>
-
             <div className="container is-mobile is-fluid mt-5">
                 <aside className="menu">
-                    <p className="menu-label"></p>
-                    <ul className="menu-list">
-                        <li>
-                            <div className="columns is-mobile">
-                                <HideBalanceContainer className="column field hideBalanceSwitch">
-                                    <Switch
-                                        name={hideBalanceSwitchId}
-                                        isRounded
-                                        isOn={isHideBalance}
-                                        onChange={onHideBalanceChangeHandler}
-                                        label="Hide balance"
-                                        size="small"
-                                        isRtl
-                                    />
-                                </HideBalanceContainer>
-                            </div>
-                        </li>
-                    </ul>
                     <p className="menu-label">Page</p>
                     <ul className="menu-list">
                         <li>

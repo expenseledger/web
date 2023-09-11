@@ -5,7 +5,7 @@ import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
-import { Box, Container, Flex, Grid, Text } from "@radix-ui/themes";
+import { Box, Container, Flex, Grid, Separator, Text } from "@radix-ui/themes";
 
 interface MenuProps {
     accounts: Account[];
@@ -84,6 +84,23 @@ const Menu: React.FC<MenuProps> = (props) => {
                         size="small"
                         isRtl
                     />
+                </Flex>
+                <Flex mt="3">
+                    <Text>Page</Text>
+                </Flex>
+                <Flex mt="3" align="center">
+                    <Flex width="6" justify="center">
+                        <Separator orientation="vertical" size="2" />
+                    </Flex>
+                    <Text ml="2">
+                        <Link to="/">Home</Link>
+                    </Text>
+                </Flex>
+                <Flex align="center">
+                    <Flex width="6" justify="center">
+                        <Separator orientation="vertical" size="2" />
+                    </Flex>
+                    <Text ml="2">Home</Text>
                 </Flex>
             </Container>
             <div className="container is-mobile is-fluid mt-5">

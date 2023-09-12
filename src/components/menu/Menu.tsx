@@ -6,6 +6,7 @@ import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
 import { Box, Container, Flex, Grid, Separator, Text } from "@radix-ui/themes";
+import React from "react";
 
 interface MenuProps {
     accounts: Account[];
@@ -26,7 +27,7 @@ const SignOut = styled.a`
     color: inherit;
 `;
 const hideBalanceSwitchId = "hideBalanceSwitch";
-const preventDrawerCloseIdList = [hideBalanceSwitchId];
+const preventDrawerCloseIdList = ["rt-SwitchButton", "rt-SwitchThumb", hideBalanceSwitchId];
 
 const Menu: React.FC<MenuProps> = (props) => {
     const [isHideBalance, setIsHideBalance] = useState<boolean>(
@@ -75,9 +76,9 @@ const Menu: React.FC<MenuProps> = (props) => {
                         <Text>Accounts</Text>
                     </Box>
                     {props.accounts.map((x) => (
-                        <>
-                            <Box key={x.name}>
-                                <Text key={x.name + "TextName"}>{x.name}</Text>
+                        <React.Fragment key={x.id}>
+                            <Box>
+                                <Text>{x.name}</Text>
                             </Box>
                             <Box ml="2" key={x.name + "Balance"}>
                                 <BalanceWithCurrency
@@ -85,7 +86,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                                     isHideBalance={isHideBalance}
                                 />
                             </Box>
-                        </>
+                        </React.Fragment>
                     ))}
                     <Flex justify="end">
                         <Text mr="2">=</Text>

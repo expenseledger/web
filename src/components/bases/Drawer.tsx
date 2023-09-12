@@ -109,8 +109,6 @@ const Drawer: React.FC<DrawerProps> = (props) => {
                 (x) => x === target.id || target.className.includes(x)
             ) ?? false;
 
-        console.log(target, shouldPrevent);
-
         if (shouldPrevent) {
             return;
         }

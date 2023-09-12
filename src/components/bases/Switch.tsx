@@ -1,4 +1,4 @@
-import { Switch as RadixSwitch, Text, Flex } from "@radix-ui/themes";
+import { Flex, Switch as RadixSwitch, Text } from "@radix-ui/themes";
 
 interface SwitchProps {
     name: string;
@@ -30,15 +30,26 @@ const Switch: React.FC<SwitchProps> = (props) => {
     return (
         <Text size={getSize()}>
             <label>
-                {props.isRtl && <Text mr="2">{props.label}</Text>}
-                <RadixSwitch
-                    checked={props.isOn}
-                    size={getSize()}
-                    radius={rounded}
-                    name={props.name}
-                    onChange={props.onChange}
-                />
-                {!props.isRtl && <Text ml="2">{props.label}</Text>}
+                <Flex align="center">
+                    {props.isRtl && (
+                        <Text mr="2" id={props.name}>
+                            {props.label}
+                        </Text>
+                    )}
+                    <RadixSwitch
+                        id={props.name}
+                        checked={props.isOn}
+                        size={getSize()}
+                        radius={rounded}
+                        name={props.name}
+                        onCheckedChange={props.onChange}
+                    />
+                    {!props.isRtl && (
+                        <Text ml="2" id={props.name}>
+                            {props.label}
+                        </Text>
+                    )}
+                </Flex>
             </label>
         </Text>
     );

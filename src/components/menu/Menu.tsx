@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Account from "../../service/model/Account";
@@ -23,9 +23,7 @@ const Version = styled.div`
 `;
 const SignOut = styled.a`
     cursor: pointer;
-`;
-const HideBalanceContainer = styled.div`
-    text-align: right;
+    color: inherit;
 `;
 const hideBalanceSwitchId = "hideBalanceSwitch";
 const preventDrawerCloseIdList = [hideBalanceSwitchId];
@@ -41,6 +39,33 @@ const Menu: React.FC<MenuProps> = (props) => {
             return nextState;
         });
     };
+    const getMenuTitle = (title: string) => (
+        <Flex my="3">
+            <Text size="1" color="gray">
+                {title.toUpperCase()}
+            </Text>
+        </Flex>
+    );
+    const getMenuContent = (title: string, link: string) => (
+        <Flex align="center">
+            <Flex width="6" justify="center">
+                <Separator orientation="vertical" size="2" />
+            </Flex>
+            <Text ml="2">
+                <Link to={link} style={{ color: "inherit" }}>
+                    {title}
+                </Link>
+            </Text>
+        </Flex>
+    );
+    const getMenuContentWithChildren = (element: ReactElement) => (
+        <Flex align="center">
+            <Flex width="6" justify="center">
+                <Separator orientation="vertical" size="2" />
+            </Flex>
+            <Text ml="2">{element}</Text>
+        </Flex>
+    );
 
     return (
         <Drawer preventCloseIdOrClassList={preventDrawerCloseIdList}>
@@ -85,62 +110,17 @@ const Menu: React.FC<MenuProps> = (props) => {
                         isRtl
                     />
                 </Flex>
-                <Flex mt="3">
-                    <Text>Page</Text>
-                </Flex>
-                <Flex mt="3" align="center">
-                    <Flex width="6" justify="center">
-                        <Separator orientation="vertical" size="2" />
-                    </Flex>
-                    <Text ml="2">
-                        <Link to="/">Home</Link>
-                    </Text>
-                </Flex>
-                <Flex align="center">
-                    <Flex width="6" justify="center">
-                        <Separator orientation="vertical" size="2" />
-                    </Flex>
-                    <Text ml="2">Home</Text>
-                </Flex>
+                {getMenuTitle("page")}
+                {getMenuContent("Home", "/")}
+                {getMenuTitle("Setting")}
+                {getMenuContent("Account", "/account/setting")}
+                {getMenuContent("Category", "/category/setting")}
+                {getMenuContent("Page", "/page/setting")}
+                {getMenuTitle("Misc")}
+                {getMenuContentWithChildren(
+                    <SignOut onClick={props.signOutFunc}>Sign out</SignOut>
+                )}
             </Container>
-            <div className="container is-mobile is-fluid mt-5">
-                <aside className="menu">
-                    <p className="menu-label">Page</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <li>
-                                    <Link to="/">Home</Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="menu-label">Setting</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <li>
-                                    <Link to="/account/setting">Account</Link>
-                                </li>
-                                <li>
-                                    <Link to="/category/setting">Category</Link>
-                                </li>
-                                <li>
-                                    <Link to="/page/setting">Page</Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="menu-label">Misc</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <SignOut onClick={props.signOutFunc}>Sign out</SignOut>
-                            </ul>
-                        </li>
-                    </ul>
-                </aside>
-            </div>
             <Version>v{props.version}</Version>
         </Drawer>
     );

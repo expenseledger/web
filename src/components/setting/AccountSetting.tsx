@@ -234,7 +234,11 @@ const AccountSetting: React.FC = () => {
         <Card my="3">
             <Flex align="center" justify="between">
                 <Text>Currency</Text>
-                <Dropdown options={allCurrencies} updateSelectedValue={currencyHandler} />
+                <Dropdown
+                    options={allCurrencies}
+                    updateSelectedValue={currencyHandler}
+                    variant="ghost"
+                />
             </Flex>
         </Card>
     );

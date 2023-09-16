@@ -57,9 +57,9 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                         <Button
                             onClickHandler={onCancelHandler}
                             size="small"
-                            outlined
                             type="primary"
                             value="Cancel"
+                            variant="outline"
                         />
                     </div>
                     <div className="column">

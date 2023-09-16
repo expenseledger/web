@@ -5,12 +5,14 @@ import "./Button.scss";
 interface ButtonProps {
     value: string;
     type?: ButtonType;
-    outlined?: boolean;
+    variant?: ButtonVariant;
     onClickHandler?: (e: React.MouseEvent) => void;
     className?: string;
     size?: ButtonSize;
     isLoading?: boolean;
 }
+
+export type ButtonVariant = "classic" | "solid" | "soft" | "surface" | "outline" | "ghost";
 
 export type ButtonType = "primary" | "info" | "link" | "success" | "danger" | "default";
 
@@ -55,7 +57,7 @@ const Button: React.FC<ButtonProps> = (props) => {
             onClick={props.onClickHandler}
             size={getSize()}
             color={getColor()}
-            variant={props.outlined ? "outline" : "solid"}>
+            variant={props.variant ?? "solid"}>
             {props.isLoading ? <LoadingRing /> : props.value}
         </RadixButton>
     );

@@ -5,7 +5,10 @@ interface DropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
+    variant?: DropdownVariant;
 }
+
+type DropdownVariant = "classic" | "surface" | "soft" | "ghost";
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
     const [value, setValue] = React.useState(props.options[0]);
@@ -36,7 +39,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             defaultValue={props.options[0]}
             size="3"
             value={value}>
-            <Select.Trigger />
+            <Select.Trigger variant={props.variant ?? "surface"} />
             <Select.Content className={props.className}>
                 {renderOptions(props.options)}
             </Select.Content>

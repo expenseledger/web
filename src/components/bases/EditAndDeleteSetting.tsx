@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
+import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
 
 export interface Item {
     id: number;
@@ -75,48 +76,49 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         }
 
         return (
-            <div>
-                <a className="mr-1" onClick={onModifyClick}>
-                    <Pencil1Icon />
-                </a>
-                <a onClick={onDeleteHandler}>
-                    <Cross2Icon />
-                </a>
-            </div>
+            <Box>
+                <Text mr="1" color="blue">
+                    <Pencil1Icon onClick={onModifyClick} />
+                </Text>
+                <Text color="red">
+                    <Cross2Icon onClick={onDeleteHandler} />
+                </Text>
+            </Box>
         );
     };
 
     return (
         <>
             {isModifyClick ? props.modifyModal(props.item.id, onModifyCancel) : null}
-            <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
-                <span>{props.item.name}</span>
+            <Flex width="100%" justify="between">
+                <Text>{props.item.name}</Text>
                 {renderButtonGroup()}
-            </div>
+            </Flex>
         </>
     );
 };
 
-const ItemContainer = styled.nav`
-    overflow-y: scroll;
-    max-height: 80vh;
-    background-color: white;
-`;
-
 const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
     return (
-        <div className="column is-full">
-            <ItemContainer className="panel">
-                {props.items.map((i) => (
-                    <ItemBox
-                        deleteFuncHandler={props.deleteFuncHandler}
-                        key={i.id}
-                        item={i}
-                        modifyModal={props.modifyModal}
-                    />
+        <Card>
+            <ScrollArea scrollbars="vertical" style={{ maxHeight: "80vh" }}>
+                {props.items.map((i, idx) => (
+                    <>
+                        <ItemBox
+                            deleteFuncHandler={props.deleteFuncHandler}
+                            key={i.id}
+                            item={i}
+                            modifyModal={props.modifyModal}
+                        />
+                        {idx == props.items.length - 1 ? null : (
+                            <Box py="3">
+                                <Separator size="4" />
+                            </Box>
+                        )}
+                    </>
                 ))}
-            </ItemContainer>
-        </div>
+            </ScrollArea>
+        </Card>
     );
 };
 

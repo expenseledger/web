@@ -49,7 +49,6 @@ const PageSetting: React.FC = () => {
                         isOn={pageSetting.isMenuOnRightSide}
                         size="small"
                         isRounded
-                        isOutlined
                         onChange={onMoveMenuToRightSideChangeHandler}
                     />
                 </SwtichContainer>
@@ -62,7 +61,6 @@ const PageSetting: React.FC = () => {
                         isOn={pageSetting.isLightMenu}
                         size="small"
                         isRounded
-                        isOutlined
                         onChange={onMenuColorChangeHandler}
                     />
                 </SwtichContainer>

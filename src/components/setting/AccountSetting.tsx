@@ -11,7 +11,6 @@ import { AccountType, Currency } from "../../service/constants";
 import {
     allAccountTypesString,
     allCurrencies,
-    mapAccountTypeToString,
     mapStringToAccountType,
 } from "../../service/helper/accountHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
@@ -21,15 +20,12 @@ import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
 
 interface ModifyModalProps {
     id: number;
     onCancel: () => void;
 }
-
-const CurrencyPanel = styled.nav`
-    background-color: white;
-`;
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories] = useRecoilState(categoriesState);
@@ -193,7 +189,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [currency, setCurrency] = useRecoilState(currencyState);
+    const [_, setCurrency] = useRecoilState(currencyState);
     const { addNotification } = useNotification();
     const currencyHandler = (currency: string) => {
         setCurrency(currency as Currency);
@@ -235,18 +231,16 @@ const AccountSetting: React.FC = () => {
         addNotification("Delete account success", "success");
     };
     const renderCurrencySelectionPanel = (
-        <div className="column is-full mb-3">
-            <CurrencyPanel className="panel">
-                <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
-                    <span>Currency</span>
-                    <Dropdown options={allCurrencies} updateSelectedValue={currencyHandler} />
-                </div>
-            </CurrencyPanel>
-        </div>
+        <Card my="3">
+            <Flex align="center" justify="between">
+                <Text>Currency</Text>
+                <Dropdown options={allCurrencies} updateSelectedValue={currencyHandler} />
+            </Flex>
+        </Card>
     );
 
     return (
-        <div className="columns is-mobile is-centered is-multiline mb-3">
+        <Box mb="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
                 items={accounts.map((x) => {
@@ -263,7 +257,7 @@ const AccountSetting: React.FC = () => {
                 onClick={createAccountHandler}
                 dropdown={allAccountTypesString}
             />
-        </div>
+        </Box>
     );
 };
 

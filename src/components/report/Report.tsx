@@ -11,7 +11,7 @@ import AccountSelection, { SelectableAccount } from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 import TableReport from "./TableReport";
-import { Box, Grid } from "@radix-ui/themes";
+import { Box, Card, Grid } from "@radix-ui/themes";
 
 const Report: React.FC = () => {
     const accounts = useRecoilValue(accountsState);
@@ -99,29 +99,31 @@ const Report: React.FC = () => {
                 monthYearList={monthYearList}
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
             />
-            <Box mt="3" mb="5">
+            <Card mt="3" mb="5">
                 <AccountSelection
                     accounts={selectableAccounts}
                     onChangeHanlder={selectableAccountsChangeHandler}
                 />
-            </Box>
-            <Box mt="3" mb="5">
+            </Card>
+            <Card mt="3" mb="5">
                 <BarChartReport transactions={transactions} />
-            </Box>
-            <Grid
-                columns={{
-                    initial: "1",
-                    sm: "2",
-                }}
-                mt="3"
-                mb="5">
-                <Box>
-                    <PieChartReport transactions={transactions} isExpense={false} />
-                </Box>
-                <Box>
-                    <PieChartReport transactions={transactions} isExpense={true} />
-                </Box>
-            </Grid>
+            </Card>
+            <Card mt="3" mb="5">
+                <Grid
+                    columns={{
+                        initial: "1",
+                        sm: "2",
+                    }}
+                    mt="3"
+                    mb="5">
+                    <Box>
+                        <PieChartReport transactions={transactions} isExpense={false} />
+                    </Box>
+                    <Box>
+                        <PieChartReport transactions={transactions} isExpense={true} />
+                    </Box>
+                </Grid>
+            </Card>
             <Box mt="3" mb="5">
                 <TableReport transations={transactions} isExpense={false} />
             </Box>

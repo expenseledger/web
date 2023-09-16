@@ -15,6 +15,7 @@ import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, getAmount } from "./reportHelper";
+import { Flex, Text } from "@radix-ui/themes";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
@@ -25,11 +26,6 @@ interface BarChartData {
     income: number;
     expense: number;
 }
-
-const TotalAmountDiv = styled.div`
-    text-align: center;
-    font-weight: 700;
-`;
 
 const NoDataDiv = styled.div`
     text-align: center;
@@ -103,14 +99,16 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
         </NoDataDiv>
     ) : (
         <>
-            <TotalAmountDiv className="mb-5">
-                <div>Net Income</div>
-                <BalanceWithCurrency
-                    balance={data
-                        .map((d) => d.income - d.expense)
-                        .reduce((acc, current) => acc + current)}
-                />
-            </TotalAmountDiv>
+            <Flex direction="column" align="center" justify="center" mb="5">
+                <Text weight="bold">Net Income</Text>
+                <Text weight="bold">
+                    <BalanceWithCurrency
+                        balance={data
+                            .map((d) => d.income - d.expense)
+                            .reduce((acc, current) => acc + current)}
+                    />
+                </Text>
+            </Flex>
             <ResponsiveContainer width="100%" height={250}>
                 <BarChart
                     data={data}

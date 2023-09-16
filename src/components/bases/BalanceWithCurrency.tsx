@@ -1,6 +1,7 @@
 import { useRecoilValue } from "recoil";
 import { currencyState } from "../../common/shareState";
 import { formatNumber } from "../../common/utils";
+import { Text } from "@radix-ui/themes";
 
 interface BalanceWithCurrecyProps {
     balance: number;
@@ -12,10 +13,8 @@ const BalanceWithCurrency: React.FC<BalanceWithCurrecyProps> = (props) => {
 
     return (
         <>
-            <span>{currency}</span>
-            <span className="ml-1">
-                {props.isHideBalance ? "XXXX.XX" : formatNumber(props.balance)}
-            </span>
+            <Text>{currency}</Text>
+            <Text ml="1">{props.isHideBalance ? "XXXX.XX" : formatNumber(props.balance)}</Text>
         </>
     );
 };

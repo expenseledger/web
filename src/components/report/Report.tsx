@@ -11,6 +11,7 @@ import AccountSelection, { SelectableAccount } from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 import TableReport from "./TableReport";
+import { Box, Grid } from "@radix-ui/themes";
 
 const Report: React.FC = () => {
     const accounts = useRecoilValue(accountsState);
@@ -98,29 +99,35 @@ const Report: React.FC = () => {
                 monthYearList={monthYearList}
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
             />
-            <div className="mt-3 mb-5">
+            <Box mt="3" mb="5">
                 <AccountSelection
                     accounts={selectableAccounts}
                     onChangeHanlder={selectableAccountsChangeHandler}
                 />
-            </div>
-            <div className="box mt-3 mb-5">
+            </Box>
+            <Box mt="3" mb="5">
                 <BarChartReport transactions={transactions} />
-            </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 px-0 box">
-                <div className="column px-0">
+            </Box>
+            <Grid
+                columns={{
+                    initial: "1",
+                    sm: "2",
+                }}
+                mt="3"
+                mb="5">
+                <Box>
                     <PieChartReport transactions={transactions} isExpense={false} />
-                </div>
-                <div className="column px-0">
+                </Box>
+                <Box>
                     <PieChartReport transactions={transactions} isExpense={true} />
-                </div>
-            </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 box">
+                </Box>
+            </Grid>
+            <Box mt="3" mb="5">
                 <TableReport transations={transactions} isExpense={false} />
-            </div>
-            <div className="columns is-half-desktop is-half-tablet my-5 mx-0 box">
+            </Box>
+            <Box mt="3" mb="5">
                 <TableReport transations={transactions} isExpense={true} />
-            </div>
+            </Box>
         </>
     );
 };

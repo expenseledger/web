@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import styled from "styled-components";
 import Account from "../../service/model/Account";
+import { Card } from "@radix-ui/themes";
 
 export interface SelectableAccount extends Account {
     isSelected: boolean;
@@ -64,10 +65,10 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
     };
 
     return (
-        <div className="box">
+        <>
             <AccountsText className="title is-5">Accounts</AccountsText>
             <div>{renderCheckbox()}</div>
-        </div>
+        </>
     );
 };
 

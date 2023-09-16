@@ -8,6 +8,7 @@ import { formatNumber } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
+import { Text, Flex } from "@radix-ui/themes";
 
 interface PieChartReportProps {
     transactions: Transaction[];
@@ -20,9 +21,7 @@ interface PieChartData {
 }
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#c786ff", "#ff7285"];
-const TotalAmountDiv = styled.div<{ isExpense: boolean }>`
-    text-align: center;
-    font-weight: 700;
+const TotalAmountFlex = styled(Flex)<{ isExpense: boolean }>`
     color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
 `;
 
@@ -152,18 +151,24 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
 
     return (
         <>
-            <TotalAmountDiv isExpense={props.isExpense}>
-                <div>{props.isExpense ? "Expense" : "Income"}</div>
-                <BalanceWithCurrency
-                    balance={
-                        pieChartData.filter((p) => p.name !== "No data").length !== 0
-                            ? pieChartData
-                                  .map((p) => p.value)
-                                  .reduce((acc, current) => acc + current)
-                            : 0
-                    }
-                />
-            </TotalAmountDiv>
+            <TotalAmountFlex
+                direction="column"
+                justify="center"
+                align="center"
+                isExpense={props.isExpense}>
+                <Text weight="bold">{props.isExpense ? "Expense" : "Income"}</Text>
+                <Text weight="bold">
+                    <BalanceWithCurrency
+                        balance={
+                            pieChartData.filter((p) => p.name !== "No data").length !== 0
+                                ? pieChartData
+                                      .map((p) => p.value)
+                                      .reduce((acc, current) => acc + current)
+                                : 0
+                        }
+                    />
+                </Text>
+            </TotalAmountFlex>
             <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                     <Pie

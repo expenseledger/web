@@ -1,5 +1,7 @@
 import React from "react";
 import { combineClassName } from "../../common/utils";
+import { Callout } from "@radix-ui/themes";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 export interface NotificationProps {
     id: string;
@@ -13,20 +15,20 @@ export interface NotificationPropsWithOnclose extends NotificationProps {
     onClose?: (id: string) => Promise<void> | void;
 }
 
-function mapTypeToClassname(type: NotificationType): string {
+function mapColor(type: NotificationType): any {
     switch (type) {
         case "primary":
-            return "is-primary";
+            return "grass";
         case "danger":
-            return "is-danger";
+            return "red";
         case "info":
-            return "is-info";
+            return "sky";
         case "link":
             return "is-link";
         case "success":
-            return "is-success";
+            return "green";
         case "warning":
-            return "is-warning";
+            return "yellow";
         case "none":
             return null;
     }
@@ -36,13 +38,11 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     const showNotificationClassName = combineClassName(
         "notification",
         "notification--show",
-        mapTypeToClassname(props.type),
         props.showClassName
     );
     const hideNotificationClassName = combineClassName(
         "notification",
         "notification--hide",
-        mapTypeToClassname(props.type),
         props.hideClassName
     );
     const [className, SetClassName] = React.useState(showNotificationClassName);
@@ -60,10 +60,12 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     }, [hideNotificationClassName, props]);
 
     return (
-        <div className={className}>
-            <button onClick={onCloseHandler} className="delete"></button>
-            {props.text}
-        </div>
+        <Callout.Root className={className} color={mapColor(props.type)} variant="outline">
+            <Callout.Icon>
+                <Cross2Icon onClick={onCloseHandler} />
+            </Callout.Icon>
+            <Callout.Text>{props.text}</Callout.Text>
+        </Callout.Root>
     );
 };
 

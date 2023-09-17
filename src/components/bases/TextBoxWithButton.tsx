@@ -1,7 +1,7 @@
 import React from "react";
 import { useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
-import { Box, Separator, TextField } from "@radix-ui/themes";
+import { Box, Flex, Separator, TextField } from "@radix-ui/themes";
 import Dropdown from "./Dropdown";
 
 interface TextBoxWithButtonProps {
@@ -50,21 +50,19 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
 
     return (
         <>
-            <TextField.Root size="3">
-                <TextField.Slot>
+            <TextField.Root>
+                <TextField.Slot p="3">
                     {renderDropdown()}
                     <Separator orientation="vertical" />
                 </TextField.Slot>
-                <Box py="1">
-                    <TextField.Input
-                        name={props.name}
-                        type={props.type ?? "text"}
-                        placeholder={props.placeholder ?? ""}
-                        style={{ paddingLeft: "0" }}
-                        {...bind}
-                    />
-                </Box>
-                <TextField.Slot>
+                <TextField.Input
+                    name={props.name}
+                    type={props.type ?? "text"}
+                    placeholder={props.placeholder ?? ""}
+                    style={{ paddingLeft: "0", paddingTop: "16px" }}
+                    {...bind}
+                />
+                <TextField.Slot px="4">
                     <Button
                         className={`${isLoading ? "is-loading" : ""}`}
                         type={props.buttonType}

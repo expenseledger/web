@@ -73,7 +73,9 @@ const Menu: React.FC<MenuProps> = (props) => {
             <Container mt="6" px="6">
                 <Grid columns="2" gap="2">
                     <Box style={{ gridColumn: "1 / 3" }}>
-                        <Text>Accounts</Text>
+                        <Text color="gray" size="1">
+                            ACCOUNTS
+                        </Text>
                     </Box>
                     {props.accounts.map((x) => (
                         <React.Fragment key={x.id}>

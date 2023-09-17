@@ -97,7 +97,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
     return (
         <Card>
-            <ScrollArea scrollbars="vertical" style={{ maxHeight: "80vh" }}>
+            <ScrollArea scrollbars="vertical" style={{ maxHeight: "70vh" }}>
                 {props.items.map((i, idx) => (
                     <React.Fragment key={idx}>
                         <ItemBox

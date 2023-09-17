@@ -230,7 +230,7 @@ const AccountSetting: React.FC = () => {
         addNotification("Delete account success", "success");
     };
     const renderCurrencySelectionPanel = (
-        <Card my="3">
+        <Card>
             <Flex align="center" justify="between">
                 <Text>Currency</Text>
                 <Dropdown
@@ -243,7 +243,7 @@ const AccountSetting: React.FC = () => {
     );
 
     return (
-        <Box mb="3">
+        <Flex direction="column" gap="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
                 items={accounts.map((x) => {
@@ -260,7 +260,7 @@ const AccountSetting: React.FC = () => {
                 onClick={createAccountHandler}
                 dropdown={allAccountTypesString}
             />
-        </Box>
+        </Flex>
     );
 };
 

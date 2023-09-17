@@ -56,7 +56,7 @@ const Layout: React.FC = () => {
         <Loading />
     ) : (
         <>
-            <Header>
+            <Header className="header">
                 <Menu
                     accounts={accounts}
                     totalAccountBalance={totalAccountsBalance}
@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
                     </Link>
                 </Title>
             </Header>
-            <Container size="2" mt="3" px="6">
+            <Container size="2" pt="3" px="6" className="mainContainer">
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>

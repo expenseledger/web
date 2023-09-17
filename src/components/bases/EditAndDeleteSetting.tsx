@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Button from "./Button";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
@@ -11,20 +10,19 @@ export interface Item {
 
 export interface EditAndDelteSettingProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
+    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     items: Item[];
 }
 
 interface ItemBoxProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
+    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     item: Item;
 }
 
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
-    const [isModifyClick, setIsModifyClick] = React.useState(false);
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
     };
@@ -42,12 +40,6 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         setIsLoading(false);
         setIsClickedDelete(false);
-    };
-    const onModifyClick = () => {
-        setIsModifyClick(true);
-    };
-    const onModifyCancel = () => {
-        setIsModifyClick(false);
     };
     const renderButtonGroup = () => {
         if (isClickedDelete) {
@@ -78,7 +70,12 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         return (
             <Box>
                 <Text mr="1" color="blue">
-                    <Pencil1Icon onClick={onModifyClick} />
+                    {props.modifyModal(
+                        props.item.id,
+                        <Text mr="1" color="blue">
+                            <Pencil1Icon />
+                        </Text>
+                    )}
                 </Text>
                 <Text color="red">
                     <Cross2Icon onClick={onDeleteHandler} />
@@ -89,7 +86,6 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
     return (
         <>
-            {isModifyClick ? props.modifyModal(props.item.id, onModifyCancel) : null}
             <Flex width="100%" justify="between">
                 <Text>{props.item.name}</Text>
                 {renderButtonGroup()}
@@ -103,7 +99,7 @@ const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
         <Card>
             <ScrollArea scrollbars="vertical" style={{ maxHeight: "80vh" }}>
                 {props.items.map((i, idx) => (
-                    <>
+                    <React.Fragment key={idx}>
                         <ItemBox
                             deleteFuncHandler={props.deleteFuncHandler}
                             key={i.id}
@@ -115,7 +111,7 @@ const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
                                 <Separator size="4" />
                             </Box>
                         )}
-                    </>
+                    </React.Fragment>
                 ))}
             </ScrollArea>
         </Card>

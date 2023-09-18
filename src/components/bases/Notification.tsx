@@ -22,9 +22,8 @@ function mapColor(type: NotificationType): any {
         case "danger":
             return "red";
         case "info":
-            return "sky";
         case "link":
-            return "is-link";
+            return "sky";
         case "success":
             return "green";
         case "warning":

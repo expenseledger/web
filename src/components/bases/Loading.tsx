@@ -1,4 +1,6 @@
 import React from "react";
+import { Box, Text } from "@radix-ui/themes";
+import "./Loading.scss";
 
 const Loading: React.FC = () => {
     const [isShowLoading, setIsShowLoading] = React.useState(false);
@@ -23,14 +25,10 @@ const Loading: React.FC = () => {
                 top: "50%",
                 left: "25%",
             }}>
-            <progress className="progress is-small is-dark" max="100" />
-            <span
-                style={{
-                    display: "inlint-block",
-                    fontWeight: "bold",
-                }}>
-                Loading...
-            </span>
+            <progress className="loading-progress" />
+            <Box>
+                <Text weight="bold">Loading...</Text>
+            </Box>
         </div>
     ) : null;
 };

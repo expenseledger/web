@@ -1,0 +1,50 @@
+/* Reset default progress styles */
+.loading-progress {
+    appearance: none;
+    border: none;
+    height: 4px; /* Adjust the height as needed */
+    width: 100%;
+    background-color: transparent; /* Transparent background color for the progress bar */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Style the progress bar container (with gray border) */
+.loading-progress::before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid #ddd; /* Gray border color for the progress bar container */
+}
+
+/* Style the progress value (fill) */
+.loading-progress::-webkit-progress-value {
+    background-color: transparent; /* Transparent background color for the filled portion */
+}
+
+/* Keyframes for the loading animation */
+@keyframes loading-animation {
+    0% {
+        left: -100%; /* Start position, fully left */
+    }
+    100% {
+        left: 100%; /* End position, fully right */
+    }
+}
+
+/* Apply the animation */
+.loading-progress::after {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-color: #007bff; /* Color for the filled portion of the progress bar */
+    position: absolute;
+    top: 0;
+    left: -100%; /* Initial position, fully left */
+    animation: loading-animation 2s linear infinite; /* Smooth left-to-right animation */
+}

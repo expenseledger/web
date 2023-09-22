@@ -1,6 +1,52 @@
 import React from "react";
 import { Box, Text } from "@radix-ui/themes";
-import "./Loading.scss";
+import { keyframes, styled } from "styled-components";
+
+const loadingAnimation = keyframes`
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+`;
+
+const LoadingProgress = styled.progress`
+    appearance: none;
+    border: none;
+    height: 4px; /* Adjust the height as needed */
+    width: 100%;
+    background-color: transparent; /* Transparent background color for the progress bar */
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 1px solid #ddd; /* Gray border color for the progress bar container */
+    }
+
+    &::-webkit-progress-value {
+        background-color: transparent; /* Transparent background color for the filled portion */
+    }
+
+    &::after {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: #007bff; /* Color for the filled portion of the progress bar */
+        position: absolute;
+        top: 0;
+        left: -100%; /* Initial position, fully left */
+        animation: ${loadingAnimation} 2s linear infinite; /* Smooth left-to-right animation */
+    }
+`;
 
 const Loading: React.FC = () => {
     const [isShowLoading, setIsShowLoading] = React.useState(false);
@@ -25,7 +71,7 @@ const Loading: React.FC = () => {
                 top: "50%",
                 left: "25%",
             }}>
-            <progress className="loading-progress" />
+            <LoadingProgress />
             <Box>
                 <Text weight="bold">Loading...</Text>
             </Box>

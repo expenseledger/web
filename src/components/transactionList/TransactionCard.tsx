@@ -5,6 +5,7 @@ import { TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
+import { Card, Flex, Text } from "@radix-ui/themes";
 
 interface TransactionCardItem {
     amount: number;
@@ -25,10 +26,6 @@ interface TransactionCardProps {
     date: Date;
     items: TransactionCardItem[];
 }
-
-const Title = styled.h1`
-    display: inline;
-`;
 
 export const TransactionCard: React.FC<TransactionCardProps> = (props: TransactionCardProps) => {
     const title = dayjs(props.date).format("DD MMM YYYY");
@@ -61,12 +58,14 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
     };
 
     return (
-        <div className="box">
-            <div className="is-flex is-flex-direction-row is-justify-content-space-between">
-                <Title className="title is-4">{title}</Title>
+        <Card>
+            <Flex justify="between" align="center" mb="3">
+                <Text weight="bold" size="6">
+                    {title}
+                </Text>
                 <AmountTxt amount={props.items.reduce((acc, cur) => acc + cur.amount, 0)} />
-            </div>
+            </Flex>
             {renderBody()}
-        </div>
+        </Card>
     );
 };

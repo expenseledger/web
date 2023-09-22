@@ -30,7 +30,7 @@ const Switch: React.FC<SwitchProps> = (props) => {
     return (
         <Text size={getSize()}>
             <label>
-                <Flex align="center">
+                <Flex align="center" display="inline-flex">
                     {props.isRtl && (
                         <Text mr="2" id={props.name}>
                             {props.label}

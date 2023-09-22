@@ -13,6 +13,7 @@ import MessageBox from "../bases/MessageBox";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
+import { Text } from "@radix-ui/themes";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -27,6 +28,7 @@ interface UpdateTransactionModalProps {
         description: string,
         occuredAt: Date
     ) => Promise<void>;
+    triggerer: React.ReactElement;
 }
 
 interface TransactionCardMessageProps {
@@ -80,7 +82,6 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
     return (
         <Modal
             title="Update Transaction"
-            onCancelHandler={props.onCancel}
             onConfirmHandler={() =>
                 props.onConfirm(
                     toNumber(updatedAmountText),
@@ -92,7 +93,8 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
             cancelBtnTxt="Cancel"
             cancelBtnType="default"
             confirmBtnTxt="Confirm"
-            confirmBtnType="primary">
+            confirmBtnType="primary"
+            triggerer={props.triggerer}>
             <div className="columns is-mobile is-vcentered has-text-left">
                 <div className="column is-4">
                     <span>Amount</span>
@@ -145,37 +147,15 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
 };
 
 const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (props) => {
-    const [isClickedDelete, setIsClickedDelete] = React.useState(false);
-    const [isClickedUpdate, setIsClickedUpdate] = React.useState(false);
-    const [isLoading, setIsLoading] = React.useState(false);
-
-    const onDeleteHandler = () => {
-        setIsClickedDelete(true);
-    };
-    const onUpdateHandler = () => {
-        setIsClickedUpdate(true);
-    };
-    const onCancelDeleteHandler = () => {
-        if (isLoading) return;
-
-        setIsClickedDelete(false);
-    };
     const onCancelUpdateHandler = () => {
-        if (isLoading) return;
-
-        setIsClickedUpdate(false);
+        return;
     };
     const onConfirmDeleteHandler = async () => {
         if (!props.onDelete) {
             return;
         }
 
-        setIsLoading(true);
-
         await props.onDelete();
-
-        setIsLoading(false);
-        setIsClickedDelete(false);
     };
     const onConfirmUpdateHandler = async (
         amount: number,
@@ -187,38 +167,31 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
             return;
         }
 
-        setIsLoading(true);
-
         await props.onUpdate(amount, categoryId, description, occuredAt);
-
-        setIsLoading(false);
-        setIsClickedUpdate(false);
     };
     const renderDelete = () => {
-        if (isClickedDelete) {
-            return (
+        return (
+            <DeleteBox>
                 <Modal
                     title="Delete Transaction"
-                    onCancelHandler={onCancelDeleteHandler}
                     onConfirmHandler={onConfirmDeleteHandler}
                     cancelBtnTxt="Cancel"
                     cancelBtnType="default"
                     confirmBtnTxt="Delete"
-                    confirmBtnType="danger">
+                    confirmBtnType="danger"
+                    triggerer={
+                        <Text color="red">
+                            <Cross2Icon />
+                        </Text>
+                    }>
                     <div className="has-text-black">Are you sure?</div>
                 </Modal>
-            );
-        }
-
-        return (
-            <DeleteBox onClick={onDeleteHandler}>
-                <Cross2Icon />
             </DeleteBox>
         );
     };
     const renderUpdate = () => {
-        if (isClickedUpdate) {
-            return (
+        return (
+            <UpdateBox>
                 <UpdateTransactionModal
                     amount={props.amount}
                     category={props.category}
@@ -227,13 +200,12 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     transactionType={props.type}
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
+                    triggerer={
+                        <Text color="blue">
+                            <Pencil1Icon />
+                        </Text>
+                    }
                 />
-            );
-        }
-
-        return (
-            <UpdateBox onClick={onUpdateHandler}>
-                <Pencil1Icon />
             </UpdateBox>
         );
     };

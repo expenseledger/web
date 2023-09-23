@@ -46,12 +46,14 @@ const AccountCardComponent: React.FC<AccountCardProps> = (props) => {
 
     return (
         <Card $backgroundColor={backgroundColor} $backgroundImage={backgroundImage}>
-            <Text weight="bold" size="7">
+            <Text weight="bold" size="8">
                 {props.name}
             </Text>
             <Box>
-                <Text>{props.currency}</Text>
-                <animated.span>{number.to((x) => formatNumber(x))}</animated.span>
+                <Text size="4">{props.currency}</Text>
+                <Text size="4">
+                    <animated.span>{number.to((x) => formatNumber(x))}</animated.span>
+                </Text>
             </Box>
         </Card>
     );

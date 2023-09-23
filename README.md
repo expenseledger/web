@@ -33,11 +33,10 @@
 
 ## Stack
 
--   Golang
--   Gin (web framework)
--   Heroku PostgreSQL (Database)
--   Heroku
+-   Postgraphile
+-   PostgreSQL
+-   Vercel
 -   React.js + Typescript
--   Bulma
+-   Radix UI
 
 ^\_^

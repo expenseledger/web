@@ -218,7 +218,6 @@ export const TransactionList: React.FC = () => {
     };
     const renderTransactionCards = () => {
         const cards = getTransactionCards();
-        console.log(cards);
 
         if (cards.length > 0) {
             return cards.map((c, idx) => {

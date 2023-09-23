@@ -1,6 +1,6 @@
 import React from "react";
 import { combineClassName } from "../../common/utils";
-import { Callout } from "@radix-ui/themes";
+import { Box, Flex, Text } from "@radix-ui/themes";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
 export interface NotificationProps {
@@ -15,19 +15,19 @@ export interface NotificationPropsWithOnclose extends NotificationProps {
     onClose?: (id: string) => Promise<void> | void;
 }
 
-function mapColor(type: NotificationType): any {
+function mapColor(type: NotificationType): string {
     switch (type) {
         case "primary":
-            return "grass";
+            return "var(--indigo-9)";
         case "danger":
-            return "red";
+            return "var(--red-9)";
         case "info":
         case "link":
-            return "sky";
+            return "var(--sky-9)";
         case "success":
-            return "green";
+            return "var(--grass-9)";
         case "warning":
-            return "yellow";
+            return "var(--yellow-9)";
         case "none":
             return null;
     }
@@ -52,19 +52,25 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     };
 
     React.useEffect(() => {
-        // setTimeout(() => {
-        //     SetClassName(hideNotificationClassName);
-        //     setTimeout(() => props.onClose && props.onClose(props.id), 1000);
-        // }, 3000);
+        setTimeout(() => {
+            SetClassName(hideNotificationClassName);
+            setTimeout(() => props.onClose && props.onClose(props.id), 1000);
+        }, 3000);
     }, [hideNotificationClassName, props]);
 
     return (
-        <Callout.Root className={className} color={mapColor(props.type)}>
-            <Callout.Icon>
+        <Flex
+            className={className}
+            mb="3"
+            p="3"
+            align="center"
+            gap="3"
+            style={{ backgroundColor: mapColor(props.type), borderRadius: "4px" }}>
+            <Text style={{ color: "white", marginTop: "4px" }}>
                 <Cross2Icon onClick={onCloseHandler} />
-            </Callout.Icon>
-            <Callout.Text>{props.text}</Callout.Text>
-        </Callout.Root>
+            </Text>
+            <Text style={{ color: "white" }}>{props.text}</Text>
+        </Flex>
     );
 };
 

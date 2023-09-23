@@ -1,6 +1,5 @@
-import styled from "styled-components";
 import Account from "../../service/model/Account";
-import { Text, Checkbox, Flex, Box, Grid } from "@radix-ui/themes";
+import { Text, Checkbox, Flex, Grid } from "@radix-ui/themes";
 import React from "react";
 
 export interface SelectableAccount extends Account {

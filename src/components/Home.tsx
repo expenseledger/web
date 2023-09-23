@@ -250,7 +250,7 @@ const Home: React.FC = () => {
                             className="content__button--add"
                             onClickHandler={addTransaction}
                             value="Add"
-                            type="success"
+                            type="primary"
                             isLoading={isLoading}
                         />
                     </Box>
@@ -260,6 +260,7 @@ const Home: React.FC = () => {
                             onClickHandler={toMorePage}
                             value="More"
                             type="primary"
+                            variant="soft"
                         />
                     </Box>
                 </Flex>

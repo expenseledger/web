@@ -186,7 +186,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                             <Cross2Icon />
                         </Text>
                     }>
-                    <div className="has-text-black">Are you sure?</div>
+                    <Text>Are you sure?</Text>
                 </Modal>
             </DeleteBox>
         );

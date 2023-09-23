@@ -24,7 +24,7 @@ const MonthYearSwiper: React.FC<MonthYearSwiperProps> = (props) => {
             onSlideChange={props.onSlideChange}>
             {props.monthYearList.length === 0 ? (
                 <MonthYear>
-                    <Text size="4">No data</Text>
+                    <Text size="6">No data</Text>
                 </MonthYear>
             ) : (
                 props.monthYearList.map((x) => (

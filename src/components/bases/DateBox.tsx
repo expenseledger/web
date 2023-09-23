@@ -1,6 +1,8 @@
 import React from "react";
-import { combineClassName, useInput } from "../../common/utils";
+import { useInput } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
+import { TextField } from "@radix-ui/themes";
+import { styled } from "styled-components";
 
 interface DateBoxProps {
     name: string;
@@ -9,20 +11,21 @@ interface DateBoxProps {
     className?: string;
 }
 
+const Input = styled(TextField.Input)`
+    padding-right: var(--space-3);
+`;
+
 const DateBox: React.FC<DateBoxProps> = (props) => {
     const { bind, setValue } = useInput(dayjs().format("YYYY-MM-DD"), props.updateValue);
-    const classNames = combineClassName("field", !!props.className ? props.className : "");
 
     React.useEffect(() => {
         props.value && setValue(props.value);
     }, [props.value, setValue]);
 
     return (
-        <div className={classNames}>
-            <div className="control">
-                <input className="input" name={props.name} type="date" {...bind} />
-            </div>
-        </div>
+        <TextField.Root>
+            <Input className={props.className} type="date" name={props.name} {...bind} size="3" />
+        </TextField.Root>
     );
 };
 

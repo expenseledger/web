@@ -6,7 +6,6 @@ import { createCategory, deleteCategory, updateCategory } from "../../service/ca
 import { CategoryType } from "../../service/constants";
 import {
     allCategoryTypesString,
-    mapCategoryTypeToString,
     mapStringToCategoryType,
 } from "../../service/helper/categoryHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
@@ -15,10 +14,11 @@ import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
+import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 
 interface ModifyModalProps {
     id: number;
-    onCancel: () => void;
+    triggerer: React.ReactElement;
 }
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
@@ -45,8 +45,6 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         } else {
             addNotification("Update category failed", "danger");
         }
-
-        props.onCancel();
     };
     const categoryNameHandler = (value: string) => {
         setName(value);
@@ -65,34 +63,35 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     return (
         <Modal
             title="Update Category"
-            onCancelHandler={props.onCancel}
             onConfirmHandler={modifyCategory}
             cancelBtnTxt="Cancel"
             cancelBtnType="default"
             confirmBtnTxt="Confirm"
-            confirmBtnType="primary">
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Name</span>
-                </div>
-                <TextBox
-                    className="column"
-                    name="category-modify"
-                    updateValue={categoryNameHandler}
-                    value={name}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Type</span>
-                </div>
-                <Dropdown
-                    className="column"
-                    value={mapCategoryTypeToString(type)}
-                    options={allCategoryTypesString}
-                    updateSelectedValue={categoryTypeHandler}
-                />
-            </div>
+            confirmBtnType="primary"
+            triggerer={props.triggerer}>
+            <Grid columns="2" gap="3" py="3">
+                <Box>
+                    <Text>Name</Text>
+                </Box>
+                <Box>
+                    <TextBox
+                        className="column"
+                        name="category-modify"
+                        updateValue={categoryNameHandler}
+                        value={name}
+                    />
+                </Box>
+                <Box>
+                    <Text>Type</Text>
+                </Box>
+                <Box>
+                    <Dropdown
+                        className="column"
+                        options={allCategoryTypesString}
+                        updateSelectedValue={categoryTypeHandler}
+                    />
+                </Box>
+            </Grid>
         </Modal>
     );
 };
@@ -135,10 +134,10 @@ const CategorySetting: React.FC = () => {
     };
 
     return (
-        <div className="columns is-mobile is-centered is-multiline mb-3">
+        <Flex direction="column" gap="3" mb="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={removeCategoryHandler}
-                modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
+                modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
                 items={categories.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
@@ -151,7 +150,7 @@ const CategorySetting: React.FC = () => {
                 onClick={addCategoryHandler}
                 dropdown={allCategoryTypesString}
             />
-        </div>
+        </Flex>
     );
 };
 

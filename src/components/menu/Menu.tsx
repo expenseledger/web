@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
+import { Box, Container, Flex, Grid, Separator, Text } from "@radix-ui/themes";
+import React from "react";
 
 interface MenuProps {
     accounts: Account[];
@@ -20,17 +22,12 @@ const Version = styled.div`
     font-size: 0.5em;
     margin-right: 5px;
 `;
-const EqualSign = styled.div`
-    text-align: right;
-`;
 const SignOut = styled.a`
     cursor: pointer;
-`;
-const HideBalanceContainer = styled.div`
-    text-align: right;
+    color: inherit;
 `;
 const hideBalanceSwitchId = "hideBalanceSwitch";
-const preventDrawerCloseIdList = [hideBalanceSwitchId];
+const preventDrawerCloseIdList = ["rt-SwitchButton", "rt-SwitchThumb", hideBalanceSwitchId];
 
 const Menu: React.FC<MenuProps> = (props) => {
     const [isHideBalance, setIsHideBalance] = useState<boolean>(
@@ -43,90 +40,90 @@ const Menu: React.FC<MenuProps> = (props) => {
             return nextState;
         });
     };
+    const getMenuTitle = (title: string) => (
+        <Flex my="3">
+            <Text size="1" color="gray">
+                {title.toUpperCase()}
+            </Text>
+        </Flex>
+    );
+    const getMenuContent = (title: string, link: string) => (
+        <Flex align="center">
+            <Flex width="6" justify="center">
+                <Separator orientation="vertical" size="2" />
+            </Flex>
+            <Text ml="2">
+                <Link to={link} style={{ color: "inherit" }}>
+                    {title}
+                </Link>
+            </Text>
+        </Flex>
+    );
+    const getMenuContentWithChildren = (element: ReactElement) => (
+        <Flex align="center">
+            <Flex width="6" justify="center">
+                <Separator orientation="vertical" size="2" />
+            </Flex>
+            <Text ml="2">{element}</Text>
+        </Flex>
+    );
 
     return (
         <Drawer preventCloseIdOrClassList={preventDrawerCloseIdList}>
-            <div className="container is-mobile is-fluid mt-5">
-                <aside className="menu">
-                    <p className="menu-label">Accounts</p>
-                    <ul className="menu-list">
-                        {props.accounts.map((x) => (
-                            <li key={x.name}>
-                                <div className="columns is-mobile">
-                                    <div className="column is-half">{x.name}</div>
-                                    <div className="column">
-                                        <BalanceWithCurrency
-                                            balance={x.balance}
-                                            isHideBalance={isHideBalance}
-                                        />
-                                    </div>
-                                </div>
-                            </li>
-                        ))}
-                        <li>
-                            <div className="columns is-mobile">
-                                <EqualSign className="column is-half">=</EqualSign>
-                                <div className="column has-text-weight-bold">
-                                    <BalanceWithCurrency
-                                        balance={props.totalAccountBalance}
-                                        isHideBalance={isHideBalance}
-                                    />
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div className="columns is-mobile">
-                                <HideBalanceContainer className="column field hideBalanceSwitch">
-                                    <Switch
-                                        name={hideBalanceSwitchId}
-                                        isOutlined
-                                        isRounded
-                                        isOn={isHideBalance}
-                                        onChange={onHideBalanceChangeHandler}
-                                        label="Hide balance"
-                                        size="small"
-                                        isRtl
-                                    />
-                                </HideBalanceContainer>
-                            </div>
-                        </li>
-                    </ul>
-                    <p className="menu-label">Page</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <li>
-                                    <Link to="/">Home</Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="menu-label">Setting</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <li>
-                                    <Link to="/account/setting">Account</Link>
-                                </li>
-                                <li>
-                                    <Link to="/category/setting">Category</Link>
-                                </li>
-                                <li>
-                                    <Link to="/page/setting">Page</Link>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <p className="menu-label">Misc</p>
-                    <ul className="menu-list">
-                        <li>
-                            <ul>
-                                <SignOut onClick={props.signOutFunc}>Sign out</SignOut>
-                            </ul>
-                        </li>
-                    </ul>
-                </aside>
-            </div>
+            <Container mt="6" px="6">
+                <Grid columns="2" gap="2">
+                    <Box style={{ gridColumn: "1 / 3" }}>
+                        <Text color="gray" size="1">
+                            ACCOUNTS
+                        </Text>
+                    </Box>
+                    {props.accounts.map((x) => (
+                        <React.Fragment key={x.id}>
+                            <Box>
+                                <Text>{x.name}</Text>
+                            </Box>
+                            <Box ml="2" key={x.name + "Balance"}>
+                                <BalanceWithCurrency
+                                    balance={x.balance}
+                                    isHideBalance={isHideBalance}
+                                />
+                            </Box>
+                        </React.Fragment>
+                    ))}
+                    <Flex justify="end">
+                        <Text mr="2">=</Text>
+                    </Flex>
+                    <Box ml="2">
+                        <Text weight="bold">
+                            <BalanceWithCurrency
+                                balance={props.totalAccountBalance}
+                                isHideBalance={isHideBalance}
+                            />
+                        </Text>
+                    </Box>
+                </Grid>
+                <Flex justify="end" mt="3">
+                    <Switch
+                        name={hideBalanceSwitchId}
+                        isRounded
+                        isOn={isHideBalance}
+                        onChange={onHideBalanceChangeHandler}
+                        label="Hide balance"
+                        size="small"
+                        isRtl
+                    />
+                </Flex>
+                {getMenuTitle("page")}
+                {getMenuContent("Home", "/")}
+                {getMenuTitle("Setting")}
+                {getMenuContent("Account", "/account/setting")}
+                {getMenuContent("Category", "/category/setting")}
+                {getMenuContent("Page", "/page/setting")}
+                {getMenuTitle("Misc")}
+                {getMenuContentWithChildren(
+                    <SignOut onClick={props.signOutFunc}>Sign out</SignOut>
+                )}
+            </Container>
             <Version>v{props.version}</Version>
         </Drawer>
     );

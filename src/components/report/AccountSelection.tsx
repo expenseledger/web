@@ -1,6 +1,6 @@
-import * as R from "ramda";
-import styled from "styled-components";
 import Account from "../../service/model/Account";
+import { Text, Checkbox, Flex, Grid } from "@radix-ui/themes";
+import React from "react";
 
 export interface SelectableAccount extends Account {
     isSelected: boolean;
@@ -11,17 +11,13 @@ interface AccountSelectionProps {
     onChangeHanlder: (accounts: SelectableAccount[]) => void;
 }
 
-const AccountsText = styled.div`
-    text-align: center;
-`;
-
 const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
-    const onChangeHandler = (accountId: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChangeHandler = (accountId: number, checked: boolean) => {
         const newAccounts: SelectableAccount[] = props.accounts.map((account) => {
             if (account.id === accountId) {
                 return {
                     ...account,
-                    isSelected: e.target.checked,
+                    isSelected: checked,
                 };
             }
             return account;
@@ -36,38 +32,39 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
 
     const listOfCheckbox = props.accounts.map((account) => {
         return (
-            <label className="checkbox" key={account.id}>
-                <input
-                    type="checkbox"
-                    onChange={(e) => onChangeHandler(account.id, e)}
-                    checked={account.isSelected}
-                />
-                <span className="ml-1">{account.name}</span>
-            </label>
+            <React.Fragment key={account.id}>
+                <label>
+                    <Flex align="center">
+                        <Checkbox
+                            checked={account.isSelected}
+                            onCheckedChange={(checked) =>
+                                onChangeHandler(account.id, checked.valueOf() as boolean)
+                            }
+                        />
+                        <Text ml="1">{account.name}</Text>
+                    </Flex>
+                </label>
+            </React.Fragment>
         );
     });
 
     const renderCheckbox = () => {
-        return R.splitEvery(2, listOfCheckbox).map((l, idx) => {
-            return (
-                <div className="columns is-mobile" key={idx}>
-                    {l.map((c) => {
-                        return (
-                            <div className="column" key={c.key}>
-                                {c}
-                            </div>
-                        );
-                    })}
-                </div>
-            );
-        });
+        return (
+            <Grid columns="2" gap="3">
+                {listOfCheckbox}
+            </Grid>
+        );
     };
 
     return (
-        <div className="box">
-            <AccountsText className="title is-5">Accounts</AccountsText>
+        <>
+            <Flex justify="center" pb="3">
+                <Text weight="bold" size="4">
+                    Accounts
+                </Text>
+            </Flex>
             <div>{renderCheckbox()}</div>
-        </div>
+        </>
     );
 };
 

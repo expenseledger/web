@@ -18,19 +18,15 @@ import AmountTxt from "../bases/AmountTxt";
 import Button from "../bases/Button";
 import MonthYearSwiper from "../bases/MonthYearSwiper";
 import { TransactionCard } from "./TransactionCard";
-import "./TransactionList.scss";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
+import Switch from "../bases/Switch";
 
 const NoData = styled.div`
     font-weight: bold;
     text-align: center;
     margin-top: 30px;
 `;
-const SwitchContainer = styled.div`
-    display: inline-block;
-`;
-const TotalText = styled.div`
-    display: inline-block;
-`;
+
 const Root = styled.div`
     text-align: center;
 `;
@@ -223,10 +219,22 @@ export const TransactionList: React.FC = () => {
         const cards = getTransactionCards();
 
         if (cards.length > 0) {
-            return <>{cards}</>;
+            return cards.map((c, idx) => {
+                return (
+                    <Box key={idx} mt={idx > 0 ? "3" : "0"}>
+                        {c}
+                    </Box>
+                );
+            });
         }
 
-        return <NoData className="notification is-danger">No data</NoData>;
+        return (
+            <NoData>
+                <Text color="red" size="7">
+                    No data
+                </Text>
+            </NoData>
+        );
     };
     const renderSummaryCard = () => {
         const totalAmount = transactions
@@ -235,25 +243,24 @@ export const TransactionList: React.FC = () => {
             .reduce((prev, cur) => prev + cur, 0);
 
         return (
-            <div className="box mt-3">
-                <div className="is-flex is-flex-direction-row is-justify-content-space-between">
-                    <div>
-                        <TotalText className="has-text-weight-bold">Total</TotalText>
-                        <SwitchContainer className="field ml-3">
-                            <input
-                                id="paidOnlySwitch"
-                                type="checkbox"
-                                name="paidOnlySwitch"
-                                className="switch is-rounded is-outlined is-small"
-                                checked={isPaidOnly}
-                                onChange={paidOnlyOnChangeHandler}
-                            />
-                            <label htmlFor="paidOnlySwitch">Paid only</label>
-                        </SwitchContainer>
-                    </div>
+            <Card my="3" size="2">
+                <Flex justify="between">
+                    <Box>
+                        <Text weight="bold" mr="3">
+                            Total
+                        </Text>
+                        <Switch
+                            name="isPaidOnly"
+                            isRounded={true}
+                            label="Paid only"
+                            isOn={isPaidOnly}
+                            onChange={paidOnlyOnChangeHandler}
+                            size="small"
+                        />
+                    </Box>
                     <AmountTxt amount={totalAmount} />
-                </div>
-            </div>
+                </Flex>
+            </Card>
         );
     };
 
@@ -268,14 +275,16 @@ export const TransactionList: React.FC = () => {
 
     const renderScrollToTop = () => {
         return (
-            <Button
-                value="To Top"
-                onClickHandler={() => {
-                    document.body.scrollTop = 0; // For Safari
-                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-                }}
-                type="primary"
-            />
+            <Box my="3">
+                <Button
+                    value="To Top"
+                    onClickHandler={() => {
+                        document.body.scrollTop = 0; // For Safari
+                        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                    }}
+                    type="primary"
+                />
+            </Box>
         );
     };
 

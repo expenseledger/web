@@ -1,31 +1,49 @@
 import React from "react";
-import { combineClassName } from "../../common/utils";
+import { Select } from "@radix-ui/themes";
 
 interface DropdownProps {
     options: string[];
     updateSelectedValue: (value: string) => void;
     className?: string;
-    value: string;
+    variant?: DropdownVariant;
 }
 
+type DropdownVariant = "classic" | "surface" | "soft" | "ghost";
+
 const Dropdown: React.FC<DropdownProps> = (props) => {
-    const onChangeHandler = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        props.updateSelectedValue(e.target.value);
+    const [value, setValue] = React.useState(props.options[0]);
+    const onChangeHandler = (value: string) => {
+        props.updateSelectedValue(value);
+        setValue(value);
     };
 
-    const classNames = combineClassName("field", !!props.className ? props.className : "");
-
     const renderOptions = (options: string[]): JSX.Element[] =>
-        options.map((option, idx) => <option key={idx}>{option}</option>);
+        options.map((option, idx) => (
+            <Select.Item key={idx} value={option}>
+                {option}
+            </Select.Item>
+        ));
+
+    React.useEffect(() => {
+        const isExist = props.options.includes(value);
+
+        if (!isExist) {
+            setValue(props.options[0]);
+            props.updateSelectedValue(props.options[0]);
+        }
+    }, [props, value]);
 
     return (
-        <div className={classNames}>
-            <div className="control select">
-                <select onChange={onChangeHandler} value={props.value}>
-                    {renderOptions(props.options)}
-                </select>
-            </div>
-        </div>
+        <Select.Root
+            onValueChange={onChangeHandler}
+            defaultValue={props.options[0]}
+            size="3"
+            value={value}>
+            <Select.Trigger variant={props.variant ?? "surface"} />
+            <Select.Content className={props.className}>
+                {renderOptions(props.options)}
+            </Select.Content>
+        </Select.Root>
     );
 };
 

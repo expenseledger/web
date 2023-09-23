@@ -5,6 +5,7 @@ import { currencyState } from "../../common/shareState";
 import { formatNumber } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
+import { Table, Text } from "@radix-ui/themes";
 
 interface ReportTableData {
     category: string;
@@ -16,20 +17,21 @@ interface TableReportProps {
     isExpense: boolean;
 }
 
-const NoDataDiv = styled.div<{ isExpense: boolean }>`
+const NoDataDiv = styled.div<{ $isExpense: boolean }>`
     text-align: center;
-    color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+    color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     font-weight: 700;
     width: 100%;
 `;
-const StyledTable = styled.table<{ isExpense: boolean }>`
-    color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
-
+const StyledTableRoot = styled(Table.Root)<{ $isExpense: boolean }>`
     thead > tr > th {
-        color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     }
     tbody > tr > th {
-        color: ${(props) => (props.isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+    }
+    tbody > tr > td {
+        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     }
 `;
 
@@ -69,32 +71,34 @@ const TableReport: React.FC<TableReportProps> = (props) => {
     const getRows = (transactions: Transaction[], isExpense: boolean) =>
         getReportTableData(transactions, isExpense).map((t, index) =>
             index === 0 ? (
-                <tr key={t.category}>
-                    <th>{t.category}</th>
-                    <th>{formatNumber(t.amount)}</th>
-                </tr>
+                <Table.Row key={t.category}>
+                    <Table.RowHeaderCell>
+                        <Text weight="bold">{t.category}</Text>
+                    </Table.RowHeaderCell>
+                    <Table.RowHeaderCell>
+                        <Text weight="bold">{formatNumber(t.amount)}</Text>
+                    </Table.RowHeaderCell>
+                </Table.Row>
             ) : (
-                <tr key={t.category}>
-                    <td>{t.category}</td>
-                    <td>{formatNumber(t.amount)}</td>
-                </tr>
+                <Table.Row key={t.category}>
+                    <Table.Cell>{t.category}</Table.Cell>
+                    <Table.Cell>{formatNumber(t.amount)}</Table.Cell>
+                </Table.Row>
             )
         );
 
     return getRows(props.transations, props.isExpense).length == 0 ? (
-        <NoDataDiv isExpense={props.isExpense}>No data</NoDataDiv>
+        <NoDataDiv $isExpense={props.isExpense}>No data</NoDataDiv>
     ) : (
-        <>
-            <StyledTable isExpense={props.isExpense} className="table" width="100%">
-                <thead>
-                    <tr>
-                        <th>Category</th>
-                        <th>Amount({currency})</th>
-                    </tr>
-                </thead>
-                <tbody>{getRows(props.transations, props.isExpense)}</tbody>
-            </StyledTable>
-        </>
+        <StyledTableRoot $isExpense={props.isExpense} variant="surface">
+            <Table.Header>
+                <Table.Row>
+                    <Table.ColumnHeaderCell>Category</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell>Amount({currency})</Table.ColumnHeaderCell>
+                </Table.Row>
+            </Table.Header>
+            <Table.Body>{getRows(props.transations, props.isExpense)}</Table.Body>
+        </StyledTableRoot>
     );
 };
 

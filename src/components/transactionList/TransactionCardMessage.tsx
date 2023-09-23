@@ -12,6 +12,8 @@ import Dropdown from "../bases/Dropdown";
 import MessageBox from "../bases/MessageBox";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
+import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
+import { Box, Grid, Text } from "@radix-ui/themes";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -26,6 +28,7 @@ interface UpdateTransactionModalProps {
         description: string,
         occuredAt: Date
     ) => Promise<void>;
+    triggerer: React.ReactElement;
 }
 
 interface TransactionCardMessageProps {
@@ -54,8 +57,8 @@ const UpdateBox = styled.div`
     top: 30px;
 `;
 
-const Content = styled.div`
-    text-align: left;
+const InputBox = styled(Box)`
+    grid-column: 2 / span 2;
 `;
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
@@ -79,7 +82,6 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
     return (
         <Modal
             title="Update Transaction"
-            onCancelHandler={props.onCancel}
             onConfirmHandler={() =>
                 props.onConfirm(
                     toNumber(updatedAmountText),
@@ -91,91 +93,71 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
             cancelBtnTxt="Cancel"
             cancelBtnType="default"
             confirmBtnTxt="Confirm"
-            confirmBtnType="primary">
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Amount</span>
-                </div>
-                <TextBox
-                    addOn={{ position: "front", text: currency }}
-                    className="column"
-                    name="category-modify"
-                    updateValue={setUpdatedAmountText}
-                    type="number"
-                    value={updatedAmountText}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Category</span>
-                </div>
-                <Dropdown
-                    className="column"
-                    value={updateCategory.name}
-                    options={categoryOptions
-                        .filter((c) => c.type === props.transactionType || c.type === "ANY")
-                        .map((c) => c.name)}
-                    updateSelectedValue={updateCategoryHandler}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Description</span>
-                </div>
-                <TextBox
-                    className="column"
-                    name="description-modify"
-                    updateValue={setUpdatedDescription}
-                    value={updatedDescription}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Date</span>
-                </div>
-                <DateBox
-                    className="column"
-                    name="date"
-                    updateValue={setUpdatedOccuredAt}
-                    value={updatedOccuredAt}
-                />
-            </div>
+            confirmBtnType="primary"
+            triggerer={props.triggerer}>
+            <Grid columns="3" gap="3" align="center">
+                <Box>
+                    <Text>Amount</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        addOn={{ position: "front", text: currency }}
+                        className="column"
+                        name="category-modify"
+                        updateValue={setUpdatedAmountText}
+                        type="number"
+                        value={updatedAmountText}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Category</Text>
+                </Box>
+                <InputBox>
+                    <Dropdown
+                        className="column"
+                        options={categoryOptions
+                            .filter((c) => c.type === props.transactionType || c.type === "ANY")
+                            .map((c) => c.name)}
+                        updateSelectedValue={updateCategoryHandler}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Description</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        className="column"
+                        name="description-modify"
+                        updateValue={setUpdatedDescription}
+                        value={updatedDescription}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Date</Text>
+                </Box>
+                <InputBox>
+                    <DateBox
+                        className="column"
+                        name="date"
+                        updateValue={setUpdatedOccuredAt}
+                        value={updatedOccuredAt}
+                    />
+                </InputBox>
+            </Grid>
         </Modal>
     );
 };
 
 const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (props) => {
-    const [isClickedDelete, setIsClickedDelete] = React.useState(false);
-    const [isClickedUpdate, setIsClickedUpdate] = React.useState(false);
-    const [isLoading, setIsLoading] = React.useState(false);
-
-    const onDeleteHandler = () => {
-        setIsClickedDelete(true);
-    };
-    const onUpdateHandler = () => {
-        setIsClickedUpdate(true);
-    };
-    const onCancelDeleteHandler = () => {
-        if (isLoading) return;
-
-        setIsClickedDelete(false);
-    };
     const onCancelUpdateHandler = () => {
-        if (isLoading) return;
-
-        setIsClickedUpdate(false);
+        return;
     };
     const onConfirmDeleteHandler = async () => {
         if (!props.onDelete) {
             return;
         }
 
-        setIsLoading(true);
-
         await props.onDelete();
-
-        setIsLoading(false);
-        setIsClickedDelete(false);
     };
     const onConfirmUpdateHandler = async (
         amount: number,
@@ -187,40 +169,31 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
             return;
         }
 
-        setIsLoading(true);
-
         await props.onUpdate(amount, categoryId, description, occuredAt);
-
-        setIsLoading(false);
-        setIsClickedUpdate(false);
     };
     const renderDelete = () => {
-        if (isClickedDelete) {
-            return (
+        return (
+            <DeleteBox>
                 <Modal
                     title="Delete Transaction"
-                    onCancelHandler={onCancelDeleteHandler}
                     onConfirmHandler={onConfirmDeleteHandler}
                     cancelBtnTxt="Cancel"
                     cancelBtnType="default"
                     confirmBtnTxt="Delete"
-                    confirmBtnType="danger">
-                    <div className="has-text-black">Are you sure?</div>
+                    confirmBtnType="danger"
+                    triggerer={
+                        <Text color="red">
+                            <Cross2Icon />
+                        </Text>
+                    }>
+                    <Text>Are you sure?</Text>
                 </Modal>
-            );
-        }
-
-        return (
-            <DeleteBox onClick={onDeleteHandler}>
-                <span className="icon">
-                    <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
-                </span>
             </DeleteBox>
         );
     };
     const renderUpdate = () => {
-        if (isClickedUpdate) {
-            return (
+        return (
+            <UpdateBox>
                 <UpdateTransactionModal
                     amount={props.amount}
                     category={props.category}
@@ -229,15 +202,12 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     transactionType={props.type}
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
+                    triggerer={
+                        <Text color="blue">
+                            <Pencil1Icon />
+                        </Text>
+                    }
                 />
-            );
-        }
-
-        return (
-            <UpdateBox onClick={onUpdateHandler}>
-                <span className="icon">
-                    <i className="fas fa-lg fa-edit has-text-link" aria-hidden="true"></i>
-                </span>
             </UpdateBox>
         );
     };
@@ -246,28 +216,34 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
         <MessageBox type={props.amount < 0 ? "dark" : "success"}>
             {renderDelete()}
             {renderUpdate()}
-            <Content className="columns is-mobile is-gapless is-multiline">
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Type:</span>
-                </div>
-                <div className="column is-half">{props.type}</div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Amount:</span>
-                </div>
-                <div className="column is-half">
+            <Grid columns="2" justify="between">
+                <Box>
+                    <Text weight="bold">Type:</Text>
+                </Box>
+                <Box>
+                    <Text>{props.type}</Text>
+                </Box>
+                <Box>
+                    <Text weight="bold">Amount:</Text>
+                </Box>
+                <Box>
                     <AmountTxt amount={props.amount} />
-                </div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Category:</span>
-                </div>
-                <div className="column is-half">{props.category?.name ?? "-"}</div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Description:</span>
-                </div>
-                <div className="column is-half">
-                    {!props.description || props.description === "" ? "-" : props.description}
-                </div>
-            </Content>
+                </Box>
+                <Box>
+                    <Text weight="bold">Category:</Text>
+                </Box>
+                <Box>
+                    <Text>{props.category?.name ?? "-"}</Text>
+                </Box>
+                <Box>
+                    <Text weight="bold">Description:</Text>
+                </Box>
+                <Box>
+                    <Text>
+                        {!props.description || props.description === "" ? "-" : props.description}
+                    </Text>
+                </Box>
+            </Grid>
         </MessageBox>
     );
 };

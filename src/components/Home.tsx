@@ -16,6 +16,8 @@ import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
+import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 
 interface CurrentValue {
     accountIdx: number;
@@ -25,11 +27,11 @@ interface CurrentValue {
     description: string;
 }
 
-const Icon = styled.span`
-    vertical-align: middle;
-`;
 const LinkText = styled.span`
     vertical-align: middle;
+`;
+const InputBox = styled(Box)`
+    grid-column: 2 / span 2;
 `;
 
 const Home: React.FC = () => {
@@ -171,93 +173,98 @@ const Home: React.FC = () => {
 
     return (
         <>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-12">{renderAccountCards()}</div>
-            </div>
-
-            <div className="columns is-mobile is-vcentered">
-                <div className="column">
+            <Box width="100%">{renderAccountCards()}</Box>
+            <Flex gap="4" my="4">
+                <Text weight="bold" color="blue">
                     <Link
-                        className="has-text-weight-bold"
                         to={{
                             pathname: `account/${
                                 accounts[currentValue.accountIdx]?.id ?? 0
                             }/transactionList`,
                         }}>
-                        <Icon className="icon">
-                            <i className="fas fa-list-ul" aria-hidden="true"></i>
-                        </Icon>
-                        <LinkText>Transactions</LinkText>
+                        <Flex align="center" gap="1">
+                            <ListBulletIcon />
+                            <LinkText>Transactions</LinkText>
+                        </Flex>
                     </Link>
+                </Text>
+                <Text weight="bold" color="blue">
                     <Link
-                        className="has-text-weight-bold ml-5"
                         to="/report"
                         state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>
-                        <Icon className="icon">
-                            <i className="fas fa-file" aria-hidden="true"></i>
-                        </Icon>
-                        <LinkText>Report</LinkText>
+                        <Flex align="center" gap="1">
+                            <FileIcon />
+                            <LinkText>Report</LinkText>
+                        </Flex>
                     </Link>
-                </div>
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Amount</span>
-                <TextBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen amount__box"
-                    updateValue={updateExpense}
-                    name="expense"
-                    type="number"
-                    value={currentValue.amount}
-                    addOn={{ text: currency, position: "front" }}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Date</span>
-                <DateBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen"
-                    name="date"
-                    updateValue={updateSelectedDate}
-                    value={currentValue.date}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Category</span>
-                <Dropdown
-                    className="column is-4-desktop is-4-tablet is-2-widescreen category__dropdown"
-                    options={categories
-                        .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
-                        .map((c) => c.name)}
-                    updateSelectedValue={updateSelectedCategory}
-                    value={categories[currentValue.categoryIdx].name}
-                />
-            </div>
-            <div className="description columns is-mobile is-vcentered">
-                <span className="column is-4 has-text-weight-bold">Description</span>
-                <TextBox
-                    className="column is-4-desktop is-4-tablet is-2-widescreen description__box"
-                    name="description"
-                    updateValue={updateDescription}
-                    value={currentValue.description}
-                    placeholder="Optional"
-                />
-            </div>
-            <div className="columns is-mobile">
-                <div className="column is-narrow">
-                    <Button
-                        className={`content__button--add ${isLoading ? "is-loading" : ""}`}
-                        onClickHandler={addTransaction}
-                        value="Add"
-                        type="primary"
+                </Text>
+            </Flex>
+            <Grid columns="3" gap="4" align="center">
+                <Box>
+                    <Text weight="bold">Amount</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        updateValue={updateExpense}
+                        name="expense"
+                        type="number"
+                        value={currentValue.amount}
+                        addOn={{ text: currency, position: "front" }}
                     />
-                </div>
-                <div className="column">
-                    <Button
-                        className="content__button--more is-dark is-narrow"
-                        onClickHandler={toMorePage}
-                        value="More"
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Date</Text>
+                </Box>
+                <InputBox>
+                    <DateBox
+                        name="date"
+                        updateValue={updateSelectedDate}
+                        value={currentValue.date}
                     />
-                </div>
-            </div>
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Category</Text>
+                </Box>
+                <InputBox>
+                    <Dropdown
+                        options={categories
+                            .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
+                            .map((c) => c.name)}
+                        updateSelectedValue={updateSelectedCategory}
+                    />
+                </InputBox>
+                <Box>
+                    <Text weight="bold">Description</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        name="description"
+                        updateValue={updateDescription}
+                        value={currentValue.description}
+                        placeholder="Optional"
+                    />
+                </InputBox>
+                <Flex mt="2">
+                    <Box>
+                        <Button
+                            className="content__button--add"
+                            onClickHandler={addTransaction}
+                            value="Add"
+                            type="primary"
+                            isLoading={isLoading}
+                        />
+                    </Box>
+                    <Box ml="4">
+                        <Button
+                            className="content__button--more"
+                            onClickHandler={toMorePage}
+                            value="More"
+                            type="primary"
+                            variant="soft"
+                        />
+                    </Box>
+                </Flex>
+            </Grid>
         </>
     );
 };

@@ -1,6 +1,7 @@
 import React from "react";
-import styled from "styled-components";
 import Button from "./Button";
+import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
+import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
 
 export interface Item {
     id: number;
@@ -9,20 +10,19 @@ export interface Item {
 
 export interface EditAndDelteSettingProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
+    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     items: Item[];
 }
 
 interface ItemBoxProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, onCancel: () => void) => React.ReactElement;
+    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     item: Item;
 }
 
 const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const [isLoading, setIsLoading] = React.useState(false);
     const [isClickedDelete, setIsClickedDelete] = React.useState(false);
-    const [isModifyClick, setIsModifyClick] = React.useState(false);
     const onDeleteHandler = () => {
         setIsClickedDelete(true);
     };
@@ -41,85 +41,75 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         setIsLoading(false);
         setIsClickedDelete(false);
     };
-    const onModifyClick = () => {
-        setIsModifyClick(true);
-    };
-    const onModifyCancel = () => {
-        setIsModifyClick(false);
-    };
     const renderButtonGroup = () => {
         if (isClickedDelete) {
             return (
-                <div className="columns is-mobile is-variable is-1">
-                    <div className="column">
-                        <Button
-                            onClickHandler={onCancelHandler}
-                            size="small"
-                            outlined
-                            type="primary"
-                            value="Cancel"
-                        />
-                    </div>
-                    <div className="column">
-                        <Button
-                            className={`${isLoading ? "is-loading" : ""}`}
-                            onClickHandler={onConfirmHandler}
-                            size="small"
-                            type="danger"
-                            value="Confirm"
-                        />
-                    </div>
-                </div>
+                <Flex gap="1">
+                    <Button
+                        onClickHandler={onConfirmHandler}
+                        size="small"
+                        type="danger"
+                        value="Confirm"
+                        isLoading={isLoading}
+                    />
+                    <Button
+                        onClickHandler={onCancelHandler}
+                        size="small"
+                        value="Cancel"
+                        variant="soft"
+                    />
+                </Flex>
             );
         }
 
         return (
-            <div>
-                <a className="mr-1" onClick={onModifyClick}>
-                    <span className="icon">
-                        <i className="fas fa-lg fa-edit" aria-hidden="true"></i>
-                    </span>
-                </a>
-                <a onClick={onDeleteHandler}>
-                    <span className="icon">
-                        <i className="fas fa-lg fa-times has-text-danger" aria-hidden="true"></i>
-                    </span>
-                </a>
-            </div>
+            <Box>
+                <Text mr="1" color="blue">
+                    {props.modifyModal(
+                        props.item.id,
+                        <Text mr="1" color="blue">
+                            <Pencil1Icon />
+                        </Text>
+                    )}
+                </Text>
+                <Text color="red">
+                    <Cross2Icon onClick={onDeleteHandler} />
+                </Text>
+            </Box>
         );
     };
 
     return (
         <>
-            {isModifyClick ? props.modifyModal(props.item.id, onModifyCancel) : null}
-            <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
-                <span>{props.item.name}</span>
+            <Flex width="100%" justify="between">
+                <Text>{props.item.name}</Text>
                 {renderButtonGroup()}
-            </div>
+            </Flex>
         </>
     );
 };
 
-const ItemContainer = styled.nav`
-    overflow-y: scroll;
-    max-height: 80vh;
-    background-color: white;
-`;
-
 const EditAndDeleteSetting: React.FC<EditAndDelteSettingProps> = (props) => {
     return (
-        <div className="column is-full">
-            <ItemContainer className="panel">
-                {props.items.map((i) => (
-                    <ItemBox
-                        deleteFuncHandler={props.deleteFuncHandler}
-                        key={i.id}
-                        item={i}
-                        modifyModal={props.modifyModal}
-                    />
+        <Card>
+            <ScrollArea scrollbars="vertical" style={{ maxHeight: "70vh" }}>
+                {props.items.map((i, idx) => (
+                    <React.Fragment key={idx}>
+                        <ItemBox
+                            deleteFuncHandler={props.deleteFuncHandler}
+                            key={i.id}
+                            item={i}
+                            modifyModal={props.modifyModal}
+                        />
+                        {idx == props.items.length - 1 ? null : (
+                            <Box py="3">
+                                <Separator size="4" />
+                            </Box>
+                        )}
+                    </React.Fragment>
                 ))}
-            </ItemContainer>
-        </div>
+            </ScrollArea>
+        </Card>
     );
 };
 

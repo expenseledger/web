@@ -2,6 +2,7 @@ import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
+import { Card, Flex, Separator, Text } from "@radix-ui/themes";
 
 const Block = styled.div<{ isFirst: boolean }>`
     border-radius: ${(props) => (props.isFirst ? "6px 6px 0 0" : "0 0 6px 6px")};
@@ -40,34 +41,29 @@ const PageSetting: React.FC = () => {
     };
 
     return (
-        <div className="panel">
-            <Block className="panel-block is-justify-content-space-between" isFirst={true}>
-                <span>Move menu to the right</span>
-                <SwtichContainer>
-                    <Switch
-                        name="moveMenuToRightSide"
-                        isOn={pageSetting.isMenuOnRightSide}
-                        size="small"
-                        isRounded
-                        isOutlined
-                        onChange={onMoveMenuToRightSideChangeHandler}
-                    />
-                </SwtichContainer>
-            </Block>
-            <Block className="panel-block is-justify-content-space-between" isFirst={false}>
-                <span>Change menu to light color</span>
-                <SwtichContainer>
-                    <Switch
-                        name="changeMenuColor"
-                        isOn={pageSetting.isLightMenu}
-                        size="small"
-                        isRounded
-                        isOutlined
-                        onChange={onMenuColorChangeHandler}
-                    />
-                </SwtichContainer>
-            </Block>
-        </div>
+        <Card>
+            <Flex justify="between" align="center" mb="3">
+                <Text>Move menu to the right</Text>
+                <Switch
+                    name="moveMenuToRightSide"
+                    isOn={pageSetting.isMenuOnRightSide}
+                    size="small"
+                    isRounded
+                    onChange={onMoveMenuToRightSideChangeHandler}
+                />
+            </Flex>
+            <Separator size="4" />
+            <Flex justify="between" align="center" mt="3">
+                <Text>Change menu to light color</Text>
+                <Switch
+                    name="changeMenuColor"
+                    isOn={pageSetting.isLightMenu}
+                    size="small"
+                    isRounded
+                    onChange={onMenuColorChangeHandler}
+                />
+            </Flex>
+        </Card>
     );
 };
 

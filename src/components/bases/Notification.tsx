@@ -1,5 +1,7 @@
 import React from "react";
 import { combineClassName } from "../../common/utils";
+import { Box, Flex, Text } from "@radix-ui/themes";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 export interface NotificationProps {
     id: string;
@@ -13,20 +15,19 @@ export interface NotificationPropsWithOnclose extends NotificationProps {
     onClose?: (id: string) => Promise<void> | void;
 }
 
-function mapTypeToClassname(type: NotificationType): string {
+function mapColor(type: NotificationType): string {
     switch (type) {
         case "primary":
-            return "is-primary";
+            return "var(--indigo-9)";
         case "danger":
-            return "is-danger";
+            return "var(--red-9)";
         case "info":
-            return "is-info";
         case "link":
-            return "is-link";
+            return "var(--sky-9)";
         case "success":
-            return "is-success";
+            return "var(--grass-9)";
         case "warning":
-            return "is-warning";
+            return "var(--yellow-9)";
         case "none":
             return null;
     }
@@ -36,13 +37,11 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     const showNotificationClassName = combineClassName(
         "notification",
         "notification--show",
-        mapTypeToClassname(props.type),
         props.showClassName
     );
     const hideNotificationClassName = combineClassName(
         "notification",
         "notification--hide",
-        mapTypeToClassname(props.type),
         props.hideClassName
     );
     const [className, SetClassName] = React.useState(showNotificationClassName);
@@ -60,10 +59,18 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     }, [hideNotificationClassName, props]);
 
     return (
-        <div className={className}>
-            <button onClick={onCloseHandler} className="delete"></button>
-            {props.text}
-        </div>
+        <Flex
+            className={className}
+            mb="3"
+            p="3"
+            align="center"
+            gap="3"
+            style={{ backgroundColor: mapColor(props.type), borderRadius: "4px" }}>
+            <Text style={{ color: "white", marginTop: "4px" }}>
+                <Cross2Icon onClick={onCloseHandler} />
+            </Text>
+            <Text style={{ color: "white" }}>{props.text}</Text>
+        </Flex>
     );
 };
 

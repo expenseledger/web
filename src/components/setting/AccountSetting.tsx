@@ -1,7 +1,6 @@
 import * as R from "ramda";
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
-import styled from "styled-components";
 import { accountsState, categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
@@ -11,7 +10,6 @@ import { AccountType, Currency } from "../../service/constants";
 import {
     allAccountTypesString,
     allCurrencies,
-    mapAccountTypeToString,
     mapStringToAccountType,
 } from "../../service/helper/accountHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
@@ -21,15 +19,12 @@ import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
+import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 
 interface ModifyModalProps {
     id: number;
-    onCancel: () => void;
+    triggerer: React.ReactElement;
 }
-
-const CurrencyPanel = styled.nav`
-    background-color: white;
-`;
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const [categories] = useRecoilState(categoriesState);
@@ -124,8 +119,6 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         } else {
             addNotification("Update account success", "success");
         }
-
-        props.onCancel();
     };
     const accountNameHandler = (value: string) => {
         setName(value);
@@ -147,54 +140,55 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     return (
         <Modal
             title="Update Account"
-            onCancelHandler={props.onCancel}
             onConfirmHandler={modifyAccount}
             cancelBtnTxt="Cancel"
             cancelBtnType="default"
             confirmBtnTxt="Confirm"
-            confirmBtnType="primary">
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Name</span>
-                </div>
-                <TextBox
-                    className="column"
-                    name="category-modify"
-                    updateValue={accountNameHandler}
-                    value={name}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Type</span>
-                </div>
-                <Dropdown
-                    className="column"
-                    value={mapAccountTypeToString(type)}
-                    options={allAccountTypesString}
-                    updateSelectedValue={accountTypeHandler}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered">
-                <div className="column is-3">
-                    <span>Balance</span>
-                </div>
-                <TextBox
-                    addOn={{ position: "front", text: currency }}
-                    className="column"
-                    name="category-modify"
-                    updateValue={accountBalanceHandler}
-                    type="number"
-                    value={balanceText}
-                />
-            </div>
+            confirmBtnType="primary"
+            triggerer={props.triggerer}>
+            <Grid columns="2" gap="3" my="3">
+                <Box>
+                    <Text>Name</Text>
+                </Box>
+                <Box>
+                    <TextBox
+                        className="column"
+                        name="category-modify"
+                        updateValue={accountNameHandler}
+                        value={name}
+                    />
+                </Box>
+                <Box>
+                    <Text>Type</Text>
+                </Box>
+                <Box>
+                    <Dropdown
+                        className="column"
+                        options={allAccountTypesString}
+                        updateSelectedValue={accountTypeHandler}
+                    />
+                </Box>
+                <Box>
+                    <Text>Balance</Text>
+                </Box>
+                <Box>
+                    <TextBox
+                        addOn={{ position: "front", text: currency }}
+                        className="column"
+                        name="category-modify"
+                        updateValue={accountBalanceHandler}
+                        type="number"
+                        value={balanceText}
+                    />
+                </Box>
+            </Grid>
         </Modal>
     );
 };
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [currency, setCurrency] = useRecoilState(currencyState);
+    const [_, setCurrency] = useRecoilState(currencyState);
     const { addNotification } = useNotification();
     const currencyHandler = (currency: string) => {
         setCurrency(currency as Currency);
@@ -236,28 +230,26 @@ const AccountSetting: React.FC = () => {
         addNotification("Delete account success", "success");
     };
     const renderCurrencySelectionPanel = (
-        <div className="column is-full mb-3">
-            <CurrencyPanel className="panel">
-                <div className="panel-block is-active is-primary is-flex-direction-row is-justify-content-space-between">
-                    <span>Currency</span>
-                    <Dropdown
-                        options={allCurrencies}
-                        updateSelectedValue={currencyHandler}
-                        value={currency}
-                    />
-                </div>
-            </CurrencyPanel>
-        </div>
+        <Card>
+            <Flex align="center" justify="between">
+                <Text>Currency</Text>
+                <Dropdown
+                    options={allCurrencies}
+                    updateSelectedValue={currencyHandler}
+                    variant="ghost"
+                />
+            </Flex>
+        </Card>
     );
 
     return (
-        <div className="columns is-mobile is-centered is-multiline mb-3">
+        <Flex direction="column" gap="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                modifyModal={(id, onCancel) => <ModifyModal id={id} onCancel={onCancel} />}
+                modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
             />
             {renderCurrencySelectionPanel}
             <TextBoxWithButton
@@ -268,7 +260,7 @@ const AccountSetting: React.FC = () => {
                 onClick={createAccountHandler}
                 dropdown={allAccountTypesString}
             />
-        </div>
+        </Flex>
     );
 };
 

@@ -1,6 +1,3 @@
-@import "../node_modules/bulma/bulma.sass";
-@import './node_modules/bulma-switch/src/sass/index.sass';
-
 $line-seed-font-path: "./assets/fonts/line_seed";
 
 @font-face {
@@ -24,23 +21,31 @@ $line-seed-font-path: "./assets/fonts/line_seed";
     font-weight: 800;
 }
 
-// html {
-//     background-color: #d9e4f5;
-//     background-image: linear-gradient(315deg, #d9e4f5 0%, #f5e3e6 74%);
-// }
+.radix-themes {
+    --default-font-family: "LineSeedSans", sans-serif;
 
-html,
-body {
-    background-color: #fafafa;
-    // overflow-x: hidden;
-    // height: 100%;
+    .header {
+        background-color: #fafafa;
+    }
+
+    .mainContainer {
+        background-color: #fafafa;
+    }
 }
 
-body,
-button,
-input,
-optgroup,
-select,
-textarea {
-    font-family: "LineSeedSans", sans-serif;
+html {
+    background-color: #fafafa;
+
+    .signIn {
+        background-color: #fafafa;
+    }
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }

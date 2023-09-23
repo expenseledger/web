@@ -2,6 +2,7 @@ import React from "react";
 import { useRecoilValue } from "recoil";
 import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
+import { DotsVerticalIcon } from "@radix-ui/react-icons";
 
 interface StyledProps {
     $isMenuOnRightSide: boolean;
@@ -82,8 +83,10 @@ const Draw = styled.div<DrawStyledProps>`
     z-index: 10;
     right: ${(props) => (props.$isMenuOnRightSide ? "0" : "initial")};
 `;
-const Icon = styled.span`
+const Icon = styled(DotsVerticalIcon)`
     margin-top: 38px;
+    width: 24px;
+    height: 24px;
 `;
 
 interface OwnProps {
@@ -103,7 +106,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         const target = event.target as HTMLElement;
         const shouldPrevent =
             props.preventCloseIdOrClassList?.some(
-                (x) => x === target.id || x === target.className
+                (x) => x === target.id || target.className.includes(x)
             ) ?? false;
 
         if (shouldPrevent) {
@@ -123,9 +126,7 @@ const Drawer: React.FC<DrawerProps> = (props) => {
                 onClick={btnClickHandler}
                 $isMenuOnRightSide={isMenuOnRightSide}
                 $isLightMenu={isLightMenu}>
-                <Icon className="icon">
-                    <i className="fas fa-ellipsis-vertical"></i>
-                </Icon>
+                <Icon />
             </Draw>
             {isShowPanel ? (
                 <Background

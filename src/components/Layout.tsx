@@ -11,6 +11,7 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
 import Menu from "./menu/Menu";
+import { Box, Container, Heading } from "@radix-ui/themes";
 
 const Header = styled.div`
     margin-top: 12px;
@@ -19,10 +20,6 @@ const Header = styled.div`
 `;
 const Title = styled.div`
     text-align: center;
-`;
-const TitleText = styled.span`
-    font-weight: 800;
-    cursor: pointer;
 `;
 
 const Layout: React.FC = () => {
@@ -55,7 +52,7 @@ const Layout: React.FC = () => {
         <Loading />
     ) : (
         <>
-            <Header>
+            <Header className="header">
                 <Menu
                     accounts={accounts}
                     totalAccountBalance={totalAccountsBalance}
@@ -64,15 +61,23 @@ const Layout: React.FC = () => {
                 />
                 <Title className="py-2">
                     <Link to="/">
-                        <TitleText className="is-size-2 has-text-link">Expense Ledger</TitleText>
+                        <Box p="4">
+                            <Heading
+                                size="8"
+                                color="blue"
+                                align="center"
+                                style={{ fontWeight: 800 }}>
+                                Expense Ledger
+                            </Heading>
+                        </Box>
                     </Link>
                 </Title>
             </Header>
-            <div className="container is-mobile is-fluid mt-4">
+            <Container size="2" pt="3" px="6" className="mainContainer">
                 <React.Suspense fallback={<Loading />}>
                     <Outlet />
                 </React.Suspense>
-            </div>
+            </Container>
             <Toast position="top-right" />
         </>
     );

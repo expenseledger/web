@@ -57,8 +57,8 @@ const UpdateBox = styled.div`
     top: 30px;
 `;
 
-const Content = styled.div`
-    text-align: left;
+const InputBox = styled(Box)`
+    grid-column: 2 / span 2;
 `;
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
@@ -95,53 +95,55 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
             confirmBtnTxt="Confirm"
             confirmBtnType="primary"
             triggerer={props.triggerer}>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Amount</span>
-                </div>
-                <TextBox
-                    addOn={{ position: "front", text: currency }}
-                    className="column"
-                    name="category-modify"
-                    updateValue={setUpdatedAmountText}
-                    type="number"
-                    value={updatedAmountText}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Category</span>
-                </div>
-                <Dropdown
-                    className="column"
-                    options={categoryOptions
-                        .filter((c) => c.type === props.transactionType || c.type === "ANY")
-                        .map((c) => c.name)}
-                    updateSelectedValue={updateCategoryHandler}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Description</span>
-                </div>
-                <TextBox
-                    className="column"
-                    name="description-modify"
-                    updateValue={setUpdatedDescription}
-                    value={updatedDescription}
-                />
-            </div>
-            <div className="columns is-mobile is-vcentered has-text-left">
-                <div className="column is-4">
-                    <span>Date</span>
-                </div>
-                <DateBox
-                    className="column"
-                    name="date"
-                    updateValue={setUpdatedOccuredAt}
-                    value={updatedOccuredAt}
-                />
-            </div>
+            <Grid columns="3" gap="3" align="center">
+                <Box>
+                    <Text>Amount</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        addOn={{ position: "front", text: currency }}
+                        className="column"
+                        name="category-modify"
+                        updateValue={setUpdatedAmountText}
+                        type="number"
+                        value={updatedAmountText}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Category</Text>
+                </Box>
+                <InputBox>
+                    <Dropdown
+                        className="column"
+                        options={categoryOptions
+                            .filter((c) => c.type === props.transactionType || c.type === "ANY")
+                            .map((c) => c.name)}
+                        updateSelectedValue={updateCategoryHandler}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Description</Text>
+                </Box>
+                <InputBox>
+                    <TextBox
+                        className="column"
+                        name="description-modify"
+                        updateValue={setUpdatedDescription}
+                        value={updatedDescription}
+                    />
+                </InputBox>
+                <Box>
+                    <Text>Date</Text>
+                </Box>
+                <InputBox>
+                    <DateBox
+                        className="column"
+                        name="date"
+                        updateValue={setUpdatedOccuredAt}
+                        value={updatedOccuredAt}
+                    />
+                </InputBox>
+            </Grid>
         </Modal>
     );
 };

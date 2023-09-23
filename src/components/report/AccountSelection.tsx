@@ -60,7 +60,7 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
     return (
         <>
             <Flex justify="center" pb="3">
-                <Text weight="bold" size="5">
+                <Text weight="bold" size="4">
                     Accounts
                 </Text>
             </Flex>

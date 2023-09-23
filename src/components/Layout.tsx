@@ -62,7 +62,11 @@ const Layout: React.FC = () => {
                 <Title className="py-2">
                     <Link to="/">
                         <Box p="4">
-                            <Heading size="8" color="blue" align="center">
+                            <Heading
+                                size="8"
+                                color="blue"
+                                align="center"
+                                style={{ fontWeight: 800 }}>
                                 Expense Ledger
                             </Heading>
                         </Box>

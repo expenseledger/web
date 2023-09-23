@@ -44,26 +44,21 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
     const renderButtonGroup = () => {
         if (isClickedDelete) {
             return (
-                <div className="columns is-mobile is-variable is-1">
-                    <div className="column">
-                        <Button
-                            onClickHandler={onCancelHandler}
-                            size="small"
-                            type="primary"
-                            value="Cancel"
-                            variant="outline"
-                        />
-                    </div>
-                    <div className="column">
-                        <Button
-                            className={`${isLoading ? "is-loading" : ""}`}
-                            onClickHandler={onConfirmHandler}
-                            size="small"
-                            type="danger"
-                            value="Confirm"
-                        />
-                    </div>
-                </div>
+                <Flex gap="1">
+                    <Button
+                        className={`${isLoading ? "is-loading" : ""}`}
+                        onClickHandler={onConfirmHandler}
+                        size="small"
+                        type="danger"
+                        value="Confirm"
+                    />
+                    <Button
+                        onClickHandler={onCancelHandler}
+                        size="small"
+                        value="Cancel"
+                        variant="soft"
+                    />
+                </Flex>
             );
         }
 

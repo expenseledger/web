@@ -41,30 +41,10 @@ const Modal: React.FC<ModalProps> = (props) => {
                         value={props.cancelBtnTxt}
                         onClickHandler={() => setIsOpen(false)}
                         type={props.cancelBtnType}
+                        variant="soft"
                     />
                 </Flex>
             </Dialog.Content>
-            {/* <div className="modal-background" onClick={props.onCancelHandler}></div>
-            <div className="modal-card">
-                <header className="modal-card-head">
-                    <p className="modal-card-title">{props.title}</p>
-                    <button className="delete" onClick={props.onCancelHandler}></button>
-                </header>
-                <section className="modal-card-body">{props.children}</section>
-                <footer className="modal-card-foot">
-                    <Button
-                        className={`${isLoading ? "is-loading" : ""}`}
-                        value={props.confirmBtnTxt}
-                        onClickHandler={onConfirmHandler}
-                        type={props.confirmBtnType}
-                    />
-                    <Button
-                        value={props.cancelBtnTxt}
-                        onClickHandler={props.onCancelHandler}
-                        type={props.cancelBtnType}
-                    />
-                </footer>
-            </div> */}
         </Dialog.Root>
     );
 };

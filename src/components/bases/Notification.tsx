@@ -52,14 +52,14 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     };
 
     React.useEffect(() => {
-        setTimeout(() => {
-            SetClassName(hideNotificationClassName);
-            setTimeout(() => props.onClose && props.onClose(props.id), 1000);
-        }, 3000);
+        // setTimeout(() => {
+        //     SetClassName(hideNotificationClassName);
+        //     setTimeout(() => props.onClose && props.onClose(props.id), 1000);
+        // }, 3000);
     }, [hideNotificationClassName, props]);
 
     return (
-        <Callout.Root className={className} color={mapColor(props.type)} variant="outline">
+        <Callout.Root className={className} color={mapColor(props.type)}>
             <Callout.Icon>
                 <Cross2Icon onClick={onCloseHandler} />
             </Callout.Icon>

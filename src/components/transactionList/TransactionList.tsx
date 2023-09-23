@@ -270,7 +270,7 @@ export const TransactionList: React.FC = () => {
 
     const renderScrollToTop = () => {
         return (
-            <Box mt="3">
+            <Box my="3">
                 <Button
                     value="To Top"
                     onClickHandler={() => {

@@ -45,9 +45,9 @@ const Button: React.FC<ButtonProps> = (props) => {
             case "danger":
                 return "red";
             case "primary":
-                return "grass";
-            default:
                 return "indigo";
+            default:
+                return "gray";
         }
     };
 

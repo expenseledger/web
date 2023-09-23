@@ -6449,20 +6449,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bulma-switch@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "bulma-switch@npm:2.0.4"
-  checksum: e694fb98c5d9431f11282f1c268b79946e31f28cb088315283c81797422653a5c054d075205149352997daa8c0282d94fd2aed3dc1a49cea7cece28374deba18
-  languageName: node
-  linkType: hard
-
-"bulma@npm:^0.9.4":
-  version: 0.9.4
-  resolution: "bulma@npm:0.9.4"
-  checksum: bc0ab8c203deb0ae200fab5b38547ad4bc8ed1e3abcf6f4ac8a2229af46540419bbcb78c9d2e80f3ddda8825d64fa186ed8775674656cdcabe5544be4d0f3d85
-  languageName: node
-  linkType: hard
-
 "bundle-name@npm:^3.0.0":
   version: 3.0.0
   resolution: "bundle-name@npm:3.0.0"
@@ -8330,8 +8316,6 @@ __metadata:
     "@typescript-eslint/parser": ^5.42.0
     "@vitejs/plugin-react": ^3.1.0
     babel-jest: ^29.6.4
-    bulma: ^0.9.4
-    bulma-switch: ^2.0.4
     dayjs: ^1.11.9
     eslint: ^8.48.0
     eslint-config-prettier: ^9.0.0

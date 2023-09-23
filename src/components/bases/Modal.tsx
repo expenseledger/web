@@ -32,10 +32,10 @@ const Modal: React.FC<ModalProps> = (props) => {
                 <Flex>{props.children}</Flex>
                 <Flex mt="3" gap="2" justify="end">
                     <Button
-                        className={`${isLoading ? "is-loading" : ""}`}
                         value={props.confirmBtnTxt}
                         onClickHandler={onConfirmHandler}
                         type={props.confirmBtnType}
+                        isLoading={isLoading}
                     />
                     <Button
                         value={props.cancelBtnTxt}

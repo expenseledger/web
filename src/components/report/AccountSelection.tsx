@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import styled from "styled-components";
 import Account from "../../service/model/Account";
 import { Text, Checkbox, Flex, Box, Grid } from "@radix-ui/themes";
@@ -12,10 +11,6 @@ interface AccountSelectionProps {
     accounts: SelectableAccount[];
     onChangeHanlder: (accounts: SelectableAccount[]) => void;
 }
-
-const AccountsText = styled.div`
-    text-align: center;
-`;
 
 const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
     const onChangeHandler = (accountId: number, checked: boolean) => {
@@ -64,7 +59,11 @@ const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
 
     return (
         <>
-            <AccountsText className="title is-5">Accounts</AccountsText>
+            <Flex justify="center" pb="3">
+                <Text weight="bold" size="5">
+                    Accounts
+                </Text>
+            </Flex>
             <div>{renderCheckbox()}</div>
         </>
     );

@@ -46,11 +46,11 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
             return (
                 <Flex gap="1">
                     <Button
-                        className={`${isLoading ? "is-loading" : ""}`}
                         onClickHandler={onConfirmHandler}
                         size="small"
                         type="danger"
                         value="Confirm"
+                        isLoading={isLoading}
                     />
                     <Button
                         onClickHandler={onCancelHandler}

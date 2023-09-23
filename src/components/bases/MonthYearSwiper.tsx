@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperClass } from "swiper/types";
+import { Text } from "@radix-ui/themes";
 import dayjs from "../../lib/dayjs";
 
 interface MonthYearSwiperProps {
@@ -22,12 +23,14 @@ const MonthYearSwiper: React.FC<MonthYearSwiperProps> = (props) => {
             navigation={true}
             onSlideChange={props.onSlideChange}>
             {props.monthYearList.length === 0 ? (
-                <MonthYear className="title is-4 px-5 py-5">No data</MonthYear>
+                <MonthYear>
+                    <Text size="4">No data</Text>
+                </MonthYear>
             ) : (
                 props.monthYearList.map((x) => (
                     <SwiperSlide key={x}>
-                        <MonthYear key={x} className="title is-4 px-5 py-5">
-                            {dayjs(x).format("MMMM YYYY")}
+                        <MonthYear key={x}>
+                            <Text size="6">{dayjs(x).format("MMMM YYYY")}</Text>
                         </MonthYear>
                     </SwiperSlide>
                 ))

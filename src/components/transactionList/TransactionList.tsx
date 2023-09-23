@@ -18,7 +18,6 @@ import AmountTxt from "../bases/AmountTxt";
 import Button from "../bases/Button";
 import MonthYearSwiper from "../bases/MonthYearSwiper";
 import { TransactionCard } from "./TransactionCard";
-import "./TransactionList.scss";
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import Switch from "../bases/Switch";
 
@@ -229,7 +228,13 @@ export const TransactionList: React.FC = () => {
             });
         }
 
-        return <NoData className="notification is-danger">No data</NoData>;
+        return (
+            <NoData>
+                <Text color="red" size="7">
+                    No data
+                </Text>
+            </NoData>
+        );
     };
     const renderSummaryCard = () => {
         const totalAmount = transactions

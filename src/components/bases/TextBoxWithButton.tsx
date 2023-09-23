@@ -64,11 +64,11 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
                 />
                 <TextField.Slot px="4">
                     <Button
-                        className={`${isLoading ? "is-loading" : ""}`}
                         type={props.buttonType}
                         value={props.buttonText}
                         onClickHandler={onClickHandler}
                         variant="ghost"
+                        isLoading={isLoading}
                     />
                 </TextField.Slot>
             </TextField.Root>

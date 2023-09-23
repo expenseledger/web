@@ -1,11 +1,10 @@
 import React from "react";
-import styled from "styled-components";
 import dayjs from "../../lib/dayjs";
 import { TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
-import { Card, Flex, Text } from "@radix-ui/themes";
+import { Box, Card, Flex, Text } from "@radix-ui/themes";
 
 interface TransactionCardItem {
     amount: number;
@@ -44,16 +43,17 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
         });
 
         return formatItems.map((x, idx) => (
-            <TransactionCardMessage
-                key={idx}
-                category={x.cateogry}
-                description={x.description}
-                amount={x.amount}
-                type={x.type}
-                onDelete={x.onDelete}
-                occurredAt={x.date}
-                onUpdate={x.onUpdate}
-            />
+            <Box key={idx} mt={idx > 0 ? "3" : "0"}>
+                <TransactionCardMessage
+                    category={x.cateogry}
+                    description={x.description}
+                    amount={x.amount}
+                    type={x.type}
+                    onDelete={x.onDelete}
+                    occurredAt={x.date}
+                    onUpdate={x.onUpdate}
+                />
+            </Box>
         ));
     };
 

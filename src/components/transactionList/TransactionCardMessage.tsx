@@ -13,7 +13,7 @@ import MessageBox from "../bases/MessageBox";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
-import { Text } from "@radix-ui/themes";
+import { Box, Grid, Text } from "@radix-ui/themes";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -214,28 +214,34 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
         <MessageBox type={props.amount < 0 ? "dark" : "success"}>
             {renderDelete()}
             {renderUpdate()}
-            <Content className="columns is-mobile is-gapless is-multiline">
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Type:</span>
-                </div>
-                <div className="column is-half">{props.type}</div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Amount:</span>
-                </div>
-                <div className="column is-half">
+            <Grid columns="2" justify="between">
+                <Box>
+                    <Text weight="bold">Type:</Text>
+                </Box>
+                <Box>
+                    <Text>{props.type}</Text>
+                </Box>
+                <Box>
+                    <Text weight="bold">Amount:</Text>
+                </Box>
+                <Box>
                     <AmountTxt amount={props.amount} />
-                </div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Category:</span>
-                </div>
-                <div className="column is-half">{props.category?.name ?? "-"}</div>
-                <div className="column is-half">
-                    <span className="has-text-weight-bold">Description:</span>
-                </div>
-                <div className="column is-half">
-                    {!props.description || props.description === "" ? "-" : props.description}
-                </div>
-            </Content>
+                </Box>
+                <Box>
+                    <Text weight="bold">Category:</Text>
+                </Box>
+                <Box>
+                    <Text>{props.category?.name ?? "-"}</Text>
+                </Box>
+                <Box>
+                    <Text weight="bold">Description:</Text>
+                </Box>
+                <Box>
+                    <Text>
+                        {!props.description || props.description === "" ? "-" : props.description}
+                    </Text>
+                </Box>
+            </Grid>
         </MessageBox>
     );
 };

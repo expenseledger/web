@@ -218,9 +218,16 @@ export const TransactionList: React.FC = () => {
     };
     const renderTransactionCards = () => {
         const cards = getTransactionCards();
+        console.log(cards);
 
         if (cards.length > 0) {
-            return <>{cards}</>;
+            return cards.map((c, idx) => {
+                return (
+                    <Box key={idx} mt={idx > 0 ? "3" : "0"}>
+                        {c}
+                    </Box>
+                );
+            });
         }
 
         return <NoData className="notification is-danger">No data</NoData>;
@@ -264,14 +271,16 @@ export const TransactionList: React.FC = () => {
 
     const renderScrollToTop = () => {
         return (
-            <Button
-                value="To Top"
-                onClickHandler={() => {
-                    document.body.scrollTop = 0; // For Safari
-                    document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
-                }}
-                type="primary"
-            />
+            <Box mt="3">
+                <Button
+                    value="To Top"
+                    onClickHandler={() => {
+                        document.body.scrollTop = 0; // For Safari
+                        document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera
+                    }}
+                    type="primary"
+                />
+            </Box>
         );
     };
 

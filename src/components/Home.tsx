@@ -175,7 +175,7 @@ const Home: React.FC = () => {
         <>
             <Box width="100%">{renderAccountCards()}</Box>
             <Flex gap="4" my="4">
-                <Text weight="bold">
+                <Text weight="bold" color="blue">
                     <Link
                         to={{
                             pathname: `account/${
@@ -188,7 +188,7 @@ const Home: React.FC = () => {
                         </Flex>
                     </Link>
                 </Text>
-                <Text weight="bold">
+                <Text weight="bold" color="blue">
                     <Link
                         to="/report"
                         state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>

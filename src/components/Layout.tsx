@@ -11,7 +11,7 @@ import Loading from "./bases/Loading";
 import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
 import Menu from "./menu/Menu";
-import { Container } from "@radix-ui/themes";
+import { Box, Container, Heading } from "@radix-ui/themes";
 
 const Header = styled.div`
     margin-top: 12px;
@@ -20,10 +20,6 @@ const Header = styled.div`
 `;
 const Title = styled.div`
     text-align: center;
-`;
-const TitleText = styled.span`
-    font-weight: 800;
-    cursor: pointer;
 `;
 
 const Layout: React.FC = () => {
@@ -65,7 +61,11 @@ const Layout: React.FC = () => {
                 />
                 <Title className="py-2">
                     <Link to="/">
-                        <TitleText className="is-size-2 has-text-link">Expense Ledger</TitleText>
+                        <Box p="4">
+                            <Heading size="8" color="blue" align="center">
+                                Expense Ledger
+                            </Heading>
+                        </Box>
                     </Link>
                 </Title>
             </Header>

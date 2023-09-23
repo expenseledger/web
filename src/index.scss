@@ -1,6 +1,3 @@
-@import "../node_modules/bulma/bulma.sass";
-@import "./node_modules/bulma-switch/src/sass/index.sass";
-
 $line-seed-font-path: "./assets/fonts/line_seed";
 
 @font-face {
@@ -38,4 +35,17 @@ $line-seed-font-path: "./assets/fonts/line_seed";
 
 html {
     background-color: #fafafa;
+
+    .signIn {
+        background-color: #fafafa;
+    }
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }

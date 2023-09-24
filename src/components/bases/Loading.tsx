@@ -11,7 +11,7 @@ const loadingAnimation = keyframes`
     }
 `;
 
-const LoadingProgress = styled.progress`
+const LoadingProgress = styled.div`
     appearance: none;
     border: none;
     height: 4px; /* Adjust the height as needed */
@@ -19,6 +19,7 @@ const LoadingProgress = styled.progress`
     background-color: transparent; /* Transparent background color for the progress bar */
     position: relative;
     overflow: hidden;
+    border-radius: 8px;
 
     &::before {
         content: "";
@@ -28,7 +29,7 @@ const LoadingProgress = styled.progress`
         position: absolute;
         top: 0;
         left: 0;
-        border: 1px solid #ddd; /* Gray border color for the progress bar container */
+        background-color: #ddd; /* Gray border color for the progress bar container */
     }
 
     &::-webkit-progress-value {
@@ -45,6 +46,7 @@ const LoadingProgress = styled.progress`
         top: 0;
         left: -100%; /* Initial position, fully left */
         animation: ${loadingAnimation} 2s linear infinite; /* Smooth left-to-right animation */
+        -webkit-animation: ${loadingAnimation} 2s linear infinite; /* Add -webkit-animation for Safari */
     }
 `;
 

@@ -27,7 +27,11 @@ const Modal: React.FC<ModalProps> = (props) => {
     return (
         <Dialog.Root open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
             <Dialog.Trigger>{props.triggerer}</Dialog.Trigger>
-            <Dialog.Content style={{ maxWidth: "450px" }}>
+            <Dialog.Content
+                style={{ maxWidth: "450px" }}
+                onOpenAutoFocus={(event) => {
+                    event.preventDefault();
+                }}>
                 <Dialog.Title>{props.title}</Dialog.Title>
                 <Flex>{props.children}</Flex>
                 <Flex mt="3" gap="2" justify="end">

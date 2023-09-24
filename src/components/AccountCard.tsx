@@ -19,7 +19,7 @@ interface CardProps {
 const Card = styled.div<CardProps>`
     background-color: ${(props) => props.$backgroundColor};
     background-image: ${(props) => props.$backgroundImage};
-    border-radius: 4px;
+    border-radius: 8px;
     padding: 24px;
     color: white;
     text-align: right;

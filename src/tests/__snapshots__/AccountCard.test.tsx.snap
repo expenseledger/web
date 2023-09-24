@@ -2,10 +2,10 @@
 
 exports[`<AccountCard> renders without crashing 1`] = `
 <div
-  className="sc-bcPKhP eQzDjP"
+  className="sc-bcPKhP kHoBYP"
 >
   <span
-    className="rt-Text rt-r-size-7 rt-r-weight-bold"
+    className="rt-Text rt-r-size-8 rt-r-weight-bold"
   >
     test
   </span>
@@ -13,12 +13,16 @@ exports[`<AccountCard> renders without crashing 1`] = `
     className="rt-Box"
   >
     <span
-      className="rt-Text"
+      className="rt-Text rt-r-size-4"
     >
       ฿
     </span>
-    <span>
-      0
+    <span
+      className="rt-Text rt-r-size-4"
+    >
+      <span>
+        0
+      </span>
     </span>
   </div>
 </div>

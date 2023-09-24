@@ -1,16 +1,7 @@
 import { useRecoilState } from "recoil";
-import styled from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 import { Card, Flex, Separator, Text } from "@radix-ui/themes";
-
-const Block = styled.div<{ isFirst: boolean }>`
-    border-radius: ${(props) => (props.isFirst ? "6px 6px 0 0" : "0 0 6px 6px")};
-    background-color: white;
-`;
-const SwtichContainer = styled.div`
-    height: 29px;
-`;
 
 const PageSetting: React.FC = () => {
     const [pageSetting, setPageSetting] = useRecoilState(pageSettingState);

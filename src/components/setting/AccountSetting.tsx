@@ -188,7 +188,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [_, setCurrency] = useRecoilState(currencyState);
+    const [currency, setCurrency] = useRecoilState(currencyState);
     const { addNotification } = useNotification();
     const currencyHandler = (currency: string) => {
         setCurrency(currency as Currency);
@@ -237,6 +237,7 @@ const AccountSetting: React.FC = () => {
                     options={allCurrencies}
                     updateSelectedValue={currencyHandler}
                     variant="ghost"
+                    defaultValue={currency}
                 />
             </Flex>
         </Card>

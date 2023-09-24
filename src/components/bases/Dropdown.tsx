@@ -6,12 +6,13 @@ interface DropdownProps {
     updateSelectedValue: (value: string) => void;
     className?: string;
     variant?: DropdownVariant;
+    defaultValue?: string;
 }
 
 type DropdownVariant = "classic" | "surface" | "soft" | "ghost";
 
 const Dropdown: React.FC<DropdownProps> = (props) => {
-    const [value, setValue] = React.useState(props.options[0]);
+    const [value, setValue] = React.useState(props.defaultValue ?? props.options[0]);
     const onChangeHandler = (value: string) => {
         props.updateSelectedValue(value);
         setValue(value);
@@ -36,7 +37,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
     return (
         <Select.Root
             onValueChange={onChangeHandler}
-            defaultValue={props.options[0]}
+            defaultValue={props.defaultValue ?? props.options[0]}
             size="3"
             value={value}>
             <Select.Trigger variant={props.variant ?? "surface"} />

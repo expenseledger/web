@@ -1,7 +1,7 @@
 import React from "react";
 import { useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
-import { Box, Flex, Separator, TextField } from "@radix-ui/themes";
+import { Separator, TextField } from "@radix-ui/themes";
 import Dropdown from "./Dropdown";
 
 interface TextBoxWithButtonProps {

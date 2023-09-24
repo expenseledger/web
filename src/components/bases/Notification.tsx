@@ -1,6 +1,6 @@
 import React from "react";
 import { combineClassName } from "../../common/utils";
-import { Box, Flex, Text } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { Cross2Icon } from "@radix-ui/react-icons";
 
 export interface NotificationProps {

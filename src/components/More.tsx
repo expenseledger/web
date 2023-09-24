@@ -17,8 +17,6 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
-import { get } from "http";
-
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;

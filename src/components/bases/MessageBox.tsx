@@ -1,4 +1,4 @@
-import { Box, Callout, Flex } from "@radix-ui/themes";
+import { Callout } from "@radix-ui/themes";
 import React from "react";
 
 interface Props {

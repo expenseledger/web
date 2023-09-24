@@ -1,5 +1,5 @@
 import React from "react";
-import { useInput } from "../../common/utils";
+import { combineClassName, useInput } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
 import { TextField } from "@radix-ui/themes";
 import { styled } from "styled-components";
@@ -12,7 +12,7 @@ interface DateBoxProps {
 }
 
 const Input = styled(TextField.Input)`
-    padding-right: var(--space-3);
+    padding: 7px;
 `;
 
 const DateBox: React.FC<DateBoxProps> = (props) => {

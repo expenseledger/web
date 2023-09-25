@@ -38,7 +38,7 @@ const MessageBox: React.FC<MessageBoxProps> = (props) => {
         }
     };
     return (
-        <Callout.Root color={getColor()} style={{ position: "relative", display: "block" }}>
+        <Callout.Root color={getColor() as any} style={{ position: "relative", display: "block" }}>
             {props.children}
         </Callout.Root>
     );

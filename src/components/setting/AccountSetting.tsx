@@ -256,7 +256,7 @@ const AccountSetting: React.FC = () => {
             <TextBoxWithButton
                 name="add"
                 type="text"
-                buttonType="link"
+                buttonType="primary"
                 buttonText="Create"
                 onClick={createAccountHandler}
                 dropdown={allAccountTypesString}

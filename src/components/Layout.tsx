@@ -12,6 +12,7 @@ import Toast from "./bases/Toast";
 import { useSignIn } from "./hoc/WithAuthProtection";
 import Menu from "./menu/Menu";
 import { Box, Container, Heading } from "@radix-ui/themes";
+import { color } from "../common/constants";
 
 const Header = styled.div`
     margin-top: 12px;
@@ -64,7 +65,7 @@ const Layout: React.FC = () => {
                         <Box p="4">
                             <Heading
                                 size="8"
-                                color="blue"
+                                color={color.primary as any}
                                 align="center"
                                 style={{ fontWeight: 800 }}>
                                 Expense Ledger

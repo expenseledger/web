@@ -145,7 +145,7 @@ const CategorySetting: React.FC = () => {
             <TextBoxWithButton
                 name="add"
                 type="text"
-                buttonType="link"
+                buttonType="primary"
                 buttonText="Create"
                 onClick={addCategoryHandler}
                 dropdown={allCategoryTypesString}

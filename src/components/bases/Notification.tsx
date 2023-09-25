@@ -2,6 +2,7 @@ import React from "react";
 import { combineClassName } from "../../common/utils";
 import { Flex, Text } from "@radix-ui/themes";
 import { Cross2Icon } from "@radix-ui/react-icons";
+import { color } from "../../common/constants";
 
 export interface NotificationProps {
     id: string;
@@ -18,7 +19,7 @@ export interface NotificationPropsWithOnclose extends NotificationProps {
 function mapColor(type: NotificationType): string {
     switch (type) {
         case "primary":
-            return "var(--indigo-9)";
+            return `var(--${color.primary}-9)`;
         case "danger":
             return "var(--red-9)";
         case "info":

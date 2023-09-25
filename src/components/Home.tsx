@@ -18,6 +18,7 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
+import { color } from "../common/constants";
 
 interface CurrentValue {
     accountIdx: number;
@@ -175,7 +176,7 @@ const Home: React.FC = () => {
         <>
             <Box width="100%">{renderAccountCards()}</Box>
             <Flex gap="4" my="4">
-                <Text weight="bold" color="blue">
+                <Text weight="bold" color={color.primary as any}>
                     <Link
                         to={{
                             pathname: `account/${
@@ -188,7 +189,7 @@ const Home: React.FC = () => {
                         </Flex>
                     </Link>
                 </Text>
-                <Text weight="bold" color="blue">
+                <Text weight="bold" color={color.primary as any}>
                     <Link
                         to="/report"
                         state={{ accountId: accounts[currentValue.accountIdx]?.id ?? 0 }}>

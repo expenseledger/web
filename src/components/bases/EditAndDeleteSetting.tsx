@@ -2,6 +2,7 @@ import React from "react";
 import Button from "./Button";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
+import { color } from "../../common/constants";
 
 export interface Item {
     id: number;
@@ -64,10 +65,10 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         return (
             <Box>
-                <Text mr="1" color="blue">
+                <Text mr="1" color={color.primary as any}>
                     {props.modifyModal(
                         props.item.id,
-                        <Text mr="1" color="blue">
+                        <Text mr="1" color={color.primary as any}>
                             <Pencil1Icon />
                         </Text>
                     )}

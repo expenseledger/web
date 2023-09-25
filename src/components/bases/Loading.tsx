@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Text } from "@radix-ui/themes";
 import { keyframes, styled } from "styled-components";
+import { color } from "../../common/constants";
 
 const loadingAnimation = keyframes`
     0% {
@@ -41,7 +42,9 @@ const LoadingProgress = styled.div`
         display: block;
         width: 100%;
         height: 100%;
-        background-color: #007bff; /* Color for the filled portion of the progress bar */
+        background-color: var(
+            --${color.primary}-9
+        ); /* Color for the filled portion of the progress bar */
         position: absolute;
         top: 0;
         left: -100%; /* Initial position, fully left */

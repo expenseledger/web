@@ -1,6 +1,7 @@
 import React from "react";
 import { Button as RadixButton } from "@radix-ui/themes";
 import "./Button.scss";
+import { color } from "../../common/constants";
 
 interface ButtonProps {
     value: string;
@@ -45,7 +46,7 @@ const Button: React.FC<ButtonProps> = (props) => {
             case "danger":
                 return "red";
             case "primary":
-                return "indigo";
+                return color.primary;
             default:
                 return "gray";
         }
@@ -56,7 +57,7 @@ const Button: React.FC<ButtonProps> = (props) => {
             className={props.className}
             onClick={props.onClickHandler}
             size={getSize()}
-            color={getColor()}
+            color={getColor() as any}
             variant={props.variant ?? "solid"}>
             {props.isLoading ? <LoadingRing /> : props.value}
         </RadixButton>

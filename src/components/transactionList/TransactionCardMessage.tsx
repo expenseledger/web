@@ -14,6 +14,7 @@ import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 import { Box, Grid, Text } from "@radix-ui/themes";
+import { color } from "../../common/constants";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -203,7 +204,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
                     triggerer={
-                        <Text color="blue">
+                        <Text color={color.primary as any}>
                             <Pencil1Icon />
                         </Text>
                     }

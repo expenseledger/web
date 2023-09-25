@@ -1,5 +1,6 @@
 import { Callout } from "@radix-ui/themes";
 import React from "react";
+import { color } from "../../common/constants";
 
 interface Props {
     type: MessageBoxType;
@@ -28,14 +29,12 @@ const MessageBox: React.FC<MessageBoxProps> = (props) => {
                 return "green";
             case "danger":
                 return "red";
-            case "primary":
-                return "grass";
             case "warning":
                 return "yellow";
             case "dark":
                 return "gray";
             default:
-                return "indigo";
+                return color.primary;
         }
     };
     return (

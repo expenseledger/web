@@ -12,7 +12,7 @@ interface DateBoxProps {
 }
 
 const Input = styled(TextField.Input)`
-    padding: 7px;
+    padding: var(--space-2);
 `;
 
 const DateBox: React.FC<DateBoxProps> = (props) => {

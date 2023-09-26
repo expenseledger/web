@@ -11,6 +11,7 @@ import "@radix-ui/themes/styles.css";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
 import { Theme } from "@radix-ui/themes";
+import { color } from "./common/constants";
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -21,7 +22,7 @@ root.render(
     // <React.StrictMode>
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
-            <Theme>
+            <Theme accentColor={color.primary as any}>
                 <App />
             </Theme>
         </ApolloProvider>

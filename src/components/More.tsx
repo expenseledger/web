@@ -40,9 +40,9 @@ const More: React.FC = () => {
     const [categories] = useRecoilState(categoriesState);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
-    const locatoin = useLocation();
+    const location = useLocation();
     const currency = useRecoilValue(currencyState);
-    const homeProps = locatoin.state as HomeProps;
+    const homeProps = location.state as HomeProps;
     const initialCurrentValue: CurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,
         toAccountIdx:
@@ -340,6 +340,7 @@ const More: React.FC = () => {
                             options={
                                 overrideOptions?.map((x) => x.name) ?? accounts.map((x) => x.name)
                             }
+                            defaultValue={value}
                             updateSelectedValue={updateAccount}
                         />
                     </Box>

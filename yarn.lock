@@ -8567,7 +8567,7 @@ __metadata:
     jest: ^29.7.0
     node-sass: ^9.0.0
     prettier: ^3.0.3
-    ramda: ^0.29.0
+    ramda: ^0.29.1
     react: ^18.2.0
     react-dom: ^18.2.0
     react-firebaseui: ^6.0.0
@@ -8584,7 +8584,7 @@ __metadata:
     typescript: ^5.2.2
     uuid: ^9.0.1
     vercel: ^32.4.1
-    vite: ^4.4.10
+    vite: ^4.4.11
     vite-plugin-pwa: ^0.16.5
     vite-plugin-svgr: ^4.1.0
   languageName: unknown
@@ -12951,10 +12951,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ramda@npm:^0.29.0":
-  version: 0.29.0
-  resolution: "ramda@npm:0.29.0"
-  checksum: 9ab26c06eb7545cbb7eebcf75526d6ee2fcaae19e338f165b2bf32772121e7b28192d6664d1ba222ff76188ba26ab307342d66e805dbb02c860560adc4d5dd57
+"ramda@npm:^0.29.1":
+  version: 0.29.1
+  resolution: "ramda@npm:0.29.1"
+  checksum: df7c627597a66d5f317f6ba77ad17d7ba818efc9c2c4a638440bc23f2c651e823970ea05b05a28895738c0e4b738fadbdc17b2c97b3ad922826febc09c859c44
   languageName: node
   linkType: hard
 
@@ -15444,9 +15444,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^4.4.10":
-  version: 4.4.10
-  resolution: "vite@npm:4.4.10"
+"vite@npm:^4.4.11":
+  version: 4.4.11
+  resolution: "vite@npm:4.4.11"
   dependencies:
     esbuild: ^0.18.10
     fsevents: ~2.3.2
@@ -15480,7 +15480,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: b5ab3fff97644321a9efd425d54cd841d619abcc4d3167f2c098253f4ed5d92d532a5c72ea0dad2cde3239b5613558a33c62ee77bb7b0ebce608d8e6d4f8a13d
+  checksum: c22145c8385343a629cd546054b9da6eee60327540102bdfd1ad897fd2e78e0763ce6a18a9d84fdefde9da8fd2427d3bec9eb2697b47cf4068c7b4b52f7e3e6a
   languageName: node
   linkType: hard
 

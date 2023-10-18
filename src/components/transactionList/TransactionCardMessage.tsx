@@ -120,6 +120,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                             .filter((c) => c.type === props.transactionType || c.type === "ANY")
                             .map((c) => c.name)}
                         updateSelectedValue={updateCategoryHandler}
+                        defaultValue={props.category.name}
                     />
                 </InputBox>
                 <Box>

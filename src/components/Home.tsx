@@ -161,10 +161,9 @@ const Home: React.FC = () => {
 
         return (
             <Swiper
-                loop={true}
+                loop
                 spaceBetween={10}
                 pagination={true}
-                slidesPerView={"auto"}
                 centeredSlides={true}
                 onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}>
                 {accountCards}

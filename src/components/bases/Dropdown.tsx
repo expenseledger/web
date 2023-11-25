@@ -41,7 +41,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             size="3"
             value={value}>
             <Select.Trigger variant={props.variant ?? "surface"} />
-            <Select.Content className={props.className}>
+            <Select.Content className={props.className} position="popper" side="bottom">
                 {renderOptions(props.options)}
             </Select.Content>
         </Select.Root>

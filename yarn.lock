@@ -8538,6 +8538,7 @@ __metadata:
     react-firebaseui: ^6.0.0
     react-router: ^6.21.0
     react-router-dom: ^6.21.0
+    react-snowfall: ^1.2.1
     react-spring: ^9.7.3
     react-test-renderer: ^18.2.0
     recharts: ^2.10.3
@@ -13001,6 +13002,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-fast-compare@npm:^3.2.0":
+  version: 3.2.2
+  resolution: "react-fast-compare@npm:3.2.2"
+  checksum: 2071415b4f76a3e6b55c84611c4d24dcb12ffc85811a2840b5a3f1ff2d1a99be1020d9437ee7c6e024c9f4cbb84ceb35e48cf84f28fcb00265ad2dfdd3947704
+  languageName: node
+  linkType: hard
+
 "react-firebaseui@npm:^6.0.0":
   version: 6.0.0
   resolution: "react-firebaseui@npm:6.0.0"
@@ -13130,6 +13138,18 @@ __metadata:
     react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: 914c17f741e8b533ff6e3d5e3285aea0625cdd0f98e04202d01351f9516dbdc0a0e297dc22cc2377d6916fb819da8d4ed999c0314a4c186592ca51870012e6f7
+  languageName: node
+  linkType: hard
+
+"react-snowfall@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "react-snowfall@npm:1.2.1"
+  dependencies:
+    react-fast-compare: ^3.2.0
+  peerDependencies:
+    react: ^16.8 || 17.x || 18.x
+    react-dom: ^16.8 || 17.x || 18.x
+  checksum: 297ca9846611cbf2e013298def259486e489c9d56918f7b38e67e22e35e7900d3987e44d9115f8ba6e009aa0c6e9aeaf1aeec02b5fd1c7aa82538a94dcb433f6
   languageName: node
   linkType: hard
 

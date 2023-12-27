@@ -47,7 +47,7 @@ export const TransactionList: React.FC = () => {
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
     const mapPaidOnly = useCallback(
-        (tx: HideAbleTransaction) => {
+        (tx: HideAbleTransaction | Transaction) => {
             if (
                 !isPaidOnly ||
                 tx.type == "EXPENSE" ||
@@ -64,7 +64,7 @@ export const TransactionList: React.FC = () => {
                 isHide: true,
             };
         },
-        [isPaidOnly]
+        [accountId, isPaidOnly]
     );
     const backToHome = useCallback(() => {
         navigate("/");

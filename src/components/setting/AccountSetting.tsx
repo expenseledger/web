@@ -10,6 +10,7 @@ import { AccountType, Currency } from "../../service/constants";
 import {
     allAccountTypesString,
     allCurrencies,
+    mapAccountTypeToString,
     mapStringToAccountType,
 } from "../../service/helper/accountHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
@@ -166,6 +167,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                         className="column"
                         options={allAccountTypesString}
                         updateSelectedValue={accountTypeHandler}
+                        defaultValue={mapAccountTypeToString(type)}
                     />
                 </Box>
                 <Box>

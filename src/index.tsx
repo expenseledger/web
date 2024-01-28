@@ -12,7 +12,6 @@ import "./index.scss";
 import apolloClient from "./lib/apollo";
 import { Theme } from "@radix-ui/themes";
 import { color } from "./common/constants";
-import Snowfall from "react-snowfall";
 
 SwiperCore.use([Pagination, Navigation]);
 
@@ -24,7 +23,6 @@ root.render(
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
             <Theme accentColor={color.primary as any}>
-                <Snowfall style={{ height: "100vh" }} snowflakeCount={20} />
                 <App />
             </Theme>
         </ApolloProvider>

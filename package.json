@@ -84,5 +84,5 @@
             "last 1 version"
         ]
     },
-    "packageManager": "yarn@3.6.3"
+    "packageManager": "yarn@4.1.1"
 }

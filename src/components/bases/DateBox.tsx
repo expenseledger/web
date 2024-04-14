@@ -11,10 +11,6 @@ interface DateBoxProps {
     className?: string;
 }
 
-const Input = styled(TextField.Input)`
-    padding: var(--space-2);
-`;
-
 const DateBox: React.FC<DateBoxProps> = (props) => {
     const { bind, setValue } = useInput(dayjs().format("YYYY-MM-DD"), props.updateValue);
 
@@ -23,9 +19,7 @@ const DateBox: React.FC<DateBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <TextField.Root>
-            <Input className={props.className} type="date" name={props.name} {...bind} size="3" />
-        </TextField.Root>
+        <TextField.Root type="date" className={props.className} name={props.name} {...bind} size="3" />
     );
 };
 

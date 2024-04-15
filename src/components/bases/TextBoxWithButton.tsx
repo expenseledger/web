@@ -2,6 +2,7 @@ import React from "react";
 import { useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
 import { Separator, TextField } from "@radix-ui/themes";
+import { RootProps } from "@radix-ui/themes/dist/cjs/components/text-field";
 import Dropdown from "./Dropdown";
 
 interface TextBoxWithButtonProps {
@@ -10,7 +11,7 @@ interface TextBoxWithButtonProps {
     dropdown?: string[];
     name: string;
     placeholder?: string;
-    type?: string;
+    type?: RootProps["type"];
     defaultValue?: string;
     buttonText: string;
     buttonType: ButtonType;
@@ -49,30 +50,27 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <>
-            <TextField.Root>
-                <TextField.Slot p="3">
-                    {renderDropdown()}
-                    <Separator orientation="vertical" />
-                </TextField.Slot>
-                <TextField.Input
-                    name={props.name}
-                    type={props.type ?? "text"}
-                    placeholder={props.placeholder ?? ""}
-                    style={{ paddingLeft: "0", paddingTop: "16px" }}
-                    {...bind}
+        <TextField.Root
+            name={props.name}
+            type={props.type ?? "text"}
+            placeholder={props.placeholder ?? ""}
+            size="3"
+            {...bind}
+        >
+            <TextField.Slot pl="3">
+                {renderDropdown()}
+                <Separator orientation="vertical" />
+            </TextField.Slot>
+            <TextField.Slot px="4">
+                <Button
+                    type={props.buttonType}
+                    value={props.buttonText}
+                    onClickHandler={onClickHandler}
+                    variant="ghost"
+                    isLoading={isLoading}
                 />
-                <TextField.Slot px="4">
-                    <Button
-                        type={props.buttonType}
-                        value={props.buttonText}
-                        onClickHandler={onClickHandler}
-                        variant="ghost"
-                        isLoading={isLoading}
-                    />
-                </TextField.Slot>
-            </TextField.Root>
-        </>
+            </TextField.Slot>
+        </TextField.Root>
     );
 };
 

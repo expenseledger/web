@@ -15,7 +15,7 @@ import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
 
 const Header = styled.div`
-    margin-top: 12px;
+    padding-top: 12px;
     top: 0px;
     z-index: 10;
 `;

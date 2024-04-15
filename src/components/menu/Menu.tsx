@@ -49,7 +49,7 @@ const Menu: React.FC<MenuProps> = (props) => {
     );
     const getMenuContent = (title: string, link: string) => (
         <Flex align="center">
-            <Flex width="6" justify="center">
+            <Flex width="32px" justify="center">
                 <Separator orientation="vertical" size="2" />
             </Flex>
             <Text ml="2">
@@ -61,7 +61,7 @@ const Menu: React.FC<MenuProps> = (props) => {
     );
     const getMenuContentWithChildren = (element: ReactElement) => (
         <Flex align="center">
-            <Flex width="6" justify="center">
+            <Flex width="32px" justify="center">
                 <Separator orientation="vertical" size="2" />
             </Flex>
             <Text ml="2">{element}</Text>

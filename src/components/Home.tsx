@@ -31,9 +31,6 @@ interface CurrentValue {
 const LinkText = styled.span`
     vertical-align: middle;
 `;
-const InputBox = styled(Box)`
-    grid-column: 2 / span 2;
-`;
 
 const Home: React.FC = () => {
     const initialState: CurrentValue = {
@@ -199,51 +196,59 @@ const Home: React.FC = () => {
                     </Link>
                 </Text>
             </Flex>
-            <Grid columns="3" gap="4" align="center">
+            <Grid rows="3" gap="3">
+                <Flex direction="column">
+                    <Box>
+                        <Text weight="bold" size="1">Amount</Text>
+                    </Box>
+                    <Box>
+                        <TextBox
+                            updateValue={updateExpense}
+                            name="expense"
+                            type="number"
+                            value={currentValue.amount}
+                            addOn={{ text: currency, position: "front" }}
+                        />
+                    </Box>
+                </Flex>
+                <Flex direction="column">
                 <Box>
-                    <Text weight="bold">Amount</Text>
+                    <Text weight="bold" size="1">Date</Text>
                 </Box>
-                <InputBox>
-                    <TextBox
-                        updateValue={updateExpense}
-                        name="expense"
-                        type="number"
-                        value={currentValue.amount}
-                        addOn={{ text: currency, position: "front" }}
-                    />
-                </InputBox>
                 <Box>
-                    <Text weight="bold">Date</Text>
-                </Box>
-                <InputBox>
                     <DateBox
                         name="date"
                         updateValue={updateSelectedDate}
                         value={currentValue.date}
                     />
-                </InputBox>
-                <Box>
-                    <Text weight="bold">Category</Text>
                 </Box>
-                <InputBox>
+                </Flex>
+                <Flex direction="column">
+                <Box>
+                    <Text weight="bold" size="1">Category</Text>
+                </Box>
+                <Box>
                     <Dropdown
                         options={categories
                             .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
                             .map((c) => c.name)}
                         updateSelectedValue={updateSelectedCategory}
                     />
-                </InputBox>
-                <Box>
-                    <Text weight="bold">Description</Text>
                 </Box>
-                <InputBox>
+                </Flex>
+                <Flex direction="column">
+                <Box>
+                    <Text weight="bold" size="1">Description</Text>
+                </Box>
+                <Box>
                     <TextBox
                         name="description"
                         updateValue={updateDescription}
                         value={currentValue.description}
                         placeholder="Optional"
                     />
-                </InputBox>
+                </Box>
+                </Flex>
                 <Flex mt="2">
                     <Box>
                         <Button

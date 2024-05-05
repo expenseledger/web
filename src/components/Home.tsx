@@ -196,7 +196,7 @@ const Home: React.FC = () => {
                     </Link>
                 </Text>
             </Flex>
-            <Grid rows="3" gap="3" align="center">
+            <Grid rows="3" gap="3">
                 <Flex direction="column">
                     <Box>
                         <Text weight="bold" size="1">Amount</Text>

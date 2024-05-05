@@ -199,7 +199,7 @@ const Home: React.FC = () => {
             <Grid rows="3" gap="3" align="center">
                 <Flex direction="column">
                     <Box>
-                        <Text weight="bold">Amount</Text>
+                        <Text weight="bold" size="1">Amount</Text>
                     </Box>
                     <Box>
                         <TextBox
@@ -213,7 +213,7 @@ const Home: React.FC = () => {
                 </Flex>
                 <Flex direction="column">
                 <Box>
-                    <Text weight="bold">Date</Text>
+                    <Text weight="bold" size="1">Date</Text>
                 </Box>
                 <Box>
                     <DateBox
@@ -225,7 +225,7 @@ const Home: React.FC = () => {
                 </Flex>
                 <Flex direction="column">
                 <Box>
-                    <Text weight="bold">Category</Text>
+                    <Text weight="bold" size="1">Category</Text>
                 </Box>
                 <Box>
                     <Dropdown
@@ -238,7 +238,7 @@ const Home: React.FC = () => {
                 </Flex>
                 <Flex direction="column">
                 <Box>
-                    <Text weight="bold">Description</Text>
+                    <Text weight="bold" size="1">Description</Text>
                 </Box>
                 <Box>
                     <TextBox

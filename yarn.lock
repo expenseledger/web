@@ -35,25 +35,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/client@npm:^3.7.8":
-  version: 3.8.1
-  resolution: "@apollo/client@npm:3.8.1"
+"@apollo/client@npm:^3.10.4":
+  version: 3.10.4
+  resolution: "@apollo/client@npm:3.10.4"
   dependencies:
     "@graphql-typed-document-node/core": ^3.1.1
-    "@wry/context": ^0.7.3
+    "@wry/caches": ^1.0.0
     "@wry/equality": ^0.5.6
-    "@wry/trie": ^0.4.3
+    "@wry/trie": ^0.5.0
     graphql-tag: ^2.12.6
     hoist-non-react-statics: ^3.3.2
-    optimism: ^0.17.5
+    optimism: ^0.18.0
     prop-types: ^15.7.2
+    rehackt: ^0.1.0
     response-iterator: ^0.2.6
     symbol-observable: ^4.0.0
     ts-invariant: ^0.10.3
     tslib: ^2.3.0
     zen-observable-ts: ^1.2.5
   peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0
+    graphql: ^15.0.0 || ^16.0.0
     graphql-ws: ^5.5.5
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
@@ -67,7 +68,7 @@ __metadata:
       optional: true
     subscriptions-transport-ws:
       optional: true
-  checksum: 3a1748359a7c0f339764e7764dc6c7426be1d522eda963416d3a693733edbce8408cb8f78f9c98b036d34621af663e3dd3446703dfd29037c78a77eacd3c70bb
+  checksum: 577cb5a075fb9616b6b41bf7b34ce7ee393e7dfc3ca829db284a5bf70e35f658e4b218ba6f6d03e2604da814c6069e438584c9c609fe505dcbe6c4610f4cc638
   languageName: node
   linkType: hard
 
@@ -4570,9 +4571,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/themes@npm:^3.0.2":
-  version: 3.0.2
-  resolution: "@radix-ui/themes@npm:3.0.2"
+"@radix-ui/themes@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "@radix-ui/themes@npm:3.0.5"
   dependencies:
     "@radix-ui/colors": ^3.0.0
     "@radix-ui/primitive": ^1.0.1
@@ -4619,7 +4620,7 @@ __metadata:
       optional: true
     "@types/react-dom":
       optional: true
-  checksum: 878c7fa20b734cd681b1fee1bb1c5797dcd5549a55f0298202efad1ffe5625e95993ba6c779a54d79d09fa3e85b4685943b89e0624be19c95cd6fb52dc4eda74
+  checksum: 3a65ad9b6f1b8c1114291ebd0cd175fb67acbcb2dfb2d0c7ca546945e117f19ca0cd668fd88a2e5a1da29afcb5884b3c90be5c350eeacc49305916d02dfc5551
   languageName: node
   linkType: hard
 
@@ -5975,7 +5976,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wry/context@npm:^0.7.0, @wry/context@npm:^0.7.3":
+"@wry/caches@npm:^1.0.0":
+  version: 1.0.1
+  resolution: "@wry/caches@npm:1.0.1"
+  dependencies:
+    tslib: ^2.3.0
+  checksum: 9e89aa8e9e08577b2e4acbe805f406b141ae49c2ac4a2e22acf21fbee68339fa0550e0dee28cf2158799f35bb812326e80212e49e2afd169f39f02ad56ae4ef4
+  languageName: node
+  linkType: hard
+
+"@wry/context@npm:^0.7.0":
   version: 0.7.3
   resolution: "@wry/context@npm:0.7.3"
   dependencies:
@@ -5999,6 +6009,15 @@ __metadata:
   dependencies:
     tslib: ^2.3.0
   checksum: 106e021125cfafd22250a6631a0438a6a3debae7bd73f6db87fe42aa0757fe67693db0dfbe200ae1f60ba608c3e09ddb8a4e2b3527d56ed0a7e02aa0ee4c94e1
+  languageName: node
+  linkType: hard
+
+"@wry/trie@npm:^0.5.0":
+  version: 0.5.0
+  resolution: "@wry/trie@npm:0.5.0"
+  dependencies:
+    tslib: ^2.3.0
+  checksum: 92aeea34152bd8485184236fe328d3d05fc98ee3b431d82ee60cf3584dbf68155419c3d65d0ff3731b204ee79c149440a9b7672784a545afddc8d4342fbf21c9
   languageName: node
   linkType: hard
 
@@ -8963,13 +8982,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "expense-ledger-web@workspace:."
   dependencies:
-    "@apollo/client": ^3.7.8
+    "@apollo/client": ^3.10.4
     "@babel/preset-env": ^7.20.2
     "@babel/preset-react": ^7.18.6
     "@babel/preset-typescript": ^7.18.6
     "@radix-ui/react-icons": ^1.3.0
     "@radix-ui/react-toggle-group": ^1.0.4
-    "@radix-ui/themes": ^3.0.2
+    "@radix-ui/themes": ^3.0.5
     "@testing-library/react": ^13.4.0
     "@types/jest": ^26.0.15
     "@types/node": ^10.12.0
@@ -12597,14 +12616,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"optimism@npm:^0.17.5":
-  version: 0.17.5
-  resolution: "optimism@npm:0.17.5"
+"optimism@npm:^0.18.0":
+  version: 0.18.0
+  resolution: "optimism@npm:0.18.0"
   dependencies:
+    "@wry/caches": ^1.0.0
     "@wry/context": ^0.7.0
     "@wry/trie": ^0.4.3
     tslib: ^2.3.0
-  checksum: 5990217d989e9857dc523a64cb6e5a9205eae68c7acac78f7dde8fbe50045d0f11ca8068cdbb51b1eae15510d96ad593a99cf98c6f86c41d1b6f90e54956ff11
+  checksum: d6ed6a90b05ee886dadfe556c7a30227c66843f51278e51eb843977a6a9368b6c50297fcc63fa514f53d8a5a58f8ddc8049c2356bd4ffac32f8961bcb806254d
   languageName: node
   linkType: hard
 
@@ -13709,6 +13729,21 @@ __metadata:
   bin:
     regjsparser: bin/parser
   checksum: 5e1b76afe8f1d03c3beaf9e0d935dd467589c3625f6d65fb8ffa14f224d783a0fed4bf49c2c1b8211043ef92b6117313419edf055a098ed8342e340586741afc
+  languageName: node
+  linkType: hard
+
+"rehackt@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "rehackt@npm:0.1.0"
+  peerDependencies:
+    "@types/react": "*"
+    react: "*"
+  peerDependenciesMeta:
+    "@types/react":
+      optional: true
+    react:
+      optional: true
+  checksum: 2c3bcd72524bf47672640265e79cba785e0e6837b9b385ccb0a3ea7d00f55a439d9aed3e0ae71e991d88e0d4b2b3158457c92e75fff5ebf99cd46e280068ddeb
   languageName: node
   linkType: hard
 

@@ -22,7 +22,7 @@ root.render(
     // <React.StrictMode>
     <RecoilRoot>
         <ApolloProvider client={apolloClient}>
-            <Theme accentColor={color.primary as any}>
+            <Theme accentColor={color.primary}>
                 <App />
             </Theme>
         </ApolloProvider>

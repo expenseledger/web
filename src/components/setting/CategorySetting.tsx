@@ -6,6 +6,7 @@ import { createCategory, deleteCategory, updateCategory } from "../../service/ca
 import { CategoryType } from "../../service/constants";
 import {
     allCategoryTypesString,
+    mapCategoryTypeToString,
     mapStringToCategoryType,
 } from "../../service/helper/categoryHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
@@ -89,6 +90,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                         className="column"
                         options={allCategoryTypesString}
                         updateSelectedValue={categoryTypeHandler}
+                        defaultValue={mapCategoryTypeToString(type)}
                     />
                 </Box>
             </Grid>
@@ -112,7 +114,7 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.concat(response.addedCategory);
+        const newCategories = categories.concat(response.addedCategory).sort((a, b) => a.name.localeCompare(b.name));
 
         setCategories(newCategories);
         addNotification("Create category successful", "success");

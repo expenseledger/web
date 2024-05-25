@@ -44,21 +44,7 @@ $line-seed-font-path: "./assets/fonts/line_seed";
 
 .radix-themes {
     --default-font-family: "LineSeedSans", sans-serif;
-    background-color: #fafafa;
-
-    .header {
-        background-color: #fafafa;
-    }
-
-    .mainContainer {
-        background-color: #fafafa;
-    }
-}
-
-html {
-    .signIn {
-        background-color: #fafafa;
-    }
+    --color-background: #fafafa;
 }
 
 body {

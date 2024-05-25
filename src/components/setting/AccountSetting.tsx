@@ -207,14 +207,9 @@ const AccountSetting: React.FC = () => {
             return;
         }
 
-        setAccounts(
-            accounts.concat({
-                id: response.account.id,
-                name: response.account.name,
-                type: response.account.type,
-                balance: response.account.balance,
-            })
-        );
+        const newAccounts = accounts.concat(response.account).sort((a, b) => a.name.localeCompare(b.name));
+
+        setAccounts(newAccounts);
         addNotification("Create account success", "success");
     };
 

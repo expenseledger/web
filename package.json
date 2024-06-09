@@ -23,7 +23,7 @@
         "recoil": "^0.7.7",
         "styled-components": "^6.1.11",
         "swiper": "^11.1.4",
-        "uuid": "^9.0.1"
+        "uuid": "^10.0.0"
     },
     "scripts": {
         "start": "vite",
@@ -67,8 +67,8 @@
         "release-it": "^17.3.0",
         "sass": "^1.77.4",
         "typescript": "^5.4.5",
-        "vercel": "^34.2.5",
-        "vite": "^5.2.12",
+        "vercel": "^34.2.6",
+        "vite": "^5.2.13",
         "vite-plugin-pwa": "^0.20.0",
         "vite-plugin-svgr": "^4.2.0"
     },

@@ -4,7 +4,7 @@ import { StyledFirebaseAuth } from "react-firebaseui";
 import { useNavigate } from "react-router";
 import Logo from "../../assets/pics/logo.svg";
 import { auth } from "../../lib/firebase";
-import "./SignIn.scss";
+import { Box, Flex, Text } from "@radix-ui/themes";
 
 const SignIn: React.FC = () => {
     const navigate = useNavigate();
@@ -35,11 +35,13 @@ const SignIn: React.FC = () => {
     };
 
     return (
-        <div className="signIn">
-            <img className="siginIn__logo" src={Logo} />
-            <span className="signIn__title">Welcome to Expense Ledger</span>
+        <Flex justify="center" align="center" direction="column" pt="9" px="6">
+            <img src={Logo} alt="logo"/>
+            <Box pt="6" pb="3">
+                <Text align="center" size="8" weight="bold" as="div">Welcome to Expense Ledger</Text>
+            </Box>
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
-        </div>
+        </Flex>
     );
 };
 

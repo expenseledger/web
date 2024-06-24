@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate, useOutlet, useOutletContext } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import pj from "../../package.json";
@@ -23,12 +23,26 @@ const Title = styled.div`
     text-align: center;
 `;
 
+export interface BackToHomeParam {
+    accountId: number;
+}
+
+export type ContextType = {
+    setBackToHomeParam: React.Dispatch<React.SetStateAction<BackToHomeParam>>;
+};
+
+export function useBackToHome() {
+    return useOutletContext<ContextType>();
+}
+
 const Layout: React.FC = () => {
     const [accounts, setAccounts] = useRecoilState(accountsState);
     const [, setCategories] = useRecoilState(categoriesState);
     const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
+    const navigate = useNavigate();
+    const [backToHomeParam, setBackToHomeParam] = React.useState<BackToHomeParam>(null);
 
     React.useEffect(() => {
         if (!isSignInLoading && !isSignIn) {
@@ -61,22 +75,20 @@ const Layout: React.FC = () => {
                     version={pj.version}
                 />
                 <Title className="py-2">
-                    <Link to="/">
-                        <Box p="4">
-                            <Heading
-                                size="8"
-                                color={color.primary as any}
-                                align="center"
-                                style={{ fontWeight: 800 }}>
-                                Expense Ledger
-                            </Heading>
-                        </Box>
-                    </Link>
+                    <Box p="4" onClick={() => navigate("/", { state: backToHomeParam })}>
+                        <Heading
+                            size="8"
+                            color={color.primary as any}
+                            align="center"
+                            style={{ fontWeight: 800 }}>
+                            Expense Ledger
+                        </Heading>
+                    </Box>
                 </Title>
             </Header>
             <Container size="2" pt="3" px="6" className="mainContainer">
                 <React.Suspense fallback={<Loading />}>
-                    <Outlet />
+                    <Outlet context={{ setBackToHomeParam } satisfies ContextType} />
                 </React.Suspense>
             </Container>
             <Toast position="top-right" />

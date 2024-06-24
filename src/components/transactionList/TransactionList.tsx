@@ -42,8 +42,7 @@ export const TransactionList: React.FC = () => {
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const params = useParams();
-    const { accountId } = params;
+    const { accountId } = useParams();
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
     const mapPaidOnly = useCallback(

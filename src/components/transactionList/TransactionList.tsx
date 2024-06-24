@@ -20,6 +20,7 @@ import MonthYearSwiper from "../bases/MonthYearSwiper";
 import { TransactionCard } from "./TransactionCard";
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import Switch from "../bases/Switch";
+import { useBackToHome } from "../Layout";
 
 const NoData = styled.div`
     font-weight: bold;
@@ -42,8 +43,7 @@ export const TransactionList: React.FC = () => {
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
     const [accounts, setAccounts] = useRecoilState(accountsState);
-    const params = useParams();
-    const { accountId } = params;
+    const { accountId } = useParams();
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
     const mapPaidOnly = useCallback(
@@ -69,8 +69,10 @@ export const TransactionList: React.FC = () => {
     const backToHome = useCallback(() => {
         navigate("/");
     }, [navigate]);
+    const { setBackToHomeParam } = useBackToHome();
 
     useEffect(() => {
+        setBackToHomeParam({ accountId: +accountId });
         getTransactionMonthYearList({ accountId: +accountId })
             .then((response) => {
                 setMonthYearList(response.monthYears);

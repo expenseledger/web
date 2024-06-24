@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import React from "react";
+import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
@@ -17,6 +17,7 @@ import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
+import { useBackToHome } from "./Layout";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
@@ -49,8 +50,8 @@ const More: React.FC = () => {
             (homeProps?.accountIdx ?? 0) == 0
                 ? 1
                 : homeProps.accountIdx + 1 >= accounts.length
-                ? accounts.length - homeProps.accountIdx + 1
-                : homeProps.accountIdx + 1,
+                  ? accounts.length - homeProps.accountIdx + 1
+                  : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
         date: homeProps?.date ?? Date.now.toString(),
@@ -63,6 +64,7 @@ const More: React.FC = () => {
         false,
     ]);
     const transactionTypes: TransactionType[] = ["EXPENSE", "INCOME", "TRANSFER"];
+    const { setBackToHomeParam } = useBackToHome();
 
     const transactionTypeTabOnClickHandler = (e: any) => {
         const previousTabActive = [...transactionTypeTabActive];
@@ -83,6 +85,9 @@ const More: React.FC = () => {
 
     const updateSelectedFromAccount = (value: string) => {
         const idx = accounts.findIndex((x) => x.name === value);
+        setBackToHomeParam({
+            accountId: accounts[idx].id,
+        });
 
         setCurrentValue({
             ...currentValue,

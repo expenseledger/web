@@ -1,6 +1,6 @@
 import * as R from "ramda";
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -19,6 +19,7 @@ import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
+import { BackToHomeParam } from "./Layout";
 
 interface CurrentValue {
     accountIdx: number;
@@ -47,6 +48,7 @@ const Home: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
     const currency = useRecoilValue(currencyState);
+    const backToHomeParam = useLocation().state as BackToHomeParam;
 
     const updateDescription = (value: string) => {
         setCurrentValue({
@@ -155,6 +157,7 @@ const Home: React.FC = () => {
                 />
             </SwiperSlide>
         ));
+        const initialSlide = accounts.findIndex((x) => x.id === backToHomeParam?.accountId);
 
         return (
             <Swiper
@@ -162,11 +165,18 @@ const Home: React.FC = () => {
                 spaceBetween={10}
                 pagination={true}
                 centeredSlides={true}
-                onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}>
+                onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}
+                initialSlide={initialSlide}>
                 {accountCards}
             </Swiper>
         );
     };
+
+    useEffect(() => {
+        if (backToHomeParam) {
+            updateSelectedAccount(backToHomeParam.accountId);
+        }
+    }, [backToHomeParam]);
 
     return (
         <>
@@ -199,7 +209,9 @@ const Home: React.FC = () => {
             <Grid rows="3" gap="3">
                 <Flex direction="column">
                     <Box>
-                        <Text weight="bold" size="1">Amount</Text>
+                        <Text weight="bold" size="1">
+                            Amount
+                        </Text>
                     </Box>
                     <Box>
                         <TextBox
@@ -212,42 +224,48 @@ const Home: React.FC = () => {
                     </Box>
                 </Flex>
                 <Flex direction="column">
-                <Box>
-                    <Text weight="bold" size="1">Date</Text>
-                </Box>
-                <Box>
-                    <DateBox
-                        name="date"
-                        updateValue={updateSelectedDate}
-                        value={currentValue.date}
-                    />
-                </Box>
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Date
+                        </Text>
+                    </Box>
+                    <Box>
+                        <DateBox
+                            name="date"
+                            updateValue={updateSelectedDate}
+                            value={currentValue.date}
+                        />
+                    </Box>
                 </Flex>
                 <Flex direction="column">
-                <Box>
-                    <Text weight="bold" size="1">Category</Text>
-                </Box>
-                <Box>
-                    <Dropdown
-                        options={categories
-                            .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
-                            .map((c) => c.name)}
-                        updateSelectedValue={updateSelectedCategory}
-                    />
-                </Box>
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Category
+                        </Text>
+                    </Box>
+                    <Box>
+                        <Dropdown
+                            options={categories
+                                .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
+                                .map((c) => c.name)}
+                            updateSelectedValue={updateSelectedCategory}
+                        />
+                    </Box>
                 </Flex>
                 <Flex direction="column">
-                <Box>
-                    <Text weight="bold" size="1">Description</Text>
-                </Box>
-                <Box>
-                    <TextBox
-                        name="description"
-                        updateValue={updateDescription}
-                        value={currentValue.description}
-                        placeholder="Optional"
-                    />
-                </Box>
+                    <Box>
+                        <Text weight="bold" size="1">
+                            Description
+                        </Text>
+                    </Box>
+                    <Box>
+                        <TextBox
+                            name="description"
+                            updateValue={updateDescription}
+                            value={currentValue.description}
+                            placeholder="Optional"
+                        />
+                    </Box>
                 </Flex>
                 <Flex mt="2">
                     <Box>

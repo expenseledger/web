@@ -157,7 +157,7 @@ const Home: React.FC = () => {
                 />
             </SwiperSlide>
         ));
-        const initialSlide = accounts.findIndex((x) => x.id === backToHomeParam?.accountId);
+        const initialSlideIdx = accounts.findIndex((x) => x.id === backToHomeParam?.accountId);
 
         return (
             <Swiper
@@ -166,7 +166,7 @@ const Home: React.FC = () => {
                 pagination={true}
                 centeredSlides={true}
                 onSlideChange={(swipe) => updateSelectedAccount(swipe.realIndex)}
-                initialSlide={initialSlide}>
+                initialSlide={initialSlideIdx}>
                 {accountCards}
             </Swiper>
         );
@@ -174,7 +174,8 @@ const Home: React.FC = () => {
 
     useEffect(() => {
         if (backToHomeParam) {
-            updateSelectedAccount(backToHomeParam.accountId);
+            const idx = accounts.findIndex((x) => x.id === backToHomeParam?.accountId);
+            updateSelectedAccount(idx);
         }
     }, [backToHomeParam]);
 

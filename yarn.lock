@@ -2075,14 +2075,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/config-array@npm:^0.16.0":
-  version: 0.16.0
-  resolution: "@eslint/config-array@npm:0.16.0"
+"@eslint/config-array@npm:^0.17.0":
+  version: 0.17.0
+  resolution: "@eslint/config-array@npm:0.17.0"
   dependencies:
     "@eslint/object-schema": ^2.1.4
     debug: ^4.3.1
-    minimatch: ^3.0.5
-  checksum: b5682fef89232338200005e75008ee8edf147d265383ce4a9eb863c06ec38eff3dd0a4700b720774ad1f26d7c2721ab33eb425b1785ff95bc0844b23d5e57f94
+    minimatch: ^3.1.2
+  checksum: 4a7eea8e8531045ae6836c7b899776663f120b75a074fd09c5bfa52304ee969053d1daad35c30e3f657ef578078c14fe277a5ff625bceb4166c6196ff44e5d02
   languageName: node
   linkType: hard
 
@@ -2103,10 +2103,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@eslint/js@npm:9.5.0":
-  version: 9.5.0
-  resolution: "@eslint/js@npm:9.5.0"
-  checksum: e79639f7d9fd754e432dd33d1908d31c48bcf93aadc9e88b987c51b0208b5b3120f0c0038108ff2517c35b8c3d4bcd74f4e506a93b676b8bb311d29cce111c09
+"@eslint/js@npm:9.6.0":
+  version: 9.6.0
+  resolution: "@eslint/js@npm:9.6.0"
+  checksum: 8d0c1cc81ae9182139a38555a56bd6387b663b45efa5ca642e1e50584926f749a68d497c8a5ca02d55661341a5b689fc7977c65b10191e2a315888ca403b8bcd
   languageName: node
   linkType: hard
 
@@ -2744,10 +2744,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@inquirer/figures@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@inquirer/figures@npm:1.0.2"
-  checksum: 66a2bb9931adf622d2497d1c0c4703ce31a9ee95f1d0da89c724dc0daea4b4b398ac0536fc41f04a5d3f9d7c9c2f4422a368399388e998147a72487c997e3fb3
+"@inquirer/figures@npm:^1.0.3":
+  version: 1.0.3
+  resolution: "@inquirer/figures@npm:1.0.3"
+  checksum: ca83d9e2a02ed5309b3df5642d2194fde24e6f89779339c63304f2570f36f3bc431236a93db7fa412765a06f01c765974b06b1ed8b9aed881be46f2cbb67f9c7
   languageName: node
   linkType: hard
 
@@ -4746,10 +4746,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@remix-run/router@npm:1.16.1":
-  version: 1.16.1
-  resolution: "@remix-run/router@npm:1.16.1"
-  checksum: 69068815832b30d2a5c063ac1c75365c45cf5b484dab65e1b3129fdbb3c2a7b866401733f766e550dbca1eaf0b84bc772a9c55310f4dd21eb53e62eb1b4625d0
+"@remix-run/router@npm:1.17.0":
+  version: 1.17.0
+  resolution: "@remix-run/router@npm:1.17.0"
+  checksum: a801f605d6ff9fdc53676403cd9441f713251fbc23dcaf65c9337b3846e86db9c1b1fc9eee3c0f7142e3e1f7ed44efd427278138c3be9eeb7dd7e693347c35ab
   languageName: node
   linkType: hard
 
@@ -5829,12 +5829,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/next@npm:4.2.17":
-  version: 4.2.17
-  resolution: "@vercel/next@npm:4.2.17"
+"@vercel/next@npm:4.2.18":
+  version: 4.2.18
+  resolution: "@vercel/next@npm:4.2.18"
   dependencies:
     "@vercel/nft": 0.27.2
-  checksum: 490ded26a6e3bc7128f151f43ef169af2e2351e6e359fb21e0ab67bb80a392ea1ba6a1b9e9aa7932c185c49a1b113ad6883e5bbf92f1f57693c91a4a9ef30501
+  checksum: e9427b6f1da685ab6b5f47382d32faff6432bc4dd0525e91a7e75970025bcde6d2e9bf92687bc3dd5b7931090e6278d04154735c3228599e12331e81949edb34
   languageName: node
   linkType: hard
 
@@ -5860,9 +5860,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/node@npm:3.1.7":
-  version: 3.1.7
-  resolution: "@vercel/node@npm:3.1.7"
+"@vercel/node@npm:3.2.0":
+  version: 3.2.0
+  resolution: "@vercel/node@npm:3.2.0"
   dependencies:
     "@edge-runtime/node-utils": 2.3.0
     "@edge-runtime/primitives": 4.1.0
@@ -5883,8 +5883,8 @@ __metadata:
     ts-morph: 12.0.0
     ts-node: 10.9.1
     typescript: 4.9.5
-    undici: 5.26.5
-  checksum: 86eb2325bc6b7fbe1d760ae10771a45a8026058b1fc3d5d1179c7d75f54e311a2af62383d0ac26acdb73d5d1893f3684a4336bbda56210663b66cdab4db99c04
+    undici: 5.28.4
+  checksum: 9c9752dcd09880a5fba8816e811e15561f5500c7cd57c3c04a5c6cdb0ca8b69159389e76387cea0df6a191a9bc78874a90863650fcde8bd98353042ee857e890
   languageName: node
   linkType: hard
 
@@ -5906,15 +5906,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@vercel/remix-builder@npm:2.1.7":
-  version: 2.1.7
-  resolution: "@vercel/remix-builder@npm:2.1.7"
+"@vercel/remix-builder@npm:2.1.8":
+  version: 2.1.8
+  resolution: "@vercel/remix-builder@npm:2.1.8"
   dependencies:
     "@vercel/error-utils": 2.0.2
     "@vercel/nft": 0.27.2
     "@vercel/static-config": 3.0.0
     ts-morph: 12.0.0
-  checksum: 0501bff4d6c1016ef8f89cc53dedc7e21aaff5c4ba6cde9c4ba46370e1c495144fa7e2ae2b53b650018bc2f3471dc5c129ea6e0a38f1440d99d19d1c2c7dd487
+  checksum: eea0b9ee9dede3c5a89ad25f728fc0c3f1afe18310a58d90e0e0ff0b6ecca9953dc4cdbf759c90e4af6f8f5764f9abc1d9dd3b3333a530e5896852d87be15515
   languageName: node
   linkType: hard
 
@@ -6059,6 +6059,15 @@ __metadata:
   bin:
     acorn: bin/acorn
   checksum: 76d8e7d559512566b43ab4aadc374f11f563f0a9e21626dd59cb2888444e9445923ae9f3699972767f18af61df89cd89f5eaaf772d1327b055b45cb829b4a88c
+  languageName: node
+  linkType: hard
+
+"acorn@npm:^8.12.0":
+  version: 8.12.0
+  resolution: "acorn@npm:8.12.0"
+  bin:
+    acorn: bin/acorn
+  checksum: ae142de8739ef15a5d936c550c1d267fc4dedcdbe62ad1aa2c0009afed1de84dd0a584684a5d200bb55d8db14f3e09a95c6e92a5303973c04b9a7413c36d1df0
   languageName: node
   linkType: hard
 
@@ -8838,15 +8847,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^9.5.0":
-  version: 9.5.0
-  resolution: "eslint@npm:9.5.0"
+"eslint@npm:^9.6.0":
+  version: 9.6.0
+  resolution: "eslint@npm:9.6.0"
   dependencies:
     "@eslint-community/eslint-utils": ^4.2.0
     "@eslint-community/regexpp": ^4.6.1
-    "@eslint/config-array": ^0.16.0
+    "@eslint/config-array": ^0.17.0
     "@eslint/eslintrc": ^3.1.0
-    "@eslint/js": 9.5.0
+    "@eslint/js": 9.6.0
     "@humanwhocodes/module-importer": ^1.0.1
     "@humanwhocodes/retry": ^0.3.0
     "@nodelib/fs.walk": ^1.2.8
@@ -8857,7 +8866,7 @@ __metadata:
     escape-string-regexp: ^4.0.0
     eslint-scope: ^8.0.1
     eslint-visitor-keys: ^4.0.0
-    espree: ^10.0.1
+    espree: ^10.1.0
     esquery: ^1.5.0
     esutils: ^2.0.2
     fast-deep-equal: ^3.1.3
@@ -8878,7 +8887,7 @@ __metadata:
     text-table: ^0.2.0
   bin:
     eslint: bin/eslint.js
-  checksum: 8e6c85eb30a6959150cb40e16a07ce662c4f4a9f87c677eda13360eb11522b6f16627a41e05dc0b2e0715685f1d61c2694d671a1ce09ceb5bd1a887eef14f13c
+  checksum: b3f3de28df0ebbccbd0863637523cd443569dd32d18da021a97b53f25b2f5bc7f788fe74da8e585da6bb7b2060d7a688e9dcaa35efaabb7b596c354ff4b07963
   languageName: node
   linkType: hard
 
@@ -8890,6 +8899,17 @@ __metadata:
     acorn-jsx: ^5.3.2
     eslint-visitor-keys: ^4.0.0
   checksum: 62c9242a84c6741cebd35ede6574131d0419be7e5559566403e384087d99c4ddb2ced44e32acd44a4c3d8a8a84997cf8d78810c4e46b3fe25a804f1a92dc6b9d
+  languageName: node
+  linkType: hard
+
+"espree@npm:^10.1.0":
+  version: 10.1.0
+  resolution: "espree@npm:10.1.0"
+  dependencies:
+    acorn: ^8.12.0
+    acorn-jsx: ^5.3.2
+    eslint-visitor-keys: ^4.0.0
+  checksum: a4708ab987f6c03734b8738b1588e9f31b2e305e869ca4677c60d82294eb05f7099b6687eb39eeb0913bb2d49bdf0bd0f31c511599ea7ee171281f871a9c897e
   languageName: node
   linkType: hard
 
@@ -9093,34 +9113,34 @@ __metadata:
     "@vitejs/plugin-react": ^3.1.0
     babel-jest: ^29.7.0
     dayjs: ^1.11.11
-    eslint: ^9.5.0
+    eslint: ^9.6.0
     eslint-config-prettier: ^9.1.0
     eslint-plugin-prettier: ^5.1.3
     eslint-plugin-react: ^7.34.3
     eslint-plugin-react-hooks: ^4.6.2
     firebase: ^10.12.2
-    graphql: ^16.8.2
+    graphql: ^16.9.0
     jest: ^29.7.0
     prettier: ^3.3.2
     ramda: ^0.30.1
     react: ^18.3.1
     react-dom: ^18.3.1
     react-firebaseui: ^6.0.0
-    react-router: ^6.23.1
-    react-router-dom: ^6.23.1
+    react-router: ^6.24.0
+    react-router-dom: ^6.24.0
     react-snowfall: ^2.1.0
     react-spring: ^9.7.3
     react-test-renderer: ^18.3.1
     recharts: ^2.12.7
     recoil: ^0.7.7
-    release-it: ^17.3.0
+    release-it: ^17.4.0
     sass: ^1.77.6
     styled-components: ^6.1.11
     swiper: ^11.1.4
     typescript: ^5.5.2
     uuid: ^10.0.0
-    vercel: ^34.2.7
-    vite: ^5.3.1
+    vercel: ^34.2.8
+    vite: ^5.3.2
     vite-plugin-pwa: ^0.20.0
     vite-plugin-svgr: ^4.2.0
   languageName: unknown
@@ -9942,10 +9962,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:^16.8.2":
-  version: 16.8.2
-  resolution: "graphql@npm:16.8.2"
-  checksum: 1a5ba8087b3ffb60627ab4b71565e77049f621da49144985d3b1e35a9c70bf846476a7b5912342eda72d70bd71f9427a3d73712b4250e0175d458b8011c9deba
+"graphql@npm:^16.9.0":
+  version: 16.9.0
+  resolution: "graphql@npm:16.9.0"
+  checksum: 8cb3d54100e9227310383ce7f791ca48d12f15ed9f2021f23f8735f1121aafe4e5e611a853081dd935ce221724ea1ae4638faef5d2921fb1ad7c26b5f46611e9
   languageName: node
   linkType: hard
 
@@ -10356,11 +10376,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"inquirer@npm:9.2.22":
-  version: 9.2.22
-  resolution: "inquirer@npm:9.2.22"
+"inquirer@npm:9.2.23":
+  version: 9.2.23
+  resolution: "inquirer@npm:9.2.23"
   dependencies:
-    "@inquirer/figures": ^1.0.2
+    "@inquirer/figures": ^1.0.3
     "@ljharb/through": ^2.3.13
     ansi-escapes: ^4.3.2
     chalk: ^5.3.0
@@ -10375,7 +10395,7 @@ __metadata:
     string-width: ^4.2.3
     strip-ansi: ^6.0.1
     wrap-ansi: ^6.2.0
-  checksum: 4b6f80730876795fdc20a6724eb95b46cfb96966e99b85c48e6f69fa51b99da0f0a151ddf1e43de530125433c8c0756ef2e4bb777dfe7f11f9efed6c0012645c
+  checksum: d3d5c48b2c3e606b59bc0b825a0dc3805cd12b4068cf9bb17e5f05a43e512f28b280124f2b3e9e8f8845c1031fb92eca73be25e764c4522e02b48af08428117c
   languageName: node
   linkType: hard
 
@@ -10950,16 +10970,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"issue-parser@npm:7.0.0":
-  version: 7.0.0
-  resolution: "issue-parser@npm:7.0.0"
+"issue-parser@npm:7.0.1":
+  version: 7.0.1
+  resolution: "issue-parser@npm:7.0.1"
   dependencies:
     lodash.capitalize: ^4.2.1
     lodash.escaperegexp: ^4.1.2
     lodash.isplainobject: ^4.0.6
     lodash.isstring: ^4.0.1
     lodash.uniqby: ^4.7.0
-  checksum: 9f6f91c7a21dbb9d4e47dfbb9adab7ea6b3952b5976d1c51dd91d3c643c7602d6c1b7d3d50a9b5b65acc8cacddef48601bfdeb94d49b5f9b346b5c4b58347256
+  checksum: baf2831baa84c214a8c9f095889476f2ad7a6511fef7d096941ecf4666a822fbce298baac38510c4be782fc562488d4909535e81fb7a28c55779fcc88e3ec595
   languageName: node
   linkType: hard
 
@@ -12107,7 +12127,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minimatch@npm:^3.0.4, minimatch@npm:^3.0.5, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
+"minimatch@npm:^3.0.4, minimatch@npm:^3.1.1, minimatch@npm:^3.1.2":
   version: 3.1.2
   resolution: "minimatch@npm:3.1.2"
   dependencies:
@@ -13501,27 +13521,27 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^6.23.1":
-  version: 6.23.1
-  resolution: "react-router-dom@npm:6.23.1"
+"react-router-dom@npm:^6.24.0":
+  version: 6.24.0
+  resolution: "react-router-dom@npm:6.24.0"
   dependencies:
-    "@remix-run/router": 1.16.1
-    react-router: 6.23.1
+    "@remix-run/router": 1.17.0
+    react-router: 6.24.0
   peerDependencies:
     react: ">=16.8"
     react-dom: ">=16.8"
-  checksum: e87b5cf85019496f499286d466a4ad9cf5efe729f1420502fc5d16093d525462803253538418ea5b0da7ab5671a16caefee67848b373008e567629c2d667dc44
+  checksum: 6b40474070661d60b7a237756db7d27e7925546981a2325673519dab7cb15184ad490f092f1f9e947aa414b54be8c1f50f2ecb175e2b57e4c0d7d012a170d48d
   languageName: node
   linkType: hard
 
-"react-router@npm:6.23.1, react-router@npm:^6.23.1":
-  version: 6.23.1
-  resolution: "react-router@npm:6.23.1"
+"react-router@npm:6.24.0, react-router@npm:^6.24.0":
+  version: 6.24.0
+  resolution: "react-router@npm:6.24.0"
   dependencies:
-    "@remix-run/router": 1.16.1
+    "@remix-run/router": 1.17.0
   peerDependencies:
     react: ">=16.8"
-  checksum: d5d43ccb908a95d2b7345f2a13315c38bf094e25bcf97d5a6c3f353b1ea88602de15726c3570cd7f07c53b19a3519af2b6739bf6929ec355012795611d739cff
+  checksum: c58073711357500f7b2adb8968f6d160e3f2fbe2f9d9482648e70ea96910438886d4e713d420c548c4a7d1ad30db15bc9a4b952bb1cbc14dd75a209cf286f49b
   languageName: node
   linkType: hard
 
@@ -13855,9 +13875,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:^17.3.0":
-  version: 17.3.0
-  resolution: "release-it@npm:17.3.0"
+"release-it@npm:^17.4.0":
+  version: 17.4.0
+  resolution: "release-it@npm:17.4.0"
   dependencies:
     "@iarna/toml": 2.2.5
     "@octokit/rest": 20.1.1
@@ -13868,9 +13888,9 @@ __metadata:
     git-url-parse: 14.0.0
     globby: 14.0.1
     got: 13.0.0
-    inquirer: 9.2.22
+    inquirer: 9.2.23
     is-ci: 3.0.1
-    issue-parser: 7.0.0
+    issue-parser: 7.0.1
     lodash: 4.17.21
     mime-types: 2.1.35
     new-github-release-url: 2.0.0
@@ -13888,7 +13908,7 @@ __metadata:
     yargs-parser: 21.1.1
   bin:
     release-it: bin/release-it.js
-  checksum: 6e7232acf9e234670ac6c29258ce3b0decf12e5e07b0991b0857e575a81887b5fc95a3349578addc769ad4830dd8abb00a6f6ef7a6a65b49b77f8d95515f78ea
+  checksum: b31f744895244087f4afe1e4c70914b052a3fbb7e292b27304bc8415ad06fe2b84a38c4f09317ef9ce16edfbfc65b19ead955e77db0abe1e87924cde03cf98cd
   languageName: node
   linkType: hard
 
@@ -15534,15 +15554,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:5.26.5":
-  version: 5.26.5
-  resolution: "undici@npm:5.26.5"
-  dependencies:
-    "@fastify/busboy": ^2.0.0
-  checksum: 79c95df5f22959ed578e90d853b31a741ac748fc3bf9a4af6af52de1d671a057eaaf7dcad6e1d261597a114bd56c7351cff7ce848befd9deb62ccec55cf92ac1
-  languageName: node
-  linkType: hard
-
 "undici@npm:5.28.4":
   version: 5.28.4
   resolution: "undici@npm:5.28.4"
@@ -15806,26 +15817,26 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vercel@npm:^34.2.7":
-  version: 34.2.7
-  resolution: "vercel@npm:34.2.7"
+"vercel@npm:^34.2.8":
+  version: 34.2.8
+  resolution: "vercel@npm:34.2.8"
   dependencies:
     "@vercel/build-utils": 8.2.2
     "@vercel/fun": 1.1.0
     "@vercel/go": 3.1.1
     "@vercel/hydrogen": 1.0.2
-    "@vercel/next": 4.2.17
-    "@vercel/node": 3.1.7
+    "@vercel/next": 4.2.18
+    "@vercel/node": 3.2.0
     "@vercel/python": 4.3.0
     "@vercel/redwood": 2.0.10
-    "@vercel/remix-builder": 2.1.7
+    "@vercel/remix-builder": 2.1.8
     "@vercel/ruby": 2.1.0
     "@vercel/static-build": 2.5.11
     chokidar: 3.3.1
   bin:
     vc: dist/index.js
     vercel: dist/index.js
-  checksum: 750aae0581390fbb19fc12fc57f98e54dc4f4b6cebbe58ca6e6530292f95dec44321da40a8afcfeb717dd12ebccbddba74cff9858e91a887283b9b32c9181762
+  checksum: 3ee578bbd1a6dea8522f9d7171c6240284d6b621e8b7afb4676c5b2e12fef71c088a14bfb4faf2659448fc1def087b3120192f6dc2e22697f6b3a391b0edff13
   languageName: node
   linkType: hard
 
@@ -15885,9 +15896,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^5.3.1":
-  version: 5.3.1
-  resolution: "vite@npm:5.3.1"
+"vite@npm:^5.3.2":
+  version: 5.3.2
+  resolution: "vite@npm:5.3.2"
   dependencies:
     esbuild: ^0.21.3
     fsevents: ~2.3.3
@@ -15921,7 +15932,7 @@ __metadata:
       optional: true
   bin:
     vite: bin/vite.js
-  checksum: a06d35566338794a877538ddacccccfdac30df7e260546dc0513e77191b86a13398b86a8082bb6c842013b0d3062f951f624a3f800867cbf06aef89e49767d6c
+  checksum: d6872cb72701ec4b8d8dbccc5deacb5af03c3f247df02750787d6dcf4e49e207effed7a06e4f103008a918188cdf0789ff7348db451ebd0d59ef1a22ae4a267d
   languageName: node
   linkType: hard
 

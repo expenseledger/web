@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import React, { startTransition, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useRecoilState } from "recoil";
@@ -119,13 +118,12 @@ export const TransactionList: React.FC = () => {
 
         const updatedAccounts = accounts.map((ac) => {
             if (ac.id === Number.parseInt(accountId)) {
-                const tAc = R.clone(ac);
                 const tx = transactions.find((t) => t.id === id);
 
-                tAc.balance =
-                    tx.type === "INCOME" ? tAc.balance - tx.amount : tAc.balance + tx.amount;
-
-                return tAc;
+                return {
+                    ...ac,
+                    balance: tx.type === "INCOME" ? ac.balance - tx.amount : ac.balance + tx.amount,
+                };
             }
 
             return ac;

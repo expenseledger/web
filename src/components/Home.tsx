@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -115,12 +114,16 @@ const Home: React.FC = () => {
             const response = await addExpense(request);
 
             if (response) {
-                const tAccounts = R.clone(accounts);
-                const selectedAccountIdx = accounts.findIndex(
-                    (x) => x.name === response.transaction.fromAccount.name
-                );
-
-                tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
+                const tAccounts = accounts.map((a) => {
+                    if (a.name === response.transaction.fromAccount.name) {
+                        return {
+                            ...a,
+                            balance: response.transaction.fromAccount.balance,
+                        };
+                    } else {
+                        return a;
+                    }
+                });
                 setAccounts(tAccounts);
                 addNotification("AddExpense sucess", "success");
 

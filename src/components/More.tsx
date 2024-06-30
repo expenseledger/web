@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -25,8 +24,6 @@ interface CurrentValue {
     amount: string;
     date: string;
     description: string;
-
-    [key: string]: any;
 }
 
 interface HomeProps {
@@ -171,17 +168,24 @@ const More: React.FC = () => {
             const response = await addExpense(request);
 
             if (response) {
-                const tAccounts = R.clone(accounts);
-                const selectedAccountIdx = accounts.findIndex(
-                    (x) => x.name === response.transaction.fromAccount.name
-                );
+                const tAccounts = accounts.map((a) => {
+                    if (a.name === response.transaction.fromAccount.name) {
+                        return {
+                            ...a,
+                            balance: response.transaction.fromAccount.balance,
+                        };
+                    } else {
+                        return a;
+                    }
+                });
 
-                tAccounts[selectedAccountIdx].balance = response.transaction.fromAccount.balance;
                 setAccounts(tAccounts);
                 addNotification("AddExpense sucess", "success");
 
                 return true;
             }
+
+            addNotification("AddExpense failed", "danger");
         } catch {
             addNotification("AddExpense failed", "danger");
         }
@@ -212,12 +216,17 @@ const More: React.FC = () => {
             const response = await addIncome(request);
 
             if (response) {
-                const tAccounts = R.clone(accounts);
-                const selectedAccountIdx = accounts.findIndex(
-                    (x) => x.name === response.transaction.toAccount.name
-                );
+                const tAccounts = accounts.map((a) => {
+                    if (a.name === response.transaction.toAccount.name) {
+                        return {
+                            ...a,
+                            balance: response.transaction.toAccount.balance,
+                        };
+                    } else {
+                        return a;
+                    }
+                });
 
-                tAccounts[selectedAccountIdx].balance = response.transaction.toAccount.balance;
                 setAccounts(tAccounts);
                 addNotification("AddIncome sucess", "success");
 
@@ -259,22 +268,29 @@ const More: React.FC = () => {
             const response = await addTransfer(request);
 
             if (response) {
-                const tAccounts = R.clone(accounts);
-                const fromAccountIdx = accounts.findIndex(
-                    (x) => x.id === response.transaction.fromAccount.id
-                );
-                const toAccountIdx = accounts.findIndex(
-                    (x) => x.id === response.transaction.toAccount.id
-                );
-
-                tAccounts[fromAccountIdx].balance = response.transaction.fromAccount.balance;
-                tAccounts[toAccountIdx].balance = response.transaction.toAccount.balance;
+                const tAccounts = accounts.map((a) => {
+                    if (a.id === response.transaction.fromAccount.id) {
+                        return {
+                            ...a,
+                            balance: response.transaction.fromAccount.balance,
+                        };
+                    } else if (a.id === response.transaction.toAccount.id) {
+                        return {
+                            ...a,
+                            balance: response.transaction.toAccount.balance,
+                        };
+                    } else {
+                        return a;
+                    }
+                });
 
                 setAccounts(tAccounts);
                 addNotification("AddTransfer success", "success");
 
                 return true;
             }
+
+            addNotification("AddTransfer failed", "danger");
         } catch {
             addNotification("AddTransfer failed", "danger");
         }

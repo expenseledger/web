@@ -21,6 +21,7 @@ const Header = styled.div`
 `;
 const Title = styled.div`
     text-align: center;
+    cursor: pointer;
 `;
 
 export interface BackToHomeParam {

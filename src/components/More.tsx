@@ -174,9 +174,9 @@ const More: React.FC = () => {
                             ...a,
                             balance: response.transaction.fromAccount.balance,
                         };
-                    } else {
-                        return a;
                     }
+
+                    return a;
                 });
 
                 setAccounts(tAccounts);
@@ -222,9 +222,9 @@ const More: React.FC = () => {
                             ...a,
                             balance: response.transaction.toAccount.balance,
                         };
-                    } else {
-                        return a;
                     }
+
+                    return a;
                 });
 
                 setAccounts(tAccounts);
@@ -274,14 +274,16 @@ const More: React.FC = () => {
                             ...a,
                             balance: response.transaction.fromAccount.balance,
                         };
-                    } else if (a.id === response.transaction.toAccount.id) {
+                    }
+
+                    if (a.id === response.transaction.toAccount.id) {
                         return {
                             ...a,
                             balance: response.transaction.toAccount.balance,
                         };
-                    } else {
-                        return a;
                     }
+
+                    return a;
                 });
 
                 setAccounts(tAccounts);

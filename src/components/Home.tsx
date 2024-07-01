@@ -120,9 +120,9 @@ const Home: React.FC = () => {
                             ...a,
                             balance: response.transaction.fromAccount.balance,
                         };
-                    } else {
-                        return a;
                     }
+
+                    return a;
                 });
                 setAccounts(tAccounts);
                 addNotification("AddExpense sucess", "success");

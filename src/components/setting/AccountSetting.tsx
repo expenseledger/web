@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import React from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../../common/shareState";
@@ -83,12 +82,18 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             });
 
             if (response.transaction) {
-                const tAccounts = R.clone(accounts);
-                const idx = tAccounts.findIndex((x) => x.id === props.id);
+                const tAccounts = accounts.map((a) => {
+                    if (a.id === props.id) {
+                        return {
+                            ...a,
+                            balance,
+                            name,
+                            type,
+                        };
+                    }
 
-                tAccounts[idx].balance = balance;
-                tAccounts[idx].name = name;
-                tAccounts[idx].type = type;
+                    return a;
+                });
 
                 setAccounts(tAccounts);
                 addNotification("Update account success", "success");
@@ -105,12 +110,18 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
             });
 
             if (response.transaction) {
-                const tAccounts = R.clone(accounts);
-                const idx = tAccounts.findIndex((x) => x.id === props.id);
+                const tAccounts = accounts.map((a) => {
+                    if (a.id === props.id) {
+                        return {
+                            ...a,
+                            balance,
+                            name,
+                            type,
+                        };
+                    }
 
-                tAccounts[idx].balance = balance;
-                tAccounts[idx].name = name;
-                tAccounts[idx].type = type;
+                    return a;
+                });
 
                 setAccounts(tAccounts);
                 addNotification("Update account success", "success");
@@ -207,7 +218,9 @@ const AccountSetting: React.FC = () => {
             return;
         }
 
-        const newAccounts = accounts.concat(response.account).sort((a, b) => a.name.localeCompare(b.name));
+        const newAccounts = accounts
+            .concat(response.account)
+            .sort((a, b) => a.name.localeCompare(b.name));
 
         setAccounts(newAccounts);
         addNotification("Create account success", "success");

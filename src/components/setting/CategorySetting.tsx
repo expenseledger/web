@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import React from "react";
 import { useRecoilState } from "recoil";
 import { categoriesState } from "../../common/shareState";
@@ -35,11 +34,17 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
         });
 
         if (response.updatedCategory) {
-            const tCategories = R.clone(categories);
-            const idx = tCategories.findIndex((x) => x.id === props.id);
+            const tCategories = categories.map((c) => {
+                if (c.id === props.id) {
+                    return {
+                        ...c,
+                        name: response.updatedCategory.name,
+                        type: response.updatedCategory.type,
+                    };
+                }
 
-            tCategories[idx].name = response.updatedCategory.name;
-            tCategories[idx].type = response.updatedCategory.type;
+                return c;
+            });
 
             setCategories(tCategories);
             addNotification("Update category success", "success");
@@ -114,7 +119,9 @@ const CategorySetting: React.FC = () => {
             return;
         }
 
-        const newCategories = categories.concat(response.addedCategory).sort((a, b) => a.name.localeCompare(b.name));
+        const newCategories = categories
+            .concat(response.addedCategory)
+            .sort((a, b) => a.name.localeCompare(b.name));
 
         setCategories(newCategories);
         addNotification("Create category successful", "success");

@@ -58,3 +58,18 @@ export function toNumber(value: string): number {
 export function extractGraphQLErrors(errors?: readonly GraphQLError[]): string {
     return errors?.map((x) => x.message).join("\n") ?? "";
 }
+
+export function groupBy<T>(
+    data: T[],
+    keyFn: (item: T) => string | number
+): Record<string | number, T[]> {
+    return data.reduce(
+        (map, item) => {
+            const key = keyFn(item);
+            map[key] = map[key] || [];
+            map[key].push(item);
+            return map;
+        },
+        {} as Record<string | number, T[]>
+    );
+}

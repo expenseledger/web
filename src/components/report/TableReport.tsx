@@ -1,10 +1,15 @@
-import * as R from "ramda";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
-import { formatNumber } from "../../common/utils";
+import { formatNumber, groupBy } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
-import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, getMedian, incomeFilter } from "./reportHelper";
+import {
+    EXPENSE_COLOR,
+    INCOME_COLOR,
+    expenseFilter,
+    getMedian,
+    incomeFilter,
+} from "./reportHelper";
 import { Table, Text } from "@radix-ui/themes";
 
 interface ReportTableData {
@@ -43,8 +48,7 @@ const TableReport: React.FC<TableReportProps> = (props) => {
         transactions: Transaction[],
         isExpense: boolean
     ): ReportTableData[] => {
-        const groupByCategoryName = R.groupBy((data: ReportTableData) => data.category);
-        const rawData = groupByCategoryName(
+        const rawData = groupBy(
             transactions
                 .filter((t) => (isExpense ? expenseFilter(t) : incomeFilter(t)))
                 .map((t) => {
@@ -54,7 +58,8 @@ const TableReport: React.FC<TableReportProps> = (props) => {
                         maxAmount: t.amount,
                         medianAmount: t.amount,
                     };
-                })
+                }),
+            (t) => t.category
         );
 
         const toReturn: ReportTableData[] = [];
@@ -86,14 +91,20 @@ const TableReport: React.FC<TableReportProps> = (props) => {
                         <Text weight="bold">{formatNumber(t.amount)}</Text>
                     </Table.RowHeaderCell>
                     <Table.RowHeaderCell>
-                        <Text weight="bold" size="1">{formatNumber(t.medianAmount)} | {formatNumber(t.maxAmount)}</Text>
+                        <Text weight="bold" size="1">
+                            {formatNumber(t.medianAmount)} | {formatNumber(t.maxAmount)}
+                        </Text>
                     </Table.RowHeaderCell>
                 </Table.Row>
             ) : (
                 <Table.Row key={t.category}>
                     <Table.Cell>{t.category}</Table.Cell>
                     <Table.Cell>{formatNumber(t.amount)}</Table.Cell>
-                    <Table.Cell><Text size="1">{formatNumber(t.medianAmount)} | {formatNumber(t.maxAmount)}</Text></Table.Cell>
+                    <Table.Cell>
+                        <Text size="1">
+                            {formatNumber(t.medianAmount)} | {formatNumber(t.maxAmount)}
+                        </Text>
+                    </Table.Cell>
                 </Table.Row>
             )
         );

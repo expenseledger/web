@@ -1,10 +1,9 @@
-import * as R from "ramda";
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
 import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
-import { formatNumber } from "../../common/utils";
+import { formatNumber, groupBy } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
@@ -32,8 +31,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
 
     const getPieChartData = (transactions: Transaction[], isExpense: boolean): PieChartData[] => {
         const toReturn: PieChartData[] = [];
-        const byName = R.groupBy((data: PieChartData) => data.name);
-        const dirtyData = byName(
+        const dirtyData = groupBy(
             transactions
                 .filter((t) => (isExpense ? expenseFilter(t) : incomeFilter(t)))
                 .map((t) => {
@@ -41,7 +39,8 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                         name: t.category?.name ?? "Unknown",
                         value: t.amount,
                     };
-                })
+                }),
+            (t) => t.name
         );
 
         for (const key in dirtyData) {

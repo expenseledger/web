@@ -1,4 +1,3 @@
-import * as R from "ramda";
 import { useCallback, useEffect, useState } from "react";
 import {
     Bar,
@@ -16,6 +15,7 @@ import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, getAmount } from "./reportHelper";
 import { Flex, Text } from "@radix-ui/themes";
+import { groupBy } from "../../common/utils";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
@@ -60,8 +60,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
 
         const daysInMonth = dayjs(transactions[0].date).daysInMonth();
         const xAxis = getXAxis(daysInMonth);
-        const byName = R.groupBy((data: BarChartData) => data.name);
-        const dirtyData = byName(
+        const dirtyData = groupBy(
             transactions.map((t) => {
                 const amount = getAmount(t);
                 const idx = Math.floor((dayjs(t.date).date() - 1) / 7);
@@ -71,7 +70,8 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
                     income: amount >= 0 ? Math.abs(t.amount) : 0,
                     expense: amount < 0 ? Math.abs(t.amount) : 0,
                 };
-            })
+            }),
+            (t) => t.name
         );
 
         for (const key in dirtyData) {

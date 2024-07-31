@@ -21,7 +21,7 @@
         "recharts": "^2.12.7",
         "recoil": "^0.7.7",
         "styled-components": "^6.1.12",
-        "swiper": "^11.1.8",
+        "swiper": "^11.1.9",
         "uuid": "^10.0.0"
     },
     "scripts": {
@@ -65,7 +65,7 @@
         "release-it": "^17.6.0",
         "sass": "^1.77.8",
         "typescript": "^5.5.4",
-        "vercel": "^35.2.1",
+        "vercel": "^35.2.2",
         "vite": "^5.3.5",
         "vite-plugin-pwa": "^0.20.1",
         "vite-plugin-svgr": "^4.2.0"

@@ -54,7 +54,7 @@
         "@typescript-eslint/parser": "^5.42.0",
         "@vitejs/plugin-react": "^3.1.0",
         "babel-jest": "^29.7.0",
-        "eslint": "^9.8.0",
+        "eslint": "^9.9.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-plugin-prettier": "^5.2.1",
         "eslint-plugin-react": "^7.35.0",
@@ -65,7 +65,7 @@
         "release-it": "^17.6.0",
         "sass": "^1.77.8",
         "typescript": "^5.5.4",
-        "vercel": "^35.2.3",
+        "vercel": "^35.2.4",
         "vite": "^5.4.0",
         "vite-plugin-pwa": "^0.20.1",
         "vite-plugin-svgr": "^4.2.0"

@@ -18,7 +18,7 @@ import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
-import { BackToHomeParam } from "./Layout";
+import { BackToHomeParam, useBackToHome } from "./Layout";
 
 interface CurrentValue {
     accountIdx: number;
@@ -48,6 +48,7 @@ const Home: React.FC = () => {
     const navigate = useNavigate();
     const currency = useRecoilValue(currencyState);
     const backToHomeParam = useLocation().state as BackToHomeParam;
+    const { setBackToHomeParam } = useBackToHome();
 
     const updateDescription = (value: string) => {
         setCurrentValue({
@@ -179,6 +180,7 @@ const Home: React.FC = () => {
         if (backToHomeParam) {
             const idx = accounts.findIndex((x) => x.id === backToHomeParam?.accountId);
             updateSelectedAccount(idx);
+            setBackToHomeParam(null);
         }
     }, [backToHomeParam]);
 

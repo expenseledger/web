@@ -1,8 +1,8 @@
-import React from "react";
-import { useRecoilValue } from "recoil";
+import React, { use } from "react";
 import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
+import { useAtom, useAtomValue } from "jotai";
 
 interface StyledProps {
     $isMenuOnRightSide: boolean;
@@ -54,8 +54,8 @@ const Panel = styled.div<StyledProps>`
                     ? slideInRtl
                     : slideIn
                 : props.$isMenuOnRightSide
-                ? slideOutRtl
-                : slideOut}
+                  ? slideOutRtl
+                  : slideOut}
         ${animationDuration}s forwards;
 `;
 
@@ -96,7 +96,7 @@ interface OwnProps {
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isMenuOnRightSide, isLightMenu } = useRecoilValue(pageSettingState);
+    const { isMenuOnRightSide, isLightMenu } = useAtomValue(pageSettingState);
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const btnClickHandler = () => {

@@ -1,9 +1,9 @@
 import React from "react";
-import { useRecoilState } from "recoil";
 import { toastState } from "../../common/shareState";
 import { combineClassName } from "../../common/utils";
 import Notification, { NotificationProps } from "./Notification";
 import "./Toast.scss";
+import { useAtom } from "jotai";
 
 interface ToastProps {
     position: Position;
@@ -59,7 +59,7 @@ function getNotificationList(
 }
 
 const Toast: React.FC<ToastProps> = (props) => {
-    const [notificationList, setNotificationList] = useRecoilState(toastState);
+    const [notificationList, setNotificationList] = useAtom(toastState);
     const notifications = getNotificationList(notificationList, props.position, (id) => {
         setNotificationList(notificationList.filter((x) => x.id !== id));
     });

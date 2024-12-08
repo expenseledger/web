@@ -1,5 +1,4 @@
 import React from "react";
-import { useRecoilState } from "recoil";
 import { categoriesState } from "../../common/shareState";
 import { createCategory, deleteCategory, updateCategory } from "../../service/categoryService";
 import { CategoryType } from "../../service/constants";
@@ -15,6 +14,7 @@ import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
+import { useAtom } from "jotai";
 
 interface ModifyModalProps {
     id: number;
@@ -22,7 +22,7 @@ interface ModifyModalProps {
 }
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
-    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [categories, setCategories] = useAtom(categoriesState);
     const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
     const [type, setType] = React.useState<CategoryType>("ANY");
@@ -104,7 +104,7 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 };
 
 const CategorySetting: React.FC = () => {
-    const [categories, setCategories] = useRecoilState(categoriesState);
+    const [categories, setCategories] = useAtom(categoriesState);
     const { addNotification } = useNotification();
 
     const addCategoryHandler = async (name: string, type: string) => {

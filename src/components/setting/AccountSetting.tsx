@@ -1,5 +1,4 @@
 import React from "react";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
@@ -20,6 +19,7 @@ import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
+import { useAtom, useAtomValue } from "jotai";
 
 interface ModifyModalProps {
     id: number;
@@ -27,13 +27,13 @@ interface ModifyModalProps {
 }
 
 const ModifyModal: React.FC<ModifyModalProps> = (props) => {
-    const [categories] = useRecoilState(categoriesState);
-    const [accounts, setAccounts] = useRecoilState(accountsState);
+    const categories = useAtomValue(categoriesState);
+    const [accounts, setAccounts] = useAtom(accountsState);
     const { addNotification } = useNotification();
     const [name, setName] = React.useState("");
     const [balanceText, setBalanceText] = React.useState<string>("");
     const [type, setType] = React.useState<AccountType>("CASH");
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
     const getOtherCategory = async () => {
         const other = categories.find((x) => x.name.toLowerCase() === "other");
 
@@ -200,12 +200,11 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 };
 
 const AccountSetting: React.FC = () => {
-    const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [currency, setCurrency] = useRecoilState(currencyState);
+    const [accounts, setAccounts] = useAtom(accountsState);
+    const [currency, setCurrency] = useAtom(currencyState);
     const { addNotification } = useNotification();
     const currencyHandler = (currency: string) => {
         setCurrency(currency as Currency);
-        window.localStorage.setItem("currency", currency);
     };
     const createAccountHandler = async (accountName: string, accountType: string) => {
         const response = await createAccount({

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
@@ -19,6 +18,7 @@ import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
 import { BackToHomeParam, useBackToHome } from "./Layout";
+import { useAtom, useAtomValue } from "jotai";
 
 interface CurrentValue {
     accountIdx: number;
@@ -40,13 +40,13 @@ const Home: React.FC = () => {
         date: dayjs().format("YYYY-MM-DD"),
         description: "",
     };
-    const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [categories] = useRecoilState(categoriesState);
+    const [accounts, setAccounts] = useAtom(accountsState);
+    const [categories] = useAtom(categoriesState);
     const { addNotification } = useNotification();
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
     const backToHomeParam = useLocation().state as BackToHomeParam;
     const { setBackToHomeParam } = useBackToHome();
 

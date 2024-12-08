@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
@@ -8,6 +7,7 @@ import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
 import { Text, Flex } from "@radix-ui/themes";
+import { useAtomValue } from "jotai";
 
 interface PieChartReportProps {
     transactions: Transaction[];
@@ -25,7 +25,7 @@ const TotalAmountFlex = styled(Flex)<{ $isExpense: boolean }>`
 `;
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
     const [activeIndex, setActiveIndex] = useState<number>(0);
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 

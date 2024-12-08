@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useLocation } from "react-router";
-import { useRecoilState, useRecoilValue } from "recoil";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
@@ -17,6 +16,7 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
 import { useBackToHome } from "./Layout";
+import { useAtom, useAtomValue } from "jotai";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
@@ -34,12 +34,12 @@ interface HomeProps {
 }
 
 const More: React.FC = () => {
-    const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [categories] = useRecoilState(categoriesState);
+    const [accounts, setAccounts] = useAtom(accountsState);
+    const [categories] = useAtom(categoriesState);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const location = useLocation();
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
     const homeProps = location.state as HomeProps;
     const initialCurrentValue: CurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,

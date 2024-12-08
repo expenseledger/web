@@ -1,4 +1,4 @@
-import { useRecoilValue } from "recoil";
+import { useAtomValue } from "jotai";
 import { currencyState } from "../../common/shareState";
 import { formatNumber } from "../../common/utils";
 import { Text } from "@radix-ui/themes";
@@ -9,7 +9,7 @@ interface BalanceWithCurrecyProps {
 }
 
 const BalanceWithCurrency: React.FC<BalanceWithCurrecyProps> = (props) => {
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
 
     return (
         <>

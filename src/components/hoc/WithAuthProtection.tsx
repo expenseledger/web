@@ -1,10 +1,10 @@
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import { useRecoilState } from "recoil";
 import { isSignInState } from "../../common/shareState";
 import { auth } from "../../lib/firebase";
 import Loading from "../bases/Loading";
+import { useAtom } from "jotai";
 
 interface WithAuthProtectionProps {
     redirectPath?: string;
@@ -54,7 +54,7 @@ export const AuthProtection: React.FC<React.PropsWithChildren<AuthProtectionProp
 };
 
 export const useSignIn = (): [boolean, () => void, boolean] => {
-    const [isSignIn, setIsSignin] = useRecoilState(isSignInState);
+    const [isSignIn, setIsSignin] = useAtom(isSignInState);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const redirectToSignIn = React.useCallback(() => {

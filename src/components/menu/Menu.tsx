@@ -7,6 +7,8 @@ import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
 import { Box, Container, Flex, Grid, Separator, Text } from "@radix-ui/themes";
 import React from "react";
+import { useAtom } from "jotai";
+import { isHideBalanceOnMenuState } from "../../common/shareState";
 
 interface MenuProps {
     accounts: Account[];
@@ -30,13 +32,11 @@ const hideBalanceSwitchId = "hideBalanceSwitch";
 const preventDrawerCloseIdList = ["rt-SwitchButton", "rt-SwitchThumb", hideBalanceSwitchId];
 
 const Menu: React.FC<MenuProps> = (props) => {
-    const [isHideBalance, setIsHideBalance] = useState<boolean>(
-        window.localStorage.getItem("isHideBalanceOnMenu") === "true"
-    );
+    const [isHideBalance, setIsHideBalance] = useAtom<boolean>(isHideBalanceOnMenuState);
     const onHideBalanceChangeHandler = () => {
         setIsHideBalance((prevState) => {
             const nextState = !prevState;
-            window.localStorage.setItem("isHideBalanceOnMenu", nextState.toString());
+
             return nextState;
         });
     };

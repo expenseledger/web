@@ -27,3 +27,5 @@ export const pageSettingState = atomWithStorage<PageSetting>("pageSetting", {
     isMenuOnRightSide: false,
     isLightMenu: false,
 });
+
+export const isHideBalanceOnMenuState = atomWithStorage<boolean>("isHideBalanceOnMenu", false);

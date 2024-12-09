@@ -1,4 +1,3 @@
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
@@ -11,6 +10,7 @@ import {
     incomeFilter,
 } from "./reportHelper";
 import { Table, Text } from "@radix-ui/themes";
+import { useAtomValue } from "jotai";
 
 interface ReportTableData {
     category: string;
@@ -43,7 +43,7 @@ const StyledTableRoot = styled(Table.Root)<{ $isExpense: boolean }>`
 `;
 
 const TableReport: React.FC<TableReportProps> = (props) => {
-    const currency = useRecoilValue(currencyState);
+    const currency = useAtomValue(currencyState);
     const getReportTableData = (
         transactions: Transaction[],
         isExpense: boolean

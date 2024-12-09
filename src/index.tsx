@@ -1,6 +1,5 @@
 import { ApolloProvider } from "@apollo/client";
 import { createRoot } from "react-dom/client";
-import { RecoilRoot } from "recoil";
 import SwiperCore from "swiper";
 import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
@@ -20,12 +19,10 @@ const root = createRoot(container);
 
 root.render(
     // <React.StrictMode>
-    <RecoilRoot>
-        <ApolloProvider client={apolloClient}>
-            <Theme accentColor={color.primary}>
-                <App />
-            </Theme>
-        </ApolloProvider>
-    </RecoilRoot>
+    <ApolloProvider client={apolloClient}>
+        <Theme accentColor={color.primary}>
+            <App />
+        </Theme>
+    </ApolloProvider>
     // </React.StrictMode>
 );

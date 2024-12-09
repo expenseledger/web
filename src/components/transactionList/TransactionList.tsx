@@ -1,6 +1,5 @@
-import React, { startTransition, useCallback, useEffect, useState } from "react";
+import React, { ReactNode, startTransition, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useRecoilState } from "recoil";
 import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
@@ -20,6 +19,7 @@ import { TransactionCard } from "./TransactionCard";
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import Switch from "../bases/Switch";
 import { useBackToHome } from "../Layout";
+import { useAtom } from "jotai";
 
 const NoData = styled.div`
     font-weight: bold;
@@ -41,7 +41,7 @@ export const TransactionList: React.FC = () => {
     const [transactions, setTransactions] = useState<HideAbleTransaction[]>(null);
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = useState(true);
-    const [accounts, setAccounts] = useRecoilState(accountsState);
+    const [accounts, setAccounts] = useAtom(accountsState);
     const { accountId } = useParams();
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
@@ -182,7 +182,7 @@ export const TransactionList: React.FC = () => {
     };
     const getTransactionCards = () => {
         const dateSet: Set<string> = new Set();
-        const toReturn: JSX.Element[] = [];
+        const toReturn: ReactNode[] = [];
         transactions
             .filter((x) => !x.isHide)
             .forEach((x) => dateSet.add(dayjs(x.date).format("YYYY-MM-DD")));
@@ -226,7 +226,7 @@ export const TransactionList: React.FC = () => {
             return cards.map((c, idx) => {
                 return (
                     <Box key={idx} mt={idx > 0 ? "3" : "0"}>
-                        {c}
+                        <>{c}</>
                     </Box>
                 );
             });

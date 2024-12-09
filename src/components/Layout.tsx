@@ -1,6 +1,5 @@
-import React from "react";
+import React, { use } from "react";
 import { Link, Outlet, useNavigate, useOutlet, useOutletContext } from "react-router-dom";
-import { useRecoilState, useRecoilValue } from "recoil";
 import styled from "styled-components";
 import pj from "../../package.json";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
@@ -13,6 +12,7 @@ import { useSignIn } from "./hoc/WithAuthProtection";
 import Menu from "./menu/Menu";
 import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
+import { useAtom, useAtomValue } from "jotai";
 
 const Header = styled.div`
     padding-top: 12px;
@@ -37,9 +37,9 @@ export function useBackToHome() {
 }
 
 const Layout: React.FC = () => {
-    const [accounts, setAccounts] = useRecoilState(accountsState);
-    const [, setCategories] = useRecoilState(categoriesState);
-    const totalAccountsBalance = useRecoilValue(totalAccountsBalanceState);
+    const [accounts, setAccounts] = useAtom(accountsState);
+    const [, setCategories] = useAtom(categoriesState);
+    const totalAccountsBalance = useAtomValue(totalAccountsBalanceState);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
     const navigate = useNavigate();

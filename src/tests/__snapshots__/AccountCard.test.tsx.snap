@@ -1,29 +1,31 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<AccountCard> renders without crashing 1`] = `
-<div
-  className="sc-aYaIB hvUCBj"
->
-  <span
-    className="rt-Text rt-r-size-8 rt-r-weight-bold"
-  >
-    test
-  </span>
+<div>
   <div
-    className="rt-Box"
+    class="sc-blHHSb kwWOcI"
   >
     <span
-      className="rt-Text rt-r-size-4"
+      class="rt-Text rt-r-size-8 rt-r-weight-bold"
     >
-      ฿
+      test
     </span>
-    <span
-      className="rt-Text rt-r-size-4"
+    <div
+      class="rt-Box"
     >
-      <span>
-        0
+      <span
+        class="rt-Text rt-r-size-4"
+      >
+        ฿
       </span>
-    </span>
+      <span
+        class="rt-Text rt-r-size-4"
+      >
+        <span>
+          0
+        </span>
+      </span>
+    </div>
   </div>
 </div>
 `;

@@ -1,20 +1,16 @@
-import { useRecoilState } from "recoil";
+import { useAtom } from "jotai";
 import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 import { Card, Flex, Separator, Text } from "@radix-ui/themes";
 
 const PageSetting: React.FC = () => {
-    const [pageSetting, setPageSetting] = useRecoilState(pageSettingState);
+    const [pageSetting, setPageSetting] = useAtom(pageSettingState);
     const onMoveMenuToRightSideChangeHandler = () => {
         setPageSetting((prevState) => {
             const nextState = {
                 ...prevState,
                 isMenuOnRightSide: !prevState.isMenuOnRightSide,
             };
-            window.localStorage.setItem(
-                "isMenuOnRightSide",
-                nextState.isMenuOnRightSide.toString()
-            );
 
             return nextState;
         });
@@ -25,7 +21,6 @@ const PageSetting: React.FC = () => {
                 ...prevState,
                 isLightMenu: !prevState.isLightMenu,
             };
-            window.localStorage.setItem("isLightMenu", nextState.isLightMenu.toString());
 
             return nextState;
         });

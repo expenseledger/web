@@ -1,5 +1,4 @@
 import React from "react";
-import { useRecoilValue } from "recoil";
 import styled from "styled-components";
 import { categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
@@ -15,6 +14,7 @@ import TextBox from "../bases/TextBox";
 import { Cross2Icon, Pencil1Icon } from "@radix-ui/react-icons";
 import { Box, Grid, Text } from "@radix-ui/themes";
 import { color } from "../../common/constants";
+import { useAtomValue } from "jotai";
 
 interface UpdateTransactionModalProps {
     amount: number;
@@ -63,8 +63,8 @@ const InputBox = styled(Box)`
 `;
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
-    const categoryOptions = useRecoilValue(categoriesState);
-    const currency = useRecoilValue(currencyState);
+    const categoryOptions = useAtomValue(categoriesState);
+    const currency = useAtomValue(currencyState);
     const [updatedAmountText, setUpdatedAmountText] = React.useState(
         Math.abs(props.amount).toString()
     );

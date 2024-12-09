@@ -1,7 +1,7 @@
-import { useRecoilState } from "recoil";
 import * as uuid from "uuid";
 import { toastState } from "../../common/shareState";
 import { NotificationProps, NotificationType } from "../../components/bases/Notification";
+import { useAtom } from "jotai";
 
 export function mapNotificationProps(
     text: React.ReactNode,
@@ -18,7 +18,7 @@ export function mapNotificationProps(
 export function useNotification(): {
     addNotification: (message: string, type: NotificationType) => void;
 } {
-    const [, setNotificationList] = useRecoilState(toastState);
+    const [, setNotificationList] = useAtom(toastState);
 
     return {
         addNotification: (message: string, type: NotificationType) => {

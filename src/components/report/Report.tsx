@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { useRecoilValue } from "recoil";
 import { accountsState } from "../../common/shareState";
 import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
@@ -12,9 +11,10 @@ import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
 import TableReport from "./TableReport";
 import { Box, Card, Grid } from "@radix-ui/themes";
+import { useAtomValue } from "jotai";
 
 const Report: React.FC = () => {
-    const accounts = useRecoilValue(accountsState);
+    const accounts = useAtomValue(accountsState);
     const location = useLocation();
     const initalSelectedAccounts: SelectableAccount[] = location?.state?.accountId
         ? accounts.map((a) => {

@@ -50,42 +50,22 @@ const Home: React.FC = () => {
     const backToHomeParam = useLocation().state as BackToHomeParam;
     const { setBackToHomeParam } = useBackToHome();
 
-    const updateDescription = (value: string) => {
+    const updateField = (field: keyof CurrentValue, value: any) => {
         setCurrentValue({
             ...currentValue,
-            description: value,
+            [field]: value,
         });
     };
 
-    const updateSelectedDate = (value: string) => {
-        setCurrentValue({
-            ...currentValue,
-            date: value,
-        });
-    };
-
-    const updateSelectedAccount = (idx: number) => {
-        setCurrentValue({
-            ...currentValue,
-            accountIdx: idx,
-        });
-    };
-
+    const updateDescription = (value: string) => updateField("description", value);
+    const updateSelectedDate = (value: string) => updateField("date", value);
+    const updateSelectedAccount = (idx: number) => updateField("accountIdx", idx);
     const updateSelectedCategory = (value: string) => {
         const idx = categories.findIndex((x) => x.name === value);
 
-        setCurrentValue({
-            ...currentValue,
-            categoryIdx: idx,
-        });
+        updateField("categoryIdx", idx);
     };
-
-    const updateExpense = (value: string) => {
-        setCurrentValue({
-            ...currentValue,
-            amount: value,
-        });
-    };
+    const updateExpense = (value: string) => updateField("amount", value);
 
     const addTransaction = async () => {
         const { accountIdx, amount, date, categoryIdx, description } = currentValue;

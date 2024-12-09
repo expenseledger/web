@@ -2,7 +2,6 @@ import React from "react";
 import { useInput } from "../../common/utils";
 import { TextField } from "@radix-ui/themes";
 import { RootProps } from "@radix-ui/themes/dist/cjs/components/text-field.d";
-import { styled } from "styled-components";
 
 type Position = "front" | "back" | "none";
 
@@ -31,21 +30,20 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <TextField.Root  
+        <TextField.Root
             className={props.className}
             placeholder={props.placeholder}
             size="3"
             type={props.type ?? "text"}
             name={props.name}
             {...(props.type === "number" ? { inputMode: "decimal" } : null)}
-            {...bind}
-        >
+            {...bind}>
             {addonPosition === "front" && (
                 <TextField.Slot>
                     <span>{props.addOn.text}</span>
                 </TextField.Slot>
             )}
-        
+
             {addonPosition === "back" && (
                 <TextField.Slot>
                     <span>{props.addOn.text}</span>

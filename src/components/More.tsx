@@ -72,55 +72,31 @@ const More: React.FC = () => {
         setTransactionTypeTabActive(tabActive);
     };
 
-    const updateSelectedCategory = (value: string) => {
-        const idx = categories.findIndex((x) => x.name === value);
+    const updateField = (field: keyof CurrentValue, value: any) => {
         setCurrentValue({
             ...currentValue,
-            categoryIdx: idx,
+            [field]: value,
         });
     };
-
+    const updateSelectedCategory = (value: string) => {
+        const idx = categories.findIndex((x) => x.name === value);
+        updateField("categoryIdx", idx);
+    };
     const updateSelectedFromAccount = (value: string) => {
         const idx = accounts.findIndex((x) => x.name === value);
         setBackToHomeParam({
             accountId: accounts[idx].id,
         });
 
-        setCurrentValue({
-            ...currentValue,
-            fromAccountIdx: idx,
-        });
+        updateField("fromAccountIdx", idx);
     };
-
     const updateSelectedToAccount = (value: string) => {
         const idx = accounts.findIndex((x) => x.name === value);
-
-        setCurrentValue({
-            ...currentValue,
-            toAccountIdx: idx,
-        });
+        updateField("toAccountIdx", idx);
     };
-
-    const updateSelectedDate = (value: string) => {
-        setCurrentValue({
-            ...currentValue,
-            date: value,
-        });
-    };
-
-    const updateExpense = (value: string) => {
-        setCurrentValue({
-            ...currentValue,
-            amount: value,
-        });
-    };
-
-    const updateDescription = (value: string) => {
-        setCurrentValue({
-            ...currentValue,
-            description: value,
-        });
-    };
+    const updateSelectedDate = (value: string) => updateField("date", value);
+    const updateExpense = (value: string) => updateField("amount", value);
+    const updateDescription = (value: string) => updateField("description", value);
 
     const validateAmount = (amount: number) => {
         if (!amount || amount === 0) {

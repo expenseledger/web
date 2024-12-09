@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 import { Select } from "@radix-ui/themes";
 
 interface DropdownProps {
@@ -18,7 +18,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
         setValue(value);
     };
 
-    const renderOptions = (options: string[]): JSX.Element[] =>
+    const renderOptions = (options: string[]): ReactNode[] =>
         options.map((option, idx) => (
             <Select.Item key={idx} value={option}>
                 {option}

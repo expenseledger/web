@@ -20,6 +20,7 @@ import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import Switch from "../bases/Switch";
 import { useBackToHome } from "../Layout";
 import { useAtom } from "jotai";
+import AnimatedPage from "../AnimatedPage";
 
 const NoData = styled.div`
     font-weight: bold;
@@ -295,12 +296,14 @@ export const TransactionList: React.FC = () => {
     return isLoading ? (
         <Loading />
     ) : (
-        <Root className="mb-5">
-            {renderMonthYear()}
-            {renderSummaryCard()}
-            {renderTransactionCards()}
-            {renderScrollToTop()}
-        </Root>
+        <AnimatedPage>
+            <Root className="mb-5">
+                {renderMonthYear()}
+                {renderSummaryCard()}
+                {renderTransactionCards()}
+                {renderScrollToTop()}
+            </Root>
+        </AnimatedPage>
     );
 };
 

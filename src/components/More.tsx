@@ -17,6 +17,7 @@ import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
 import { useBackToHome } from "./Layout";
 import { useAtom, useAtomValue } from "jotai";
+import AnimatedPage from "./AnimatedPage";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
@@ -398,7 +399,7 @@ const More: React.FC = () => {
     };
 
     return (
-        <>
+        <AnimatedPage>
             {renderTransactionTypeTab()}
             <Grid rows="5" gap="3" mt="3">
                 <Flex direction="column">
@@ -470,7 +471,7 @@ const More: React.FC = () => {
                     />
                 </Flex>
             </Grid>
-        </>
+        </AnimatedPage>
     );
 };
 

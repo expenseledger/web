@@ -15,6 +15,7 @@ import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
+import AnimatedPage from "../AnimatedPage";
 
 interface ModifyModalProps {
     id: number;
@@ -143,23 +144,25 @@ const CategorySetting: React.FC = () => {
     };
 
     return (
-        <Flex direction="column" gap="3" mb="3">
-            <EditAndDeleteSetting
-                deleteFuncHandler={removeCategoryHandler}
-                modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
-                items={categories.map((x) => {
-                    return { id: x.id, name: x.name };
-                })}
-            />
-            <TextBoxWithButton
-                name="add"
-                type="text"
-                buttonType="primary"
-                buttonText="Create"
-                onClick={addCategoryHandler}
-                dropdown={allCategoryTypesString}
-            />
-        </Flex>
+        <AnimatedPage>
+            <Flex direction="column" gap="3" mb="3">
+                <EditAndDeleteSetting
+                    deleteFuncHandler={removeCategoryHandler}
+                    modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
+                    items={categories.map((x) => {
+                        return { id: x.id, name: x.name };
+                    })}
+                />
+                <TextBoxWithButton
+                    name="add"
+                    type="text"
+                    buttonType="primary"
+                    buttonText="Create"
+                    onClick={addCategoryHandler}
+                    dropdown={allCategoryTypesString}
+                />
+            </Flex>
+        </AnimatedPage>
     );
 };
 

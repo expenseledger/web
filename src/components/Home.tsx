@@ -19,6 +19,7 @@ import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
 import { BackToHomeParam, useBackToHome } from "./Layout";
 import { useAtom, useAtomValue } from "jotai";
+import AnimatedPage from "./AnimatedPage";
 
 interface CurrentValue {
     accountIdx: number;
@@ -165,7 +166,7 @@ const Home: React.FC = () => {
     }, [backToHomeParam]);
 
     return (
-        <>
+        <AnimatedPage>
             <Box width="100%">{renderAccountCards()}</Box>
             <Flex gap="4" my="4">
                 <Text weight="bold" color={color.primary as any}>
@@ -274,7 +275,7 @@ const Home: React.FC = () => {
                     </Box>
                 </Flex>
             </Grid>
-        </>
+        </AnimatedPage>
     );
 };
 

@@ -1,5 +1,12 @@
 import React, { use } from "react";
-import { Link, Outlet, useNavigate, useOutlet, useOutletContext } from "react-router-dom";
+import {
+    Link,
+    Outlet,
+    useNavigate,
+    useOutlet,
+    useOutletContext,
+    useLocation,
+} from "react-router-dom";
 import styled from "styled-components";
 import pj from "../../package.json";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
@@ -13,6 +20,7 @@ import Menu from "./menu/Menu";
 import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
 import { useAtom, useAtomValue } from "jotai";
+import { AnimatePresence, motion } from "framer-motion";
 
 const Header = styled.div`
     padding-top: 12px;
@@ -44,6 +52,7 @@ const Layout: React.FC = () => {
     const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
     const navigate = useNavigate();
     const [backToHomeParam, setBackToHomeParam] = React.useState<BackToHomeParam>(null);
+    const location = useLocation();
 
     React.useEffect(() => {
         if (!isSignInLoading && !isSignIn) {

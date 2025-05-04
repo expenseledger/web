@@ -12,6 +12,7 @@ import PieChartReport from "./PieChartReport";
 import TableReport from "./TableReport";
 import { Box, Card, Grid } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
+import AnimatedPage from "../AnimatedPage";
 
 const Report: React.FC = () => {
     const accounts = useAtomValue(accountsState);
@@ -94,7 +95,7 @@ const Report: React.FC = () => {
     return isLoading ? (
         <Loading />
     ) : (
-        <>
+        <AnimatedPage>
             <MonthYearSwiper
                 monthYearList={monthYearList}
                 onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
@@ -130,7 +131,7 @@ const Report: React.FC = () => {
             <Box mt="3" mb="5">
                 <TableReport transations={transactions} isExpense={true} />
             </Box>
-        </>
+        </AnimatedPage>
     );
 };
 

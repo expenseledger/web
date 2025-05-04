@@ -8,11 +8,14 @@ interface AnimatedPageProps {
 const AnimatedPage = ({ children }: AnimatedPageProps) => {
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2, ease: "easeInOut" }}
-            style={{ height: "100%" }}>
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{
+                duration: 0.3,
+                ease: [0.4, 0, 0.2, 1],
+                opacity: { duration: 0.25 },
+            }}>
             {children}
         </motion.div>
     );

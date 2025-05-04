@@ -20,7 +20,6 @@ import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import { useAtom, useAtomValue } from "jotai";
-import AnimatedPage from "../AnimatedPage";
 
 interface ModifyModalProps {
     id: number;
@@ -254,26 +253,24 @@ const AccountSetting: React.FC = () => {
     );
 
     return (
-        <AnimatedPage>
-            <Flex direction="column" gap="3">
-                <EditAndDeleteSetting
-                    deleteFuncHandler={deleteAccountHandler}
-                    items={accounts.map((x) => {
-                        return { id: x.id, name: x.name };
-                    })}
-                    modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
-                />
-                {renderCurrencySelectionPanel}
-                <TextBoxWithButton
-                    name="add"
-                    type="text"
-                    buttonType="primary"
-                    buttonText="Create"
-                    onClick={createAccountHandler}
-                    dropdown={allAccountTypesString}
-                />
-            </Flex>
-        </AnimatedPage>
+        <Flex direction="column" gap="3">
+            <EditAndDeleteSetting
+                deleteFuncHandler={deleteAccountHandler}
+                items={accounts.map((x) => {
+                    return { id: x.id, name: x.name };
+                })}
+                modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
+            />
+            {renderCurrencySelectionPanel}
+            <TextBoxWithButton
+                name="add"
+                type="text"
+                buttonType="primary"
+                buttonText="Create"
+                onClick={createAccountHandler}
+                dropdown={allAccountTypesString}
+            />
+        </Flex>
     );
 };
 

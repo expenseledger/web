@@ -1,6 +1,19 @@
 import * as React from "react";
 import Button, { ButtonType } from "./Button";
 import { Dialog, Flex } from "@radix-ui/themes";
+import AnimatedPage from "../AnimatedPage";
+import { motion, AnimatePresence } from "framer-motion";
+
+const modalCloseAnimation = {
+    initial: { opacity: 0, scale: 0.98 },
+    animate: { opacity: 1, scale: 1 },
+    exit: { opacity: 0, scale: 0.98 },
+    transition: {
+        duration: 0.3,
+        ease: [0.4, 0, 0.2, 1],
+        opacity: { duration: 0.25 },
+    },
+};
 
 interface Props {
     title: string;
@@ -27,28 +40,34 @@ const Modal: React.FC<ModalProps> = (props) => {
     return (
         <Dialog.Root open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
             <Dialog.Trigger>{props.triggerer}</Dialog.Trigger>
-            <Dialog.Content
-                style={{ maxWidth: "450px" }}
-                onOpenAutoFocus={(event) => {
-                    event.preventDefault();
-                }}>
-                <Dialog.Title>{props.title}</Dialog.Title>
-                <Flex>{props.children}</Flex>
-                <Flex mt="3" gap="2" justify="end">
-                    <Button
-                        value={props.confirmBtnTxt}
-                        onClickHandler={onConfirmHandler}
-                        type={props.confirmBtnType}
-                        isLoading={isLoading}
-                    />
-                    <Button
-                        value={props.cancelBtnTxt}
-                        onClickHandler={() => setIsOpen(false)}
-                        type={props.cancelBtnType}
-                        variant="soft"
-                    />
-                </Flex>
-            </Dialog.Content>
+            <AnimatePresence>
+                {isOpen && (
+                    <AnimatedPage>
+                        <Dialog.Content
+                            style={{ maxWidth: "450px" }}
+                            onOpenAutoFocus={(event) => {
+                                event.preventDefault();
+                            }}>
+                            <Dialog.Title>{props.title}</Dialog.Title>
+                            <Flex>{props.children}</Flex>
+                            <Flex mt="3" gap="2" justify="end">
+                                <Button
+                                    value={props.confirmBtnTxt}
+                                    onClickHandler={onConfirmHandler}
+                                    type={props.confirmBtnType}
+                                    isLoading={isLoading}
+                                />
+                                <Button
+                                    value={props.cancelBtnTxt}
+                                    onClickHandler={() => setIsOpen(false)}
+                                    type={props.cancelBtnType}
+                                    variant="soft"
+                                />
+                            </Flex>
+                        </Dialog.Content>
+                    </AnimatedPage>
+                )}
+            </AnimatePresence>
         </Dialog.Root>
     );
 };

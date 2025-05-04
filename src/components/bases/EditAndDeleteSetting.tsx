@@ -64,7 +64,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
         }
 
         return (
-            <Box>
+            <Flex>
                 <Text mr="1" color={color.primary as any}>
                     {props.modifyModal(
                         props.item.id,
@@ -76,7 +76,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                 <Text color="red">
                     <Cross2Icon onClick={onDeleteHandler} />
                 </Text>
-            </Box>
+            </Flex>
         );
     };
 

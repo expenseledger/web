@@ -55,8 +55,7 @@ const TextBoxWithButton: React.FC<TextBoxWithButtonProps> = (props) => {
             type={props.type ?? "text"}
             placeholder={props.placeholder ?? ""}
             size="3"
-            {...bind}
-        >
+            {...bind}>
             <TextField.Slot pl="3">
                 {renderDropdown()}
                 <Separator orientation="vertical" />

@@ -36,9 +36,11 @@ const SignIn: React.FC = () => {
 
     return (
         <Flex justify="center" align="center" direction="column" pt="9" px="6">
-            <img src={Logo} alt="logo"/>
+            <img src={Logo} alt="logo" />
             <Box pt="6" pb="3">
-                <Text align="center" size="8" weight="bold" as="div">Welcome to Expense Ledger</Text>
+                <Text align="center" size="8" weight="bold" as="div">
+                    Welcome to Expense Ledger
+                </Text>
             </Box>
             <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={auth} />
         </Flex>

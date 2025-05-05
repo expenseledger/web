@@ -19,7 +19,13 @@ const DateBox: React.FC<DateBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <TextField.Root type="date" className={props.className} name={props.name} {...bind} size="3" />
+        <TextField.Root
+            type="date"
+            className={props.className}
+            name={props.name}
+            {...bind}
+            size="3"
+        />
     );
 };
 

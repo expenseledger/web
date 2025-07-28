@@ -2,7 +2,6 @@ import React from "react";
 import { useInput } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
 import { TextField } from "@radix-ui/themes";
-import { styled } from "styled-components";
 
 interface DateBoxProps {
     name: string;
@@ -19,7 +18,13 @@ const DateBox: React.FC<DateBoxProps> = (props) => {
     }, [props.value, setValue]);
 
     return (
-        <TextField.Root type="date" className={props.className} name={props.name} {...bind} size="3" />
+        <TextField.Root
+            type="date"
+            className={props.className}
+            name={props.name}
+            {...bind}
+            size="3"
+        />
     );
 };
 

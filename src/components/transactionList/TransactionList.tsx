@@ -78,7 +78,7 @@ export const TransactionList: React.FC = () => {
                 setMonthYearList(response.monthYears);
             })
             .catch(backToHome);
-    }, [accountId, backToHome]);
+    }, [accountId, backToHome, setBackToHomeParam]);
 
     useEffect(() => {
         if (!monthYearList) {

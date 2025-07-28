@@ -1,8 +1,8 @@
-import React, { use } from "react";
+import React from "react";
 import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtomValue } from "jotai";
 
 interface StyledProps {
     $isMenuOnRightSide: boolean;

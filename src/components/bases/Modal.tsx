@@ -2,18 +2,7 @@ import * as React from "react";
 import Button, { ButtonType } from "./Button";
 import { Dialog, Flex } from "@radix-ui/themes";
 import AnimatedPage from "../AnimatedPage";
-import { motion, AnimatePresence } from "framer-motion";
-
-const modalCloseAnimation = {
-    initial: { opacity: 0, scale: 0.98 },
-    animate: { opacity: 1, scale: 1 },
-    exit: { opacity: 0, scale: 0.98 },
-    transition: {
-        duration: 0.3,
-        ease: [0.4, 0, 0.2, 1],
-        opacity: { duration: 0.25 },
-    },
-};
+import { AnimatePresence } from "framer-motion";
 
 interface Props {
     title: string;

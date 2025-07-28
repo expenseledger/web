@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useLocation } from "react-router";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";

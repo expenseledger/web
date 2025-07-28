@@ -1,4 +1,3 @@
-import "firebase/auth";
 import { GraphQLError } from "graphql";
 import { useState } from "react";
 

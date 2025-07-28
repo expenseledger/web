@@ -30,7 +30,6 @@ export function mapStringToAccountType(accountType: string): AccountType {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function mapAccountFromServer(account: any): Account {
     return {
         id: account.id,

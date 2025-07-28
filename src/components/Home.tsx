@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -20,6 +20,10 @@ import { color } from "../common/constants";
 import { BackToHomeParam, useBackToHome } from "./Layout";
 import { useAtom, useAtomValue } from "jotai";
 import AnimatedPage from "./AnimatedPage";
+import { Navigation, Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 
 interface CurrentValue {
     accountIdx: number;
@@ -51,16 +55,18 @@ const Home: React.FC = () => {
     const backToHomeParam = useLocation().state as BackToHomeParam;
     const { setBackToHomeParam } = useBackToHome();
 
-    const updateField = (field: keyof CurrentValue, value: any) => {
-        setCurrentValue({
-            ...currentValue,
+    const updateField = useCallback((field: keyof CurrentValue, value: any) => {
+        setCurrentValue((prev) => ({
+            ...prev,
             [field]: value,
-        });
-    };
-
+        }));
+    }, []);
     const updateDescription = (value: string) => updateField("description", value);
     const updateSelectedDate = (value: string) => updateField("date", value);
-    const updateSelectedAccount = (idx: number) => updateField("accountIdx", idx);
+    const updateSelectedAccount = useCallback(
+        (idx: number) => updateField("accountIdx", idx),
+        [updateField]
+    );
     const updateSelectedCategory = (value: string) => {
         const idx = categories.findIndex((x) => x.name === value);
 
@@ -146,6 +152,7 @@ const Home: React.FC = () => {
 
         return (
             <Swiper
+                modules={[Navigation, Pagination]}
                 loop
                 spaceBetween={10}
                 pagination={true}
@@ -163,7 +170,7 @@ const Home: React.FC = () => {
             updateSelectedAccount(idx);
             setBackToHomeParam(null);
         }
-    }, [backToHomeParam]);
+    }, [backToHomeParam, accounts, setBackToHomeParam, updateSelectedAccount]);
 
     return (
         <AnimatedPage>

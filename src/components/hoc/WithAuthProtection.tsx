@@ -11,9 +11,7 @@ interface WithAuthProtectionProps {
     isTest?: boolean;
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const withAuthProtection = (WrappedComponent: any) =>
-    // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
     function WithAuthProtection(props: WithAuthProtectionProps) {
         const [isSignin, setIsSignin] = React.useState(false);
         const navigate = useNavigate();

@@ -38,6 +38,10 @@ export default defineConfig([{
         semi: ["error", "always"],
         "@typescript-eslint/no-var-requires": "error",
         "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-unused-expressions": ["error", {
+            allowShortCircuit: true,
+            allowTernary: true,
+        }],
         quotes: ["error", "double", {
             allowTemplateLiterals: true,
         }],
@@ -48,4 +52,9 @@ export default defineConfig([{
             additionalHooks: "useRecoilCallback",
         }],
     },
+    settings: {
+        react: {
+            version: "detect"
+        }
+    }
 }]);

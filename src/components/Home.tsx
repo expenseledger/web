@@ -163,7 +163,7 @@ const Home: React.FC = () => {
             updateSelectedAccount(idx);
             setBackToHomeParam(null);
         }
-    }, [backToHomeParam]);
+    }, [backToHomeParam, accounts, setBackToHomeParam]);
 
     return (
         <AnimatedPage>

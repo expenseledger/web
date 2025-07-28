@@ -1,9 +1,9 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`<AccountCard> renders without crashing 1`] = `
 <div>
   <div
-    class="sc-Qotzb cUItyt"
+    class="sc-bRKDuR bJhbeN"
   >
     <span
       class="rt-Text rt-r-size-8 rt-r-weight-bold"

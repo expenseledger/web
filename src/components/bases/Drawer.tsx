@@ -44,6 +44,7 @@ const Panel = styled.div<StyledProps>`
     top: 0;
     left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
     right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
+    border-radius: ${(props) => (props.$isMenuOnRightSide ? "16px 0 0 16px" : "0 16px 16px 0")};
     height: 100%;
     width: 30%;
     min-width: 350px;

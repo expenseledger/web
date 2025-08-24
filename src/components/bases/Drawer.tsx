@@ -44,10 +44,11 @@ const Panel = styled.div<StyledProps>`
     top: 0;
     left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
     right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
+    border-radius: ${(props) => (props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0")};
     height: 100%;
     width: 30%;
     min-width: 350px;
-    background-color: white;
+    background-color: #fafafa;
     animation: ${(props) =>
             props.$isShow
                 ? props.$isMenuOnRightSide

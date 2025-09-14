@@ -1,9 +1,10 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
-import { setContext } from "@apollo/client/link/context";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { HttpLink } from "@apollo/client/link/http";
+import { SetContextLink } from "@apollo/client/link/context";
 import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
 
-const httpLink = createHttpLink({
+const httpLink = new HttpLink({
     uri: getServerUrl,
 });
 
@@ -20,12 +21,12 @@ const getAuthToken = async (retry = 0): Promise<string> => {
     }
 };
 
-const authLink = setContext(async (_, { headers }) => {
+const authLink = new SetContextLink(async (prevContext) => {
     const token = await getAuthToken();
 
     return {
         headers: {
-            ...headers,
+            ...prevContext.headers,
             authorization: token ? `Bearer ${token}` : "",
         },
     };

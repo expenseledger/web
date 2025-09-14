@@ -272,8 +272,8 @@ export async function addExpense(request: AddExpenseRequest): Promise<AddExpense
             },
         });
 
-        if (response.errors) {
-            log(`Add expense failed`, response.errors);
+        if (response.error) {
+            log(`Add expense failed`, response.error);
 
             return null;
         }
@@ -301,8 +301,8 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
             },
         });
 
-        if (response.errors) {
-            log("Add income failed", response.errors);
+        if (response.error) {
+            log("Add income failed", response.error);
 
             return null;
         }
@@ -331,8 +331,8 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
             },
         });
 
-        if (response.errors) {
-            log("Add transfer failed", response.errors);
+        if (response.error) {
+            log("Add transfer failed", response.error);
 
             return null;
         }
@@ -351,8 +351,15 @@ export async function listTransactions(
     request: ListTransactionsRequest
 ): Promise<ListTransactionsResponse> {
     try {
+        type TransactionsQueryResult = {
+            transactions: {
+                nodes: any[];
+                totalCount: number;
+            };
+        };
+
         const [resToAcc, resFromAcc] = await Promise.all([
-            client.query({
+            client.query<TransactionsQueryResult>({
                 query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
                 variables: {
                     accountId: request.accountId,
@@ -361,7 +368,7 @@ export async function listTransactions(
                 },
                 fetchPolicy: request.useCache ? "cache-first" : "network-only",
             }),
-            client.query({
+            client.query<TransactionsQueryResult>({
                 query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
                 variables: {
                     accountId: request.accountId,
@@ -380,12 +387,12 @@ export async function listTransactions(
                 resToAcc.data.transactions.totalCount + resFromAcc.data.transactions.totalCount,
         };
 
-        if (resToAcc.errors || resFromAcc.errors) {
-            if (resToAcc.errors) {
-                log("list transactions failed", resToAcc.errors);
+        if (resToAcc.error || resFromAcc.error) {
+            if (resToAcc.error) {
+                log("list transactions failed", resToAcc.error);
             }
-            if (resFromAcc.errors) {
-                log("list transactions failed", resFromAcc.errors);
+            if (resFromAcc.error) {
+                log("list transactions failed", resFromAcc.error);
             }
 
             return {
@@ -439,8 +446,8 @@ export async function deleteTransaction(
             },
         });
 
-        if (response.errors) {
-            log("delete transaction failed", response.errors);
+        if (response.error) {
+            log("delete transaction failed", response.error);
 
             return {
                 isSuccess: false,
@@ -470,8 +477,8 @@ export async function getTransactionMonthYearList(
             },
         });
 
-        if (response.errors) {
-            log("get transaction month year list failed", response.errors);
+        if (response.error) {
+            log("get transaction month year list failed", response.error);
 
             return {
                 monthYears: [],
@@ -505,8 +512,8 @@ export async function updateTransaction(
             },
         });
 
-        if (response.errors) {
-            log("update transaction failed", response.errors);
+        if (response.error) {
+            log("update transaction failed", response.error);
 
             return {
                 updatedTransaction: null,

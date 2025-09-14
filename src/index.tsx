@@ -1,4 +1,4 @@
-import { ApolloProvider } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "@radix-ui/themes/styles.css";

@@ -1,8 +1,9 @@
-import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
 import { CategoryType } from "./constants";
+import { CategoryType as CategorytypeGql } from "./model/gql/graphql";
 import Category from "./model/Category";
+import { graphql } from "./model/gql";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
 import { UpdateCategoryRequest } from "./model/Requests/index";
 import {
@@ -11,7 +12,7 @@ import {
     UpdateCategoryResponse,
 } from "./model/Responses/index";
 
-const CREATE_CATEGORY = gql`
+const CREATE_CATEGORY = graphql(`
     mutation CreateCategory($name: String!, $type: CategoryType!) {
         createCategoryV2(input: { name: $name, type: $type }) {
             category {
@@ -21,9 +22,9 @@ const CREATE_CATEGORY = gql`
             }
         }
     }
-`;
+`);
 
-const DELETE_CATEGORY = gql`
+const DELETE_CATEGORY = graphql(`
     mutation DeleteCategory($id: Int!) {
         deleteCategory(input: { id: $id }) {
             owner {
@@ -37,8 +38,8 @@ const DELETE_CATEGORY = gql`
             }
         }
     }
-`;
-const UPDATE_CATEGORY = gql`
+`);
+const UPDATE_CATEGORY = graphql(`
     mutation UpdateCategory($id: Int!, $name: String!, $type: CategoryType!) {
         updateCategory(input: { id: $id, name: $name, type: $type }) {
             category {
@@ -48,9 +49,9 @@ const UPDATE_CATEGORY = gql`
             }
         }
     }
-`;
+`);
 
-const GET_ALL_CATEGORIES = gql`
+const GET_ALL_CATEGORIES = graphql(`
     query GetAllCategories {
         categories {
             nodes {
@@ -60,15 +61,15 @@ const GET_ALL_CATEGORIES = gql`
             }
         }
     }
-`;
+`);
 
-export const categoryFragment = gql`
+export const categoryFragment = graphql(`
     fragment PlainCategory on Category {
         id
         name
         type
     }
-`;
+`);
 
 export async function getAllCategories(): Promise<Category[]> {
     try {
@@ -76,8 +77,8 @@ export async function getAllCategories(): Promise<Category[]> {
             query: GET_ALL_CATEGORIES,
         });
 
-        if (response.errors) {
-            log("cannot get all categories", response.errors);
+        if (response.error) {
+            log("cannot get all categories", response.error);
 
             return [];
         }
@@ -100,12 +101,12 @@ export async function createCategory(
             mutation: CREATE_CATEGORY,
             variables: {
                 name: request.name,
-                type: request.type,
+                type: request.type as CategorytypeGql,
             },
         });
 
-        if (response.errors) {
-            log("cannot add category", response.errors);
+        if (response.error) {
+            log("cannot add category", response.error);
 
             return {
                 addedCategory: null,
@@ -134,8 +135,8 @@ export async function deleteCategory(
             },
         });
 
-        if (response.errors) {
-            log("cannot remove category", response.errors);
+        if (response.error) {
+            log("cannot remove category", response.error);
 
             return {
                 isSuccess: false,
@@ -163,12 +164,12 @@ export async function updateCategory(
             variables: {
                 id: request.id,
                 name: request.name,
-                type: request.type,
+                type: request.type as CategorytypeGql,
             },
         });
 
-        if (response.errors) {
-            log("Cannot update category", response.errors);
+        if (response.error) {
+            log("Cannot update category", response.error);
 
             return {
                 updatedCategory: null,

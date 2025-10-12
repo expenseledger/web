@@ -1,7 +1,5 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { accountFragment } from "./accountService";
-import { categoryFragment } from "./categoryService";
 import { mapTransactionFromServer } from "./helper/transactoinHelper";
 import { graphql } from "./model/gql";
 import {
@@ -24,7 +22,7 @@ import {
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import { Transaction } from "./model/Transaction";
 
-const transactionFragment = graphql(`
+export const transactionFragment = graphql(`
     fragment PlainTransaction on Transaction {
         id
         amount
@@ -65,9 +63,6 @@ const ADD_EXPENSE = graphql(`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const ADD_INCOME = graphql(`
@@ -98,9 +93,6 @@ const ADD_INCOME = graphql(`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const ADD_TRANSFER = graphql(`
@@ -136,9 +128,6 @@ const ADD_TRANSFER = graphql(`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const DELETE_TRANSACTION = graphql(`
@@ -158,9 +147,6 @@ const DELETE_TRANSACTION = graphql(`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = graphql(`
@@ -184,9 +170,6 @@ const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = graphql(`
             totalCount
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = graphql(`
@@ -210,9 +193,6 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = graphql(`
             totalCount
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = graphql(`
@@ -254,9 +234,6 @@ const UPDATE_TRANSACTION = graphql(`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
 `);
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {

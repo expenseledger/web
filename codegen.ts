@@ -7,7 +7,7 @@ const config: CodegenConfig = {
         "./src/service/model/gql/": {
             preset: "client",
             presetConfig: {
-                fragmentMasking: true,
+                fragmentMasking: false,
             },
         },
     },

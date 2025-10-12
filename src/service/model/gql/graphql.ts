@@ -1632,7 +1632,7 @@ export type UpdateAccountMutationVariables = Exact<{
 
 export type UpdateAccountMutation = { __typename?: 'Mutation', updateAccount?: { __typename?: 'UpdateAccountPayload', account?: { __typename?: 'Account', balance: number, id: number, name: string, type: AccountType } | null } | null };
 
-export type PlainAccountFragment = { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } & { ' $fragmentName'?: 'PlainAccountFragment' };
+export type PlainAccountFragment = { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number };
 
 export type CreateCategoryMutationVariables = Exact<{
   name: Scalars['String']['input'];
@@ -1663,9 +1663,9 @@ export type GetAllCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetAllCategoriesQuery = { __typename?: 'Query', categories?: { __typename?: 'CategoriesConnection', nodes: Array<{ __typename?: 'Category', id: number, name: string, type: CategoryType } | null> } | null };
 
-export type PlainCategoryFragment = { __typename?: 'Category', id: number, name: string, type: CategoryType } & { ' $fragmentName'?: 'PlainCategoryFragment' };
+export type PlainCategoryFragment = { __typename?: 'Category', id: number, name: string, type: CategoryType };
 
-export type PlainTransactionFragment = { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null } & { ' $fragmentName'?: 'PlainTransactionFragment' };
+export type PlainTransactionFragment = { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null };
 
 export type AddExpenseMutationVariables = Exact<{
   amount: Scalars['Float']['input'];
@@ -1676,16 +1676,7 @@ export type AddExpenseMutationVariables = Exact<{
 }>;
 
 
-export type AddExpenseMutation = { __typename?: 'Mutation', spend?: { __typename?: 'SpendPayload', transaction?: (
-      { __typename?: 'Transaction', fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null } | null };
+export type AddExpenseMutation = { __typename?: 'Mutation', spend?: { __typename?: 'SpendPayload', transaction?: { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null } | null };
 
 export type AddIncomeMutationVariables = Exact<{
   amount: Scalars['Float']['input'];
@@ -1696,16 +1687,7 @@ export type AddIncomeMutationVariables = Exact<{
 }>;
 
 
-export type AddIncomeMutation = { __typename?: 'Mutation', receive?: { __typename?: 'ReceivePayload', transaction?: (
-      { __typename?: 'Transaction', toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null } | null };
+export type AddIncomeMutation = { __typename?: 'Mutation', receive?: { __typename?: 'ReceivePayload', transaction?: { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null } | null };
 
 export type AddTransferMutationVariables = Exact<{
   amount: Scalars['Float']['input'];
@@ -1717,38 +1699,14 @@ export type AddTransferMutationVariables = Exact<{
 }>;
 
 
-export type AddTransferMutation = { __typename?: 'Mutation', transferV2?: { __typename?: 'TransferV2Payload', transaction?: (
-      { __typename?: 'Transaction', fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null } | null };
+export type AddTransferMutation = { __typename?: 'Mutation', transferV2?: { __typename?: 'TransferV2Payload', transaction?: { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null } | null };
 
 export type DeleteTransactionMutationVariables = Exact<{
   transactionId: Scalars['Int']['input'];
 }>;
 
 
-export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransaction?: { __typename?: 'DeleteTransactionPayload', transaction?: (
-      { __typename?: 'Transaction', fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null } | null };
+export type DeleteTransactionMutation = { __typename?: 'Mutation', deleteTransaction?: { __typename?: 'DeleteTransactionPayload', transaction?: { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null } | null };
 
 export type GetTransactionsQueryVariables = Exact<{
   accountId: Scalars['Int']['input'];
@@ -1757,19 +1715,7 @@ export type GetTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GetTransactionsQuery = { __typename?: 'Query', transactions?: { __typename?: 'TransactionsConnection', totalCount: number, nodes: Array<(
-      { __typename?: 'Transaction', toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null> } | null };
+export type GetTransactionsQuery = { __typename?: 'Query', transactions?: { __typename?: 'TransactionsConnection', totalCount: number, nodes: Array<{ __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null> } | null };
 
 export type GetTransactionsByFromAccountQueryVariables = Exact<{
   accountId: Scalars['Int']['input'];
@@ -1778,19 +1724,7 @@ export type GetTransactionsByFromAccountQueryVariables = Exact<{
 }>;
 
 
-export type GetTransactionsByFromAccountQuery = { __typename?: 'Query', transactions?: { __typename?: 'TransactionsConnection', totalCount: number, nodes: Array<(
-      { __typename?: 'Transaction', toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null> } | null };
+export type GetTransactionsByFromAccountQuery = { __typename?: 'Query', transactions?: { __typename?: 'TransactionsConnection', totalCount: number, nodes: Array<{ __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null> } | null };
 
 export type GetTransactionMonthYearListByAccountIdQueryVariables = Exact<{
   accountId: Scalars['Int']['input'];
@@ -1808,19 +1742,7 @@ export type UpdateTransactionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateTransactionMutation = { __typename?: 'Mutation', updateTransaction?: { __typename?: 'UpdateTransactionPayload', transaction?: (
-      { __typename?: 'Transaction', fromAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, toAccount?: (
-        { __typename?: 'Account' }
-        & { ' $fragmentRefs'?: { 'PlainAccountFragment': PlainAccountFragment } }
-      ) | null, category?: (
-        { __typename?: 'Category' }
-        & { ' $fragmentRefs'?: { 'PlainCategoryFragment': PlainCategoryFragment } }
-      ) | null }
-      & { ' $fragmentRefs'?: { 'PlainTransactionFragment': PlainTransactionFragment } }
-    ) | null } | null };
+export type UpdateTransactionMutation = { __typename?: 'Mutation', updateTransaction?: { __typename?: 'UpdateTransactionPayload', transaction?: { __typename?: 'Transaction', id: number, amount: number, description: string, type: TransactionType, date: any, categoryId?: number | null, fromAccountId?: number | null, toAccountId?: number | null, fromAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, toAccount?: { __typename?: 'Account', id: number, name: string, type: AccountType, balance: number } | null, category?: { __typename?: 'Category', id: number, name: string, type: CategoryType } | null } | null } | null };
 
 export type CurrentUserMutationVariables = Exact<{ [key: string]: never; }>;
 

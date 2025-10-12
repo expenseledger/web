@@ -1,8 +1,8 @@
-import { gql } from "@apollo/client";
 import client from "../lib/apollo";
+import { graphql } from "./model/gql";
 import User from "./model/User";
 
-const CURRENT_USER = gql`
+const CURRENT_USER = graphql(`
     mutation CurrentUser {
         currentUser(input: {}) {
             owner {
@@ -24,15 +24,15 @@ const CURRENT_USER = gql`
             }
         }
     }
-`;
+`);
 
 export async function getUserData(): Promise<User> {
     const result = await client.mutate({
         mutation: CURRENT_USER,
     });
 
-    if (result.errors) {
-        throw new Error(result.errors.map((x) => x.message).join("\n"));
+    if (result.error) {
+        throw new Error(result.error.message);
     }
 
     return {

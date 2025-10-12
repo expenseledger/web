@@ -1,9 +1,7 @@
-import { gql } from "@apollo/client";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { accountFragment } from "./accountService";
-import { categoryFragment } from "./categoryService";
 import { mapTransactionFromServer } from "./helper/transactoinHelper";
+import { graphql } from "./model/gql";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
@@ -24,7 +22,7 @@ import {
 import { DeleteTransactionResponse } from "./model/Responses/index";
 import { Transaction } from "./model/Transaction";
 
-const transactionFragment = gql`
+export const transactionFragment = graphql(`
     fragment PlainTransaction on Transaction {
         id
         amount
@@ -35,9 +33,9 @@ const transactionFragment = gql`
         fromAccountId
         toAccountId
     }
-`;
+`);
 
-const ADD_EXPENSE = gql`
+const ADD_EXPENSE = graphql(`
     mutation AddExpense(
         $amount: Float!
         $description: String!
@@ -65,12 +63,9 @@ const ADD_EXPENSE = gql`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const ADD_INCOME = gql`
+const ADD_INCOME = graphql(`
     mutation AddIncome(
         $amount: Float!
         $description: String!
@@ -98,12 +93,9 @@ const ADD_INCOME = gql`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const ADD_TRANSFER = gql`
+const ADD_TRANSFER = graphql(`
     mutation AddTransfer(
         $amount: Float!
         $description: String!
@@ -136,12 +128,9 @@ const ADD_TRANSFER = gql`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const DELETE_TRANSACTION = gql`
+const DELETE_TRANSACTION = graphql(`
     mutation DeleteTransaction($transactionId: Int!) {
         deleteTransaction(input: { id: $transactionId }) {
             transaction {
@@ -158,12 +147,9 @@ const DELETE_TRANSACTION = gql`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
+const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = graphql(`
     query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
         transactions(
             condition: { toAccountId: $accountId }
@@ -184,13 +170,10 @@ const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = gql`
             totalCount
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
-    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
+const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = graphql(`
+    query GetTransactionsByFromAccount($accountId: Int!, $from: Datetime!, $until: Datetime!) {
         transactions(
             condition: { fromAccountId: $accountId }
             filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
@@ -210,20 +193,17 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = gql`
             totalCount
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
-const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = gql`
+const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = graphql(`
     query GetTransactionMonthYearListByAccountId($accountId: Int!) {
         transactionMonthYearListByAccountId(accountId: $accountId) {
             nodes
         }
     }
-`;
+`);
 
-const UPDATE_TRANSACTION = gql`
+const UPDATE_TRANSACTION = graphql(`
     mutation UpdateTransaction(
         $id: Int!
         $amount: Float!
@@ -254,10 +234,7 @@ const UPDATE_TRANSACTION = gql`
             }
         }
     }
-    ${transactionFragment}
-    ${accountFragment}
-    ${categoryFragment}
-`;
+`);
 
 export async function addExpense(request: AddExpenseRequest): Promise<AddExpenseResponse> {
     try {
@@ -351,15 +328,8 @@ export async function listTransactions(
     request: ListTransactionsRequest
 ): Promise<ListTransactionsResponse> {
     try {
-        type TransactionsQueryResult = {
-            transactions: {
-                nodes: any[];
-                totalCount: number;
-            };
-        };
-
         const [resToAcc, resFromAcc] = await Promise.all([
-            client.query<TransactionsQueryResult>({
+            client.query({
                 query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
                 variables: {
                     accountId: request.accountId,
@@ -368,7 +338,7 @@ export async function listTransactions(
                 },
                 fetchPolicy: request.useCache ? "cache-first" : "network-only",
             }),
-            client.query<TransactionsQueryResult>({
+            client.query({
                 query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
                 variables: {
                     accountId: request.accountId,

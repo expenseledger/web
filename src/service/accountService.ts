@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { graphql } from "./model/gql";
 import { log } from "../common/utils";
 import client from "../lib/apollo";
 import { mapAccountFromServer } from "./helper/accountHelper";
@@ -15,8 +15,9 @@ import {
     GetAllAccountResponse,
     UpdateAccountResponse,
 } from "./model/Responses/index";
+import { AccountType } from "./model/gql/graphql";
 
-const GET_ALL_ACCOUNTS = gql`
+const GET_ALL_ACCOUNTS = graphql(`
     query GetAllAccounts {
         accounts {
             nodes {
@@ -27,20 +28,20 @@ const GET_ALL_ACCOUNTS = gql`
             }
         }
     }
-`;
+`);
 
-const GET_ACCOUNT_BY_ID = gql`
+const GET_ACCOUNT_BY_ID = graphql(`
     query GetAccountById($id: Int!) {
-        getAccount(id: $id) {
+        account(id: $id) {
             id
             name
             balance
             type
         }
     }
-`;
+`);
 
-const CREATE_ACCOUNT = gql`
+const CREATE_ACCOUNT = graphql(`
     mutation CreateAccount($name: String!, $type: AccountType!) {
         createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
             account {
@@ -51,9 +52,9 @@ const CREATE_ACCOUNT = gql`
             }
         }
     }
-`;
+`);
 
-const DELETE_ACCOUNT_BY_ID = gql`
+const DELETE_ACCOUNT_BY_ID = graphql(`
     mutation DeleteAccount($id: Int!) {
         closeAccount(input: { id: $id }) {
             account {
@@ -64,9 +65,9 @@ const DELETE_ACCOUNT_BY_ID = gql`
             }
         }
     }
-`;
+`);
 
-const UPDATE_ACCOUNT_BY_ID = gql`
+const UPDATE_ACCOUNT_BY_ID = graphql(`
     mutation UpdateAccount($id: Int!, $name: String!, $type: AccountType!) {
         updateAccount(input: { id: $id, name: $name, type: $type }) {
             account {
@@ -77,16 +78,16 @@ const UPDATE_ACCOUNT_BY_ID = gql`
             }
         }
     }
-`;
+`);
 
-export const accountFragment = gql`
+export const accountFragment = graphql(`
     fragment PlainAccount on Account {
         id
         name
         type
         balance
     }
-`;
+`);
 
 export async function getAllAccount(): Promise<GetAllAccountResponse> {
     try {
@@ -94,8 +95,8 @@ export async function getAllAccount(): Promise<GetAllAccountResponse> {
             query: GET_ALL_ACCOUNTS,
         });
 
-        if (response.errors) {
-            log("cannot get all accounts.", response.errors);
+        if (response.error) {
+            log("cannot get all accounts.", response.error);
             return {
                 accounts: [],
             };
@@ -123,8 +124,8 @@ export async function getAccount(request: GetAccountRequest): Promise<GetAccount
             },
         });
 
-        if (response.errors) {
-            log(`cannot get account by id: ${request.id}`, response.errors);
+        if (response.error) {
+            log(`cannot get account by id: ${request.id}`, response.error);
 
             return {
                 account: null,
@@ -132,7 +133,7 @@ export async function getAccount(request: GetAccountRequest): Promise<GetAccount
         }
 
         return {
-            account: mapAccountFromServer(response.data.getAccount),
+            account: mapAccountFromServer(response.data.account),
         };
     } catch (err) {
         log(`cannot get account by id: ${request.id}, unexpected error`, err);
@@ -149,12 +150,12 @@ export async function createAccount(request: CreateAccountRequest): Promise<Crea
             mutation: CREATE_ACCOUNT,
             variables: {
                 name: request.name,
-                type: request.type,
+                type: request.type as AccountType,
             },
         });
 
-        if (response.errors) {
-            log("cannot create account", response.errors);
+        if (response.error) {
+            log("cannot create account", response.error);
 
             return {
                 account: null,
@@ -182,8 +183,8 @@ export async function deleteAccount(request: DeleteAccountRequest): Promise<Dele
             },
         });
 
-        if (response.errors) {
-            log(`Cannot delete account id: ${request.id}`, response.errors);
+        if (response.error) {
+            log(`Cannot delete account id: ${request.id}`, response.error);
 
             return {
                 isSuccess: false,
@@ -209,12 +210,12 @@ export async function updateAccount(request: UpdateAccountRequest): Promise<Upda
             variables: {
                 id: request.id,
                 name: request.name,
-                type: request.type,
+                type: request.type as AccountType,
             },
         });
 
-        if (response.errors) {
-            log(`Cannot update account`, response.errors);
+        if (response.error) {
+            log(`Cannot update account`, response.error);
 
             return {
                 account: null,

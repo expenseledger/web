@@ -13,7 +13,7 @@ const root = createRoot(container);
 root.render(
     // <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-        <Theme accentColor={color.primary}>
+        <Theme accentColor={color.primary} appearance="dark">
             <App />
         </Theme>
     </ApolloProvider>

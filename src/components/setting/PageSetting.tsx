@@ -3,6 +3,7 @@ import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 import { Card, Flex, Separator, Text } from "@radix-ui/themes";
 import AnimatedPage from "../AnimatedPage";
+import { on } from "events";
 
 const PageSetting: React.FC = () => {
     const [pageSetting, setPageSetting] = useAtom(pageSettingState);
@@ -21,6 +22,16 @@ const PageSetting: React.FC = () => {
             const nextState = {
                 ...prevState,
                 isLightMenu: !prevState.isLightMenu,
+            };
+
+            return nextState;
+        });
+    };
+    const onThemeChangeHandler = () => {
+        setPageSetting((prevState) => {
+            const nextState = {
+                ...prevState,
+                isDarkTheme: !prevState.isDarkTheme,
             };
 
             return nextState;
@@ -49,6 +60,17 @@ const PageSetting: React.FC = () => {
                         size="small"
                         isRounded
                         onChange={onMenuColorChangeHandler}
+                    />
+                </Flex>
+                <Separator size="4" />
+                <Flex justify="between" align="center" mt="3">
+                    <Text>Change to dark theme</Text>
+                    <Switch
+                        name="changeMenuColor"
+                        isOn={pageSetting.isDarkTheme}
+                        size="small"
+                        isRounded
+                        onChange={onThemeChangeHandler}
                     />
                 </Flex>
             </Card>

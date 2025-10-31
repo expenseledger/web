@@ -3,7 +3,6 @@ import { pageSettingState } from "../../common/shareState";
 import Switch from "../bases/Switch";
 import { Card, Flex, Separator, Text } from "@radix-ui/themes";
 import AnimatedPage from "../AnimatedPage";
-import { on } from "events";
 
 const PageSetting: React.FC = () => {
     const [pageSetting, setPageSetting] = useAtom(pageSettingState);

@@ -7,6 +7,7 @@ import { useAtomValue } from "jotai";
 interface StyledProps {
     $isMenuOnRightSide: boolean;
     $isShow: boolean;
+    $isDarkTheme: boolean;
 }
 
 interface DrawStyledProps {
@@ -48,7 +49,7 @@ const Panel = styled.div<StyledProps>`
     height: 100%;
     width: 30%;
     min-width: 350px;
-    background-color: #fafafa;
+    background-color: ${(props) => (props.$isDarkTheme ? "#363636" : "white")};
     animation: ${(props) =>
             props.$isShow
                 ? props.$isMenuOnRightSide

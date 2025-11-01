@@ -4,8 +4,6 @@ import App from "./components/App";
 import "@radix-ui/themes/styles.css";
 import "./index.scss";
 import apolloClient from "./lib/apollo";
-import { Theme } from "@radix-ui/themes";
-import { color } from "./common/constants";
 
 const container = document.getElementById("root") as HTMLElement;
 const root = createRoot(container);
@@ -13,9 +11,7 @@ const root = createRoot(container);
 root.render(
     // <React.StrictMode>
     <ApolloProvider client={apolloClient}>
-        <Theme accentColor={color.primary} appearance="dark">
-            <App />
-        </Theme>
+        <App />
     </ApolloProvider>
     // </React.StrictMode>
 );

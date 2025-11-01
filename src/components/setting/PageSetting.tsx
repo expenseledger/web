@@ -51,7 +51,7 @@ const PageSetting: React.FC = () => {
                     />
                 </Flex>
                 <Separator size="4" />
-                <Flex justify="between" align="center" mt="3">
+                <Flex justify="between" align="center" mt="3" mb="3">
                     <Text>Change menu to light color</Text>
                     <Switch
                         name="changeMenuColor"

@@ -7,6 +7,7 @@ import { useAtomValue } from "jotai";
 interface StyledProps {
     $isMenuOnRightSide: boolean;
     $isShow: boolean;
+    $isDarkTheme: boolean;
 }
 
 interface DrawStyledProps {
@@ -48,7 +49,7 @@ const Panel = styled.div<StyledProps>`
     height: 100%;
     width: 30%;
     min-width: 350px;
-    background-color: #fafafa;
+    background-color: ${(props) => (props.$isDarkTheme ? "#363636" : "white")};
     animation: ${(props) =>
             props.$isShow
                 ? props.$isMenuOnRightSide
@@ -97,7 +98,7 @@ interface OwnProps {
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isMenuOnRightSide, isLightMenu } = useAtomValue(pageSettingState);
+    const { isMenuOnRightSide, isLightMenu, isDarkTheme } = useAtomValue(pageSettingState);
     const [isShowPanel, setIsShowPanel] = React.useState(false);
     const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const btnClickHandler = () => {
@@ -133,10 +134,12 @@ const Drawer: React.FC<DrawerProps> = (props) => {
                 <Background
                     $isShow={!isAnimationUnmount && isShowPanel}
                     onClick={closePanelHandler}
-                    $isMenuOnRightSide={isMenuOnRightSide}>
+                    $isMenuOnRightSide={isMenuOnRightSide}
+                    $isDarkTheme={isDarkTheme}>
                     <Panel
                         $isShow={!isAnimationUnmount && isShowPanel}
-                        $isMenuOnRightSide={isMenuOnRightSide}>
+                        $isMenuOnRightSide={isMenuOnRightSide}
+                        $isDarkTheme={isDarkTheme}>
                         {props.children}
                     </Panel>
                 </Background>

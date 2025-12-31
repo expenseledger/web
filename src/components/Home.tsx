@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";
@@ -24,6 +23,7 @@ import { Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import { styled } from "@linaria/react";
 
 interface CurrentValue {
     accountIdx: number;

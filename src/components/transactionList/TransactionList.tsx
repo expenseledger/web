@@ -1,6 +1,6 @@
 import React, { ReactNode, startTransition, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
 import dayjs from "../../lib/dayjs";

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
 import Transaction from "../../service/model/Transaction";

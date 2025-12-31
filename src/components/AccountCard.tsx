@@ -1,6 +1,6 @@
 import React from "react";
 import { animated, config, useSpring } from "react-spring";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import { formatNumber } from "../common/utils";
 import { Box, Text } from "@radix-ui/themes";
 

@@ -9,7 +9,7 @@ import {
     XAxis,
     YAxis,
 } from "recharts";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";

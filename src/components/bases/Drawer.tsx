@@ -1,8 +1,9 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { useAtomValue } from "jotai";
+import { styled } from "@linaria/react";
+import { css } from "@linaria/core";
 
 interface StyledProps {
     $isMenuOnRightSide: boolean;
@@ -17,26 +18,59 @@ interface DrawStyledProps {
 
 const animationDuration = 0.5;
 const zIndex = 1000;
-const slideIn = keyframes`
-    0%   {left: -100%}
-    100% {left: 0;}
+const slideIn = css`
+    @keyframes slideIn {
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 0;
+        }
+    }
 `;
-const slideInRtl = keyframes`
-    0%   {right: -100%}
-    100% {right: 0;}
+const slideInRtl = css`
+    @keyframes slideInRtl {
+        0% {
+            right: -100%;
+        }
+        100% {
+            right: 0;
+        }
+    }
 `;
-const fadeIn = keyframes`
-    0%   {background-color: rgba(0, 0, 0, 0);}
-    100% {background-color: rgba(0, 0, 0, 0.8);}
+const fadeIn = css`
+    @keyframes fadeIn {
+        0% {
+            background-color: rgba(0, 0, 0, 0);
+        }
+        100% {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+    }
 `;
-const slideOut = keyframes`
-    100% {left: -100%;}
+const slideOut = css`
+    @keyframes slideOut {
+        0% {
+            left: 0;
+        }
+        100% {
+            left: -100%;
+        }
+    }
 `;
-const slideOutRtl = keyframes`
-    100% {right: -100%;}
+const slideOutRtl = css`
+    @keyframes slideOutRtl {
+        100% {
+            right: -100%;
+        }
+    }
 `;
-const fadeOut = keyframes`
-    100% {background-color: rgba(0, 0, 0, 0);}
+const fadeOut = css`
+    @keyframes fadeOut {
+        100% {
+            background-color: rgba(0, 0, 0, 0);
+        }
+    }
 `;
 
 const Panel = styled.div<StyledProps>`

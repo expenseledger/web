@@ -1,14 +1,17 @@
 import React from "react";
 import { Box, Text } from "@radix-ui/themes";
-import { keyframes, styled } from "styled-components";
+import { styled } from "@linaria/react";
 import { color } from "../../common/constants";
+import { css } from "@linaria/core";
 
-const loadingAnimation = keyframes`
-    0% {
-        left: -100%;
-    }
-    100% {
-        left: 100%;
+const loadingAnimation = css`
+    @keyframes loadingAnimation {
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
 `;
 

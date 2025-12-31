@@ -1,6 +1,6 @@
 import React from "react";
 import { Outlet, useNavigate, useOutletContext } from "react-router-dom";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import pj from "../../package.json";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
 import { log } from "../common/utils";

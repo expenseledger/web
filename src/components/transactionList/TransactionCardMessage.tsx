@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import { styled } from "@linaria/react";
 import { categoriesState, currencyState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import dayjs from "../../lib/dayjs";

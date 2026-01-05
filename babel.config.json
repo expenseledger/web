@@ -2,7 +2,6 @@
     "presets": [
         ["@babel/preset-env", { "targets": { "node": "current" }}],
         "@babel/preset-typescript",
-        "@babel/preset-react",
-        "linaria/babel"
+        "@babel/preset-react"
     ]
 }

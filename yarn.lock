@@ -8586,6 +8586,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wyw-in-js/vite@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@wyw-in-js/vite@npm:0.8.1"
+  dependencies:
+    "@wyw-in-js/shared": "npm:0.8.1"
+    "@wyw-in-js/transform": "npm:0.8.1"
+  peerDependencies:
+    vite: ">=3.2.7"
+  checksum: 10/d6d40d6d5831f4d253abdd3fedceaf746bd9c8ba285240da0c43626db71b2a70c109fe04ec80252a151f733f1172c9ee861a45b81f3aac2f5c94b6bbf20ad899
+  languageName: node
+  linkType: hard
+
 "abbrev@npm:^3.0.0":
   version: 3.0.1
   resolution: "abbrev@npm:3.0.1"
@@ -11334,6 +11346,7 @@ __metadata:
     "@typescript-eslint/parser": "npm:^8.47.0"
     "@vitejs/plugin-react": "npm:^5.1.1"
     "@wyw-in-js/babel-preset": "npm:^0.8.1"
+    "@wyw-in-js/vite": "npm:^0.8.1"
     babel-jest: "npm:^30.2.0"
     dayjs: "npm:^1.11.19"
     eslint: "npm:^9.39.1"

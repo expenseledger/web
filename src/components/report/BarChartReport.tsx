@@ -123,8 +123,13 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
                     <YAxis />
                     <Tooltip />
                     <Legend align="center" />
-                    <Bar dataKey="income" fill={INCOME_COLOR} name="Income" />
-                    <Bar dataKey="expense" fill={EXPENSE_COLOR} name="Expense" />
+                    <Bar dataKey="income" fill={INCOME_COLOR} name="Income" radius={[8, 8, 0, 0]} />
+                    <Bar
+                        dataKey="expense"
+                        fill={EXPENSE_COLOR}
+                        name="Expense"
+                        radius={[8, 8, 0, 0]}
+                    />
                 </BarChart>
             </ResponsiveContainer>
         </>

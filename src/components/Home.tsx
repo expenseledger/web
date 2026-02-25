@@ -21,9 +21,6 @@ import { BackToHomeParam, useBackToHome } from "./Layout";
 import { useAtom, useAtomValue } from "jotai";
 import AnimatedPage from "./AnimatedPage";
 import { Navigation, Pagination } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
 
 interface CurrentValue {
     accountIdx: number;

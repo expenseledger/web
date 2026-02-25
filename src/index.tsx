@@ -3,6 +3,9 @@ import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "@radix-ui/themes/styles.css";
 import "./index.scss";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
 import apolloClient from "./lib/apollo";
 
 const container = document.getElementById("root") as HTMLElement;

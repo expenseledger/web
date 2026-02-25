@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts";
+import { Cell, Pie, PieChart, PieSectorShapeProps, ResponsiveContainer, Sector } from "recharts";
 import styled from "styled-components";
 import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
@@ -8,6 +8,7 @@ import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
 import { Text, Flex } from "@radix-ui/themes";
 import { useAtomValue } from "jotai";
+import { render } from "@testing-library/react";
 
 interface PieChartReportProps {
     transactions: Transaction[];
@@ -26,7 +27,6 @@ const TotalAmountFlex = styled(Flex)<{ $isExpense: boolean }>`
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     const currency = useAtomValue(currencyState);
-    const [activeIndex, setActiveIndex] = useState<number>(0);
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
     const getPieChartData = (transactions: Transaction[], isExpense: boolean): PieChartData[] => {
@@ -63,7 +63,8 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                   },
               ];
     };
-    const renderActiveShape = (props: any) => {
+
+    const renderShape = (props: PieSectorShapeProps) => {
         const RADIAN = Math.PI / 180;
         const {
             cx,
@@ -77,6 +78,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
             payload,
             percent,
             value,
+            isActive,
         } = props;
         const sin = Math.sin(-RADIAN * midAngle);
         const cos = Math.cos(-RADIAN * midAngle);
@@ -87,61 +89,64 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
         const ex = mx + (cos >= 0 ? 1 : -1) * 10;
         const ey = my;
         const textAnchor = cos >= 0 ? "start" : "end";
-
-        return (
-            <g>
-                <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} fontSize="10px">
-                    {payload.name}
-                </text>
-                <Sector
-                    cx={cx}
-                    cy={cy}
-                    innerRadius={innerRadius}
-                    outerRadius={outerRadius}
-                    startAngle={startAngle}
-                    endAngle={endAngle}
-                    fill={fill}
-                />
-
-                {payload.name !== "No data" ? (
-                    <>
-                        <Sector
-                            cx={cx}
-                            cy={cy}
-                            startAngle={startAngle}
-                            endAngle={endAngle}
-                            innerRadius={outerRadius + 6}
-                            outerRadius={outerRadius + 10}
-                            fill={fill}
-                        />
-                        <path
-                            d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-                            stroke={fill}
-                            fill="none"
-                        />
-                        <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-                        <text
-                            x={ex + (cos >= 0 ? 1 : -1) * 12}
-                            y={ey}
-                            textAnchor={textAnchor}
-                            fill="#333"
-                            fontSize="10px">{`${currency} ${formatNumber(value, 1)}`}</text>
-                        <text
-                            x={ex + (cos >= 0 ? 1 : -1) * 12}
-                            y={ey}
-                            dy={18}
-                            textAnchor={textAnchor}
-                            fill="#999"
-                            fontSize="8px">
-                            {`(${(percent * 100).toFixed(1)}%)`}
-                        </text>
-                    </>
-                ) : null}
-            </g>
+        const baseSector = (
+            <Sector
+                cx={cx}
+                cy={cy}
+                innerRadius={innerRadius}
+                outerRadius={outerRadius}
+                startAngle={startAngle}
+                endAngle={endAngle}
+                fill={fill}
+            />
         );
-    };
-    const onPieEnter = (_: any, index: number) => {
-        setActiveIndex(index);
+
+        if (isActive) {
+            return (
+                <g>
+                    <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} fontSize="10px">
+                        {payload.name}
+                    </text>
+                    {baseSector}
+                    {payload.name !== "No data" ? (
+                        <>
+                            <Sector
+                                cx={cx}
+                                cy={cy}
+                                startAngle={startAngle}
+                                endAngle={endAngle}
+                                innerRadius={outerRadius + 6}
+                                outerRadius={outerRadius + 10}
+                                fill={fill}
+                            />
+                            <path
+                                d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+                                stroke={fill}
+                                fill="none"
+                            />
+                            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+                            <text
+                                x={ex + (cos >= 0 ? 1 : -1) * 12}
+                                y={ey}
+                                textAnchor={textAnchor}
+                                fill="#333"
+                                fontSize="10px">{`${currency} ${formatNumber(value, 1)}`}</text>
+                            <text
+                                x={ex + (cos >= 0 ? 1 : -1) * 12}
+                                y={ey}
+                                dy={18}
+                                textAnchor={textAnchor}
+                                fill="#999"
+                                fontSize="8px">
+                                {`(${(percent * 100).toFixed(1)}%)`}
+                            </text>
+                        </>
+                    ) : null}
+                </g>
+            );
+        }
+
+        return baseSector;
     };
 
     useEffect(() => {
@@ -171,15 +176,13 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
             <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                     <Pie
-                        activeIndex={activeIndex}
-                        activeShape={renderActiveShape}
+                        shape={renderShape}
                         data={pieChartData}
                         cx="50%"
                         cy="50%"
                         innerRadius={40}
                         outerRadius={60}
-                        dataKey="value"
-                        onMouseEnter={onPieEnter}>
+                        dataKey="value">
                         {pieChartData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}

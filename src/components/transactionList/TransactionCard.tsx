@@ -27,7 +27,7 @@ interface TransactionCardProps {
 }
 
 export const TransactionCard: React.FC<TransactionCardProps> = (props: TransactionCardProps) => {
-    const title = dayjs(props.date).format("DD MMM YYYY");
+    const title = dayjs(props.date).format("ddd DD MMM YY");
 
     const renderBody = () => {
         const formatItems = props.items.map((x) => {

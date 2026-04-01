@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Text } from "@radix-ui/themes";
 import { keyframes, styled } from "styled-components";
 import { color } from "../../common/constants";
+import { useNotification } from "../../service/helper/notificationHelper";
 
 const loadingAnimation = keyframes`
     0% {
@@ -55,16 +56,22 @@ const LoadingProgress = styled.div`
 
 const Loading: React.FC = () => {
     const [isShowLoading, setIsShowLoading] = React.useState(false);
+    const { addNotification } = useNotification();
 
     React.useEffect(() => {
-        const timeout = setTimeout(() => {
+        const waitTime = setTimeout(() => {
             setIsShowLoading(true);
         }, 1000);
 
+        const errorTimeout = setTimeout(() => {
+            addNotification("Please try restarting the app.", "danger");
+        }, 10000);
+
         return () => {
-            clearTimeout(timeout);
+            clearTimeout(waitTime);
+            clearTimeout(errorTimeout);
         };
-    });
+    }, []);
 
     return isShowLoading ? (
         <div

@@ -53,11 +53,18 @@ const Notification: React.FC<NotificationPropsWithOnclose> = (props) => {
     };
 
     React.useEffect(() => {
-        setTimeout(() => {
+        const hideTimer = setTimeout(() => {
             SetClassName(hideNotificationClassName);
-            setTimeout(() => props.onClose && props.onClose(props.id), 1000);
+            closeTimer = setTimeout(() => props.onClose && props.onClose(props.id), 1000);
         }, 3000);
-    }, [hideNotificationClassName, props]);
+        let closeTimer: ReturnType<typeof setTimeout>;
+
+        return () => {
+            clearTimeout(hideTimer);
+            clearTimeout(closeTimer);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return (
         <Flex

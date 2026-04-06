@@ -20,6 +20,7 @@ import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
 import { useAtom, useAtomValue } from "jotai";
+import { a } from "react-spring";
 
 interface ModifyModalProps {
     id: number;
@@ -57,87 +58,63 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
     const modifyAccount = async () => {
         const account = accounts.find((x) => x.id === props.id);
         const otherCategory = await getOtherCategory();
+        const balance = toNumber(balanceText);
+        const [updateAccountRes, addExpenseRes] = await Promise.all([
+            name !== account.name || type !== account.type
+                ? updateAccount({
+                      id: props.id,
+                      name,
+                      type,
+                  })
+                : Promise.resolve({ account: null }),
+            balance === account.balance
+                ? Promise.resolve({ transaction: null })
+                : addExpense({
+                      amount:
+                          balance < account.balance
+                              ? account.balance - balance
+                              : balance - account.balance,
+                      categoryId: otherCategory.id,
+                      fromAccountId: account.id,
+                      description: "Adjust balance",
+                      date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
+                  }),
+        ]);
 
-        const response = await updateAccount({
-            id: props.id,
-            name,
-            type,
-        });
-
-        if (!response.account) {
+        if (
+            ((name !== account.name || type !== account.type) && !updateAccountRes.account) ||
+            (balance !== account.balance && !addExpenseRes.transaction)
+        ) {
             addNotification("Update account failed", "danger");
 
             return;
         }
 
-        const balance = toNumber(balanceText);
-
-        if (balance < account.balance) {
-            const response = await addExpense({
-                amount: account.balance - balance,
-                categoryId: otherCategory.id,
-                fromAccountId: account.id,
-                description: "Adjust balance",
-                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
-            });
-
-            if (response.transaction) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.id === props.id) {
-                        return {
-                            ...a,
-                            balance,
-                            name,
-                            type,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
-                addNotification("Update account success", "success");
-            } else {
-                addNotification("Update account failed", "danger");
+        const tAccounts = accounts.map((a) => {
+            if (a.id === props.id) {
+                return {
+                    ...a,
+                    balance,
+                    name,
+                    type,
+                };
             }
-        } else if (balance > account.balance) {
-            const response = await addIncome({
-                amount: balance - account.balance,
-                categoryId: otherCategory.id,
-                toAccountId: account.id,
-                description: "Adjust balance",
-                date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
-            });
 
-            if (response.transaction) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.id === props.id) {
-                        return {
-                            ...a,
-                            balance,
-                            name,
-                            type,
-                        };
-                    }
+            return a;
+        });
 
-                    return a;
-                });
-
-                setAccounts(tAccounts);
-                addNotification("Update account success", "success");
-            } else {
-                addNotification("Update account failed", "danger");
-            }
-        } else {
-            addNotification("Update account success", "success");
-        }
+        setAccounts(tAccounts);
+        addNotification("Update account success", "success");
     };
+
     const accountNameHandler = (value: string) => {
         setName(value);
     };
+
     const accountTypeHandler = (value: string) => {
         setType(mapStringToAccountType(value));
     };
+
     const accountBalanceHandler = (value: string) => {
         setBalanceText(value);
     };

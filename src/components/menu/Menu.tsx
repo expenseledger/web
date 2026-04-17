@@ -39,7 +39,7 @@ const BottomMenuWrapper = styled.div`
 `;
 
 const BottomMenuBar = styled.div`
-    border-radius: 18px 18px 0 0;
+    border-radius: 18px;
     background: var(--gray-2);
     border: none;
     box-shadow: none;
@@ -61,7 +61,7 @@ const TabButton = styled.button<{ $active: boolean }>`
 const SheetBackdrop = styled.div<{ $open: boolean }>`
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 1);
+    background: rgba(0, 0, 0, 0.45);
     opacity: ${(props) => (props.$open ? 1 : 0)};
     pointer-events: ${(props) => (props.$open ? "auto" : "none")};
     transition: opacity 0.2s ease;

@@ -4,12 +4,20 @@ import { pageSettingState } from "../../common/shareState";
 import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { useAtomValue } from "jotai";
 
-interface StyledProps {
+interface BackgroundStyledProps {
+    $isMenuOnRightSide: boolean;
+    $isShow: boolean;
+    $backdropOpacity?: number;
+}
+
+interface PanelStyledProps {
     $isMenuOnRightSide: boolean;
     $isShow: boolean;
     $isDarkTheme: boolean;
     $position: "side" | "bottom";
-    $backdropOpacity?: number;
+    $bottomOffset?: string;
+    $padding?: string;
+    $margin?: string;
 }
 
 interface DrawStyledProps {
@@ -27,10 +35,6 @@ const slideIn = keyframes`
 const slideInRtl = keyframes`
     0%   {right: -100%}
     100% {right: 0;}
-`;
-const fadeIn = keyframes`
-    0%   {background-color: rgba(0, 0, 0, 0);}
-    100% {background-color: rgba(0, 0, 0, 0.8);}
 `;
 const slideOut = keyframes`
     100% {left: -100%;}
@@ -58,11 +62,7 @@ const slideOutBottom = keyframes`
         transform: translateX(-50%) translateY(40px);
     }
 `;
-const fadeOut = keyframes`
-    100% {background-color: rgba(0, 0, 0, 0);}
-`;
-
-const Panel = styled.div<StyledProps>`
+const Panel = styled.div<PanelStyledProps>`
     z-index: ${zIndex};
     position: fixed;
     background-color: ${(props) =>
@@ -88,18 +88,24 @@ const Panel = styled.div<StyledProps>`
                     ${animationDuration}s forwards;
             `;
         } else {
+            const bottomDesktop = props.$bottomOffset ?? "90px";
+            const bottomMobile =
+                props.$bottomOffset !== undefined ? props.$bottomOffset : "74px";
+            const padding = props.$padding ?? "16px";
+
             return css`
-                bottom: 90px;
+                bottom: ${bottomDesktop};
                 left: 50%;
                 width: min(420px, calc(100vw - 24px));
                 max-height: 65vh;
                 overflow-y: auto;
                 border-radius: 18px 18px 0 0;
-                padding: 16px;
+                padding: ${padding};
+                ${props.$margin !== undefined ? css`margin: ${props.$margin};` : css``}
                 animation: ${props.$isShow ? slideInBottom : slideOutBottom} ${animationDuration}s
                     forwards;
                 @media (max-width: 768px) {
-                    bottom: 74px;
+                    bottom: ${bottomMobile};
                     width: 100vw;
                     border-radius: 16px 16px 0 0;
                 }
@@ -108,7 +114,7 @@ const Panel = styled.div<StyledProps>`
     }}
 `;
 
-const Background = styled.div<StyledProps>`
+const Background = styled.div<BackgroundStyledProps>`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
@@ -117,7 +123,9 @@ const Background = styled.div<StyledProps>`
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, ${(props) => props.$backdropOpacity || 0.8});
-    animation: ${(props) => (props.$isShow ? fadeIn : fadeOut)} ${animationDuration}s forwards;
+    opacity: ${(props) => (props.$isShow ? 1 : 0)};
+    pointer-events: ${(props) => (props.$isShow ? "auto" : "none")};
+    transition: opacity ${animationDuration}s ease-in-out;
 `;
 
 const Draw = styled.div<DrawStyledProps>`
@@ -145,6 +153,9 @@ interface OwnProps {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     backdropOpacity?: number;
+    bottomOffset?: string;
+    padding?: string;
+    margin?: string;
 }
 
 type DrawerProps = React.PropsWithChildren<OwnProps>;
@@ -154,7 +165,6 @@ const Drawer: React.FC<DrawerProps> = (props) => {
     const position = props.position || "side";
     const isControlled = props.open !== undefined && props.onOpenChange !== undefined;
     const [internalIsShow, setInternalIsShow] = React.useState(false);
-    const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
     const isShowPanel = isControlled ? props.open : internalIsShow;
 
     const btnClickHandler = () => {
@@ -175,15 +185,11 @@ const Drawer: React.FC<DrawerProps> = (props) => {
             return;
         }
 
-        setIsAnimationUnmount(true);
-        setTimeout(() => {
-            if (isControlled) {
-                props.onOpenChange(false);
-            } else {
-                setInternalIsShow(false);
-            }
-            setIsAnimationUnmount(false);
-        }, animationDuration * 1000);
+        if (isControlled) {
+            props.onOpenChange(false);
+        } else {
+            setInternalIsShow(false);
+        }
     };
 
     return (
@@ -197,24 +203,24 @@ const Drawer: React.FC<DrawerProps> = (props) => {
                     <Icon />
                 </Draw>
             )}
-            {isShowPanel || isAnimationUnmount ? (
+            {isShowPanel && (
                 <Background
-                    $isShow={!isAnimationUnmount && isShowPanel}
+                    $isShow={isShowPanel}
                     onClick={closePanelHandler}
                     $isMenuOnRightSide={isMenuOnRightSide}
-                    $isDarkTheme={isDarkTheme}
-                    $position={position}
                     $backdropOpacity={props.backdropOpacity}>
                     <Panel
-                        $isShow={!isAnimationUnmount && isShowPanel}
+                        $isShow={isShowPanel}
                         $isMenuOnRightSide={isMenuOnRightSide}
                         $isDarkTheme={isDarkTheme}
                         $position={position}
-                        $backdropOpacity={props.backdropOpacity}>
+                        $bottomOffset={props.bottomOffset}
+                        $padding={props.padding}
+                        $margin={props.margin}>
                         {props.children}
                     </Panel>
                 </Background>
-            ) : null}
+            )}
         </>
     );
 };

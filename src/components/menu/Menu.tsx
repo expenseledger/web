@@ -13,7 +13,7 @@ import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
-import { Box, Card, Flex, Grid, Separator, Text } from "@radix-ui/themes";
+import { Box, Flex, Grid, Separator, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { isHideBalanceOnMenuState } from "../../common/shareState";
 
@@ -46,7 +46,7 @@ const BottomMenuBar = styled.div`
     box-shadow: none;
 `;
 
-const TabButton = styled.button<{ $active: boolean }>`
+const TabButton = styled.button`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,8 +76,6 @@ const Menu: React.FC<MenuProps> = (props) => {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isSheetOpen = activeTab === "account" || activeTab === "settings";
-
     React.useEffect(() => {
         if (location.pathname === "/") {
             setActiveTab("home");
@@ -88,11 +86,7 @@ const Menu: React.FC<MenuProps> = (props) => {
     }, [location.pathname]);
 
     const onHideBalanceChangeHandler = () => {
-        setIsHideBalance((prevState) => {
-            const nextState = !prevState;
-
-            return nextState;
-        });
+        setIsHideBalance((prev) => !prev);
     };
 
     const navigateToHome = () => {
@@ -104,16 +98,18 @@ const Menu: React.FC<MenuProps> = (props) => {
         setActiveTab(location.pathname === "/" ? "home" : "none");
     };
 
+    const handleBottomDrawerOpenChange = (open: boolean) => {
+        if (!open) {
+            closeSheet();
+        }
+    };
+
     return (
         <>
             <Drawer
                 position="bottom"
                 open={activeTab === "account"}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        closeSheet();
-                    }
-                }}
+                onOpenChange={handleBottomDrawerOpenChange}
                 backdropOpacity={0.45}>
                 <Text color="gray" size="1">
                     ACCOUNTS
@@ -159,12 +155,11 @@ const Menu: React.FC<MenuProps> = (props) => {
             <Drawer
                 position="bottom"
                 open={activeTab === "settings"}
-                onOpenChange={(open) => {
-                    if (!open) {
-                        closeSheet();
-                    }
-                }}
-                backdropOpacity={0.45}>
+                onOpenChange={handleBottomDrawerOpenChange}
+                backdropOpacity={0.45}
+                bottomOffset="0"
+                padding="16px"
+                margin="0">
                 <Text color="gray" size="1">
                     SETTINGS
                 </Text>
@@ -201,23 +196,19 @@ const Menu: React.FC<MenuProps> = (props) => {
             <BottomMenuWrapper>
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
-                        <TabButton $active={activeTab === "home"} onClick={navigateToHome}>
+                        <TabButton onClick={navigateToHome}>
                             <HomeIcon />
                             <Text size="1" color={activeTab === "home" ? "iris" : "gray"}>
                                 Home
                             </Text>
                         </TabButton>
-                        <TabButton
-                            $active={activeTab === "account"}
-                            onClick={() => setActiveTab("account")}>
+                        <TabButton onClick={() => setActiveTab("account")}>
                             <PersonIcon />
                             <Text size="1" color={activeTab === "account" ? "iris" : "gray"}>
                                 Account
                             </Text>
                         </TabButton>
-                        <TabButton
-                            $active={activeTab === "settings"}
-                            onClick={() => setActiveTab("settings")}>
+                        <TabButton onClick={() => setActiveTab("settings")}>
                             <GearIcon />
                             <Text size="1" color={activeTab === "settings" ? "iris" : "gray"}>
                                 Settings

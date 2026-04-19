@@ -11,6 +11,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
+import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
 import { Box, Card, Flex, Grid, Separator, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
@@ -56,43 +57,6 @@ const TabButton = styled.button<{ $active: boolean }>`
     color: inherit;
     cursor: pointer;
     padding: 0;
-`;
-
-const SheetBackdrop = styled.div<{ $open: boolean }>`
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.45);
-    opacity: ${(props) => (props.$open ? 1 : 0)};
-    pointer-events: ${(props) => (props.$open ? "auto" : "none")};
-    transition: opacity 0.2s ease;
-    z-index: 998;
-`;
-
-const Sheet = styled.div<{ $open: boolean }>`
-    position: fixed;
-    left: 50%;
-    bottom: 90px;
-    transform: translateX(-50%) translateY(${(props) => (props.$open ? "0" : "18px")});
-    width: min(420px, calc(100vw - 24px));
-    max-height: 65vh;
-    overflow-y: auto;
-    opacity: ${(props) => (props.$open ? 1 : 0)};
-    pointer-events: ${(props) => (props.$open ? "auto" : "none")};
-    transition: opacity 0.2s ease, transform 0.2s ease;
-    z-index: 999;
-    border-radius: 18px;
-    background: var(--gray-1);
-    border: none;
-    box-shadow: none;
-    padding: 16px;
-
-    @media (max-width: 768px) {
-        left: 0;
-        bottom: 74px;
-        width: 100vw;
-        border-radius: 16px 16px 0 0;
-        transform: translateY(${(props) => (props.$open ? "0" : "18px")});
-    }
 `;
 
 const Version = styled.div`
@@ -142,8 +106,15 @@ const Menu: React.FC<MenuProps> = (props) => {
 
     return (
         <>
-            <SheetBackdrop $open={isSheetOpen} onClick={closeSheet} />
-            <Sheet $open={activeTab === "account"}>
+            <Drawer
+                position="bottom"
+                open={activeTab === "account"}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        closeSheet();
+                    }
+                }}
+                backdropOpacity={0.45}>
                 <Text color="gray" size="1">
                     ACCOUNTS
                 </Text>
@@ -184,8 +155,16 @@ const Menu: React.FC<MenuProps> = (props) => {
                         isRtl
                     />
                 </Flex>
-            </Sheet>
-            <Sheet $open={activeTab === "settings"}>
+            </Drawer>
+            <Drawer
+                position="bottom"
+                open={activeTab === "settings"}
+                onOpenChange={(open) => {
+                    if (!open) {
+                        closeSheet();
+                    }
+                }}
+                backdropOpacity={0.45}>
                 <Text color="gray" size="1">
                     SETTINGS
                 </Text>
@@ -217,7 +196,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                     </Flex>
                     <Version>v{props.version}</Version>
                 </Flex>
-            </Sheet>
+            </Drawer>
 
             <BottomMenuWrapper>
                 <BottomMenuBar>

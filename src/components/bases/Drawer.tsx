@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BackgroundStyledProps {
-    $backdropOpacity?: number;
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
@@ -46,7 +45,7 @@ const Background = styled(motion.div)<BackgroundStyledProps>`
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, ${(props) => props.$backdropOpacity ?? 0.8});
+    background-color: rgba(0, 0, 0, 0.8);
     will-change: opacity, backdrop-filter;
     -webkit-backdrop-filter: blur(0px);
     pointer-events: auto;
@@ -54,16 +53,14 @@ const Background = styled(motion.div)<BackgroundStyledProps>`
 
 interface OwnProps {
     preventCloseIdOrClassList?: string[];
-    position?: "side" | "bottom";
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
-    backdropOpacity?: number;
 }
 
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { open, onOpenChange, preventCloseIdOrClassList, backdropOpacity, children } = props;
+    const { open, onOpenChange, preventCloseIdOrClassList, children } = props;
     const isControlled = open !== undefined && onOpenChange !== undefined;
     const [internalIsShow, setInternalIsShow] = React.useState(false);
     const isShowPanel = isControlled ? open : internalIsShow;
@@ -93,7 +90,6 @@ const Drawer: React.FC<DrawerProps> = (props) => {
                 <>
                     <Background
                         onClick={closePanelHandler}
-                        $backdropOpacity={backdropOpacity}
                         initial={backdropMotion.initial}
                         animate={backdropMotion.animate}
                         exit={backdropMotion.exit}

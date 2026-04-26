@@ -20,8 +20,7 @@ const PageSetting: React.FC = () => {
     return (
         <AnimatedPage>
             <Card>
-        
-                <Flex justify="between" align="center" mt="3">
+                <Flex justify="between" align="center">
                     <Text>Change to dark theme</Text>
                     <Switch
                         name="changeMenuColor"

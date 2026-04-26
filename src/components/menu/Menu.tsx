@@ -60,7 +60,7 @@ const TabButton = styled.button`
 `;
 
 const Version = styled.div`
-    font-size: 12px;
+    font-size: 10px;
     opacity: 0.7;
 `;
 
@@ -106,11 +106,7 @@ const Menu: React.FC<MenuProps> = (props) => {
 
     return (
         <>
-            <Drawer
-                position="bottom"
-                open={activeTab === "account"}
-                onOpenChange={handleBottomDrawerOpenChange}
-                backdropOpacity={0.45}>
+            <Drawer open={activeTab === "account"} onOpenChange={handleBottomDrawerOpenChange}>
                 <Text color="gray" size="1">
                     ACCOUNTS
                 </Text>
@@ -152,14 +148,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                     />
                 </Flex>
             </Drawer>
-            <Drawer
-                position="bottom"
-                open={activeTab === "settings"}
-                onOpenChange={handleBottomDrawerOpenChange}
-                backdropOpacity={0.45}
-                bottomOffset="0"
-                padding="16px"
-                margin="0">
+            <Drawer open={activeTab === "settings"} onOpenChange={handleBottomDrawerOpenChange}>
                 <Text color="gray" size="1">
                     SETTINGS
                 </Text>
@@ -170,26 +159,25 @@ const Menu: React.FC<MenuProps> = (props) => {
                             Account
                         </Link>
                     </Flex>
-                    <Separator size="4" />
                     <Flex align="center" gap="2">
                         <ReaderIcon />
                         <Link to="/category/setting" onClick={closeSheet}>
                             Category
                         </Link>
                     </Flex>
-                    <Separator size="4" />
                     <Flex align="center" gap="2">
                         <GearIcon />
                         <Link to="/page/setting" onClick={closeSheet}>
                             Page
                         </Link>
                     </Flex>
-                    <Separator size="4" />
                     <Flex align="center" gap="2">
                         <ExitIcon />
                         <ActionText onClick={props.signOutFunc}>Sign out</ActionText>
                     </Flex>
-                    <Version>v{props.version}</Version>
+                    <Flex justify="end">
+                        <Version>v{props.version}</Version>
+                    </Flex>
                 </Flex>
             </Drawer>
 

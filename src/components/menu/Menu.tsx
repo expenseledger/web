@@ -28,16 +28,11 @@ interface MenuProps {
 const BottomMenuWrapper = styled.div`
     position: fixed;
     left: 50%;
-    bottom: 10px;
+    bottom: 24px;
     transform: translateX(-50%);
-    width: min(420px, calc(100vw - 24px));
+    width: min(var(--container-size-2, 688px), calc(100vw - (var(--space-6) * 2)));
     z-index: 1000;
     padding-bottom: env(safe-area-inset-bottom, 0px);
-
-    @media (max-width: 768px) {
-        width: calc(100vw - 16px);
-        transform: translateX(-50%);
-    }
 `;
 
 const BottomMenuBar = styled.div`
@@ -193,7 +188,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                     <Flex justify="between" align="center" p="3">
                         <TabButton onClick={navigateToHome}>
                             <HomeIcon color="gray" />
-                            <Text size="1" color="gray">
+                            <Text size="2" color="gray">
                                 Home
                             </Text>
                         </TabButton>
@@ -201,7 +196,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             <IdCardIcon
                                 color={activeTab === "account" ? color.primaryIcon : "gray"}
                             />
-                            <Text size="1" color={activeTab === "account" ? color.primary : "gray"}>
+                            <Text size="2" color={activeTab === "account" ? color.primary : "gray"}>
                                 Account
                             </Text>
                         </TabButton>
@@ -210,9 +205,9 @@ const Menu: React.FC<MenuProps> = (props) => {
                                 color={activeTab === "settings" ? color.primaryIcon : "gray"}
                             />
                             <Text
-                                size="1"
+                                size="2"
                                 color={activeTab === "settings" ? color.primary : "gray"}>
-                                Settings
+                                Setting
                             </Text>
                         </TabButton>
                     </Flex>

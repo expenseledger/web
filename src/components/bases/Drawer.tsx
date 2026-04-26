@@ -12,7 +12,7 @@ const zIndex = 1000;
 const PanelContainer = styled(motion.div)`
     box-sizing: border-box;
     z-index: ${zIndex};
-    bottom: 80px;
+    bottom: 94px;
     position: fixed;
     overflow-y: auto;
     max-height: 65vh;
@@ -20,11 +20,7 @@ const PanelContainer = styled(motion.div)`
     background-color: var(--gray-2);
     border-radius: 16px;
     left: 50%;
-    width: min(420px, calc(100vw - 24px));
-
-    @media (max-width: 768px) {
-        width: calc(100vw - 16px);
-    }
+    width: min(var(--container-size-2, 688px), calc(100vw - (var(--space-6) * 2)));
 `;
 
 const panelMotion = {

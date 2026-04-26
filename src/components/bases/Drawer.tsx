@@ -1,26 +1,25 @@
 import React from "react";
 import styled from "styled-components";
-import { pageSettingState } from "../../common/shareState";
-import { useAtomValue } from "jotai";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface BackgroundStyledProps {
-    $isShow: boolean;
     $backdropOpacity?: number;
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-    children?: React.ReactNode;
 }
 
-interface Panel {
-    children?: React.ReactNode;
-    isDarkTheme?: boolean;
-}
-
-const animationDuration = 0.5;
+const animationDuration = 0.25;
 const zIndex = 1000;
 
 const PanelContainer = styled(motion.div)`
     box-sizing: border-box;
+    z-index: ${zIndex};
+    bottom: 80px;
+    position: fixed;
+    overflow-y: auto;
+    max-height: 65vh;
+    padding: var(--space-4);
+    background-color: var(--gray-2);
+    border-radius: 16px;
     left: 50%;
     width: min(420px, calc(100vw - 24px));
 
@@ -29,46 +28,28 @@ const PanelContainer = styled(motion.div)`
     }
 `;
 
-const Panel = (props: Panel) => (
-    <PanelContainer
-        initial={{ y: "100%", x: "-50%", opacity: 0 }}
-        animate={{ y: 0, x: "-50%", opacity: 1 }}
-        exit={{ y: "100%", x: "-50%", opacity: 0 }}
-        transition={{ duration: animationDuration, ease: "easeInOut" }}
-        style={{
-            zIndex,
-            bottom: "80px",
-            position: "fixed",
-            overflowY: "auto",
-            maxHeight: "65vh",
-            padding: "var(--space-4)",
-            backgroundColor: props.isDarkTheme ? "var(--gray-1)" : "var(--gray-2)",
-            borderRadius: "16px",
-        }}>
-        {props.children}
-    </PanelContainer>
-);
+const panelMotion = {
+    initial: { y: "100%", x: "-50%", opacity: 0 },
+    animate: { y: 0, x: "-50%", opacity: 1 },
+    exit: { y: "100%", x: "-50%", opacity: 0 },
+};
 
-const BackgroundMotion = (props: BackgroundStyledProps) => (
-    <motion.div
-        initial={{ opacity: 0 }}
-        animate={{
-            opacity: 1,
-        }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: animationDuration, ease: "easeInOut" }}>
-        {props.children}
-    </motion.div>
-);
+const backdropMotion = {
+    initial: { opacity: 0, backdropFilter: "blur(0px)" },
+    animate: { opacity: 1, backdropFilter: "blur(8px)" },
+    exit: { opacity: 0, backdropFilter: "blur(0px)" },
+};
 
-const Background = styled(BackgroundMotion)<BackgroundStyledProps>`
+const Background = styled(motion.div)<BackgroundStyledProps>`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, ${(props) => props.$backdropOpacity || 0.8});
-    pointer-events: ${(props) => (props.$isShow ? "auto" : "none")};
+    background-color: rgba(0, 0, 0, ${(props) => props.$backdropOpacity ?? 0.8});
+    will-change: opacity, backdrop-filter;
+    -webkit-backdrop-filter: blur(0px);
+    pointer-events: auto;
 `;
 
 interface OwnProps {
@@ -77,31 +58,22 @@ interface OwnProps {
     open?: boolean;
     onOpenChange?: (open: boolean) => void;
     backdropOpacity?: number;
-    bottomOffset?: string;
-    padding?: string;
-    margin?: string;
 }
 
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isDarkTheme } = useAtomValue(pageSettingState);
-    const isControlled = props.open !== undefined && props.onOpenChange !== undefined;
+    const { open, onOpenChange, preventCloseIdOrClassList, backdropOpacity, children } = props;
+    const isControlled = open !== undefined && onOpenChange !== undefined;
     const [internalIsShow, setInternalIsShow] = React.useState(false);
-    const isShowPanel = isControlled ? props.open : internalIsShow;
+    const isShowPanel = isControlled ? open : internalIsShow;
 
-    const btnClickHandler = () => {
-        if (isControlled) {
-            props.onOpenChange(true);
-        } else {
-            setInternalIsShow(true);
-        }
-    };
     const closePanelHandler = (event: React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLElement;
+        const targetClassName = typeof target.className === "string" ? target.className : "";
         const shouldPrevent =
-            props.preventCloseIdOrClassList?.some(
-                (x) => x === target.id || target.className.includes(x)
+            preventCloseIdOrClassList?.some(
+                (x) => x === target.id || targetClassName.includes(x)
             ) ?? false;
 
         if (shouldPrevent) {
@@ -109,27 +81,34 @@ const Drawer: React.FC<DrawerProps> = (props) => {
         }
 
         if (isControlled) {
-            props.onOpenChange(false);
+            onOpenChange(false);
         } else {
             setInternalIsShow(false);
         }
     };
 
     return (
-        <>
-            <AnimatePresence>
-                {isShowPanel && (
-                    <>
-                        <Background
-                            $isShow={isShowPanel}
-                            onClick={closePanelHandler}
-                            $backdropOpacity={props.backdropOpacity}
-                        />
-                        <Panel isDarkTheme={isDarkTheme}>{props.children}</Panel>
-                    </>
-                )}
-            </AnimatePresence>
-        </>
+        <AnimatePresence>
+            {isShowPanel && (
+                <>
+                    <Background
+                        onClick={closePanelHandler}
+                        $backdropOpacity={backdropOpacity}
+                        initial={backdropMotion.initial}
+                        animate={backdropMotion.animate}
+                        exit={backdropMotion.exit}
+                        transition={{ duration: animationDuration, ease: "easeInOut" }}
+                    />
+                    <PanelContainer
+                        initial={panelMotion.initial}
+                        animate={panelMotion.animate}
+                        exit={panelMotion.exit}
+                        transition={{ duration: animationDuration, ease: "easeInOut" }}>
+                        {children}
+                    </PanelContainer>
+                </>
+            )}
+        </AnimatePresence>
     );
 };
 

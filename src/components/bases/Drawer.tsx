@@ -1,17 +1,16 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
 import { pageSettingState } from "../../common/shareState";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
 import { useAtomValue } from "jotai";
+import { motion } from "framer-motion";
 
 interface BackgroundStyledProps {
-    $isMenuOnRightSide: boolean;
     $isShow: boolean;
     $backdropOpacity?: number;
+    children?: React.ReactNode;
 }
 
 interface PanelStyledProps {
-    $isMenuOnRightSide: boolean;
     $isShow: boolean;
     $isDarkTheme: boolean;
     $position: "side" | "bottom";
@@ -21,7 +20,6 @@ interface PanelStyledProps {
 }
 
 interface DrawStyledProps {
-    $isMenuOnRightSide: boolean;
     $isLightMenu: boolean;
     $position: "side" | "bottom";
 }
@@ -42,7 +40,7 @@ const slideOut = keyframes`
 const slideOutRtl = keyframes`
     100% {right: -100%;}
 `;
-const slideInBottom = keyframes`
+const slideUp = keyframes`
     0%   {
         opacity: 0;
         transform: translateX(-50%) translateY(40px);
@@ -52,7 +50,7 @@ const slideInBottom = keyframes`
         transform: translateX(-50%) translateY(0);
     }
 `;
-const slideOutBottom = keyframes`
+const slideDown = keyframes`
     0% {
         opacity: 1;
         transform: translateX(-50%) translateY(0);
@@ -72,25 +70,13 @@ const Panel = styled.div<PanelStyledProps>`
         if (props.$position === "side") {
             return css`
                 top: 0;
-                left: ${props.$isMenuOnRightSide ? "initial" : 0};
-                right: ${props.$isMenuOnRightSide ? 0 : "initial"};
-                border-radius: ${props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0"};
                 height: 100%;
                 width: 30%;
                 min-width: 350px;
-                animation: ${props.$isShow
-                        ? props.$isMenuOnRightSide
-                            ? slideInRtl
-                            : slideIn
-                        : props.$isMenuOnRightSide
-                          ? slideOutRtl
-                          : slideOut}
-                    ${animationDuration}s forwards;
             `;
         } else {
             const bottomDesktop = props.$bottomOffset ?? "90px";
-            const bottomMobile =
-                props.$bottomOffset !== undefined ? props.$bottomOffset : "74px";
+            const bottomMobile = props.$bottomOffset !== undefined ? props.$bottomOffset : "74px";
             const padding = props.$padding ?? "16px";
 
             return css`
@@ -101,8 +87,12 @@ const Panel = styled.div<PanelStyledProps>`
                 overflow-y: auto;
                 border-radius: 18px 18px 0 0;
                 padding: ${padding};
-                ${props.$margin !== undefined ? css`margin: ${props.$margin};` : css``}
-                animation: ${props.$isShow ? slideInBottom : slideOutBottom} ${animationDuration}s
+                ${props.$margin !== undefined
+                    ? css`
+                          margin: ${props.$margin};
+                      `
+                    : css``}
+                animation: ${props.$isShow ? slideUp : slideDown} ${animationDuration}s
                     forwards;
                 @media (max-width: 768px) {
                     bottom: ${bottomMobile};
@@ -113,38 +103,24 @@ const Panel = styled.div<PanelStyledProps>`
         }
     }}
 `;
-
-const Background = styled.div<BackgroundStyledProps>`
+const BackgroundMotion = (props: BackgroundStyledProps) => (
+    <motion.div
+        z-index="inherit"
+        animate={{
+            opacity: props.$isShow ? 1 : 0,
+        }}
+        transition={{ duration: animationDuration, ease: "easeInOut" }}>
+        {props.children}
+    </motion.div>
+);
+const Background = styled(BackgroundMotion)<BackgroundStyledProps>`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
-    left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
-    right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, ${(props) => props.$backdropOpacity || 0.8});
-    opacity: ${(props) => (props.$isShow ? 1 : 0)};
     pointer-events: ${(props) => (props.$isShow ? "auto" : "none")};
-    transition: opacity ${animationDuration}s ease-in-out;
-`;
-
-const Draw = styled.div<DrawStyledProps>`
-    position: fixed;
-    cursor: pointer;
-    top: 40%;
-    width: 24px;
-    height: 100px;
-    background-color: ${(props) => (props.$isLightMenu ? "white" : "#363636")};
-    color: ${(props) => (props.$isLightMenu ? "black" : "white")};
-    border-radius: ${(props) => (props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0")};
-    z-index: 10;
-    right: ${(props) => (props.$isMenuOnRightSide ? "0" : "initial")};
-    display: ${(props) => (props.$position === "side" ? "block" : "none")};
-`;
-const Icon = styled(DotsVerticalIcon)`
-    margin-top: 38px;
-    width: 24px;
-    height: 24px;
 `;
 
 interface OwnProps {
@@ -161,7 +137,7 @@ interface OwnProps {
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isMenuOnRightSide, isLightMenu, isDarkTheme } = useAtomValue(pageSettingState);
+    const { isDarkTheme } = useAtomValue(pageSettingState);
     const position = props.position || "side";
     const isControlled = props.open !== undefined && props.onOpenChange !== undefined;
     const [internalIsShow, setInternalIsShow] = React.useState(false);
@@ -194,24 +170,13 @@ const Drawer: React.FC<DrawerProps> = (props) => {
 
     return (
         <>
-            {position === "side" && (
-                <Draw
-                    onClick={btnClickHandler}
-                    $isMenuOnRightSide={isMenuOnRightSide}
-                    $isLightMenu={isLightMenu}
-                    $position={position}>
-                    <Icon />
-                </Draw>
-            )}
             {isShowPanel && (
                 <Background
                     $isShow={isShowPanel}
-                    onClick={closePanelHandler}
-                    $isMenuOnRightSide={isMenuOnRightSide}
+                    // onClick={closePanelHandler}
                     $backdropOpacity={props.backdropOpacity}>
                     <Panel
                         $isShow={isShowPanel}
-                        $isMenuOnRightSide={isMenuOnRightSide}
                         $isDarkTheme={isDarkTheme}
                         $position={position}
                         $bottomOffset={props.bottomOffset}

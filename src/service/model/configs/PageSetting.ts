@@ -1,6 +1,4 @@
 interface PageSetting {
-    isMenuOnRightSide: boolean;
-    isLightMenu: boolean;
     isDarkTheme: boolean;
 }
 

@@ -24,8 +24,6 @@ export const isSignInState = atom<boolean>(false);
 export const currencyState = atomWithStorage<Currency>("currency", "฿");
 
 export const pageSettingState = atomWithStorage<PageSetting>("pageSetting", {
-    isMenuOnRightSide: false,
-    isLightMenu: false,
     isDarkTheme: false,
 });
 

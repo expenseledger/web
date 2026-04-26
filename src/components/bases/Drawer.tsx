@@ -1,150 +1,110 @@
 import React from "react";
-import styled, { keyframes } from "styled-components";
-import { pageSettingState } from "../../common/shareState";
-import { DotsVerticalIcon } from "@radix-ui/react-icons";
-import { useAtomValue } from "jotai";
+import styled from "styled-components";
+import { motion, AnimatePresence } from "framer-motion";
 
-interface StyledProps {
-    $isMenuOnRightSide: boolean;
-    $isShow: boolean;
-    $isDarkTheme: boolean;
+interface BackgroundStyledProps {
+    onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
-interface DrawStyledProps {
-    $isMenuOnRightSide: boolean;
-    $isLightMenu: boolean;
-}
-
-const animationDuration = 0.5;
+const animationDuration = 0.25;
 const zIndex = 1000;
-const slideIn = keyframes`
-    0%   {left: -100%}
-    100% {left: 0;}
-`;
-const slideInRtl = keyframes`
-    0%   {right: -100%}
-    100% {right: 0;}
-`;
-const fadeIn = keyframes`
-    0%   {background-color: rgba(0, 0, 0, 0);}
-    100% {background-color: rgba(0, 0, 0, 0.8);}
-`;
-const slideOut = keyframes`
-    100% {left: -100%;}
-`;
-const slideOutRtl = keyframes`
-    100% {right: -100%;}
-`;
-const fadeOut = keyframes`
-    100% {background-color: rgba(0, 0, 0, 0);}
-`;
 
-const Panel = styled.div<StyledProps>`
+const PanelContainer = styled(motion.div)`
+    box-sizing: border-box;
     z-index: ${zIndex};
+    bottom: 80px;
     position: fixed;
-    top: 0;
-    left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
-    right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
-    border-radius: ${(props) => (props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0")};
-    height: 100%;
-    width: 30%;
-    min-width: 350px;
-    background-color: ${(props) => (props.$isDarkTheme ? "#363636" : "white")};
-    animation: ${(props) =>
-            props.$isShow
-                ? props.$isMenuOnRightSide
-                    ? slideInRtl
-                    : slideIn
-                : props.$isMenuOnRightSide
-                  ? slideOutRtl
-                  : slideOut}
-        ${animationDuration}s forwards;
+    overflow-y: auto;
+    max-height: 65vh;
+    padding: var(--space-4);
+    background-color: var(--gray-2);
+    border-radius: 16px;
+    left: 50%;
+    width: min(420px, calc(100vw - 24px));
+
+    @media (max-width: 768px) {
+        width: calc(100vw - 16px);
+    }
 `;
 
-const Background = styled.div<StyledProps>`
+const panelMotion = {
+    initial: { y: "100%", x: "-50%", opacity: 0 },
+    animate: { y: 0, x: "-50%", opacity: 1 },
+    exit: { y: "100%", x: "-50%", opacity: 0 },
+};
+
+const backdropMotion = {
+    initial: { opacity: 0, backdropFilter: "blur(0px)" },
+    animate: { opacity: 1, backdropFilter: "blur(8px)" },
+    exit: { opacity: 0, backdropFilter: "blur(0px)" },
+};
+
+const Background = styled(motion.div)<BackgroundStyledProps>`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;
-    left: ${(props) => (props.$isMenuOnRightSide ? "initial" : 0)};
-    right: ${(props) => (props.$isMenuOnRightSide ? 0 : "initial")};
     height: 100%;
     width: 100%;
     background-color: rgba(0, 0, 0, 0.8);
-    animation: ${(props) => (props.$isShow ? fadeIn : fadeOut)} ${animationDuration}s forwards;
-`;
-
-const Draw = styled.div<DrawStyledProps>`
-    position: fixed;
-    cursor: pointer;
-    top: 40%;
-    width: 24px;
-    height: 100px;
-    background-color: ${(props) => (props.$isLightMenu ? "white" : "#363636")};
-    color: ${(props) => (props.$isLightMenu ? "black" : "white")};
-    border-radius: ${(props) => (props.$isMenuOnRightSide ? "8px 0 0 8px" : "0 8px 8px 0")};
-    z-index: 10;
-    right: ${(props) => (props.$isMenuOnRightSide ? "0" : "initial")};
-`;
-const Icon = styled(DotsVerticalIcon)`
-    margin-top: 38px;
-    width: 24px;
-    height: 24px;
+    will-change: opacity, backdrop-filter;
+    -webkit-backdrop-filter: blur(0px);
+    pointer-events: auto;
 `;
 
 interface OwnProps {
     preventCloseIdOrClassList?: string[];
+    open?: boolean;
+    onOpenChange?: (open: boolean) => void;
 }
 
 type DrawerProps = React.PropsWithChildren<OwnProps>;
 
 const Drawer: React.FC<DrawerProps> = (props) => {
-    const { isMenuOnRightSide, isLightMenu, isDarkTheme } = useAtomValue(pageSettingState);
-    const [isShowPanel, setIsShowPanel] = React.useState(false);
-    const [isAnimationUnmount, setIsAnimationUnmount] = React.useState(false);
-    const btnClickHandler = () => {
-        setIsShowPanel(true);
-    };
+    const { open, onOpenChange, preventCloseIdOrClassList, children } = props;
+    const isControlled = open !== undefined && onOpenChange !== undefined;
+    const [internalIsShow, setInternalIsShow] = React.useState(false);
+    const isShowPanel = isControlled ? open : internalIsShow;
+
     const closePanelHandler = (event: React.MouseEvent<HTMLDivElement>) => {
         const target = event.target as HTMLElement;
+        const targetClassName = typeof target.className === "string" ? target.className : "";
         const shouldPrevent =
-            props.preventCloseIdOrClassList?.some(
-                (x) => x === target.id || target.className.includes(x)
+            preventCloseIdOrClassList?.some(
+                (x) => x === target.id || targetClassName.includes(x)
             ) ?? false;
 
         if (shouldPrevent) {
             return;
         }
 
-        setIsAnimationUnmount(true);
-        setTimeout(() => {
-            setIsShowPanel(false);
-            setIsAnimationUnmount(false);
-        }, animationDuration * 1000);
+        if (isControlled) {
+            onOpenChange(false);
+        } else {
+            setInternalIsShow(false);
+        }
     };
 
     return (
-        <>
-            <Draw
-                onClick={btnClickHandler}
-                $isMenuOnRightSide={isMenuOnRightSide}
-                $isLightMenu={isLightMenu}>
-                <Icon />
-            </Draw>
-            {isShowPanel ? (
-                <Background
-                    $isShow={!isAnimationUnmount && isShowPanel}
-                    onClick={closePanelHandler}
-                    $isMenuOnRightSide={isMenuOnRightSide}
-                    $isDarkTheme={isDarkTheme}>
-                    <Panel
-                        $isShow={!isAnimationUnmount && isShowPanel}
-                        $isMenuOnRightSide={isMenuOnRightSide}
-                        $isDarkTheme={isDarkTheme}>
-                        {props.children}
-                    </Panel>
-                </Background>
-            ) : null}
-        </>
+        <AnimatePresence>
+            {isShowPanel && (
+                <>
+                    <Background
+                        onClick={closePanelHandler}
+                        initial={backdropMotion.initial}
+                        animate={backdropMotion.animate}
+                        exit={backdropMotion.exit}
+                        transition={{ duration: animationDuration, ease: "easeInOut" }}
+                    />
+                    <PanelContainer
+                        initial={panelMotion.initial}
+                        animate={panelMotion.animate}
+                        exit={panelMotion.exit}
+                        transition={{ duration: animationDuration, ease: "easeInOut" }}>
+                        {children}
+                    </PanelContainer>
+                </>
+            )}
+        </AnimatePresence>
     );
 };
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet, useNavigate, useOutletContext } from "react-router-dom";
+import { Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import pj from "../../package.json";
 import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
@@ -13,6 +13,7 @@ import Menu from "./menu/Menu";
 import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
 import { useAtom, useAtomValue } from "jotai";
+import { AnimatePresence } from "framer-motion";
 
 const Header = styled.div`
     padding-top: 12px;
@@ -43,6 +44,7 @@ const Layout: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
     const navigate = useNavigate();
+    const location = useLocation();
     const [backToHomeParam, setBackToHomeParam] = React.useState<BackToHomeParam>(null);
 
     React.useEffect(() => {
@@ -87,9 +89,20 @@ const Layout: React.FC = () => {
                     </Box>
                 </Title>
             </Header>
-            <Container size="2" pt="3" px="6" className="mainContainer">
+            <Container
+                size="2"
+                pt="3"
+                px="6"
+                pb="0"
+                className="mainContainer"
+                style={{ paddingBottom: "calc(88px + env(safe-area-inset-bottom, 0px))" }}>
                 <React.Suspense fallback={<Loading />}>
-                    <Outlet context={{ setBackToHomeParam } satisfies ContextType} />
+                    <AnimatePresence mode="wait">
+                        <Outlet
+                            key={location.pathname}
+                            context={{ setBackToHomeParam } satisfies ContextType}
+                        />
+                    </AnimatePresence>
                 </React.Suspense>
             </Container>
             <Toast position="top-right" />

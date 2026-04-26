@@ -1,9 +1,8 @@
 import React from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled from "styled-components";
 import { pageSettingState } from "../../common/shareState";
 import { useAtomValue } from "jotai";
-import { motion } from "framer-motion";
-import { Box } from "@radix-ui/themes";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BackgroundStyledProps {
     $isShow: boolean;
@@ -20,33 +19,43 @@ interface Panel {
 const animationDuration = 0.5;
 const zIndex = 1000;
 
+const PanelContainer = styled(motion.div)`
+    box-sizing: border-box;
+    left: 50%;
+    width: min(420px, calc(100vw - 24px));
+
+    @media (max-width: 768px) {
+        width: calc(100vw - 16px);
+    }
+`;
+
 const Panel = (props: Panel) => (
-    <motion.div>
-        <Box
-            z-index={zIndex}
-            bottom="80px"
-            left="50%"
-            overflowY="auto"
-            p="4"
-            maxHeight="65vh"
-            position="fixed"
-            width="min(420px, calc(100vw - 24px))"
-            style={{
-                backgroundColor: props.isDarkTheme ? "var(--gray-1)" : "var(--gray-2)",
-                borderRadius: "16px",
-                transform: "translateX(-50%)",
-            }}>
-            {props.children}
-        </Box>
-    </motion.div>
+    <PanelContainer
+        initial={{ y: "100%", x: "-50%", opacity: 0 }}
+        animate={{ y: 0, x: "-50%", opacity: 1 }}
+        exit={{ y: "100%", x: "-50%", opacity: 0 }}
+        transition={{ duration: animationDuration, ease: "easeInOut" }}
+        style={{
+            zIndex,
+            bottom: "80px",
+            position: "fixed",
+            overflowY: "auto",
+            maxHeight: "65vh",
+            padding: "var(--space-4)",
+            backgroundColor: props.isDarkTheme ? "var(--gray-1)" : "var(--gray-2)",
+            borderRadius: "16px",
+        }}>
+        {props.children}
+    </PanelContainer>
 );
 
 const BackgroundMotion = (props: BackgroundStyledProps) => (
     <motion.div
-        z-index="inherit"
+        initial={{ opacity: 0 }}
         animate={{
             opacity: 1,
         }}
+        exit={{ opacity: 0 }}
         transition={{ duration: animationDuration, ease: "easeInOut" }}>
         {props.children}
     </motion.div>
@@ -108,14 +117,18 @@ const Drawer: React.FC<DrawerProps> = (props) => {
 
     return (
         <>
-            {isShowPanel && (
-                <Background
-                    $isShow={isShowPanel}
-                    onClick={closePanelHandler}
-                    $backdropOpacity={props.backdropOpacity}>
-                    <Panel isDarkTheme={isDarkTheme}>{props.children}</Panel>
-                </Background>
-            )}
+            <AnimatePresence>
+                {isShowPanel && (
+                    <>
+                        <Background
+                            $isShow={isShowPanel}
+                            onClick={closePanelHandler}
+                            $backdropOpacity={props.backdropOpacity}
+                        />
+                        <Panel isDarkTheme={isDarkTheme}>{props.children}</Panel>
+                    </>
+                )}
+            </AnimatePresence>
         </>
     );
 };

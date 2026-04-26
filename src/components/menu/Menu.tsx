@@ -2,10 +2,10 @@ import React from "react";
 import {
     GearIcon,
     HomeIcon,
-    PersonIcon,
     ExitIcon,
     CardStackIcon,
     ReaderIcon,
+    IdCardIcon,
 } from "@radix-ui/react-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
@@ -16,6 +16,7 @@ import Switch from "../bases/Switch";
 import { Box, Flex, Grid, Separator, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { isHideBalanceOnMenuState } from "../../common/shareState";
+import { color } from "../../common/constants";
 
 interface MenuProps {
     accounts: Account[];
@@ -104,6 +105,12 @@ const Menu: React.FC<MenuProps> = (props) => {
         }
     };
 
+    const handleDrawerTabClick = (tab: Extract<ActiveTab, "account" | "settings">) => {
+        setActiveTab((prev) =>
+            prev === tab ? (location.pathname === "/" ? "home" : "none") : tab
+        );
+    };
+
     return (
         <>
             <Drawer open={activeTab === "account"} onOpenChange={handleBottomDrawerOpenChange}>
@@ -185,20 +192,26 @@ const Menu: React.FC<MenuProps> = (props) => {
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
                         <TabButton onClick={navigateToHome}>
-                            <HomeIcon />
-                            <Text size="1" color={activeTab === "home" ? "iris" : "gray"}>
+                            <HomeIcon color="gray" />
+                            <Text size="1" color="gray">
                                 Home
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => setActiveTab("account")}>
-                            <PersonIcon />
-                            <Text size="1" color={activeTab === "account" ? "iris" : "gray"}>
+                        <TabButton onClick={() => handleDrawerTabClick("account")}>
+                            <IdCardIcon
+                                color={activeTab === "account" ? color.primaryIcon : "gray"}
+                            />
+                            <Text size="1" color={activeTab === "account" ? color.primary : "gray"}>
                                 Account
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => setActiveTab("settings")}>
-                            <GearIcon />
-                            <Text size="1" color={activeTab === "settings" ? "iris" : "gray"}>
+                        <TabButton onClick={() => handleDrawerTabClick("settings")}>
+                            <GearIcon
+                                color={activeTab === "settings" ? color.primaryIcon : "gray"}
+                            />
+                            <Text
+                                size="1"
+                                color={activeTab === "settings" ? color.primary : "gray"}>
                                 Settings
                             </Text>
                         </TabButton>

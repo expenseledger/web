@@ -2,7 +2,7 @@ import * as React from "react";
 import Button, { ButtonType } from "./Button";
 import { Dialog, Flex } from "@radix-ui/themes";
 import AnimatedPage from "../AnimatedPage";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 interface Props {
     title: string;

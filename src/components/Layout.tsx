@@ -13,7 +13,7 @@ import Menu from "./menu/Menu";
 import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
 import { useAtom, useAtomValue } from "jotai";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence } from "motion/react";
 
 const Header = styled.div`
     padding-top: 12px;

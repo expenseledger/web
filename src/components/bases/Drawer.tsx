@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 interface BackgroundStyledProps {
     onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;

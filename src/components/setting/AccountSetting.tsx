@@ -57,9 +57,25 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
 
     const modifyAccount = async () => {
         const account = accounts.find((x) => x.id === props.id);
+        if (!account) {
+            addNotification("Account not found", "danger");
+            return;
+        }
+
         const otherCategory = await getOtherCategory();
+        if (!otherCategory) {
+            return;
+        }
+
         const balance = toNumber(balanceText);
-        const [updateAccountRes, addExpenseRes] = await Promise.all([
+        if (Number.isNaN(balance)) {
+            addNotification("Invalid balance", "danger");
+            return;
+        }
+
+        const balanceChanged = balance !== account.balance;
+        const amount = Math.abs(balance - account.balance);
+        const [updateAccountRes, adjustBalanceRes] = await Promise.all([
             name !== account.name || type !== account.type
                 ? updateAccount({
                       id: props.id,
@@ -67,23 +83,28 @@ const ModifyModal: React.FC<ModifyModalProps> = (props) => {
                       type,
                   })
                 : Promise.resolve({ account: null }),
-            balance === account.balance
+            !balanceChanged
                 ? Promise.resolve({ transaction: null })
-                : addExpense({
-                      amount:
-                          balance < account.balance
-                              ? account.balance - balance
-                              : balance - account.balance,
-                      categoryId: otherCategory.id,
-                      fromAccountId: account.id,
-                      description: "Adjust balance",
-                      date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
-                  }),
+                : balance > account.balance
+                  ? addIncome({
+                        amount,
+                        categoryId: otherCategory.id,
+                        toAccountId: account.id,
+                        description: "Adjust balance",
+                        date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
+                    })
+                  : addExpense({
+                        amount,
+                        categoryId: otherCategory.id,
+                        fromAccountId: account.id,
+                        description: "Adjust balance",
+                        date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
+                    }),
         ]);
 
         if (
             ((name !== account.name || type !== account.type) && !updateAccountRes.account) ||
-            (balance !== account.balance && !addExpenseRes.transaction)
+            (balanceChanged && !adjustBalanceRes.transaction)
         ) {
             addNotification("Update account failed", "danger");
 

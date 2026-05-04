@@ -3,6 +3,7 @@ import { HttpLink } from "@apollo/client/link/http";
 import { SetContextLink } from "@apollo/client/link/context";
 import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
+import { RetryLink } from "@apollo/client/link/retry";
 
 const httpLink = new HttpLink({
     uri: getServerUrl,
@@ -32,8 +33,18 @@ const authLink = new SetContextLink(async (prevContext) => {
     };
 });
 
+const retryLink = new RetryLink({
+    attempts: {
+        max: 5,
+        retryIf: (error, operation) => operation.operationType === "query",
+    },
+    delay: (attempt) => {
+        return 1000 * 2 ** (attempt - 1);
+    },
+});
+
 const client = new ApolloClient({
-    link: authLink.concat(httpLink),
+    link: authLink.concat(httpLink).concat(retryLink),
     cache: new InMemoryCache(),
 });
 

@@ -23,27 +23,27 @@ $line-seed-font-path: "./assets/fonts/line_seed";
 
 @font-face {
     src: url("#{$line-seed-font-path}/LINESeedSansTH_W_Rg.woff2") format("woff2");
-    font-display: optional;
+    font-display: swap;
     font-family: "LineSeedSansTH";
     font-weight: 400;
 }
 
 @font-face {
     src: url("#{$line-seed-font-path}/LINESeedSansTH_W_Bd.woff2") format("woff2");
-    font-display: optional;
+    font-display: swap;
     font-family: "LineSeedSansTH";
     font-weight: 700;
 }
 
 @font-face {
     src: url("#{$line-seed-font-path}/LINESeedSansTH_W_XBd.woff2") format("woff2");
-    font-display: optional;
+    font-display: swap;
     font-family: "LineSeedSansTH";
     font-weight: 800;
 }
 
 .radix-themes {
-    --default-font-family: "LineSeedSans", sans-serif;
+    --default-font-family: "LineSeedSans", "LineSeedSansTH", sans-serif;
 }
 
 body {

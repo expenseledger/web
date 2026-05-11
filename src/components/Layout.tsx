@@ -14,6 +14,8 @@ import { Box, Container, Heading } from "@radix-ui/themes";
 import { color } from "../common/constants";
 import { useAtom, useAtomValue } from "jotai";
 import { AnimatePresence } from "motion/react";
+import withRetry from "../service/helper/retryHelper";
+import { useNotification } from "../service/helper/notificationHelper";
 
 const Header = styled.div`
     padding-top: 12px;
@@ -46,6 +48,7 @@ const Layout: React.FC = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const [backToHomeParam, setBackToHomeParam] = React.useState<BackToHomeParam>(null);
+    const { addNotification } = useNotification();
 
     React.useEffect(() => {
         if (!isSignInLoading && !isSignIn) {
@@ -57,13 +60,16 @@ const Layout: React.FC = () => {
             return;
         }
 
-        getUserData()
+        withRetry(getUserData)
             .then(({ categories, accounts }) => {
                 setCategories(categories);
                 setAccounts(accounts);
                 setIsLoading(false);
             })
-            .catch((err) => log("getUserData failed", err));
+            .catch((err) => {
+                addNotification("Please try restarting the app.", "danger");
+                log("getUserData failed", err);
+            });
     }, [isSignIn, isSignInLoading, redirectToSignIn, setAccounts, setCategories]);
 
     return isLoading ? (

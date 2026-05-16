@@ -1,7 +1,7 @@
 import React from "react";
-import { Button as RadixButton } from "@radix-ui/themes";
-import "./Button.scss";
+import { Button as RadixButton, Spinner } from "@radix-ui/themes";
 import { color } from "../../common/constants";
+import { BookmarkIcon } from "@radix-ui/react-icons";
 
 interface ButtonProps {
     value: string;
@@ -58,20 +58,11 @@ const Button: React.FC<ButtonProps> = (props) => {
             onClick={props.onClickHandler}
             size={getSize()}
             color={getColor() as any}
-            variant={props.variant ?? "solid"}>
-            {props.isLoading ? <LoadingRing /> : props.value}
+            variant={props.variant ?? "solid"}
+            disabled={props.isLoading}>
+            {props.isLoading && <Spinner loading />}
+            {props.value}
         </RadixButton>
-    );
-};
-
-const LoadingRing: React.FC = () => {
-    return (
-        <div className="lds-ring">
-            <div></div>
-            <div></div>
-            <div></div>
-            <div></div>
-        </div>
     );
 };
 

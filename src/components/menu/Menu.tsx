@@ -210,7 +210,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             <Text
                                 size="1"
                                 color={activeTab === "settings" ? color.primary : "gray"}>
-                                Setting
+                                Settings
                             </Text>
                         </TabButton>
                     </Flex>

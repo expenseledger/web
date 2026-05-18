@@ -46,13 +46,10 @@ const TabButton = styled.button`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 4px;
     background: transparent;
     border: none;
     font: inherit;
-    color: inherit;
     cursor: pointer;
-    padding: 0;
 `;
 
 const Version = styled.div`
@@ -63,6 +60,8 @@ const Version = styled.div`
 const ActionText = styled.span`
     cursor: pointer;
 `;
+
+const iconSize = 20;
 
 type ActiveTab = "none" | "home" | "account" | "settings";
 
@@ -186,28 +185,32 @@ const Menu: React.FC<MenuProps> = (props) => {
             <BottomMenuWrapper>
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
-                        <TabButton onClick={navigateToHome}>
-                            <HomeIcon color="gray" />
-                            <Text size="2" color="gray">
+                        <TabButton type="button" onClick={navigateToHome}>
+                            <HomeIcon color="gray" width={iconSize} height={iconSize} />
+                            <Text size="1" color="gray">
                                 Home
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => handleDrawerTabClick("account")}>
+                        <TabButton type="button" onClick={() => handleDrawerTabClick("account")}>
                             <IdCardIcon
                                 color={activeTab === "account" ? color.primaryIcon : "gray"}
+                                width={iconSize}
+                                height={iconSize}
                             />
-                            <Text size="2" color={activeTab === "account" ? color.primary : "gray"}>
-                                Account
+                            <Text size="1" color={activeTab === "account" ? color.primary : "gray"}>
+                                Accounts
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => handleDrawerTabClick("settings")}>
+                        <TabButton type="button" onClick={() => handleDrawerTabClick("settings")}>
                             <GearIcon
                                 color={activeTab === "settings" ? color.primaryIcon : "gray"}
+                                width={iconSize}
+                                height={iconSize}
                             />
                             <Text
-                                size="2"
+                                size="1"
                                 color={activeTab === "settings" ? color.primary : "gray"}>
-                                Setting
+                                Settings
                             </Text>
                         </TabButton>
                     </Flex>

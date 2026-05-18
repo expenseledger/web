@@ -151,7 +151,7 @@ const Menu: React.FC<MenuProps> = (props) => {
             </Drawer>
             <Drawer open={activeTab === "settings"} onOpenChange={handleBottomDrawerOpenChange}>
                 <Text color="gray" size="1">
-                    SETTING
+                    SETTINGS
                 </Text>
                 <Flex direction="column" gap="3" mt="2">
                     <Flex align="center" gap="2">
@@ -185,13 +185,13 @@ const Menu: React.FC<MenuProps> = (props) => {
             <BottomMenuWrapper>
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
-                        <TabButton onClick={navigateToHome}>
+                        <TabButton type="button" onClick={navigateToHome}>
                             <HomeIcon color="gray" width={iconSize} height={iconSize} />
                             <Text size="1" color="gray">
                                 Home
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => handleDrawerTabClick("account")}>
+                        <TabButton type="button" onClick={() => handleDrawerTabClick("account")}>
                             <IdCardIcon
                                 color={activeTab === "account" ? color.primaryIcon : "gray"}
                                 width={iconSize}
@@ -201,7 +201,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                                 Accounts
                             </Text>
                         </TabButton>
-                        <TabButton onClick={() => handleDrawerTabClick("settings")}>
+                        <TabButton type="button" onClick={() => handleDrawerTabClick("settings")}>
                             <GearIcon
                                 color={activeTab === "settings" ? color.primaryIcon : "gray"}
                                 width={iconSize}

@@ -1,4 +1,7 @@
 {
     "setupFilesAfterEnv": ["./src/setupTests.ts"],
-    "testEnvironment": "jsdom"
+    "testEnvironment": "jsdom",
+    "moduleNameMapper": {
+        "\\.(scss|css)$": "<rootDir>/src/tests/__mocks__/styleMock.js"
+    }
 }

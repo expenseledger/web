@@ -26,7 +26,7 @@ const mockClient = client as jest.Mocked<typeof client>;
 const serverTransaction = {
     id: 1,
     fromAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
-    toAccount: null,
+    toAccount: null as any,
     amount: 50,
     type: "EXPENSE",
     category: { id: 2, name: "Food", type: "EXPENSE" },
@@ -94,7 +94,7 @@ describe("transactionService", () => {
             const incomeTransaction = {
                 ...serverTransaction,
                 type: "INCOME",
-                fromAccount: null,
+                fromAccount: null as any,
                 toAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
             };
 

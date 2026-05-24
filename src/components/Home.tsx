@@ -9,7 +9,6 @@ import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
 import AccountCard from "./AccountCard";
-import "./Home.scss";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
 import Dropdown from "./bases/Dropdown";
@@ -32,6 +31,14 @@ interface CurrentValue {
 
 const LinkText = styled.span`
     vertical-align: middle;
+`;
+
+const StyledAddButton = styled(Button)`
+    width: 100px;
+`;
+
+const StyledMoreButton = styled(Button)`
+    width: 100px;
 `;
 
 const Home: React.FC = () => {
@@ -258,25 +265,19 @@ const Home: React.FC = () => {
                         />
                     </Box>
                 </Flex>
-                <Flex mt="2">
-                    <Box>
-                        <Button
-                            className="content__button--add"
-                            onClickHandler={addTransaction}
-                            value="Add"
-                            type="primary"
-                            isLoading={isLoading}
-                        />
-                    </Box>
-                    <Box ml="4">
-                        <Button
-                            className="content__button--more"
-                            onClickHandler={toMorePage}
-                            value="More"
-                            type="primary"
-                            variant="soft"
-                        />
-                    </Box>
+                <Flex mt="2" gap="4">
+                    <StyledAddButton
+                        onClickHandler={addTransaction}
+                        value="Add"
+                        type="primary"
+                        isLoading={isLoading}
+                    />
+                    <StyledMoreButton
+                        onClickHandler={toMorePage}
+                        value="More"
+                        type="primary"
+                        variant="soft"
+                    />
                 </Flex>
             </Grid>
         </AnimatedPage>

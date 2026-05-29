@@ -2,7 +2,7 @@ import { ApolloProvider } from "@apollo/client/react";
 import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import "@radix-ui/themes/styles.css";
-import "./index.css";
+import "./index.scss";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";

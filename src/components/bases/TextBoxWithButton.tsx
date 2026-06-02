@@ -2,7 +2,7 @@ import React from "react";
 import { useInput } from "../../common/utils";
 import Button, { ButtonType } from "./Button";
 import { Separator, TextField } from "@radix-ui/themes";
-import { RootProps } from "@radix-ui/themes/dist/cjs/components/text-field";
+import type { RootProps } from "@radix-ui/themes/components/text-field";
 import Dropdown from "./Dropdown";
 
 interface TextBoxWithButtonProps {

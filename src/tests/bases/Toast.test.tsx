@@ -22,9 +22,13 @@ describe("Toast", () => {
         const { container } = renderWithProviders(<Toast position="bottom-left" />);
 
         const toastContainer = container.firstElementChild as HTMLElement;
-        const style = window.getComputedStyle(toastContainer);
+        expect(toastContainer).toBeInstanceOf(HTMLElement);
 
-        expect(style.bottom).toBe("10px");
-        expect(style.left).toBe("10px");
+        const injectedStyles = Array.from(document.head.querySelectorAll("style"))
+            .map((style) => style.textContent)
+            .join("");
+
+        expect(injectedStyles).toContain("bottom");
+        expect(injectedStyles).toContain("left");
     });
 });

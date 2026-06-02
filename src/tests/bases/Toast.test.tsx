@@ -18,9 +18,13 @@ describe("Toast", () => {
         expect(screen.getByText("World")).toBeInTheDocument();
     });
 
-    it("applies position class to container", () => {
+    it("applies position styles to container", () => {
         const { container } = renderWithProviders(<Toast position="bottom-left" />);
 
-        expect(container.querySelector(".toast--bottom-left")).toBeInTheDocument();
+        const toastContainer = container.firstElementChild as HTMLElement;
+        const style = window.getComputedStyle(toastContainer);
+
+        expect(style.bottom).toBe("10px");
+        expect(style.left).toBe("10px");
     });
 });

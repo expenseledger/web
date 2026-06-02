@@ -41,7 +41,10 @@ describe("Notification", () => {
         );
 
         act(() => {
-            jest.advanceTimersByTime(4000);
+            jest.advanceTimersByTime(3000);
+        });
+        act(() => {
+            jest.advanceTimersByTime(1000);
         });
 
         expect(onClose).toHaveBeenCalledWith("2");

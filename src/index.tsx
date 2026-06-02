@@ -13,8 +13,10 @@ const root = createRoot(container);
 
 root.render(
     // <React.StrictMode>
-    <ApolloProvider client={apolloClient}>
-        <App />
-    </ApolloProvider>
+    <>
+        <ApolloProvider client={apolloClient}>
+            <App />
+        </ApolloProvider>
+    </>
     // </React.StrictMode>
 );

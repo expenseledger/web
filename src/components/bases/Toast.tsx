@@ -2,12 +2,29 @@ import React from "react";
 import { toastState } from "../../common/shareState";
 import { combineClassName } from "../../common/utils";
 import Notification, { NotificationProps } from "./Notification";
-import "./Toast.scss";
+import styled from "styled-components";
 import { useAtom } from "jotai";
 
 interface ToastProps {
     position: Position;
 }
+
+const ToastContainer = styled.div<{ position: Position }>`
+    position: fixed;
+    z-index: 11;
+    ${(props) => {
+        switch (props.position) {
+            case "top-right":
+                return `top: 10px; right: 10px;`;
+            case "top-left":
+                return `top: 10px; left: 10px;`;
+            case "bottom-right":
+                return `bottom: 10px; right: 10px;`;
+            case "bottom-left":
+                return `bottom: 10px; left: 10px;`;
+        }
+    }}
+`;
 
 function getNotificationList(
     notiList: NotificationProps[],
@@ -63,9 +80,8 @@ const Toast: React.FC<ToastProps> = (props) => {
     const notifications = getNotificationList(notificationList, props.position, (id) => {
         setNotificationList((prev) => prev.filter((x) => x.id !== id));
     });
-    const className = combineClassName("toast", `toast--${props.position}`);
 
-    return <div className={className}>{notifications}</div>;
+    return <ToastContainer position={props.position}>{notifications}</ToastContainer>;
 };
 
 type Position = "top-right" | "top-left" | "bottom-left" | "bottom-right";

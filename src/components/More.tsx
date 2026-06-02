@@ -1,5 +1,6 @@
 import React from "react";
 import { useLocation } from "react-router";
+import styled from "styled-components";
 import { accountsState, categoriesState, currencyState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
@@ -8,7 +9,6 @@ import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
 import { addExpense, addIncome, addTransfer } from "../service/transactionService";
-import "./More.scss";
 import BalanceWithCurrency from "./bases/BalanceWithCurrency";
 import Button from "./bases/Button";
 import DateBox from "./bases/DateBox";
@@ -33,6 +33,10 @@ interface HomeProps {
     amount: string;
     date: string;
 }
+
+const StyledAddButton = styled(Button)`
+    width: 100px;
+`;
 
 const More: React.FC = () => {
     const [accounts, setAccounts] = useAtom(accountsState);
@@ -462,8 +466,7 @@ const More: React.FC = () => {
                     </Box>
                 </Flex>
                 <Flex mt="2">
-                    <Button
-                        className="more__button--add"
+                    <StyledAddButton
                         onClickHandler={addTransaction}
                         value="Add"
                         type="primary"

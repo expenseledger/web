@@ -7,7 +7,7 @@ describe("transactoinHelper", () => {
             const serverData = {
                 id: 42,
                 fromAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
-                toAccount: null,
+                toAccount: null as any,
                 amount: 50,
                 type: "EXPENSE",
                 category: { id: 2, name: "Food", type: "EXPENSE" },

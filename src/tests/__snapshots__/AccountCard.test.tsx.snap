@@ -3,7 +3,7 @@
 exports[`<AccountCard> renders without crashing 1`] = `
 <div>
   <div
-    class="sc-aXZVf hgATXI"
+    class="sc-bdDsCe lnppdj"
   >
     <span
       class="rt-Text rt-r-size-8 rt-r-weight-bold"
@@ -22,7 +22,7 @@ exports[`<AccountCard> renders without crashing 1`] = `
         class="rt-Text rt-r-size-4"
       >
         <span>
-          0
+          0.00
         </span>
       </span>
     </div>

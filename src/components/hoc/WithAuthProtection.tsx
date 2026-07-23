@@ -1,6 +1,6 @@
 import { onAuthStateChanged } from "firebase/auth";
 import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { isSignInState } from "../../common/shareState";
 import { auth } from "../../lib/firebase";
 import Loading from "../bases/Loading";

@@ -1,7 +1,7 @@
 import { EmailAuthProvider, GoogleAuthProvider, onAuthStateChanged, User } from "firebase/auth";
 import React from "react";
 import { StyledFirebaseAuth } from "react-firebaseui";
-import { useNavigate } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Logo from "../../assets/pics/logo.svg";
 import { auth } from "../../lib/firebase";
 import { Box, Flex, Text } from "@radix-ui/themes";

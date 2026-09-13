@@ -9,11 +9,12 @@ import {
 } from "@radix-ui/react-icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { AnimatePresence, motion } from "motion/react";
 import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
 import Switch from "../bases/Switch";
-import { Box, Flex, Grid, Separator, Text } from "@radix-ui/themes";
+import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import { isHideBalanceOnMenuState } from "../../common/shareState";
 import { color } from "../../common/constants";
@@ -61,6 +62,16 @@ const ActionText = styled.span`
     cursor: pointer;
 `;
 
+const DrawerContent = styled(motion.div)`
+    width: 100%;
+`;
+
+const drawerContentMotion = {
+    initial: { opacity: 0, y: 6 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -6 },
+};
+
 const iconSize = 20;
 
 type ActiveTab = "none" | "home" | "account" | "settings";
@@ -70,6 +81,7 @@ const Menu: React.FC<MenuProps> = (props) => {
     const [activeTab, setActiveTab] = React.useState<ActiveTab>("none");
     const navigate = useNavigate();
     const location = useLocation();
+    const activeDrawer = activeTab === "account" || activeTab === "settings" ? activeTab : null;
 
     React.useEffect(() => {
         if (location.pathname === "/") {
@@ -107,79 +119,96 @@ const Menu: React.FC<MenuProps> = (props) => {
 
     return (
         <>
-            <Drawer open={activeTab === "account"} onOpenChange={handleBottomDrawerOpenChange}>
-                <Text color="gray" size="1">
-                    ACCOUNTS
-                </Text>
-                <Grid columns="2" gap="2" mt="2">
-                    {props.accounts.map((x) => (
-                        <React.Fragment key={x.id}>
-                            <Box>
-                                <Text>{x.name}</Text>
-                            </Box>
-                            <Box ml="2">
-                                <BalanceWithCurrency
-                                    balance={x.balance}
-                                    isHideBalance={isHideBalance}
+            <Drawer open={activeDrawer !== null} onOpenChange={handleBottomDrawerOpenChange}>
+                <AnimatePresence mode="wait">
+                    {activeDrawer === "account" ? (
+                        <DrawerContent
+                            key="account-panel"
+                            initial={drawerContentMotion.initial}
+                            animate={drawerContentMotion.animate}
+                            exit={drawerContentMotion.exit}
+                            transition={{ duration: 0.2, ease: "easeInOut" }}>
+                            <Text color="gray" size="1">
+                                ACCOUNTS
+                            </Text>
+                            <Grid columns="2" gap="2" mt="2">
+                                {props.accounts.map((x) => (
+                                    <React.Fragment key={x.id}>
+                                        <Box>
+                                            <Text>{x.name}</Text>
+                                        </Box>
+                                        <Box ml="2">
+                                            <BalanceWithCurrency
+                                                balance={x.balance}
+                                                isHideBalance={isHideBalance}
+                                            />
+                                        </Box>
+                                    </React.Fragment>
+                                ))}
+                                <Flex justify="end">
+                                    <Text mr="2">=</Text>
+                                </Flex>
+                                <Box ml="2">
+                                    <Text weight="bold">
+                                        <BalanceWithCurrency
+                                            balance={props.totalAccountBalance}
+                                            isHideBalance={isHideBalance}
+                                        />
+                                    </Text>
+                                </Box>
+                            </Grid>
+                            <Flex justify="end" mt="3">
+                                <Switch
+                                    name="hideBalanceSwitch"
+                                    isRounded
+                                    isOn={isHideBalance}
+                                    onChange={onHideBalanceChangeHandler}
+                                    label="Hide balance"
+                                    size="small"
+                                    isRtl
                                 />
-                            </Box>
-                        </React.Fragment>
-                    ))}
-                    <Flex justify="end">
-                        <Text mr="2">=</Text>
-                    </Flex>
-                    <Box ml="2">
-                        <Text weight="bold">
-                            <BalanceWithCurrency
-                                balance={props.totalAccountBalance}
-                                isHideBalance={isHideBalance}
-                            />
-                        </Text>
-                    </Box>
-                </Grid>
-                <Flex justify="end" mt="3">
-                    <Switch
-                        name="hideBalanceSwitch"
-                        isRounded
-                        isOn={isHideBalance}
-                        onChange={onHideBalanceChangeHandler}
-                        label="Hide balance"
-                        size="small"
-                        isRtl
-                    />
-                </Flex>
-            </Drawer>
-            <Drawer open={activeTab === "settings"} onOpenChange={handleBottomDrawerOpenChange}>
-                <Text color="gray" size="1">
-                    SETTINGS
-                </Text>
-                <Flex direction="column" gap="3" mt="2">
-                    <Flex align="center" gap="2">
-                        <CardStackIcon />
-                        <Link to="/account/setting" onClick={closeSheet}>
-                            Account
-                        </Link>
-                    </Flex>
-                    <Flex align="center" gap="2">
-                        <ReaderIcon />
-                        <Link to="/category/setting" onClick={closeSheet}>
-                            Category
-                        </Link>
-                    </Flex>
-                    <Flex align="center" gap="2">
-                        <GearIcon />
-                        <Link to="/page/setting" onClick={closeSheet}>
-                            Page
-                        </Link>
-                    </Flex>
-                    <Flex align="center" gap="2">
-                        <ExitIcon />
-                        <ActionText onClick={props.signOutFunc}>Sign out</ActionText>
-                    </Flex>
-                    <Flex justify="end">
-                        <Version>v{props.version}</Version>
-                    </Flex>
-                </Flex>
+                            </Flex>
+                        </DrawerContent>
+                    ) : (
+                        <DrawerContent
+                            key="settings-panel"
+                            initial={drawerContentMotion.initial}
+                            animate={drawerContentMotion.animate}
+                            exit={drawerContentMotion.exit}
+                            transition={{ duration: 0.2, ease: "easeInOut" }}>
+                            <Text color="gray" size="1">
+                                SETTINGS
+                            </Text>
+                            <Flex direction="column" gap="3" mt="2">
+                                <Flex align="center" gap="2">
+                                    <CardStackIcon />
+                                    <Link to="/account/setting" onClick={closeSheet}>
+                                        Account
+                                    </Link>
+                                </Flex>
+                                <Flex align="center" gap="2">
+                                    <ReaderIcon />
+                                    <Link to="/category/setting" onClick={closeSheet}>
+                                        Category
+                                    </Link>
+                                </Flex>
+                                <Flex align="center" gap="2">
+                                    <GearIcon />
+                                    <Link to="/page/setting" onClick={closeSheet}>
+                                        Page
+                                    </Link>
+                                </Flex>
+                                <Flex align="center" gap="2">
+                                    <ExitIcon />
+                                    <ActionText onClick={props.signOutFunc}>Sign out</ActionText>
+                                </Flex>
+                                <Flex justify="end">
+                                    <Version>v{props.version}</Version>
+                                </Flex>
+                            </Flex>
+                        </DrawerContent>
+                    )}
+                </AnimatePresence>
             </Drawer>
 
             <BottomMenuWrapper>

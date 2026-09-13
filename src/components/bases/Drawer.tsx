@@ -2,10 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import { motion, AnimatePresence } from "motion/react";
 
-interface BackgroundStyledProps {
-    onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-}
-
 const animationDuration = 0.25;
 const zIndex = 1000;
 
@@ -20,13 +16,14 @@ const PanelContainer = styled(motion.div)`
     background-color: var(--gray-2);
     border-radius: 16px;
     left: 50%;
+    transform: translateX(-50%);
     width: min(var(--container-size-2, 688px), calc(100vw - (var(--space-6) * 2)));
 `;
 
 const panelMotion = {
-    initial: { y: "100%", x: "-50%", opacity: 0 },
-    animate: { y: 0, x: "-50%", opacity: 1 },
-    exit: { y: "100%", x: "-50%", opacity: 0 },
+    initial: { opacity: 0 },
+    animate: { opacity: 1 },
+    exit: { opacity: 0 },
 };
 
 const backdropMotion = {
@@ -35,7 +32,7 @@ const backdropMotion = {
     exit: { opacity: 0, backdropFilter: "blur(0px)" },
 };
 
-const Background = styled(motion.div)<BackgroundStyledProps>`
+const Background = styled(motion.div)`
     z-index: ${zIndex - 1};
     position: fixed;
     top: 0;

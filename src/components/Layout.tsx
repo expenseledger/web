@@ -77,12 +77,6 @@ const Layout: React.FC = () => {
     ) : (
         <>
             <Header className="header">
-                <Menu
-                    accounts={accounts}
-                    totalAccountBalance={totalAccountsBalance}
-                    signOutFunc={() => auth.signOut()}
-                    version={pj.version}
-                />
                 <Title className="py-2">
                     <Box p="4" onClick={() => navigate("/", { state: backToHomeParam })}>
                         <Heading
@@ -111,6 +105,12 @@ const Layout: React.FC = () => {
                     </AnimatePresence>
                 </React.Suspense>
             </Container>
+            <Menu
+                accounts={accounts}
+                totalAccountBalance={totalAccountsBalance}
+                signOutFunc={() => auth.signOut()}
+                version={pj.version}
+            />
             <Toast position="top-right" />
         </>
     );

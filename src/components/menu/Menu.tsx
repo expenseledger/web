@@ -64,12 +64,14 @@ const ActionText = styled.span`
 
 const DrawerContent = styled(motion.div)`
     width: 100%;
+    overflow: hidden;
+    display: block;
 `;
 
 const drawerContentMotion = {
-    initial: { opacity: 0, y: 6 },
-    animate: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -6 },
+    initial: { opacity: 0, height: 0, y: 8 },
+    animate: { opacity: 1, height: "auto", y: 0 },
+    exit: { opacity: 0, height: 0, y: -8 },
 };
 
 const iconSize = 20;
@@ -127,7 +129,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             initial={drawerContentMotion.initial}
                             animate={drawerContentMotion.animate}
                             exit={drawerContentMotion.exit}
-                            transition={{ duration: 0.2, ease: "easeInOut" }}>
+                            transition={{ duration: 0.24, ease: "easeInOut" }}>
                             <Text color="gray" size="1">
                                 ACCOUNTS
                             </Text>
@@ -175,7 +177,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             initial={drawerContentMotion.initial}
                             animate={drawerContentMotion.animate}
                             exit={drawerContentMotion.exit}
-                            transition={{ duration: 0.2, ease: "easeInOut" }}>
+                            transition={{ duration: 0.24, ease: "easeInOut" }}>
                             <Text color="gray" size="1">
                                 SETTINGS
                             </Text>

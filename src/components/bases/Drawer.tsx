@@ -11,13 +11,15 @@ const PanelContainer = styled(motion.div)`
     bottom: 94px;
     position: fixed;
     overflow-y: auto;
+    overflow-x: hidden;
     max-height: 65vh;
     padding: var(--space-4);
     background-color: var(--gray-2);
     border-radius: 16px;
     left: 50%;
-    transform: translateX(-50%);
     width: min(var(--container-size-2, 688px), calc(100vw - (var(--space-6) * 2)));
+    transform: translateX(-50%);
+    will-change: opacity, height;
 `;
 
 const panelMotion = {

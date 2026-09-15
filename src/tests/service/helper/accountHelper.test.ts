@@ -49,6 +49,6 @@ describe("accountHelper", () => {
     });
 
     it("exports supported currencies", () => {
-        expect(allCurrencies).toEqual(["฿", "€"]);
+        expect(allCurrencies).toEqual(["฿", "€", "$", "¥", "₩"]);
     });
 });

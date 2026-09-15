@@ -45,7 +45,7 @@ const BottomMenuBar = styled.div`
     -webkit-backdrop-filter: blur(8px);
 `;
 
-const TabButton = styled.button`
+const TabButton = styled(motion.button)`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -53,6 +53,13 @@ const TabButton = styled.button`
     border: none;
     font: inherit;
     cursor: pointer;
+`;
+
+const TabButtonContent = styled(motion.div)`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
 const Version = styled.div`
@@ -120,6 +127,36 @@ const Menu: React.FC<MenuProps> = (props) => {
             prev === tab ? (location.pathname === "/" ? "home" : "none") : tab
         );
     };
+
+    const menuItems = [
+        {
+            id: "home" as const,
+            label: "Home",
+            Icon: HomeIcon,
+            isActive: activeTab === "home",
+            onClick: navigateToHome,
+            iconColor: "white",
+            textColor: "#fff",
+        },
+        {
+            id: "account" as const,
+            label: "Accounts",
+            Icon: IdCardIcon,
+            isActive: activeTab === "account",
+            onClick: () => handleDrawerTabClick("account"),
+            iconColor: activeTab === "account" ? color.primaryIcon : "white",
+            textColor: activeTab === "account" ? color.primaryIcon : "#fff",
+        },
+        {
+            id: "settings" as const,
+            label: "Settings",
+            Icon: GearIcon,
+            isActive: activeTab === "settings",
+            onClick: () => handleDrawerTabClick("settings"),
+            iconColor: activeTab === "settings" ? color.primaryIcon : "white",
+            textColor: activeTab === "settings" ? color.primaryIcon : "#fff",
+        },
+    ];
 
     return (
         <>
@@ -218,40 +255,29 @@ const Menu: React.FC<MenuProps> = (props) => {
             <BottomMenuWrapper>
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
-                        <TabButton type="button" onClick={navigateToHome}>
-                            <HomeIcon color="white" width={iconSize} height={iconSize} />
-                            <Text size="1" style={{ color: "#fff" }}>
-                                Home
-                            </Text>
-                        </TabButton>
-                        <TabButton type="button" onClick={() => handleDrawerTabClick("account")}>
-                            <IdCardIcon
-                                color={activeTab === "account" ? color.primaryIcon : "white"}
-                                width={iconSize}
-                                height={iconSize}
-                            />
-                            <Text
-                                size="1"
-                                style={{
-                                    color: activeTab === "account" ? color.primaryIcon : "#fff",
-                                }}>
-                                Accounts
-                            </Text>
-                        </TabButton>
-                        <TabButton type="button" onClick={() => handleDrawerTabClick("settings")}>
-                            <GearIcon
-                                color={activeTab === "settings" ? color.primaryIcon : "white"}
-                                width={iconSize}
-                                height={iconSize}
-                            />
-                            <Text
-                                size="1"
-                                style={{
-                                    color: activeTab === "settings" ? color.primaryIcon : "#fff",
-                                }}>
-                                Settings
-                            </Text>
-                        </TabButton>
+                        {menuItems.map(
+                            ({ id, label, Icon, isActive, onClick, iconColor, textColor }) => (
+                                <TabButton
+                                    key={id}
+                                    type="button"
+                                    onClick={onClick}
+                                    whileTap={{ scale: 0.94 }}
+                                    transition={{ type: "spring", stiffness: 340, damping: 18 }}>
+                                    <TabButtonContent
+                                        animate={isActive ? { scale: [1, 1.08, 1] } : { scale: 1 }}
+                                        transition={{ duration: 0.2 }}>
+                                        <Icon
+                                            color={iconColor}
+                                            width={iconSize}
+                                            height={iconSize}
+                                        />
+                                        <Text size="1" style={{ color: textColor }}>
+                                            {label}
+                                        </Text>
+                                    </TabButtonContent>
+                                </TabButton>
+                            )
+                        )}
                     </Flex>
                 </BottomMenuBar>
             </BottomMenuWrapper>

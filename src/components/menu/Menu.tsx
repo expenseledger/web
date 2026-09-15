@@ -38,9 +38,11 @@ const BottomMenuWrapper = styled.div`
 
 const BottomMenuBar = styled.div`
     border-radius: 18px;
-    background: var(--gray-2);
-    border: none;
+    background: rgba(100, 100, 100, 0.52);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 `;
 
 const TabButton = styled.button`
@@ -129,7 +131,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             initial={drawerContentMotion.initial}
                             animate={drawerContentMotion.animate}
                             exit={drawerContentMotion.exit}
-                            transition={{ duration: 0.24, ease: "easeInOut" }}>
+                            transition={{ duration: 0.16, ease: "easeInOut" }}>
                             <Text color="gray" size="1">
                                 ACCOUNTS
                             </Text>
@@ -177,7 +179,7 @@ const Menu: React.FC<MenuProps> = (props) => {
                             initial={drawerContentMotion.initial}
                             animate={drawerContentMotion.animate}
                             exit={drawerContentMotion.exit}
-                            transition={{ duration: 0.24, ease: "easeInOut" }}>
+                            transition={{ duration: 0.16, ease: "easeInOut" }}>
                             <Text color="gray" size="1">
                                 SETTINGS
                             </Text>
@@ -217,30 +219,36 @@ const Menu: React.FC<MenuProps> = (props) => {
                 <BottomMenuBar>
                     <Flex justify="between" align="center" p="3">
                         <TabButton type="button" onClick={navigateToHome}>
-                            <HomeIcon color="gray" width={iconSize} height={iconSize} />
-                            <Text size="1" color="gray">
+                            <HomeIcon color="white" width={iconSize} height={iconSize} />
+                            <Text size="1" style={{ color: "#fff" }}>
                                 Home
                             </Text>
                         </TabButton>
                         <TabButton type="button" onClick={() => handleDrawerTabClick("account")}>
                             <IdCardIcon
-                                color={activeTab === "account" ? color.primaryIcon : "gray"}
-                                width={iconSize}
-                                height={iconSize}
-                            />
-                            <Text size="1" color={activeTab === "account" ? color.primary : "gray"}>
-                                Accounts
-                            </Text>
-                        </TabButton>
-                        <TabButton type="button" onClick={() => handleDrawerTabClick("settings")}>
-                            <GearIcon
-                                color={activeTab === "settings" ? color.primaryIcon : "gray"}
+                                color={activeTab === "account" ? color.primaryIcon : "white"}
                                 width={iconSize}
                                 height={iconSize}
                             />
                             <Text
                                 size="1"
-                                color={activeTab === "settings" ? color.primary : "gray"}>
+                                style={{
+                                    color: activeTab === "account" ? color.primaryIcon : "#fff",
+                                }}>
+                                Accounts
+                            </Text>
+                        </TabButton>
+                        <TabButton type="button" onClick={() => handleDrawerTabClick("settings")}>
+                            <GearIcon
+                                color={activeTab === "settings" ? color.primaryIcon : "white"}
+                                width={iconSize}
+                                height={iconSize}
+                            />
+                            <Text
+                                size="1"
+                                style={{
+                                    color: activeTab === "settings" ? color.primaryIcon : "#fff",
+                                }}>
                                 Settings
                             </Text>
                         </TabButton>

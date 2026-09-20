@@ -1,6 +1,7 @@
 {
     "setupFilesAfterEnv": ["./src/setupTests.ts"],
     "testEnvironment": "jsdom",
+    "transformIgnorePatterns": ["node_modules/(?!jotai/)"],
     "moduleNameMapper": {
         "\\.(scss|css)$": "<rootDir>/src/tests/__mocks__/styleMock.js"
     }

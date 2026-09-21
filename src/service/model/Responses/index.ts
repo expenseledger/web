@@ -1,6 +1,6 @@
-import Account from "../Account";
-import Category from "../Category";
-import Transaction from "../Transaction";
+import type Account from "../Account";
+import type Category from "../Category";
+import type Transaction from "../Transaction";
 
 // Transaction
 export interface AddExpenseResponse {

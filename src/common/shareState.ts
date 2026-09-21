@@ -1,10 +1,10 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import { NotificationProps } from "../components/bases/Notification";
-import Account from "../service/model/Account";
-import Category from "../service/model/Category";
-import PageSetting from "../service/model/configs/PageSetting";
-import { Currency } from "./../service/constants";
+import type { NotificationProps } from "../components/bases/Notification";
+import type Account from "../service/model/Account";
+import type Category from "../service/model/Category";
+import type PageSetting from "../service/model/configs/PageSetting";
+import type { Currency } from "./../service/constants";
 
 export const accountsState = atom<Account[]>([]);
 

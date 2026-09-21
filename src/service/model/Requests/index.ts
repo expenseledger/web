@@ -1,5 +1,5 @@
-import { AccountType } from "../../constants";
-import { CategoryType } from "./../../constants";
+import type { AccountType } from "../../constants";
+import type { CategoryType } from "./../../constants";
 
 // Transaction
 interface AddTransactionRequest {

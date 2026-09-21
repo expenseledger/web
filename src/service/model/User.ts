@@ -1,5 +1,5 @@
-import Account from "./Account";
-import Category from "./Category";
+import type Account from "./Account";
+import type Category from "./Category";
 
 interface User {
     categories: Category[];

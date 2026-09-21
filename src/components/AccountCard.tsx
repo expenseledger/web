@@ -16,14 +16,14 @@ interface CardProps {
     $backgroundImage: string;
 }
 
-const Card = styled.div<CardProps>`
-    background-color: ${(props) => props.$backgroundColor};
-    background-image: ${(props) => props.$backgroundImage};
+const Card = styled.div`
+    background-color: ${(props) => (props as unknown as CardProps).$backgroundColor};
+    background-image: ${(props) => (props as unknown as CardProps).$backgroundImage};
     border-radius: 8px;
     padding: 24px;
     color: white;
     text-align: right;
-`;
+` as unknown as React.ComponentType<React.PropsWithChildren<CardProps>>;
 
 const colors = [
     ["#bdd4e7", "linear-gradient(315deg, #bdd4e7 0%, #8693ab 74%)"],

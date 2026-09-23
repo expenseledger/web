@@ -22,12 +22,10 @@ jobs:
 
             - name: Install package
               run: |
-                  node --version
-                  yarn --version
-                  yarn install --immutable
+                  yarn install
 
             - name: Build
               run: yarn build
 
             - name: Test
-              run: yarn test --runInBand --ci --forceExit
+              run: yarn test

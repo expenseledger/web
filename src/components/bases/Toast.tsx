@@ -9,11 +9,11 @@ interface ToastProps {
     position: Position;
 }
 
-const ToastContainer = styled.div<{ position: Position }>`
+const ToastContainer = styled.div`
     position: fixed;
     z-index: 11;
     ${(props) => {
-        switch (props.position) {
+        switch ((props as unknown as ToastProps).position) {
             case "top-right":
                 return `top: 10px; right: 10px;`;
             case "top-left":
@@ -24,7 +24,7 @@ const ToastContainer = styled.div<{ position: Position }>`
                 return `bottom: 10px; left: 10px;`;
         }
     }}
-`;
+` as unknown as React.ComponentType<React.PropsWithChildren<ToastProps>>;
 
 function getNotificationList(
     notiList: NotificationProps[],

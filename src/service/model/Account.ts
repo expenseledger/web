@@ -1,4 +1,4 @@
-import { AccountType } from "./../constants";
+import type { AccountType } from "./../constants";
 interface Account {
     id: number;
     name: string;

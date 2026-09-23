@@ -24,23 +24,25 @@ interface TableReportProps {
     isExpense: boolean;
 }
 
-const NoDataDiv = styled.div<{ $isExpense: boolean }>`
+const NoDataDiv = styled.div`
     text-align: center;
-    color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+    color: ${(props) => ((props as unknown as { $isExpense: boolean }).$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     font-weight: 700;
     width: 100%;
-`;
-const StyledTableRoot = styled(Table.Root)<{ $isExpense: boolean }>`
+` as unknown as React.ComponentType<React.PropsWithChildren<{ $isExpense: boolean }>>;
+const StyledTableRoot = styled(Table.Root)`
     thead > tr > th {
-        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+        color: ${(props) => ((props as unknown as { $isExpense: boolean }).$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     }
     tbody > tr > th {
-        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+        color: ${(props) => ((props as unknown as { $isExpense: boolean }).$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     }
     tbody > tr > td {
-        color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+        color: ${(props) => ((props as unknown as { $isExpense: boolean }).$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
     }
-`;
+` as unknown as React.ComponentType<
+    React.ComponentProps<typeof Table.Root> & { $isExpense: boolean }
+>;
 
 const TableReport: React.FC<TableReportProps> = (props) => {
     const currency = useAtomValue(currencyState);

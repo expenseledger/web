@@ -21,9 +21,9 @@ interface PieChartData {
 }
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#c786ff", "#ff7285"];
-const TotalAmountFlex = styled(Flex)<{ $isExpense: boolean }>`
-    color: ${(props) => (props.$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
-`;
+const TotalAmountFlex = styled(Flex)`
+    color: ${(props) => ((props as unknown as { $isExpense: boolean }).$isExpense ? EXPENSE_COLOR : INCOME_COLOR)};
+` as unknown as React.ComponentType<React.ComponentProps<typeof Flex> & { $isExpense: boolean }>;
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
     const currency = useAtomValue(currencyState);

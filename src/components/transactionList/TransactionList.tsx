@@ -1,26 +1,27 @@
-import React, { ReactNode, startTransition, useCallback, useEffect, useState } from "react";
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
 import dayjs from "../../lib/dayjs";
+import { compareTransactionsDesc } from "../../service/helper/transactoinHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
 import { Transaction } from "../../service/model/Transaction";
 import {
     deleteTransaction,
-    getTransactionMonthYearList,
-    listTransactions,
+    listTransactionsPage,
     updateTransaction,
 } from "../../service/transactionService";
 import AmountTxt from "../bases/AmountTxt";
 import Button from "../bases/Button";
-import MonthYearSwiper from "../bases/MonthYearSwiper";
 import { TransactionCard } from "./TransactionCard";
 import { Box, Card, Flex, Text } from "@radix-ui/themes";
 import Switch from "../bases/Switch";
 import { useBackToHome } from "../Layout";
 import { useAtom } from "jotai";
 import AnimatedPage from "../AnimatedPage";
+
+const PAGE_SIZE = 50;
 
 const NoData = styled.div`
     font-weight: bold;
@@ -32,78 +33,112 @@ const Root = styled.div`
     text-align: center;
 `;
 
-interface HideAbleTransaction extends Transaction {
-    isHide: boolean;
+/** Merges pages by id (a later copy wins) and keeps newest-first order. */
+function mergeTransactions(current: Transaction[], incoming: Transaction[]): Transaction[] {
+    const byId = new Map(current.map((tx) => [tx.id, tx]));
+    incoming.forEach((tx) => byId.set(tx.id, tx));
+
+    return [...byId.values()].sort(compareTransactionsDesc);
+}
+
+/** Groups newest-first transactions by key, keeping group order. */
+function groupBy(transactions: Transaction[], format: string): Map<string, Transaction[]> {
+    const groups = new Map<string, Transaction[]>();
+    transactions.forEach((tx) => {
+        const key = dayjs(tx.date).format(format);
+        groups.set(key, [...(groups.get(key) ?? []), tx]);
+    });
+
+    return groups;
 }
 
 export const TransactionList: React.FC = () => {
-    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
-    const [monthYearList, setMonthYearList] = useState<string[]>(null);
-    const [transactions, setTransactions] = useState<HideAbleTransaction[]>(null);
-    const { addNotification } = useNotification();
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [endCursor, setEndCursor] = useState<string>(null);
+    const [hasNextPage, setHasNextPage] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState(true);
+    const [isFetchingMore, setIsFetchingMore] = useState(false);
+    const { addNotification } = useNotification();
     const [accounts, setAccounts] = useAtom(accountsState);
     const { accountId } = useParams();
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
-    const mapPaidOnly = useCallback(
-        (tx: HideAbleTransaction | Transaction) => {
-            if (
-                !isPaidOnly ||
-                tx.type == "EXPENSE" ||
-                (tx.type == "TRANSFER" && tx.fromAccount?.id === +accountId)
-            ) {
-                return {
-                    ...tx,
-                    isHide: false,
-                };
-            }
-
-            return {
-                ...tx,
-                isHide: true,
-            };
-        },
-        [accountId, isPaidOnly]
-    );
-    const backToHome = useCallback(() => {
-        navigate("/");
-    }, [navigate]);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
     const { setBackToHomeParam } = useBackToHome();
 
-    useEffect(() => {
-        setBackToHomeParam({ accountId: +accountId });
-        getTransactionMonthYearList({ accountId: +accountId })
-            .then((response) => {
-                setMonthYearList(response.monthYears);
-            })
-            .catch(backToHome);
-    }, [accountId, backToHome, setBackToHomeParam]);
+    const isShown = useCallback(
+        (tx: Transaction) =>
+            !isPaidOnly ||
+            tx.type == "EXPENSE" ||
+            (tx.type == "TRANSFER" && tx.fromAccount?.id === +accountId),
+        [accountId, isPaidOnly]
+    );
 
     useEffect(() => {
-        if (!monthYearList) {
+        let ignore = false;
+
+        setBackToHomeParam({ accountId: +accountId });
+        setIsLoading(true);
+        listTransactionsPage({ accountId: +accountId, first: PAGE_SIZE }).then((response) => {
+            if (ignore) {
+                return;
+            }
+
+            if (!response) {
+                navigate("/");
+                return;
+            }
+
+            setTransactions(mergeTransactions([], response.items));
+            setEndCursor(response.endCursor);
+            setHasNextPage(response.hasNextPage);
+            setIsLoading(false);
+        });
+
+        return () => {
+            ignore = true;
+        };
+    }, [accountId, navigate, setBackToHomeParam]);
+
+    const loadMore = useCallback(async () => {
+        if (!hasNextPage || isFetchingMore) {
             return;
         }
 
-        const from = dayjs(monthYearList[monthYearIdx]);
-        const until = from.add(1, "M");
-
-        listTransactions({
+        setIsFetchingMore(true);
+        const response = await listTransactionsPage({
             accountId: +accountId,
-            from: from.toDate(),
-            until: until.toDate(),
-        }).then((response) => {
-            const hideAbleTransactions: HideAbleTransaction[] = response.items.map(mapPaidOnly);
-            setTransactions(hideAbleTransactions);
-            setIsLoading(false);
+            first: PAGE_SIZE,
+            after: endCursor,
         });
-    }, [accountId, mapPaidOnly, monthYearIdx, monthYearList]);
+        setIsFetchingMore(false);
+
+        if (!response) {
+            addNotification("Load transactions failed", "danger");
+            return;
+        }
+
+        setTransactions((prevState) => mergeTransactions(prevState, response.items));
+        setEndCursor(response.endCursor);
+        setHasNextPage(response.hasNextPage);
+    }, [accountId, addNotification, endCursor, hasNextPage, isFetchingMore]);
 
     useEffect(() => {
-        startTransition(() => {
-            setTransactions((prevState) => prevState && prevState.map(mapPaidOnly));
+        const target = loadMoreRef.current;
+
+        if (!target || typeof IntersectionObserver === "undefined") {
+            return;
+        }
+
+        const observer = new IntersectionObserver((entries) => {
+            if (entries.some((entry) => entry.isIntersecting)) {
+                loadMore();
+            }
         });
-    }, [mapPaidOnly, isPaidOnly]);
+        observer.observe(target);
+
+        return () => observer.disconnect();
+    }, [loadMore]);
 
     const removeTransactionHandler = async (id: number) => {
         const response = await deleteTransaction({
@@ -152,21 +187,11 @@ export const TransactionList: React.FC = () => {
             return;
         }
 
-        const updatedTransactions = transactions.map((tx) => {
-            if (tx.id === id) {
-                return {
-                    ...tx,
-                    ...result.updatedTransaction,
-                };
-            }
-
-            return tx;
-        });
-
-        setTransactions(updatedTransactions);
+        const tx = transactions.find((t) => t.id === id);
+        setTransactions(mergeTransactions(transactions, [{ ...tx, ...result.updatedTransaction }]));
         addNotification("Update transaction success", "success");
     };
-    const getAmount = (tx: HideAbleTransaction) => {
+    const getAmount = (tx: Transaction) => {
         switch (tx.type) {
             case "EXPENSE":
                 return -tx.amount;
@@ -181,22 +206,15 @@ export const TransactionList: React.FC = () => {
     const paidOnlyOnChangeHandler = () => {
         setIsPaidOnly((prevState) => !prevState);
     };
-    const getTransactionCards = () => {
-        const dateSet: Set<string> = new Set();
+    const renderTransactionCards = (monthTransactions: Transaction[]) => {
         const toReturn: ReactNode[] = [];
-        transactions
-            .filter((x) => !x.isHide)
-            .forEach((x) => dateSet.add(dayjs(x.date).format("YYYY-MM-DD")));
 
-        dateSet.forEach((x, idx) =>
+        groupBy(monthTransactions, "YYYY-MM-DD").forEach((dayTransactions, day) =>
             toReturn.push(
-                <TransactionCard
-                    key={idx}
-                    date={new Date(x)}
-                    items={transactions
-                        .filter((x) => !x.isHide)
-                        .filter((y) => x === dayjs(y.date).format("YYYY-MM-DD"))
-                        .map((y) => {
+                <Box key={day} mt="3">
+                    <TransactionCard
+                        date={new Date(day)}
+                        items={dayTransactions.map((y) => {
                             return {
                                 amount: getAmount(y),
                                 type: y.type,
@@ -214,67 +232,84 @@ export const TransactionList: React.FC = () => {
                                     ),
                             };
                         })}
-                />
+                    />
+                </Box>
             )
         );
 
         return toReturn;
     };
-    const renderTransactionCards = () => {
-        const cards = getTransactionCards();
+    const renderMonths = () => {
+        const months = groupBy(transactions.filter(isShown), "YYYY-MM");
 
-        if (cards.length > 0) {
-            return cards.map((c, idx) => {
-                return (
-                    <Box key={idx} mt={idx > 0 ? "3" : "0"}>
-                        <>{c}</>
-                    </Box>
-                );
-            });
+        if (months.size === 0 && !hasNextPage) {
+            return (
+                <NoData>
+                    <Text color="red" size="7">
+                        No data
+                    </Text>
+                </NoData>
+            );
         }
 
-        return (
-            <NoData>
-                <Text color="red" size="7">
-                    No data
-                </Text>
-            </NoData>
-        );
-    };
-    const renderSummaryCard = () => {
-        const totalAmount = transactions
-            .filter((x) => !x.isHide)
-            .map(getAmount)
-            .reduce((prev, cur) => prev + cur, 0);
+        const lastMonth = [...months.keys()].pop();
 
+        return [...months.entries()].map(([month, monthTransactions]) => {
+            // The last loaded month may continue on the next page.
+            const isComplete = month !== lastMonth || !hasNextPage;
+
+            return (
+                <Box key={month} mt="5">
+                    <Card size="2">
+                        <Flex justify="between" align="center">
+                            <Text weight="bold" size="6">
+                                {dayjs(month).format("MMMM YYYY")}
+                            </Text>
+                            {isComplete && (
+                                <AmountTxt
+                                    amount={monthTransactions
+                                        .map(getAmount)
+                                        .reduce((prev, cur) => prev + cur, 0)}
+                                />
+                            )}
+                        </Flex>
+                    </Card>
+                    {renderTransactionCards(monthTransactions)}
+                </Box>
+            );
+        });
+    };
+    const renderPaidOnlyCard = () => {
         return (
             <Card my="3" size="2">
-                <Flex justify="between">
-                    <Box>
-                        <Text weight="bold" mr="3">
-                            Total
-                        </Text>
-                        <Switch
-                            name="isPaidOnly"
-                            isRounded={true}
-                            label="Paid only"
-                            isOn={isPaidOnly}
-                            onChange={paidOnlyOnChangeHandler}
-                            size="small"
-                        />
-                    </Box>
-                    <AmountTxt amount={totalAmount} />
+                <Flex justify="end">
+                    <Switch
+                        name="isPaidOnly"
+                        isRounded={true}
+                        label="Paid only"
+                        isOn={isPaidOnly}
+                        onChange={paidOnlyOnChangeHandler}
+                        size="small"
+                    />
                 </Flex>
             </Card>
         );
     };
 
-    const renderMonthYear = () => {
+    const renderLoadMore = () => {
+        if (!hasNextPage) {
+            return null;
+        }
+
         return (
-            <MonthYearSwiper
-                monthYearList={monthYearList}
-                onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
-            />
+            <Box my="3" ref={loadMoreRef}>
+                <Button
+                    value="Load more"
+                    onClickHandler={loadMore}
+                    isLoading={isFetchingMore}
+                    type="default"
+                />
+            </Box>
         );
     };
 
@@ -298,9 +333,9 @@ export const TransactionList: React.FC = () => {
     ) : (
         <AnimatedPage>
             <Root className="mb-5">
-                {renderMonthYear()}
-                {renderSummaryCard()}
-                {renderTransactionCards()}
+                {renderPaidOnlyCard()}
+                {renderMonths()}
+                {renderLoadMore()}
                 {renderScrollToTop()}
             </Root>
         </AnimatedPage>

@@ -69,8 +69,10 @@ export interface UpdateAccountRequest {
 
 // Transaction
 
-export interface GetTransactionMonthYearListRequest {
+export interface ListTransactionsPageRequest {
     accountId: number;
+    first: number;
+    after?: string;
 }
 
 export interface UpdateTransactionRequest {

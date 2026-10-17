@@ -1,13 +1,13 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { mapTransactionFromServer } from "./helper/transactoinHelper";
+import { compareTransactionsDesc, mapTransactionFromServer } from "./helper/transactoinHelper";
 import { graphql } from "./model/gql";
 import {
     AddExpenseRequest,
     AddIncomeRequest,
     AddTransferRequest,
     DeleteTranactionRequest,
-    GetTransactionMonthYearListRequest,
+    ListTransactionsPageRequest,
     ListTransactionsRequest,
     UpdateTransactionRequest,
 } from "./model/Requests";
@@ -15,12 +15,11 @@ import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
-    GetTransactionMonthYearListResponse,
+    ListTransactionsPageResponse,
     ListTransactionsResponse,
     UpdateTransactionResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
-import { Transaction } from "./model/Transaction";
 
 export const transactionFragment = graphql(`
     fragment PlainTransaction on Transaction {
@@ -195,10 +194,35 @@ const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = graphql(`
     }
 `);
 
-const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = graphql(`
-    query GetTransactionMonthYearListByAccountId($accountId: Int!) {
-        transactionMonthYearListByAccountId(accountId: $accountId) {
-            nodes
+const GET_TRANSACTIONS_PAGE_BY_ACCOUNT_ID = graphql(`
+    query GetTransactionsPageByAccountId($accountId: Int!, $first: Int!, $after: Cursor) {
+        transactions(
+            filter: {
+                or: [
+                    { toAccountId: { equalTo: $accountId } }
+                    { fromAccountId: { equalTo: $accountId } }
+                ]
+            }
+            orderBy: [DATE_DESC, ID_DESC]
+            first: $first
+            after: $after
+        ) {
+            nodes {
+                ...PlainTransaction
+                toAccount {
+                    ...PlainAccount
+                }
+                fromAccount {
+                    ...PlainAccount
+                }
+                category {
+                    ...PlainCategory
+                }
+            }
+            pageInfo {
+                endCursor
+                hasNextPage
+            }
         }
     }
 `);
@@ -373,27 +397,7 @@ export async function listTransactions(
 
         return {
             length: result.totalCount,
-            items: result.transactions
-                .map(mapTransactionFromServer)
-                .sort((a: Transaction, b: Transaction) => {
-                    if (b.date > a.date) {
-                        return 1;
-                    }
-
-                    if (b.date < a.date) {
-                        return -1;
-                    }
-
-                    if (b.id > a.id) {
-                        return 1;
-                    }
-
-                    if (b.id < a.id) {
-                        return -1;
-                    }
-
-                    return 0;
-                }),
+            items: result.transactions.map(mapTransactionFromServer).sort(compareTransactionsDesc),
         };
     } catch (err) {
         log("list transactions failed, unexpected error", err);
@@ -436,34 +440,37 @@ export async function deleteTransaction(
     }
 }
 
-export async function getTransactionMonthYearList(
-    request: GetTransactionMonthYearListRequest
-): Promise<GetTransactionMonthYearListResponse> {
+export async function listTransactionsPage(
+    request: ListTransactionsPageRequest
+): Promise<ListTransactionsPageResponse> {
     try {
         const response = await client.query({
-            query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
+            query: GET_TRANSACTIONS_PAGE_BY_ACCOUNT_ID,
             variables: {
                 accountId: request.accountId,
+                first: request.first,
+                after: request.after,
             },
+            fetchPolicy: "network-only",
         });
 
         if (response.error) {
-            log("get transaction month year list failed", response.error);
+            log("list transactions page failed", response.error);
 
-            return {
-                monthYears: [],
-            };
+            return null;
         }
 
-        return {
-            monthYears: response.data.transactionMonthYearListByAccountId.nodes,
-        };
-    } catch (err) {
-        log("get transaction month year list failed, unexpected error", err);
+        const { nodes, pageInfo } = response.data.transactions;
 
         return {
-            monthYears: [],
+            items: nodes.map(mapTransactionFromServer),
+            endCursor: pageInfo.endCursor,
+            hasNextPage: pageInfo.hasNextPage,
         };
+    } catch (err) {
+        log("list transactions page failed, unexpected error", err);
+
+        return null;
     }
 }
 

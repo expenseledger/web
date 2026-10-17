@@ -4,8 +4,8 @@ import {
     addIncome,
     addTransfer,
     deleteTransaction,
-    getTransactionMonthYearList,
     listTransactions,
+    listTransactionsPage,
     updateTransaction,
 } from "../../service/transactionService";
 
@@ -265,38 +265,60 @@ describe("transactionService", () => {
         });
     });
 
-    describe("getTransactionMonthYearList", () => {
-        it("returns month year list on success", async () => {
+    describe("listTransactionsPage", () => {
+        it("returns mapped items and page info on success", async () => {
             mockClient.query.mockResolvedValue({
                 data: {
-                    transactionMonthYearListByAccountId: {
-                        nodes: ["2024-06", "2024-05"],
+                    transactions: {
+                        nodes: [serverTransaction],
+                        pageInfo: { endCursor: "cursor-1", hasNextPage: true },
                     },
                 },
             } as never);
 
-            const result = await getTransactionMonthYearList({ accountId: 1 });
+            const result = await listTransactionsPage({ accountId: 1, first: 50 });
 
-            expect(result.monthYears).toEqual(["2024-06", "2024-05"]);
+            expect(result.items[0].id).toBe(1);
+            expect(result.endCursor).toBe("cursor-1");
+            expect(result.hasNextPage).toBe(true);
         });
 
-        it("returns empty list when response has error", async () => {
+        it("passes the cursor to the query", async () => {
+            mockClient.query.mockResolvedValue({
+                data: {
+                    transactions: {
+                        nodes: [],
+                        pageInfo: { endCursor: null, hasNextPage: false },
+                    },
+                },
+            } as never);
+
+            await listTransactionsPage({ accountId: 1, first: 50, after: "cursor-1" });
+
+            expect(mockClient.query).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    variables: { accountId: 1, first: 50, after: "cursor-1" },
+                })
+            );
+        });
+
+        it("returns null when response has error", async () => {
             mockClient.query.mockResolvedValue({
                 data: null,
                 error: { message: "failed" },
             } as never);
 
-            const result = await getTransactionMonthYearList({ accountId: 1 });
+            const result = await listTransactionsPage({ accountId: 1, first: 50 });
 
-            expect(result.monthYears).toEqual([]);
+            expect(result).toBeNull();
         });
 
-        it("returns empty list on unexpected error", async () => {
+        it("returns null on unexpected error", async () => {
             mockClient.query.mockRejectedValue(new Error("network"));
 
-            const result = await getTransactionMonthYearList({ accountId: 1 });
+            const result = await listTransactionsPage({ accountId: 1, first: 50 });
 
-            expect(result.monthYears).toEqual([]);
+            expect(result).toBeNull();
         });
     });
 

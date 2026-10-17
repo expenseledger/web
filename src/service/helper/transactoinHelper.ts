@@ -26,3 +26,15 @@ export function mapTransactionFromServer(data: any): Transaction {
         date: dayjs(data.date).toDate(),
     };
 }
+
+export function compareTransactionsDesc(a: Transaction, b: Transaction): number {
+    if (b.date > a.date) {
+        return 1;
+    }
+
+    if (b.date < a.date) {
+        return -1;
+    }
+
+    return b.id - a.id;
+}

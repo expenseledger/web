@@ -1988,15 +1988,52 @@ export type GetTransactionsByFromAccountQuery = {
     } | null;
 };
 
-export type GetTransactionMonthYearListByAccountIdQueryVariables = Exact<{
+export type GetTransactionsPageByAccountIdQueryVariables = Exact<{
     accountId: Scalars["Int"]["input"];
+    first: Scalars["Int"]["input"];
+    after?: InputMaybe<Scalars["Cursor"]["input"]>;
 }>;
 
-export type GetTransactionMonthYearListByAccountIdQuery = {
+export type GetTransactionsPageByAccountIdQuery = {
     __typename?: "Query";
-    transactionMonthYearListByAccountId?: {
-        __typename?: "TransactionMonthYearListByAccountIdConnection";
-        nodes: Array<string | null>;
+    transactions?: {
+        __typename?: "TransactionsConnection";
+        nodes: Array<{
+            __typename?: "Transaction";
+            id: number;
+            amount: number;
+            description: string;
+            type: TransactionType;
+            date: any;
+            categoryId?: number | null;
+            fromAccountId?: number | null;
+            toAccountId?: number | null;
+            toAccount?: {
+                __typename?: "Account";
+                id: number;
+                name: string;
+                type: AccountType;
+                balance: number;
+            } | null;
+            fromAccount?: {
+                __typename?: "Account";
+                id: number;
+                name: string;
+                type: AccountType;
+                balance: number;
+            } | null;
+            category?: {
+                __typename?: "Category";
+                id: number;
+                name: string;
+                type: CategoryType;
+            } | null;
+        } | null>;
+        pageInfo: {
+            __typename?: "PageInfo";
+            endCursor?: any | null;
+            hasNextPage: boolean;
+        };
     } | null;
 };
 
@@ -4080,13 +4117,13 @@ export const GetTransactionsByFromAccountDocument = {
     GetTransactionsByFromAccountQuery,
     GetTransactionsByFromAccountQueryVariables
 >;
-export const GetTransactionMonthYearListByAccountIdDocument = {
+export const GetTransactionsPageByAccountIdDocument = {
     kind: "Document",
     definitions: [
         {
             kind: "OperationDefinition",
             operation: "query",
-            name: { kind: "Name", value: "GetTransactionMonthYearListByAccountId" },
+            name: { kind: "Name", value: "GetTransactionsPageByAccountId" },
             variableDefinitions: [
                 {
                     kind: "VariableDefinition",
@@ -4096,35 +4133,265 @@ export const GetTransactionMonthYearListByAccountIdDocument = {
                         type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
                     },
                 },
+                {
+                    kind: "VariableDefinition",
+                    variable: { kind: "Variable", name: { kind: "Name", value: "first" } },
+                    type: {
+                        kind: "NonNullType",
+                        type: { kind: "NamedType", name: { kind: "Name", value: "Int" } },
+                    },
+                },
+                {
+                    kind: "VariableDefinition",
+                    variable: { kind: "Variable", name: { kind: "Name", value: "after" } },
+                    type: { kind: "NamedType", name: { kind: "Name", value: "Cursor" } },
+                },
             ],
             selectionSet: {
                 kind: "SelectionSet",
                 selections: [
                     {
                         kind: "Field",
-                        name: { kind: "Name", value: "transactionMonthYearListByAccountId" },
+                        name: { kind: "Name", value: "transactions" },
                         arguments: [
                             {
                                 kind: "Argument",
-                                name: { kind: "Name", value: "accountId" },
+                                name: { kind: "Name", value: "filter" },
                                 value: {
-                                    kind: "Variable",
-                                    name: { kind: "Name", value: "accountId" },
+                                    kind: "ObjectValue",
+                                    fields: [
+                                        {
+                                            kind: "ObjectField",
+                                            name: { kind: "Name", value: "or" },
+                                            value: {
+                                                kind: "ListValue",
+                                                values: [
+                                                    {
+                                                        kind: "ObjectValue",
+                                                        fields: [
+                                                            {
+                                                                kind: "ObjectField",
+                                                                name: {
+                                                                    kind: "Name",
+                                                                    value: "toAccountId",
+                                                                },
+                                                                value: {
+                                                                    kind: "ObjectValue",
+                                                                    fields: [
+                                                                        {
+                                                                            kind: "ObjectField",
+                                                                            name: {
+                                                                                kind: "Name",
+                                                                                value: "equalTo",
+                                                                            },
+                                                                            value: {
+                                                                                kind: "Variable",
+                                                                                name: {
+                                                                                    kind: "Name",
+                                                                                    value: "accountId",
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    ],
+                                                                },
+                                                            },
+                                                        ],
+                                                    },
+                                                    {
+                                                        kind: "ObjectValue",
+                                                        fields: [
+                                                            {
+                                                                kind: "ObjectField",
+                                                                name: {
+                                                                    kind: "Name",
+                                                                    value: "fromAccountId",
+                                                                },
+                                                                value: {
+                                                                    kind: "ObjectValue",
+                                                                    fields: [
+                                                                        {
+                                                                            kind: "ObjectField",
+                                                                            name: {
+                                                                                kind: "Name",
+                                                                                value: "equalTo",
+                                                                            },
+                                                                            value: {
+                                                                                kind: "Variable",
+                                                                                name: {
+                                                                                    kind: "Name",
+                                                                                    value: "accountId",
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    ],
+                                                                },
+                                                            },
+                                                        ],
+                                                    },
+                                                ],
+                                            },
+                                        },
+                                    ],
                                 },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "orderBy" },
+                                value: {
+                                    kind: "ListValue",
+                                    values: [
+                                        { kind: "EnumValue", value: "DATE_DESC" },
+                                        { kind: "EnumValue", value: "ID_DESC" },
+                                    ],
+                                },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "first" },
+                                value: { kind: "Variable", name: { kind: "Name", value: "first" } },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "after" },
+                                value: { kind: "Variable", name: { kind: "Name", value: "after" } },
                             },
                         ],
                         selectionSet: {
                             kind: "SelectionSet",
-                            selections: [{ kind: "Field", name: { kind: "Name", value: "nodes" } }],
+                            selections: [
+                                {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "nodes" },
+                                    selectionSet: {
+                                        kind: "SelectionSet",
+                                        selections: [
+                                            {
+                                                kind: "FragmentSpread",
+                                                name: { kind: "Name", value: "PlainTransaction" },
+                                            },
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "toAccount" },
+                                                selectionSet: {
+                                                    kind: "SelectionSet",
+                                                    selections: [
+                                                        {
+                                                            kind: "FragmentSpread",
+                                                            name: {
+                                                                kind: "Name",
+                                                                value: "PlainAccount",
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "fromAccount" },
+                                                selectionSet: {
+                                                    kind: "SelectionSet",
+                                                    selections: [
+                                                        {
+                                                            kind: "FragmentSpread",
+                                                            name: {
+                                                                kind: "Name",
+                                                                value: "PlainAccount",
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "category" },
+                                                selectionSet: {
+                                                    kind: "SelectionSet",
+                                                    selections: [
+                                                        {
+                                                            kind: "FragmentSpread",
+                                                            name: {
+                                                                kind: "Name",
+                                                                value: "PlainCategory",
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                                {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "pageInfo" },
+                                    selectionSet: {
+                                        kind: "SelectionSet",
+                                        selections: [
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "endCursor" },
+                                            },
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "hasNextPage" },
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
                         },
                     },
                 ],
             },
         },
+        {
+            kind: "FragmentDefinition",
+            name: { kind: "Name", value: "PlainTransaction" },
+            typeCondition: { kind: "NamedType", name: { kind: "Name", value: "Transaction" } },
+            selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                    { kind: "Field", name: { kind: "Name", value: "id" } },
+                    { kind: "Field", name: { kind: "Name", value: "amount" } },
+                    { kind: "Field", name: { kind: "Name", value: "description" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
+                    { kind: "Field", name: { kind: "Name", value: "date" } },
+                    { kind: "Field", name: { kind: "Name", value: "categoryId" } },
+                    { kind: "Field", name: { kind: "Name", value: "fromAccountId" } },
+                    { kind: "Field", name: { kind: "Name", value: "toAccountId" } },
+                ],
+            },
+        },
+        {
+            kind: "FragmentDefinition",
+            name: { kind: "Name", value: "PlainAccount" },
+            typeCondition: { kind: "NamedType", name: { kind: "Name", value: "Account" } },
+            selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                    { kind: "Field", name: { kind: "Name", value: "id" } },
+                    { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
+                    { kind: "Field", name: { kind: "Name", value: "balance" } },
+                ],
+            },
+        },
+        {
+            kind: "FragmentDefinition",
+            name: { kind: "Name", value: "PlainCategory" },
+            typeCondition: { kind: "NamedType", name: { kind: "Name", value: "Category" } },
+            selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                    { kind: "Field", name: { kind: "Name", value: "id" } },
+                    { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
+                ],
+            },
+        },
     ],
 } as unknown as DocumentNode<
-    GetTransactionMonthYearListByAccountIdQuery,
-    GetTransactionMonthYearListByAccountIdQueryVariables
+    GetTransactionsPageByAccountIdQuery,
+    GetTransactionsPageByAccountIdQueryVariables
 >;
 export const UpdateTransactionDocument = {
     kind: "Document",

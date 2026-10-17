@@ -61,8 +61,10 @@ export interface UpdateAccountResponse {
 
 // Transaction
 
-export interface GetTransactionMonthYearListResponse {
-    monthYears: string[];
+export interface ListTransactionsPageResponse {
+    items: Transaction[];
+    endCursor: string;
+    hasNextPage: boolean;
 }
 
 export interface UpdateTransactionResponse {

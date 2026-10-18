@@ -67,9 +67,9 @@ These are v2 features the app uses that v3 lacks today:
 7. ~~Closing accounts that have history~~ — **decided**: no soft
    close; hard delete with transfer rewrite (human, 2026-10-18;
    § Decided: deleting referenced accounts/categories)
-8. Server-side validation for from ≠ to (the client validates it
-   already). amount > 0 was added 2026-09-25. from ≠ to is decided
-   (backend T6) but not built (2026-10-18).
+8. ~~Server-side validation for from ≠ to~~ — **done** (backend T6,
+   agent `ledger-api-v3-89`, 2026-10-19; local, not pushed). amount > 0
+   was added 2026-09-25.
 
 Each needs either a backend addition in v3 or an accepted product
 change. Decided **per feature**; this page is where that happens
@@ -195,7 +195,12 @@ Done since 2026-10-18:
 
 Backend gaps:
 
-- from ≠ to (T6): being built by another agent (2026-10-19).
+- from ≠ to (T6): **done** on local `main` (`4194744`), not pushed.
+  `transfer` and `patchTransfer` (checked on the final state) →
+  `INVALID_TRANSACTION`. Domain check only, no DB constraint: existing
+  from = to rows still load, but **any** patch to them is now rejected
+  (even description/category/date). Backend hasn't decided how to
+  handle those rows; relevant to the data migration.
 - No v2 import or adjustment transaction; not needed (manual Postgres
   migration, § Data migration).
 - **Not pushed**: local v3 `main` is 56 commits ahead of `origin/main`

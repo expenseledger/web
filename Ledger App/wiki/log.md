@@ -177,3 +177,11 @@ issuer must come from env. from ≠ to in progress by another agent.
 Touched [[API v3 Migration]], [[API v3 Operations]],
 [[API v3 Data Model]], [[API v3]], [[Open Questions]], [[Account]],
 [[Category]].
+
+## [2026-10-19] ingest | from ≠ to confirmed
+
+Backend agent `ledger-api-v3-89`: T6 done on local `main` (`4194744`),
+not pushed, schema unchanged. `transfer`/`patchTransfer` reject from =
+to with `INVALID_TRANSACTION`; domain check only, so existing from = to
+rows can't be patched at all. Touched [[API v3 Migration]],
+[[API v3 Operations]], [[API v3]].

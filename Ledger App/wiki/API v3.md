@@ -89,7 +89,8 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 
 ## Known backend gaps (v3, as of 2026-09-25)
 
-Decided but not enforced: from ≠ to on transfers. amount > 0 **is**
+from ≠ to on transfers is enforced since 2026-10-19
+(`INVALID_TRANSACTION`; [[API v3 Operations]]). amount > 0 **is**
 enforced since 2026-09-25. Missing: account/category update mutations,
 soft close/archive, reporting, most typed domain errors, and user
 deletion.

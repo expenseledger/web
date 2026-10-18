@@ -36,6 +36,10 @@ Other rules:
   id → NOT_FOUND.
 - Amount currency must equal the account currency (`CURRENCY_MISMATCH`).
   amount and convertedAmount must be > 0 (`NON_POSITIVE_AMOUNT`).
+- Transfer from = to → `INVALID_TRANSACTION` (BAD_REQUEST) on
+  `transfer` and `patchTransfer`; a patch is checked on its final
+  state, so a one-sided move onto the other account fails. Existing
+  from = to rows can't be patched at all (2026-10-19).
 
 Dates and sort (backend agent, 2026-10-18):
 

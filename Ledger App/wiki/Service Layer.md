@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, data]
 sources: [src/service/accountService.ts, src/service/categoryService.ts, src/service/transactionService.ts, src/service/userService.ts, src/service/helper/, src/service/model/]
-updated: 2026-10-04
+updated: 2026-10-18
 ---
 
 # Service Layer
@@ -31,12 +31,10 @@ the shared [[Apollo Client]].
 | `userService.getUserData` | mutation `currentUser` → owner accounts + categories (NAME_ASC) |
 | `accountService.getAllAccount` | query `accounts` |
 | `accountService.getAccount` | query `account(id)` |
-| `accountService.createAccount` | `createAccount` (balance 0.0) |
-| `accountService.updateAccount` | `updateAccount` (name, type) |
+| `accountService.createAccount` | `createAccount` (balance 0.0, type CASH) |
 | `accountService.deleteAccount` | `closeAccount` |
 | `categoryService.getAllCategories` | query `categories` |
-| `categoryService.createCategory` | `createCategoryV2` |
-| `categoryService.updateCategory` | `updateCategory` |
+| `categoryService.createCategory` | `createCategoryV2` (type ANY) |
 | `categoryService.deleteCategory` | `deleteCategory` |
 | `transactionService.addExpense` | `spend` |
 | `transactionService.addIncome` | `receive` |

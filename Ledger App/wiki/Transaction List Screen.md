@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen]
 sources: [src/components/transactionList/TransactionList.tsx, src/components/transactionList/TransactionCard.tsx, src/components/transactionList/TransactionCardMessage.tsx, src/service/transactionService.ts]
-updated: 2026-10-04
+updated: 2026-10-18
 ---
 
 # Transaction List Screen
@@ -27,7 +27,7 @@ Decided: month navigation).
    TRANSFERs (i.e. what was spent from this account). Totals follow it.
 6. "To Top" button scrolls to top.
 
-- Edit modal: amount, category (same type + ANY), description, date.
+- Edit modal: amount, category (all), description, date.
 - Delete: confirm modal → `deleteTransaction`, then local balance fix.
 - First page fails → navigate home; a later page fails → toast.
 - Balance-sync bugs on delete/update: [[Balance Sync]], [[Known Issues]].

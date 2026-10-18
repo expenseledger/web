@@ -15,8 +15,7 @@ backend is a Postgraphile GraphQL API over PostgreSQL, hosted separately at
 
 ## Domain in one paragraph
 
-A user (an *Owner*, identified by Firebase UID) has [[Account]]s (cash,
-bank, credit) and [[Category|categories]]. Every money movement is a
+A user (an *Owner*, identified by Firebase UID) has [[Account]]s and [[Category|categories]]. Every money movement is a
 [[Transaction]] of type EXPENSE (out of one account), INCOME (into one
 account), or TRANSFER (between two). The server keeps each account's
 `balance`; the client patches its cached copy after each mutation (see

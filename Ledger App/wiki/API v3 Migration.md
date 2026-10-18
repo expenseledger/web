@@ -2,7 +2,7 @@
 type: synthesis
 tags: [migration, v3, planning]
 sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, src/, expense-ledger-api]
-updated: 2026-10-04
+updated: 2026-10-18
 ---
 
 # API v3 Migration
@@ -35,10 +35,10 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 |---|---|
 | Bootstrap ([[Routing and Layout]]) | Call `initializeUser` once, then page through `accounts` and `categories` (≤ 50 each) instead of one `currentUser` |
 | [[Home Screen]] | `withdraw` with Money in the account's currency. **The Date field has no v3 target.** Description → `description` (send null, not `"-"`, when it's empty) Category can be omitted |
-| [[More Screen]] | `deposit`/`transfer`; cross-currency transfers need a `convertedAmount` input. The date is lost; description maps to `description`. Category filtering by type disappears |
+| [[More Screen]] | `deposit`/`transfer`; cross-currency transfers need a `convertedAmount` input. The date is lost; description maps to `description`. Category filtering by type already removed (2026-10-18) |
 | [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `updateTransaction` (amount, category, description; not the date). Omit unchanged variables. Delete → `rollBack`. One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
-| [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Category types are gone. Still client-side aggregation |
-| [[Settings Screens]] | Account: no type, no rename. The balance-adjust trick still works via withdraw/deposit, and keeps the "Adjust balance" description. Delete fails if the account has transactions. Category: no type, no rename. Currency picker → per-account currency |
+| [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
+| [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Delete fails if the account has transactions. Currency picker → per-account currency |
 | [[State Management]] | `currencyState` (cosmetic) conflicts with real per-account currencies. IDs become strings |
 | [[Balance Sync]] | Can read balances from every mutation response, including `rollBack` (select `from`/`to { balance }`) |
 | [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/v3` |
@@ -58,9 +58,12 @@ These are v2 features the app uses that v3 lacks today:
    agent 2026-09-25; [[API v3 Operations]])
 4. ~~Month list per account~~ — **not needed**; handled on the client
    (human, 2026-10-04; § Decided: month navigation)
-5. Account/category types (and type-filtered category pickers)
+5. ~~Account/category types~~ — **dropped** (human, 2026-10-18;
+   § Decided: types)
 6. Renaming accounts/categories
-7. Closing accounts that have history
+7. ~~Closing accounts that have history~~ — **decided**: no soft
+   close; hard delete with transfer rewrite (human, 2026-10-18;
+   § Decided: deleting referenced accounts/categories)
 8. Server-side validation for from ≠ to (the client validates it
    already). amount > 0 was added 2026-09-25.
 
@@ -87,6 +90,20 @@ backdating (item 1) is possible, so months can have gaps.
   with `accountId` and a date sort ([[Service Layer]]).
 - The last loaded month shows no total while more pages exist.
 
+## Decided: types and editing
+
+(human, 2026-10-18) The app drops account and category types. Done on
+v2 already: pickers list every category, and settings have no type
+fields. v2 creates hardcode `CASH`/`ANY`. The edit modals were removed
+too; the human will reimplement them on v3:
+
+- Account: name and balance. Setting a balance changes the account's
+  balance **directly**, with no "Adjust balance" transaction (needs a v3
+  mutation for it).
+- Category: name.
+
+Data migration can ignore v2 types.
+
 ## Decided: deleting referenced accounts/categories
 
 (human, 2026-09-25) v3 should **allow** deleting an account or category
@@ -99,6 +116,42 @@ that transactions still reference. The user picks one of:
 v2 does (1) without the balance adjustment, which is a bug
 ([[Known Issues]] § API v2 backend). v3 currently blocks the delete.
 
+**No soft close** (human, 2026-10-18): an archived flag is rejected,
+e.g. because archived rows still hold their unique name.
+
+**Transfer rewrite** (human, 2026-10-18): before deleting an account,
+convert each transfer with the remaining account, whatever option the
+user picks:
+
+- remaining → deleted becomes an **Expense** on the remaining account
+- deleted → remaining becomes an **Income** on the remaining account
+
+The remaining balance stays as is (the money really moved) and now
+matches its history. So "adjust balances" in (1) never undoes the
+other side of a transfer. Still open (inferred edge cases):
+
+- Amount: use the remaining side's amount, i.e. `convertedAmount`
+  when it is the `to` side of a cross-currency transfer.
+- Reassign (2) to the transfer's other account would make from = to;
+  rewrite those too.
+
+**Categories: Reassign only** (human, 2026-10-18). A category is a
+label and moves no money, so deleting one must not touch balances or
+remove transactions. This narrows the three options for categories:
+
+- Deleting a category moves its transactions to a category the user
+  picks, defaulting to "None" (the v3 default for an omitted
+  `categoryId`; [[API v3 Operations]]).
+- No Cascade: dropping real transactions with the label is the v2 bug.
+  Leave can't apply (a transaction can't point at a missing category);
+  reassigning to "None" is its v3 equivalent.
+- **Protect "None"**: the backend must refuse to delete it, and
+  [[Settings Screens]] hides its Delete button. Today it can be deleted
+  while unused, after which uncategorised transactions fail with
+  `CATEGORY_DEFAULTS_NOT_FOUND` ([[API v3 Data Model]]).
+- Backend asks (reassign on delete, protect "None"): the human raises
+  them with the backend.
+
 ## Data migration
 
 - Plan: **manual migration in Postgres** by the human (2026-09-25). v3
@@ -110,13 +163,14 @@ v2 does (1) without the balance adjustment, which is a bug
   of the same project.
 - Cast `money` via `::numeric`, not text (text is locale-formatted).
 - **Reconcile balances**: v2 `account.balance` ≠ sum of its
-  transactions when a category was deleted (cascade without reversal)
-  or when the account was created with a nonzero balance. Decide whether
-  v3 keeps the v2 balance and records the difference as an opening
-  adjustment.
+  transactions when a category was deleted (cascade without reversal),
+  when an account with transfers was deleted (the other side keeps its
+  change), or when the account was created with a nonzero balance.
+  Decide whether v3 keeps the v2 balance and records the difference as
+  an opening adjustment.
 - Open mapping decisions: v2 dates (nowhere to store them); v2 `"-"`
   descriptions (map to NULL?);
-  account types, category types, and the currency per account (v2 has
+  the currency per account (v2 has
   none; the app assumes one cosmetic symbol).
 
 ## Error handling

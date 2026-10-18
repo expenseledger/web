@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Account.ts, src/service/constants.ts, src/service/accountService.ts, src/components/setting/AccountSetting.tsx]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # Account
@@ -10,9 +10,12 @@ updated: 2026-09-25
 A money container owned by the user.
 
 ```ts
-interface Account { id: number; name: string; type: AccountType; balance: number }
-type AccountType = "CASH" | "BANK" | "CREDIT"   // UI: Cash / Bank Account / Credit
+interface Account { id: number; name: string; balance: number }
 ```
+
+- **No type in the app** (2026-10-18). v2 still stores CASH/BANK/CREDIT;
+  `createAccount` always sends `CASH` because v2 requires one. API v3 has
+  no account type.
 
 - `balance` is authoritative on the **server** (updated by the
   transaction mutations); the client mirrors it in `accountsState`
@@ -23,14 +26,13 @@ type AccountType = "CASH" | "BANK" | "CREDIT"   // UI: Cash / Bank Account / Cre
   transactions are cascade-deleted, and the other side of its transfers
   keeps its balance change ([[API v2 Backend]], [[Known Issues]]).
 - New users get "Cash" (CASH) and "My Bank" (BANK) seeded by the server.
-- **Manual balance adjustment** ([[Settings Screens]]): editing the balance
-  creates an INCOME or EXPENSE [[Transaction]] for the difference, with
-  description "Adjust balance" and category "Other" (auto-created as type
-  ANY if missing).
+- **No editing for now** (2026-10-18): rename and balance edit were
+  removed with the type. The human will reimplement name + balance
+  editing on v3. Planned: setting a balance changes the account's balance
+  **directly**, not via an "Adjust balance" transaction (the v2 app
+  posted a phantom INCOME/EXPENSE under category "Other").
 - Home shows accounts as a swipeable card carousel (6 gradient colors
   cycling by index) — [[Home Screen]].
-- Account type has no behavioral effect in the frontend (credit accounts
-  aren't treated differently).
 
 ## In API v3
 

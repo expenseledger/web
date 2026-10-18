@@ -24,8 +24,8 @@ Answered by the backend agent and the human (2026-09-25) and recorded in
 [[API v3 Migration]]. Still open:
 
 - Which missing v2 features v3 will add (date, updates, types,
-  rename, soft close). Description and editing: added. Month list:
-  not needed (client-side). Decided one by one on
-  [[API v3 Migration]].
+  rename). Soft close: rejected (human, 2026-10-18). Description and
+  editing: added. Month list: not needed (client-side). Decided one by
+  one on [[API v3 Migration]].
 - How v2 balances that don't match their transaction history should be
   migrated ([[API v3 Migration]] § Data migration).

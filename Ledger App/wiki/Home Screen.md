@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen]
 sources: [src/components/Home.tsx, src/components/AccountCard.tsx]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # Home Screen
@@ -17,7 +17,7 @@ Route `/`. The fast path: **add an expense** in a few taps.
   [[Transaction List Screen]], **Report** → [[Report Screen]] (passes
   `accountId` in router state).
 - Form: Amount (with currency prefix), Date (default today), Category
-  (EXPENSE + ANY [[Category|categories]]), Description (optional).
+  (all [[Category|categories]]), Description (optional).
 - **Add** → `addExpense` ([[Service Layer]]); on success patches the
   balance ([[Balance Sync]]), toasts, clears amount/description.
 - **More** → [[More Screen]], carrying the current form values in router

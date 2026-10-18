@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen]
 sources: [src/components/More.tsx]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # More Screen
@@ -14,7 +14,7 @@ Income / Transfer**.
 - Account section: one "Account" dropdown (used as `fromAccount` for
   expense and as `toAccount` for income), or "From"/"To" for transfer,
   each list excluding the other's selection. Shows the account balance.
-- Category options filtered by active tab type + ANY ([[Category]]).
+- Category options: all categories, whatever the tab ([[Category]]).
 - Changing the from-account sets `backToHomeParam` so the title link
   returns to that account.
 - Validation: amount > 0; transfer from ≠ to ([[Transaction]]).

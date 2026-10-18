@@ -77,3 +77,38 @@ an infinite scroll with month cards; `Report.tsx` uses the new
 [[Transaction List Screen]], [[Report Screen]], [[Service Layer]],
 [[Base Components]], [[Tech Stack]], [[Known Issues]],
 [[API v3 Migration]].
+
+## [2026-10-18] lint | Report Screen doesn't use category types
+
+Checked `src/components/report/`: income/expense split uses the
+transaction type, and grouping uses the category name. Losing v3
+category types doesn't affect the report. Corrected the Report row in
+[[API v3 Migration]].
+
+## [2026-10-18] ingest | account and category types removed
+
+Code change (uncommitted): `type` gone from `Account`/`Category` models,
+queries, settings, and category pickers (Home, More, transaction edit).
+v2 creates send `CASH`/`ANY`. Account/category edit modals, the
+"Adjust balance" transaction, `updateAccount`/`updateCategory`, and
+`categoryHelper.ts` deleted. Codegen regenerated with scalars pinned to
+`any`. Decision: v3 balance edit sets the balance directly. Known Issue 5
+fixed. Touched [[Account]], [[Category]], [[Settings Screens]],
+[[Home Screen]], [[More Screen]], [[Transaction List Screen]],
+[[Service Layer]], [[Known Issues]], [[GraphQL Codegen]], [[Overview]],
+[[API v3 Migration]], [[index]].
+
+## [2026-10-18] update | account delete: transfer rewrite, no soft close
+
+Human decision: no soft close (archived rows keep unique names). v3
+account delete rewrites transfers with the remaining account into an
+Expense/Income on that account, so its balance is kept and matches its
+history. Added deleted-account transfers as a third balance-drift cause
+for migration. Touched [[API v3 Migration]], [[Open Questions]].
+
+## [2026-10-18] update | category delete: reassign only, protect None
+
+Human decision: deleting a v3 category reassigns its transactions
+(default "None"); no Cascade or Leave for categories. "None" must not
+be deletable. The human will raise both with the backend. Touched
+[[API v3 Migration]].

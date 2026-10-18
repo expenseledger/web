@@ -2,7 +2,7 @@
 type: synthesis
 tags: [bugs, tech-debt]
 sources: [src/]
-updated: 2026-10-04
+updated: 2026-10-18
 ---
 
 # Known Issues
@@ -27,12 +27,9 @@ Remove an entry once fixed and note it in [[log]].
    list of `n`, `toAccountIdx = n - i + 1` (e.g. n=3, i=2 → 2 = same as
    from). With a single account, transfer mode indexes `accounts[1]` and
    crashes on `.id`.
-5. **Home: category shown ≠ category submitted** —
-   `src/components/Home.tsx` starts `categoryIdx` at 0 of *all*
-   categories, but the dropdown shows the first EXPENSE/ANY category.
-   If `categories[0]` is INCOME/TRANSFER and the user doesn't touch the
-   dropdown, the expense is saved under the wrong category. Same pattern
-   in More. [[Home Screen]]
+5. ~~**Home: category shown ≠ category submitted**~~ — fixed
+   2026-10-18: pickers no longer filter by type, so index 0 is the
+   category shown. [[Home Screen]]
 6. **Delete account failure never reported** —
    `src/components/setting/AccountSetting.tsx`: `const isSuccess = await
    deleteAccount(...)` is an object (`{ isSuccess }`), always truthy.

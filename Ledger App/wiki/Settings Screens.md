@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, settings]
 sources: [src/components/setting/AccountSetting.tsx, src/components/setting/CategorySetting.tsx, src/components/setting/PageSetting.tsx, src/components/bases/EditAndDeleteSetting.tsx, src/components/bases/TextBoxWithButton.tsx]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # Settings Screens
@@ -11,17 +11,16 @@ Reached from [[Bottom Menu]] → Settings.
 
 ## Account (`/account/setting`)
 
-- List via `EditAndDeleteSetting` (edit ✎ opens modal, delete ✕).
-- Edit modal: name, type, **balance**. Changing balance posts an
-  "Adjust balance" income/expense under category "Other" — see
-  [[Account]]. Name/type → `updateAccount`. Both run in parallel.
+- List via `EditAndDeleteSetting` with delete ✕ only. Its `modifyModal`
+  (edit ✎) is optional; neither settings screen passes one since
+  2026-10-18. Name + balance editing comes back with v3 ([[Account]]).
 - Currency picker (`฿ € $ ¥ ₩`) → `currencyState` ([[State Management]]).
-- Create: `TextBoxWithButton` (name + type dropdown) → `createAccount`;
+- Create: `TextBoxWithButton` (name only) → `createAccount`;
   list re-sorted by name.
 
 ## Category (`/category/setting`)
 
-Same list/create pattern for [[Category]] (name + type).
+Same list/create/delete pattern for [[Category]] (name only).
 
 ## Page (`/page/setting`)
 

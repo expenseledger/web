@@ -57,7 +57,7 @@ const More: React.FC = () => {
                   : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
-        date: homeProps?.date ?? Date.now.toString(),
+        date: homeProps?.date ?? dayjs().format("YYYY-MM-DD"),
         description: "",
     };
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialCurrentValue);
@@ -375,6 +375,7 @@ const More: React.FC = () => {
                         <TextBox
                             updateValue={updateExpense}
                             name="expnese"
+                            ariaLabel="Amount"
                             type="number"
                             value={currentValue.amount}
                             addOn={{

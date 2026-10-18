@@ -52,7 +52,7 @@ const CategorySetting: React.FC = () => {
                 <EditAndDeleteSetting
                     deleteFuncHandler={removeCategoryHandler}
                     items={categories.map((x) => {
-                        return { id: x.id, name: x.name };
+                        return { id: x.id, name: x.name, undeletable: x.name === "None" };
                     })}
                 />
                 <TextBoxWithButton

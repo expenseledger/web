@@ -7,6 +7,7 @@ import { color } from "../../common/constants";
 export interface Item {
     id: number;
     name: string;
+    undeletable?: boolean;
 }
 
 export interface EditAndDelteSettingProps {
@@ -75,9 +76,14 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                         )}
                     </Text>
                 ) : null}
-                <Text color="red">
-                    <Cross2Icon onClick={onDeleteHandler} />
-                </Text>
+                {props.item.undeletable ? null : (
+                    <Text color="red">
+                        <Cross2Icon
+                            aria-label={`Delete ${props.item.name}`}
+                            onClick={onDeleteHandler}
+                        />
+                    </Text>
+                )}
             </Flex>
         );
     };

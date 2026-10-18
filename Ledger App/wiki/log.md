@@ -151,3 +151,8 @@ not pushed). Signature stays `deleteCategory(id): ID!`; transactions
 always move to "None"; deleting "None" fails with
 `CATEGORY_UNDELETABLE`. Touched [[API v3 Migration]],
 [[API v3 Operations]], [[API v3 Data Model]], [[API v3]].
+
+## [2026-10-18] update | hide None's delete button
+
+Category settings hide the delete ✕ for "None" (matched by name), which
+v3 refuses to delete. Touched [[Settings Screens]], [[API v3 Migration]].

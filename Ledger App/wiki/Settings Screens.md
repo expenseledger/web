@@ -22,6 +22,10 @@ Reached from [[Bottom Menu]] → Settings.
 
 Same list/create/delete pattern for [[Category]] (name only).
 
+The category named "None" has no delete ✕ (`undeletable` item flag on
+`EditAndDeleteSetting`, matched by name), since v3 refuses to delete it
+([[API v3 Migration]]). The ✕ is labelled "Delete <name>".
+
 ## Page (`/page/setting`)
 
 Dark-theme switch → `pageSettingState.isDarkTheme` (Radix `Theme`

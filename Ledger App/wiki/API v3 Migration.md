@@ -171,8 +171,8 @@ commits, not pushed). Scope cut like `deleteAccount`:
 - Deleting "None" (matched by name) is refused: `BAD_REQUEST`,
   `extensions.code` `CATEGORY_UNDELETABLE`. Unknown or not-owned id →
   `RESOURCE_NOT_FOUND`.
-- **Client**: refetch transactions after a delete; hide "None"'s
-  Delete button.
+- **Client**: refetch transactions after a delete. "None"'s Delete
+  button is already hidden (2026-10-18, on v2).
 
 ## Data migration
 

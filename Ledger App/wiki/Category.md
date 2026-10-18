@@ -15,8 +15,8 @@ interface Category { id: number; name: string }
   every category. v2 still stores ANY/INCOME/EXPENSE/TRANSFER; created
   via `createCategoryV2` with a hardcoded `ANY` (the stale local schema
   has only v1 — see [[GraphQL API]]). API v3 has no category type.
-- No rename for now; the human will reimplement it on v3 with
-  `patchCategory` (available 2026-10-19; [[API v3 Operations]]).
+- Rename via `patchCategory` in [[Settings Screens]] (2026-10-19);
+  "None" can't be renamed.
 - Reports group by category name ([[Report Screen]]).
 - Deleting a category **cascade-deletes its transactions without
   reversing balances**, so account balances drift from history

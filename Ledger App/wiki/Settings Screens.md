@@ -21,11 +21,15 @@ Reached from [[Bottom Menu]] → Settings.
 
 ## Category (`/category/setting`)
 
-Same list/create/delete pattern for [[Category]] (name only).
+Same list/create/delete pattern for [[Category]] (name only), plus
+rename: edit ✎ opens `RenameCategoryModal` → `patchCategory`
+(2026-10-19).
 
-The category named "None" has no delete ✕ (`undeletable` item flag on
-`EditAndDeleteSetting`, matched by name), since v3 refuses to delete it
-([[API v3 Migration]]). The ✕ is labelled "Delete <name>".
+The category named "None" has no delete ✕ and no edit ✎ (`undeletable`
+and `uneditable` item flags on `EditAndDeleteSetting`, matched by
+name), since v3 refuses both (`CATEGORY_PROTECTED`;
+[[API v3 Migration]]). The buttons are labelled "Delete <name>" and
+"Edit <name>".
 
 ## Page (`/page/setting`)
 

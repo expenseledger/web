@@ -208,3 +208,8 @@ codegen reruns. Touched [[API v3 Migration]], [[API v3]],
 Account settings edit name and balance through `patchAccount`; the
 balance is set directly. Touched [[Settings Screens]], [[Account]],
 [[API v3 Migration]].
+
+## [2026-10-19] update | category rename
+
+Category settings rename through `patchCategory`; "None" has no edit
+button. Touched [[Settings Screens]], [[Category]], [[API v3 Migration]].

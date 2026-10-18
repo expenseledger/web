@@ -49,14 +49,11 @@ const More: React.FC = () => {
     const [isLoading, setIsLoading] = React.useState(false);
     const location = useLocation();
     const homeProps = location.state as HomeProps;
+    const fromAccountIdx = homeProps?.accountIdx ?? 0;
     const initialCurrentValue: CurrentValue = {
-        fromAccountIdx: homeProps?.accountIdx ?? 0,
-        toAccountIdx:
-            (homeProps?.accountIdx ?? 0) == 0
-                ? 1
-                : homeProps.accountIdx + 1 >= accounts.length
-                  ? accounts.length - homeProps.accountIdx + 1
-                  : homeProps.accountIdx + 1,
+        fromAccountIdx,
+        // The account after From, wrapping around; none when there's only one.
+        toAccountIdx: accounts.length > 1 ? (fromAccountIdx + 1) % accounts.length : undefined,
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
         convertedAmount: "",
@@ -122,6 +119,12 @@ const More: React.FC = () => {
         return true;
     };
     const validateTransferAccount = (fromAcccountId: string, toAccountId: string) => {
+        if (!toAccountId) {
+            addNotification("Please add another account to transfer to", "danger");
+
+            return false;
+        }
+
         if (fromAcccountId === toAccountId) {
             addNotification("Please select different destination account", "danger");
 
@@ -340,14 +343,14 @@ const More: React.FC = () => {
                     accounts[currentValue.fromAccountIdx],
                     updateSelectedFromAccount,
                     accounts[currentValue.fromAccountIdx]?.name,
-                    accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx].id)
+                    accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx]?.id)
                 )}
                 {render(
                     "To",
                     accounts[currentValue.toAccountIdx],
                     updateSelectedToAccount,
                     accounts[currentValue.toAccountIdx]?.name,
-                    accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx].id)
+                    accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx]?.id)
                 )}
                 {renderConvertedAmount()}
             </>

@@ -37,13 +37,13 @@ async function account(name: string, currency: Currency, balance: number) {
     await patchAccount({ id: account.id, balance: { amount: balance, currency } });
 }
 
-async function renderMore() {
+async function renderMore(state?: { accountIdx: number }) {
     const { accounts, categories } = await getUserData();
     const store = createStore();
     store.set(accountsState, accounts);
     store.set(categoriesState, categories);
     renderWithProviders(
-        <MemoryRouter initialEntries={["/more"]}>
+        <MemoryRouter initialEntries={[{ pathname: "/more", state }]}>
             <Routes>
                 <Route element={<Outlet context={{ setBackToHomeParam: jest.fn() }} />}>
                     <Route path="/more" element={<More />} />
@@ -115,5 +115,32 @@ describe("More", () => {
         fireEvent.click(screen.getByRole("tab", { name: /Transfer/ }));
 
         expect(screen.queryByLabelText("Converted amount")).not.toBeInTheDocument();
+    });
+
+    it("defaults To to the account after From, wrapping after the last", async () => {
+        for (const name of ["A", "B", "C"]) {
+            await account(name, "THB", 0);
+        }
+        await renderMore({ accountIdx: 2 });
+
+        fireEvent.click(screen.getByRole("tab", { name: /Transfer/ }));
+        const [from, to] = screen.getAllByRole("combobox");
+
+        expect(from).toHaveTextContent("C");
+        expect(to).toHaveTextContent("A");
+    });
+
+    it("refuses a transfer with a single account", async () => {
+        await account("Cash", "THB", 100);
+        await renderMore();
+        const mutate = jest.spyOn(mockClient, "mutate");
+
+        fireEvent.click(screen.getByRole("tab", { name: /Transfer/ }));
+        fireEvent.change(screen.getByLabelText("Amount"), { target: { value: "30" } });
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+        await act(() => Promise.resolve());
+
+        expect(screen.getByText("From")).toBeInTheDocument();
+        expect(mutate).not.toHaveBeenCalled();
     });
 });

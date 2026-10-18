@@ -8,6 +8,7 @@ export interface Item {
     id: string;
     name: string;
     undeletable?: boolean;
+    uneditable?: boolean;
 }
 
 export interface EditAndDelteSettingProps {
@@ -66,7 +67,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         return (
             <Flex>
-                {props.modifyModal ? (
+                {props.modifyModal && !props.item.uneditable ? (
                     <Text mr="1" color={color.primary as any}>
                         {props.modifyModal(
                             props.item.id,

@@ -71,7 +71,7 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
                         {props.modifyModal(
                             props.item.id,
                             <Text mr="1" color={color.primary as any}>
-                                <Pencil1Icon />
+                                <Pencil1Icon aria-label={`Edit ${props.item.name}`} />
                             </Text>
                         )}
                     </Text>

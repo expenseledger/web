@@ -1,10 +1,13 @@
 import React from "react";
 import { accountsState } from "../../common/shareState";
-import { createAccount, deleteAccount } from "../../service/accountService";
+import { createAccount, deleteAccount, patchAccount } from "../../service/accountService";
 import { allCurrencies, Currency } from "../../service/constants";
+import { replaceAccounts } from "../../service/helper/accountHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
+import Account from "../../service/model/Account";
 import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
+import EditAccountModal from "./EditAccountModal";
 import { Flex } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 
@@ -30,6 +33,47 @@ const AccountSetting: React.FC = () => {
         addNotification("Create account success", "success");
     };
 
+    const editAccountHandler = async (account: Account, name: string, balance: number) => {
+        if (Number.isNaN(balance)) {
+            addNotification("Balance should be a number", "danger");
+            return;
+        }
+
+        const response = await patchAccount({
+            id: account.id,
+            name: name !== account.name ? name : undefined,
+            balance:
+                balance !== account.balance
+                    ? { amount: balance, currency: account.currency }
+                    : undefined,
+        });
+
+        if (!response.account) {
+            addNotification("Edit account failed", "danger");
+            return;
+        }
+
+        setAccounts(
+            replaceAccounts(accounts, [response.account]).sort((a, b) =>
+                a.name.localeCompare(b.name)
+            )
+        );
+        addNotification("Edit account success", "success");
+    };
+    const editAccountModal = (id: string, triggerer: React.ReactElement) => {
+        const account = accounts.find((a) => a.id === id);
+
+        return (
+            <EditAccountModal
+                // Remount after a save so the fields start from the saved values.
+                key={`${account.name}-${account.balance}`}
+                account={account}
+                onSave={(name, balance) => editAccountHandler(account, name, balance)}
+                triggerer={triggerer}
+            />
+        );
+    };
+
     const deleteAccountHandler = async (id: string) => {
         const response = await deleteAccount({
             id,
@@ -48,6 +92,7 @@ const AccountSetting: React.FC = () => {
         <Flex direction="column" gap="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
+                modifyModal={editAccountModal}
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}

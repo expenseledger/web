@@ -19,6 +19,7 @@ interface TextBoxProps {
     defaultValue?: string;
     value?: string;
     addOn?: AddOn;
+    ariaLabel?: string;
 }
 
 const TextBox: React.FC<TextBoxProps> = (props) => {
@@ -36,6 +37,7 @@ const TextBox: React.FC<TextBoxProps> = (props) => {
             size="3"
             type={props.type ?? "text"}
             name={props.name}
+            aria-label={props.ariaLabel}
             {...(props.type === "number" ? { inputMode: "decimal" } : null)}
             {...bind}>
             {addonPosition === "front" && (

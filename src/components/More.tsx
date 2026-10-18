@@ -25,6 +25,8 @@ interface CurrentValue {
     toAccountIdx: number;
     categoryIdx: number;
     amount: string;
+    /** What the to account receives when the transfer crosses currencies. */
+    convertedAmount: string;
     date: string;
     description: string;
 }
@@ -57,6 +59,7 @@ const More: React.FC = () => {
                   : homeProps.accountIdx + 1,
         categoryIdx: homeProps?.categoryIdx ?? 0,
         amount: homeProps?.amount ?? "",
+        convertedAmount: "",
         date: homeProps?.date ?? dayjs().format("YYYY-MM-DD"),
         description: "",
     };
@@ -102,6 +105,7 @@ const More: React.FC = () => {
     };
     const updateSelectedDate = (value: string) => updateField("date", value);
     const updateExpense = (value: string) => updateField("amount", value);
+    const updateConvertedAmount = (value: string) => updateField("convertedAmount", value);
     const updateDescription = (value: string) => updateField("description", value);
 
     const validateAmount = (amount: number) => {
@@ -204,27 +208,41 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
-            currentValue;
+        const {
+            fromAccountIdx,
+            toAccountIdx,
+            categoryIdx,
+            amount,
+            convertedAmount,
+            date,
+            description,
+        } = currentValue;
 
         try {
+            const fromAccount = accounts[fromAccountIdx];
+            const toAccount = accounts[toAccountIdx];
+            const isCrossCurrency = fromAccount?.currency !== toAccount?.currency;
             const numberedAmount = toNumber(amount);
+            const numberedConvertedAmount = toNumber(convertedAmount);
             const isValid =
                 validateAmount(numberedAmount) &&
-                validateTransferAccount(accounts[fromAccountIdx]?.id, accounts[toAccountIdx]?.id);
+                (!isCrossCurrency || validateAmount(numberedConvertedAmount)) &&
+                validateTransferAccount(fromAccount?.id, toAccount?.id);
 
             if (!isValid) {
                 setIsLoading(false);
                 return false;
             }
 
-            const fromAccount = accounts[fromAccountIdx];
             const request: AddTransferRequest = {
                 amount: { amount: numberedAmount, currency: fromAccount.currency },
+                convertedAmount: isCrossCurrency
+                    ? { amount: numberedConvertedAmount, currency: toAccount.currency }
+                    : undefined,
                 categoryId: categories[categoryIdx]?.id,
                 date: dayjs(date).toDate(),
                 description,
-                toAccountId: accounts[toAccountIdx]?.id,
+                toAccountId: toAccount?.id,
                 fromAccountId: fromAccount.id,
             };
 
@@ -273,6 +291,7 @@ const More: React.FC = () => {
                 ...currentValue,
                 description: "",
                 amount: "",
+                convertedAmount: "",
             });
         }
 
@@ -330,6 +349,7 @@ const More: React.FC = () => {
                     accounts[currentValue.toAccountIdx]?.name,
                     accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx].id)
                 )}
+                {renderConvertedAmount()}
             </>
         ) : (
             render(
@@ -339,6 +359,34 @@ const More: React.FC = () => {
                 accounts[currentValue.fromAccountIdx]?.name,
                 null
             )
+        );
+    };
+
+    const renderConvertedAmount = () => {
+        const toCurrency = accounts[currentValue.toAccountIdx]?.currency;
+
+        if (toCurrency === accounts[currentValue.fromAccountIdx]?.currency) {
+            return null;
+        }
+
+        return (
+            <Flex direction="column">
+                <Box>
+                    <Text weight="bold" size="1">
+                        Converted amount
+                    </Text>
+                </Box>
+                <Box>
+                    <TextBox
+                        updateValue={updateConvertedAmount}
+                        name="converted-amount"
+                        ariaLabel="Converted amount"
+                        type="number"
+                        value={currentValue.convertedAmount}
+                        addOn={{ text: currencySymbols[toCurrency], position: "front" }}
+                    />
+                </Box>
+            </Flex>
         );
     };
 

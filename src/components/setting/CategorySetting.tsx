@@ -8,6 +8,7 @@ import { Flex } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import AnimatedPage from "../AnimatedPage";
 import RenameCategoryModal from "./RenameCategoryModal";
+import { describeError } from "../../service/helper/errorHelper";
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useAtom(categoriesState);
@@ -19,7 +20,7 @@ const CategorySetting: React.FC = () => {
         });
 
         if (!response.addedCategory) {
-            addNotification("Create category failed", "danger");
+            addNotification(describeError(response.errorCode, "Create category failed"), "danger");
 
             return;
         }
@@ -36,7 +37,7 @@ const CategorySetting: React.FC = () => {
         const response = await patchCategory({ id, name });
 
         if (!response.category) {
-            addNotification("Rename category failed", "danger");
+            addNotification(describeError(response.errorCode, "Rename category failed"), "danger");
 
             return;
         }
@@ -65,7 +66,7 @@ const CategorySetting: React.FC = () => {
         const response = await deleteCategory({ id });
 
         if (!response.isSuccess) {
-            addNotification("Delete category failed", "danger");
+            addNotification(describeError(response.errorCode, "Delete category failed"), "danger");
 
             return;
         }

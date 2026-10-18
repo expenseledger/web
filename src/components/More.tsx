@@ -19,6 +19,7 @@ import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
 import { useBackToHome } from "./Layout";
 import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
+import { describeError } from "../service/helper/errorHelper";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
@@ -156,7 +157,7 @@ const More: React.FC = () => {
                 return true;
             }
 
-            addNotification("AddExpense failed", "danger");
+            addNotification(describeError(response.errorCode, "AddExpense failed"), "danger");
         } catch {
             addNotification("AddExpense failed", "danger");
         }
@@ -194,7 +195,7 @@ const More: React.FC = () => {
                 return true;
             }
 
-            addNotification("AddIncome failed", "danger");
+            addNotification(describeError(response.errorCode, "AddIncome failed"), "danger");
         } catch {
             addNotification("AddIncome failed", "danger");
         }
@@ -241,7 +242,7 @@ const More: React.FC = () => {
                 return true;
             }
 
-            addNotification("AddTransfer failed", "danger");
+            addNotification(describeError(response.errorCode, "AddTransfer failed"), "danger");
         } catch {
             addNotification("AddTransfer failed", "danger");
         }

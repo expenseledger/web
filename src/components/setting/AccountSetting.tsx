@@ -10,6 +10,7 @@ import TextBoxWithButton from "../bases/TextBoxWithButton";
 import EditAccountModal from "./EditAccountModal";
 import { Flex } from "@radix-ui/themes";
 import { useAtom } from "jotai";
+import { describeError } from "../../service/helper/errorHelper";
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useAtom(accountsState);
@@ -21,7 +22,7 @@ const AccountSetting: React.FC = () => {
         });
 
         if (!response.account) {
-            addNotification("Create account failed", "danger");
+            addNotification(describeError(response.errorCode, "Create account failed"), "danger");
             return;
         }
 
@@ -49,7 +50,7 @@ const AccountSetting: React.FC = () => {
         });
 
         if (!response.account) {
-            addNotification("Edit account failed", "danger");
+            addNotification(describeError(response.errorCode, "Edit account failed"), "danger");
             return;
         }
 
@@ -80,7 +81,7 @@ const AccountSetting: React.FC = () => {
         });
 
         if (!response.isSuccess) {
-            addNotification("Delete account failed", "danger");
+            addNotification(describeError(response.errorCode, "Delete account failed"), "danger");
             return;
         }
 

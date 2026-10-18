@@ -64,7 +64,11 @@ describe("AccountSetting", () => {
         fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Bank" } });
         fireEvent.click(screen.getByRole("button", { name: "Save" }));
 
-        await waitFor(() => expect(screen.getByText("Edit account failed")).toBeInTheDocument());
+        await waitFor(() =>
+            expect(
+                screen.getByText("Edit account failed: the name is already taken")
+            ).toBeInTheDocument()
+        );
         expect(store.get(accountsState).map((a) => a.name)).toEqual(["Bank", "Cash"]);
     });
 });

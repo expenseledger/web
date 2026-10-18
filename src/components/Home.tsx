@@ -22,6 +22,7 @@ import { BackToHomeParam, useBackToHome } from "./Layout";
 import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
 import { Navigation, Pagination } from "swiper/modules";
+import { describeError } from "../service/helper/errorHelper";
 
 interface CurrentValue {
     accountIdx: number;
@@ -120,7 +121,7 @@ const Home: React.FC = () => {
                 return;
             }
 
-            addNotification("AddExpense is failed", "danger");
+            addNotification(describeError(response.errorCode, "AddExpense failed"), "danger");
             setIsLoading(false);
         } catch {
             addNotification("Please add amount", "danger");

@@ -27,6 +27,7 @@ import Switch from "../bases/Switch";
 import { useBackToHome } from "../Layout";
 import { useAtom } from "jotai";
 import AnimatedPage from "../AnimatedPage";
+import { describeError } from "../../service/helper/errorHelper";
 
 const PAGE_SIZE = 50;
 
@@ -154,7 +155,10 @@ export const TransactionList: React.FC = () => {
         });
 
         if (!response.isSuccess) {
-            addNotification("Delete transaction failed", "danger");
+            addNotification(
+                describeError(response.errorCode, "Delete transaction failed"),
+                "danger"
+            );
             return;
         }
 
@@ -172,7 +176,7 @@ export const TransactionList: React.FC = () => {
         const result = await updateTransaction(patch);
 
         if (!result.updatedTransaction) {
-            addNotification("Update transaction failed", "danger");
+            addNotification(describeError(result.errorCode, "Update transaction failed"), "danger");
             return;
         }
 

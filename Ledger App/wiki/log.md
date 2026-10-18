@@ -239,3 +239,9 @@ so `graphql()` lookups can't silently miss. Touched [[Known Issues]],
 
 New `unauthorizedLink`: refresh the token and retry once, then sign
 out. Touched [[Apollo Client]], [[Authentication]].
+
+## [2026-10-19] update | fix Apollo retry link order
+
+Moved the link chain into `createLink` (`lib/apolloLink.ts`) and put
+the retry link before the HTTP link; it skips 4xx. Touched
+[[Apollo Client]], [[Known Issues]].

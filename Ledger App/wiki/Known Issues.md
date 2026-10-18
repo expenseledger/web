@@ -12,9 +12,9 @@ Remove an entry once fixed and note it in [[log]].
 
 ## Bugs
 
-1. **Apollo retry never runs** — `src/lib/apollo.ts`: `retryLink` is
-   concatenated *after* the terminating `HttpLink`, so query retries are
-   dead. Fix: `from([retryLink, authLink, httpLink])`. [[Apollo Client]]
+1. ~~**Apollo retry never runs**~~ — fixed 2026-10-19: `retryLink` sat
+   after the terminating `HttpLink`. Now ordered in `createLink`
+   ([[Apollo Client]]).
 2. ~~**More: submit not awaited**~~ — fixed 2026-10-19: amount and
    description cleared even on failure, and `isLoading` flipped back at
    once. [[More Screen]]

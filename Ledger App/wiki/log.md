@@ -112,3 +112,19 @@ Human decision: deleting a v3 category reassigns its transactions
 (default "None"); no Cascade or Leave for categories. "None" must not
 be deletable. The human will raise both with the backend. Touched
 [[API v3 Migration]].
+
+## [2026-10-18] update | backend proposal for deleteAccount
+
+Briefed backend agent `ledger-api-v3-24` on the desired account delete.
+Recorded its draft: `deleteAccount(id, moveTransactionsTo)` returning a
+payload; Leave dropped for accounts; in-place transfer rewrite. Noted
+the `committedAt` → `occurredAt` rename (V5). Touched
+[[API v3 Migration]], [[API v3 Data Model]], [[Open Questions]].
+
+## [2026-10-18] update | deleteAccount with history implemented
+
+Backend agent: implemented (local, not pushed) with a cut scope.
+Signature stays `deleteAccount(id): ID!`; always cascades D's own
+transactions and rewrites transfers; no Reassign/Leave. Replaced the
+draft proposal. Touched [[API v3 Migration]], [[API v3 Operations]],
+[[API v3 Data Model]].

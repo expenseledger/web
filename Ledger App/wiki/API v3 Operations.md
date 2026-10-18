@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, src/service/]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # API v3 Operations
@@ -17,7 +17,7 @@ backend agent, 2026-09-25.
 | `account(id)` | `account(id: ID!)` | Unknown id → NOT_FOUND |
 | `createAccount` | `createAccount(name, balance: MoneyInput!)` | No type; sets the opening balance and currency |
 | `updateAccount` | **none** | No rename |
-| `closeAccount` | `deleteAccount(id): ID!` | Hard delete; fails if the account has transactions |
+| `closeAccount` | `deleteAccount(id): ID!` | Hard delete; deletes its expenses/incomes and rewrites its transfers (2026-10-18, [[API v3 Migration]]) |
 | `categories` | `categories(first!, after, sort)` | Plus `category(id)` |
 | `createCategoryV2` | `createCategory(name)` | No type |
 | `updateCategory` | **none** | |

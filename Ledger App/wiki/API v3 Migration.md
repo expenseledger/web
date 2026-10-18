@@ -19,7 +19,7 @@ code.
 - No account or category types
 - No custom transaction date (description was added 2026-09-25)
 - No account/category update mutations (`updateTransaction` added 2026-09-25)
-- Hard deletes, blocked while referenced
+- Hard deletes; categories blocked while referenced
 - `initializeUser` replaces `currentUser`
 - Renamed mutations
 - A single `accountId` filter
@@ -38,7 +38,7 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 | [[More Screen]] | `deposit`/`transfer`; cross-currency transfers need a `convertedAmount` input. The date is lost; description maps to `description`. Category filtering by type already removed (2026-10-18) |
 | [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `updateTransaction` (amount, category, description; not the date). Omit unchanged variables. Delete → `rollBack`. One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
 | [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
-| [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Delete fails if the account has transactions. Currency picker → per-account currency |
+| [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Account delete cascades (warn the user; § Decided: deleting referenced accounts/categories). Currency picker → per-account currency |
 | [[State Management]] | `currencyState` (cosmetic) conflicts with real per-account currencies. IDs become strings |
 | [[Balance Sync]] | Can read balances from every mutation response, including `rollBack` (select `from`/`to { balance }`) |
 | [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/v3` |
@@ -114,7 +114,7 @@ that transactions still reference. The user picks one of:
 3. **Leave** — delete the entity, leave dependents untouched.
 
 v2 does (1) without the balance adjustment, which is a bug
-([[Known Issues]] § API v2 backend). v3 currently blocks the delete.
+([[Known Issues]] § API v2 backend). v3 blocked it until 2026-10-18; account delete is now implemented (below).
 
 **No soft close** (human, 2026-10-18): an archived flag is rejected,
 e.g. because archived rows still hold their unique name.
@@ -128,12 +128,23 @@ user picks:
 
 The remaining balance stays as is (the money really moved) and now
 matches its history. So "adjust balances" in (1) never undoes the
-other side of a transfer. Still open (inferred edge cases):
+other side of a transfer.
 
-- Amount: use the remaining side's amount, i.e. `convertedAmount`
-  when it is the `to` side of a cross-currency transfer.
-- Reassign (2) to the transfer's other account would make from = to;
-  rewrite those too.
+**Implemented** (backend agent `ledger-api-v3-24`, 2026-10-18; local
+commits, not pushed). The human cut the scope:
+
+- Signature unchanged: `deleteAccount(id: ID!): ID!`.
+- Always Cascade: D's own expenses and incomes are deleted. Reassign
+  is a possible future feature; Leave is dropped (FKs and CHECKs
+  forbid account-less transactions).
+- Transfers with R are rewritten in place as above; id, category,
+  description and `occurredAt` kept. Amount is R's side
+  (`convertedAmount` if R was a cross-currency `to`). R's balance is
+  unchanged.
+- `rollBack` on a rewritten row restores R's balance correctly.
+- **Client**: after `deleteAccount`, refetch accounts and transactions.
+  Balances don't change, but R's former transfers change type
+  (Transfer → Expense/Income).
 
 **Categories: Reassign only** (human, 2026-10-18). A category is a
 label and moves no money, so deleting one must not touch balances or

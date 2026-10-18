@@ -2,7 +2,7 @@
 type: synthesis
 tags: [questions, backend]
 sources: [expense-ledger-api]
-updated: 2026-10-04
+updated: 2026-10-18
 ---
 
 # Open Questions
@@ -29,3 +29,5 @@ Answered by the backend agent and the human (2026-09-25) and recorded in
   one on [[API v3 Migration]].
 - How v2 balances that don't match their transaction history should be
   migrated ([[API v3 Migration]] § Data migration).
+- Does the `committedAt` → `occurredAt` rename (V5) add backdating?
+  ([[API v3 Data Model]])

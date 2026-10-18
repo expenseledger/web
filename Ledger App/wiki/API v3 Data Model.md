@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3, domain]
 sources: [backend agent 2026-09-25]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # API v3 Data Model
@@ -57,6 +57,10 @@ by migration `V4__add_transaction_description.sql` (backend agent,
 `committedAt` is the server time at creation, so **backdating isn't
 possible**.
 
+`committedAt` was renamed `occurredAt` (migration V5; backend agent,
+2026-10-18). Whether it is now client-settable (backdating) is
+unconfirmed; other v3 pages still say `committedAt`.
+
 ## Balance effects
 
 These happen inside one DB transaction per mutation:
@@ -71,8 +75,11 @@ balance }`), which suits [[Balance Sync]].
 
 ## Deletion semantics
 
-- `deleteAccount` and `deleteCategory` are **hard deletes**, blocked by FKs
-  (NO ACTION) while transactions reference them. The error surfaces as a
+- `deleteAccount` is a hard delete that cascades D's expenses and
+  incomes and rewrites its transfers into Expense/Income on the other
+  account (2026-10-18; [[API v3 Migration]]).
+- `deleteCategory` is a **hard delete**, blocked by FKs
+  (NO ACTION) while transactions reference it. The error surfaces as a
   generic INTERNAL_ERROR. In practice only unused accounts and categories
   can be deleted (untested path).
 - Deleting the unused "None" category is allowed. After that,

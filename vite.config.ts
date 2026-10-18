@@ -1,12 +1,51 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { readFileSync } from "node:fs";
+import { graphql } from "graphql";
+import { defineConfig, Plugin } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgrPlugin from "vite-plugin-svgr";
 import babel from "@rolldown/plugin-babel";
+import { createMockV3 } from "./src/mock/mockV3";
+
+/**
+ * Serves the in-memory API v3 at /mock/graphql in `npm start`, seeded
+ * with a few accounts. Use it with VITE_SERVER_URL=http://localhost:3000/mock/graphql.
+ * Data lives until the dev server restarts; auth is ignored.
+ */
+function mockApiV3(): Plugin {
+    return {
+        name: "mock-api-v3",
+        apply: "serve",
+        configureServer(server) {
+            const { schema, rootValue } = createMockV3(readFileSync("schema.graphql", "utf8"));
+            rootValue.createAccount({ name: "Cash", balance: { amount: 1000, currency: "THB" } });
+            rootValue.createAccount({ name: "Bank", balance: { amount: 25000, currency: "THB" } });
+            rootValue.createAccount({ name: "Euro", balance: { amount: 100, currency: "EUR" } });
+
+            server.middlewares.use("/mock/graphql", (req, res) => {
+                let body = "";
+                req.on("data", (chunk) => (body += chunk));
+                req.on("end", async () => {
+                    const { query, variables, operationName } = JSON.parse(body || "{}");
+                    const result = await graphql({
+                        schema,
+                        rootValue,
+                        source: query,
+                        variableValues: variables,
+                        operationName,
+                    });
+                    res.setHeader("Content-Type", "application/json");
+                    res.end(JSON.stringify(result));
+                });
+            });
+        },
+    };
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
     plugins: [
+        mockApiV3(),
         react(),
         babel({
             plugins: ["babel-plugin-react-compiler"],

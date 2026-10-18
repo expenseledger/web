@@ -10,7 +10,14 @@ updated: 2026-10-19
 Defined in `src/lib/apollo.ts`; single default export used by the
 [[Service Layer]] (and mocked in service tests — [[Build and Test]]).
 
-- **Link chain**: `authLink.concat(httpLink).concat(retryLink)`.
+- **Link chain**: `unauthorizedLink.concat(authLink).concat(httpLink)
+  .concat(retryLink)`.
+  - `unauthorizedLink` (`lib/unauthorizedLink.ts`, 2026-10-19): on an
+    HTTP 401 (API v3's answer to a missing or rejected token) it
+    force-refreshes the Firebase ID token and retries once, back through
+    `authLink`. A second 401, or no signed-in user, calls
+    `auth.signOut()` and the error propagates. An `ErrorLink` doesn't
+    see its own retry's errors, so the retry is caught in its pipe.
   - `authLink` (`SetContextLink`) injects the Firebase bearer token
     ([[Authentication]]).
   - `httpLink` URI is a *function*, `getServerUrl`, from `src/lib/rr.ts`.

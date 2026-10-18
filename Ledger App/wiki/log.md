@@ -234,3 +234,8 @@ Fixed More's unawaited submit and To-account default (and Dropdown's
 loop on empty options). Prettier no longer formats embedded GraphQL,
 so `graphql()` lookups can't silently miss. Touched [[Known Issues]],
 [[More Screen]], [[GraphQL Codegen]].
+
+## [2026-10-19] update | handle HTTP 401 from API v3
+
+New `unauthorizedLink`: refresh the token and retry once, then sign
+out. Touched [[Apollo Client]], [[Authentication]].

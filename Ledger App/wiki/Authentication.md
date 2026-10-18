@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, auth]
 sources: [src/lib/firebase.ts, src/components/hoc/WithAuthProtection.tsx, src/components/signIn/SignIn.tsx, src/lib/apollo.ts]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Authentication
@@ -41,3 +41,5 @@ header. The backend identifies the *Owner* by Firebase UID (`ownerId:
 String` in the schema — inferred).
 
 Sign-out: [[Bottom Menu]] → Settings → "Sign out" → `auth.signOut()`.
+Also automatic when API v3 keeps answering HTTP 401 after a token
+refresh ([[Apollo Client]]); the auth listeners then show sign-in.

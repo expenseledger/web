@@ -5,6 +5,7 @@ import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
 import { RetryLink } from "@apollo/client/link/retry";
 import { createCache } from "./apolloCache";
+import { createUnauthorizedLink } from "./unauthorizedLink";
 
 const httpLink = new HttpLink({
     uri: getServerUrl,
@@ -34,6 +35,12 @@ const authLink = new SetContextLink(async (prevContext) => {
     };
 });
 
+// Signing out makes the auth listeners send the user to the sign-in page.
+const unauthorizedLink = createUnauthorizedLink({
+    refreshToken: async () => auth.currentUser?.getIdToken(true),
+    onUnauthorized: () => auth.signOut(),
+});
+
 const retryLink = new RetryLink({
     attempts: {
         max: 5,
@@ -45,7 +52,7 @@ const retryLink = new RetryLink({
 });
 
 const client = new ApolloClient({
-    link: authLink.concat(httpLink).concat(retryLink),
+    link: unauthorizedLink.concat(authLink).concat(httpLink).concat(retryLink),
     cache: createCache(),
 });
 

@@ -244,7 +244,8 @@ Done in the cutover commit:
 - Services return `errorCode` (`extensions.code`) on failure.
 - Empty descriptions are sent as null, no longer `"-"`.
 
-Still to do on the app: one currency per report.
+All planned app work is done (2026-10-19). Not yet tried against the
+real v3 server.
 
 ## Data migration
 

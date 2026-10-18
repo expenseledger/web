@@ -10,6 +10,7 @@ updated: 2026-10-19
 | Task | Command |
 |---|---|
 | Dev server (port 3000, opens browser) | `npm start` |
+| Dev without a backend | `npm start` with `VITE_SERVER_URL=http://localhost:3000/mock/graphql`: the v3 mock, seeded with 3 accounts, in memory until restart (sign-in still uses Firebase) |
 | Type-check | `npm run compile` |
 | Prod build (`tsc && vite build` → `build/`) | `npm run build` |
 | Preview build | `npm run preview` |

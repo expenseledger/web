@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, reporting]
 sources: [src/components/report/]
-updated: 2026-10-04
+updated: 2026-10-19
 ---
 
 # Report Screen
@@ -12,7 +12,9 @@ accounts.
 
 - Initial selection: the account passed in router state from
   [[Home Screen]]. `AccountSelection` checkboxes let you add accounts
-  (at least one must stay checked).
+  (at least one must stay checked). One currency at a time: checking an
+  account in another currency switches to that account alone, and the
+  report shows that currency's symbol (2026-10-19).
 - Month: `MonthPicker` (prev/next), starts on the current month, no
   bounds; months with nothing show empty widgets ([[API v3 Migration]]
   § Decided: month navigation).

@@ -24,6 +24,9 @@ updated: 2026-10-19
 Refresh `schema.graphql` by hand from `../ledger-api-v3` when the
 backend schema changes, then run codegen and commit the result.
 
+Codegen runs Prettier on its output (`hooks.afterAllFileWrite`), since
+it otherwise drops the final newline of `gql/index.ts` and fails lint.
+
 ⚠ **Run codegen after Prettier.** `graphql()` looks documents up by
 their exact source text. Reformatting a document (e.g. `npm run
 format`) without regenerating makes the lookup miss, and the operation

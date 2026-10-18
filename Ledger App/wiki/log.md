@@ -221,3 +221,9 @@ date (broke every add on v3). More asks for a converted amount when a
 transfer crosses currencies. Codegen now runs Prettier on its output.
 Touched [[Notifications]], [[More Screen]], [[Known Issues]],
 [[API v3 Migration]].
+
+## [2026-10-19] update | one-currency reports, dev mock server
+
+Reports keep to one currency. `npm start` serves the v3 mock at
+`/mock/graphql`. Touched [[Report Screen]], [[Build and Test]],
+[[GraphQL Codegen]], [[API v3 Migration]].

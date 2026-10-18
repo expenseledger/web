@@ -1,15 +1,9 @@
 import { ApolloClient } from "@apollo/client";
 import { HttpLink } from "@apollo/client/link/http";
-import { SetContextLink } from "@apollo/client/link/context";
 import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
-import { RetryLink } from "@apollo/client/link/retry";
 import { createCache } from "./apolloCache";
-import { createUnauthorizedLink } from "./unauthorizedLink";
-
-const httpLink = new HttpLink({
-    uri: getServerUrl,
-});
+import { createLink } from "./apolloLink";
 
 const getAuthToken = async (retry = 0): Promise<string> => {
     const token = await auth.currentUser?.getIdToken();
@@ -24,35 +18,14 @@ const getAuthToken = async (retry = 0): Promise<string> => {
     }
 };
 
-const authLink = new SetContextLink(async (prevContext) => {
-    const token = await getAuthToken();
-
-    return {
-        headers: {
-            ...prevContext.headers,
-            authorization: token ? `Bearer ${token}` : "",
-        },
-    };
-});
-
-// Signing out makes the auth listeners send the user to the sign-in page.
-const unauthorizedLink = createUnauthorizedLink({
-    refreshToken: async () => auth.currentUser?.getIdToken(true),
-    onUnauthorized: () => auth.signOut(),
-});
-
-const retryLink = new RetryLink({
-    attempts: {
-        max: 5,
-        retryIf: (error, operation) => operation.operationType === "query",
-    },
-    delay: (attempt) => {
-        return 1000 * 2 ** (attempt - 1);
-    },
-});
-
 const client = new ApolloClient({
-    link: unauthorizedLink.concat(authLink).concat(httpLink).concat(retryLink),
+    link: createLink({
+        httpLink: new HttpLink({ uri: getServerUrl }),
+        getToken: () => getAuthToken(),
+        refreshToken: async () => auth.currentUser?.getIdToken(true),
+        // Signing out makes the auth listeners send the user to the sign-in page.
+        onUnauthorized: () => auth.signOut(),
+    }),
     cache: createCache(),
 });
 

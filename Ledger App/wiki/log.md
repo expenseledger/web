@@ -227,3 +227,10 @@ Touched [[Notifications]], [[More Screen]], [[Known Issues]],
 Reports keep to one currency. `npm start` serves the v3 mock at
 `/mock/graphql`. Touched [[Report Screen]], [[Build and Test]],
 [[GraphQL Codegen]], [[API v3 Migration]].
+
+## [2026-10-19] update | More bugs fixed, Prettier off for GraphQL
+
+Fixed More's unawaited submit and To-account default (and Dropdown's
+loop on empty options). Prettier no longer formats embedded GraphQL,
+so `graphql()` lookups can't silently miss. Touched [[Known Issues]],
+[[More Screen]], [[GraphQL Codegen]].

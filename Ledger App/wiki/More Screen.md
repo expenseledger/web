@@ -25,6 +25,9 @@ Income / Transfer**.
 - Failure toasts explain v3 error codes ([[Notifications]]).
 - After success patches balances ([[Balance Sync]]).
 
-Bugs remain here (async not awaited, to-account index) — see
-[[Known Issues]]. Tested in `src/tests/More.test.tsx` against the v3
+- To defaults to the account after From (wrapping); with one account
+  there is none and a transfer is refused.
+
+Its old bugs (date, unawaited submit, to-account default) are fixed
+([[Known Issues]]). Tested in `src/tests/More.test.tsx` against the v3
 mock.

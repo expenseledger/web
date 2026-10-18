@@ -27,7 +27,9 @@ backend schema changes, then run codegen and commit the result.
 Codegen runs Prettier on its output (`hooks.afterAllFileWrite`), since
 it otherwise drops the final newline of `gql/index.ts` and fails lint.
 
-⚠ **Run codegen after Prettier.** `graphql()` looks documents up by
-their exact source text. Reformatting a document (e.g. `npm run
-format`) without regenerating makes the lookup miss, and the operation
-silently fails at runtime (2026-10-19).
+⚠ `graphql()` looks documents up by their **exact source text**; a
+miss returns an empty document and the operation fails silently at
+runtime. So `.prettierrc` sets `embeddedLanguageFormatting: "off"`:
+Prettier no longer reformats queries behind codegen's back
+(2026-10-19). After editing a query by hand, still run codegen; the
+mock-backed service tests fail if you forget ([[Build and Test]]).

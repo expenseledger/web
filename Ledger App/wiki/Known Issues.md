@@ -15,19 +15,17 @@ Remove an entry once fixed and note it in [[log]].
 1. **Apollo retry never runs** — `src/lib/apollo.ts`: `retryLink` is
    concatenated *after* the terminating `HttpLink`, so query retries are
    dead. Fix: `from([retryLink, authLink, httpLink])`. [[Apollo Client]]
-2. **More: submit not awaited** — `src/components/More.tsx`
-   `addTransaction` calls the async `doTransaction()` without `await`:
-   the result is always a truthy Promise, so amount/description clear
-   even on failure, and `isLoading` flips back immediately (double
-   submits possible). [[More Screen]]
+2. ~~**More: submit not awaited**~~ — fixed 2026-10-19: amount and
+   description cleared even on failure, and `isLoading` flipped back at
+   once. [[More Screen]]
 3. ~~**More: bad default date**~~ — fixed 2026-10-19: it used
    `Date.now.toString()` (the function's source) when `/more` was opened
    without router state; on v3 every add failed with
    `INVALID_DATE_TIME`. Now today.
-4. **More: to-account default** — for the last account index `i` in a
-   list of `n`, `toAccountIdx = n - i + 1` (e.g. n=3, i=2 → 2 = same as
-   from). With a single account, transfer mode indexes `accounts[1]` and
-   crashes on `.id`.
+4. ~~**More: to-account default**~~ — fixed 2026-10-19: it could pick
+   From itself, and one account crashed the transfer tab. To is now the
+   next account (wrapping), or none; `Dropdown` no longer loops on empty
+   options.
 5. ~~**Home: category shown ≠ category submitted**~~ — fixed
    2026-10-18: pickers no longer filter by type, so index 0 is the
    category shown. [[Home Screen]]

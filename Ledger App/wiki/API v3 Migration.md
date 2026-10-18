@@ -1,7 +1,7 @@
 ---
 type: synthesis
 tags: [migration, v3, planning]
-sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, src/, expense-ledger-api]
+sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, src/, expense-ledger-api]
 updated: 2026-10-18
 ---
 
@@ -17,8 +17,8 @@ code.
 
 - Money objects replace plain numbers
 - No account or category types
-- No custom transaction date (description was added 2026-09-25)
-- No account/category update mutations (`updateTransaction` added 2026-09-25)
+- Custom transaction date via `occurredAt` (2026-10-18; description added 2026-09-25)
+- No account/category update mutations (transactions: `patch*`, 2026-10-05)
 - Hard deletes (no longer blocked while referenced, 2026-10-18)
 - `initializeUser` replaces `currentUser`
 - Renamed mutations
@@ -34,13 +34,13 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 | Area | Impact |
 |---|---|
 | Bootstrap ([[Routing and Layout]]) | Call `initializeUser` once, then page through `accounts` and `categories` (≤ 50 each) instead of one `currentUser` |
-| [[Home Screen]] | `withdraw` with Money in the account's currency. **The Date field has no v3 target.** Description → `description` (send null, not `"-"`, when it's empty) Category can be omitted |
+| [[Home Screen]] | `withdraw` with Money in the account's currency. Date → `occurredAt`. Description → `description` (send null, not `"-"`, when it's empty) Category can be omitted |
 | [[More Screen]] | `deposit`/`transfer`; cross-currency transfers need a `convertedAmount` input. The date is lost; description maps to `description`. Category filtering by type already removed (2026-10-18) |
-| [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `updateTransaction` (amount, category, description; not the date). Omit unchanged variables. Delete → `rollBack`. One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
+| [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `patchExpense`/`patchIncome`/`patchTransfer` (amount, date, category, description, accounts; not the type). Omit unchanged variables. Delete → `deleteTransaction` (returns only the id). One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
 | [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
 | [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Account delete cascades (warn the user; § Decided: deleting referenced accounts/categories). Currency picker → per-account currency |
 | [[State Management]] | `currencyState` (cosmetic) conflicts with real per-account currencies. IDs become strings |
-| [[Balance Sync]] | Can read balances from every mutation response, including `rollBack` (select `from`/`to { balance }`) |
+| [[Balance Sync]] | Read balances from create/`patch*` responses (select `from`/`to { balance }`). Refetch after `deleteTransaction`, account/category deletes, and for an account a patch moved a transaction off |
 | [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/v3` |
 | [[GraphQL Codegen]] | Point at the v3 schema (`schema.graphqls`); regenerate; rewrite all documents |
 | Dates | Filters must send local-offset strings (e.g. `+07:00`), **not** `toISOString()`. The current code passes `Date` objects |
@@ -49,13 +49,14 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 
 These are v2 features the app uses that v3 lacks today:
 
-1. Backdating transactions (the Date field)
+1. ~~Backdating transactions~~ — **done**: `occurredAt` on creates and
+   `patch*`, used by filters and sort (backend agent, 2026-10-18)
 2. ~~Transaction descriptions~~ — **done** in v3 (backend agent
    `ledger-api-v3-bb`, 2026-09-25): nullable `description` argument on
    `withdraw`/`deposit`/`transfer` and a field on `Transaction`
    ([[API v3 Data Model]])
-3. ~~Editing transactions~~ — **done** (`updateTransaction`, backend
-   agent 2026-09-25; [[API v3 Operations]])
+3. ~~Editing transactions~~ — **done** (now `patch*`, which can also
+   move accounts; [[API v3 Operations]])
 4. ~~Month list per account~~ — **not needed**; handled on the client
    (human, 2026-10-04; § Decided: month navigation)
 5. ~~Account/category types~~ — **dropped** (human, 2026-10-18;
@@ -65,7 +66,8 @@ These are v2 features the app uses that v3 lacks today:
    close; hard delete with transfer rewrite (human, 2026-10-18;
    § Decided: deleting referenced accounts/categories)
 8. Server-side validation for from ≠ to (the client validates it
-   already). amount > 0 was added 2026-09-25.
+   already). amount > 0 was added 2026-09-25. from ≠ to is decided
+   (backend T6) but not built (2026-10-18).
 
 Each needs either a backend addition in v3 or an accepted product
 change. Decided **per feature**; this page is where that happens
@@ -141,7 +143,7 @@ commits, not pushed). The human cut the scope:
   description and `occurredAt` kept. Amount is R's side
   (`convertedAmount` if R was a cross-currency `to`). R's balance is
   unchanged.
-- `rollBack` on a rewritten row restores R's balance correctly.
+- Deleting (formerly `rollBack`) a rewritten row restores R's balance correctly.
 - **Client**: after `deleteAccount`, refetch accounts and transactions.
   Balances don't change, but R's former transfers change type
   (Transfer → Expense/Income).
@@ -174,6 +176,28 @@ commits, not pushed). Scope cut like `deleteAccount`:
 - **Client**: refetch transactions after a delete. "None"'s Delete
   button is already hidden (2026-10-18, on v2).
 
+## What's left (2026-10-18)
+
+From the backend agent `ledger-api-v3-14`, checked against v3 `main`.
+
+Backend gaps blocking app features:
+
+- No account rename or direct balance set (name and currency are
+  immutable) → blocks the account edit modal ([[Settings Screens]]).
+- No category rename → blocks the category edit modal.
+- from ≠ to (T6) decided, not built.
+- Duplicate account/category names return an untyped internal error;
+  `createAccount` doesn't validate the opening balance.
+- `patch*` can't clear `convertedAmount` (cross- → same-currency move
+  needs delete + re-create).
+- No v2 import or adjustment transaction (§ Data migration).
+- **Not pushed**: local v3 `main` is 27 commits ahead of origin (all
+  2026-10-18 work: deletes, `occurredAt`, `INVALID_DATE_TIME`, account
+  moves in patches). Deployed version unknown.
+- Endpoint host and Firebase issuer are deploy-time config, unconfirmed.
+
+App work (all of it; nothing migrated yet): the impact table above.
+
 ## Data migration
 
 - Plan: **manual migration in Postgres** by the human (2026-09-25). v3
@@ -190,14 +214,18 @@ commits, not pushed). Scope cut like `deleteAccount`:
   change), or when the account was created with a nonzero balance.
   Decide whether v3 keeps the v2 balance and records the difference as
   an opening adjustment.
-- Open mapping decisions: v2 dates (nowhere to store them); v2 `"-"`
+- v3 has no import: the only API route is `createAccount` with an
+  opening balance plus backdated creates. v2 dates map to `occurredAt`.
+- Open mapping decisions: v2 `"-"`
   descriptions (map to NULL?);
   the currency per account (v2 has
   none; the app assumes one cosmetic symbol).
 
 ## Error handling
 
-Transaction mutations now have typed codes (`CURRENCY_MISMATCH`,
-`NON_POSITIVE_AMOUNT`, `INVALID_TRANSACTION`, `RESOURCE_NOT_FOUND`), so
-the app can show specific toasts. Other mutations still need generic
-failure toasts ([[API v3]] § Errors, [[Notifications]]).
+Transaction mutations have typed codes (`CURRENCY_MISMATCH`,
+`NON_POSITIVE_AMOUNT`, `INVALID_TRANSACTION`, `INVALID_DATE_TIME`,
+`RESOURCE_NOT_FOUND`), so the app can show specific toasts.
+Account/category mutations only give `RESOURCE_NOT_FOUND` and
+`CATEGORY_UNDELETABLE`; anything else (e.g. duplicate name) needs a
+generic failure toast ([[API v3]] § Errors, [[Notifications]]).

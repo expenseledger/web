@@ -156,3 +156,12 @@ always move to "None"; deleting "None" fails with
 
 Category settings hide the delete ✕ for "None" (matched by name), which
 v3 refuses to delete. Touched [[Settings Screens]], [[API v3 Migration]].
+
+## [2026-10-18] ingest | v3 status recheck with backend agent
+
+Asked `ledger-api-v3-14` what v3 `main` covers. New: backdating via
+`occurredAt`; `patch*` replaced `updateTransaction`; `deleteTransaction`
+replaced `rollBack` (returns only the id); full error enum; 27 commits
+unpushed. Still missing: account/category rename, direct balance set,
+from ≠ to, import. Touched [[API v3 Migration]], [[API v3 Operations]],
+[[API v3 Data Model]], [[API v3]], [[Open Questions]].

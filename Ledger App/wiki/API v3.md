@@ -71,12 +71,12 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 - `first` is **required, max 50** (`TOO_MANY_ROWS` above that). There's
   **no totalCount**. Keep `first` constant while paging.
 - `sort: [{ property, direction }]` uses entity property names
-  (`committedAt`, `id`, `name`); the default is `id ASC`.
+  (`occurredAt`, `id`, `name`); the default is `id ASC`.
 
 ## Dates
 
-- `committedAt` is set by the server (`Instant.now()`), returned as an
-  ISO-8601 UTC string. The client can't set it.
+- `occurredAt` (was `committedAt`) is optional on creates and
+  `patch*`; returned as an ISO-8601 UTC string (2026-10-18).
 - Filter `fromDate`/`toDate` must be OffsetDateTime strings **with an
   offset** (`2026-09-01T00:00:00+07:00`). The server takes the calendar
   date in that offset, so `toDate` is inclusive through the end of that

@@ -53,13 +53,9 @@ stays `""`), with no max length. It's set only at creation. It was added
 by migration `V4__add_transaction_description.sql` (backend agent,
 2026-09-25; uncommitted at the time).
 
-**Removed vs v2:** any user-chosen date.
-`committedAt` is the server time at creation, so **backdating isn't
-possible**.
-
-`committedAt` was renamed `occurredAt` (migration V5; backend agent,
-2026-10-18). Whether it is now client-settable (backdating) is
-unconfirmed; other v3 pages still say `committedAt`.
+`committedAt` was renamed `occurredAt` (migration V5) and is
+client-settable on creates and `patch*`, so **backdating works**
+(backend agent, 2026-10-18). Filters and sort use it.
 
 ## Balance effects
 
@@ -68,10 +64,11 @@ These happen inside one DB transaction per mutation:
 - Expense: from −amount
 - Income: to +amount
 - Transfer: from −amount; to +(`convertedAmount` ?: amount)
-- `rollBack` runs the exact inverse, then hard-deletes the row
+- `deleteTransaction` (formerly `rollBack`) runs the exact inverse,
+  then hard-deletes the row; it returns only the id
 
-Mutation responses can return updated balances (select `from`/`to {
-balance }`), which suits [[Balance Sync]].
+Create and `patch*` responses can return updated balances (select
+`from`/`to { balance }`), which suits [[Balance Sync]].
 
 ## Deletion semantics
 

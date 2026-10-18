@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, data]
 sources: [src/lib/apollo.ts, src/lib/rr.ts]
-updated: 2026-09-25
+updated: 2026-10-19
 ---
 
 # Apollo Client
@@ -17,14 +17,17 @@ Defined in `src/lib/apollo.ts`; single default export used by the
   - `retryLink`: up to 5 attempts, queries only, exponential delay
     1 s·2^(n-1). **Placed after the terminating HttpLink, so it never
     runs** — see [[Known Issues]].
-- **Cache**: default `InMemoryCache`. Most queries use default fetch
+- **Cache**: `InMemoryCache` from `lib/apolloCache.ts` with
+  `possibleTypes` for the v3 `Transaction` interface (shared with the
+  tests' mock client). Most queries use default fetch
   policy; `listTransactions` uses `network-only` unless `useCache: true`
   (no caller passes it).
 
 ## Round-robin servers (`src/lib/rr.ts`)
 
 `VITE_SERVER_URL` may be a comma-separated list. Each request takes the
-next URL (module-level index) and appends `/graphql`. Simple client-side
+next URL (module-level index) and uses it as is (each entry is a full
+GraphQL endpoint; `/graphql` was appended before the v3 cutover). Simple client-side
 load balancing / failover-by-rotation.
 
 ## Error model

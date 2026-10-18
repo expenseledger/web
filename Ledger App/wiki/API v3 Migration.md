@@ -1,15 +1,15 @@
 ---
 type: synthesis
 tags: [migration, v3, planning]
-sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, src/, expense-ledger-api]
+sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, human 2026-10-19, src/, expense-ledger-api]
 updated: 2026-10-19
 ---
 
 # API v3 Migration
 
 What moving this app from API v2 ([[GraphQL API]]) to [[API v3]] would
-involve. Status: **information gathering**; decisions are recorded per feature
-below.
+involve. Status: **migrated** on branch `feature/api-v3` (2026-10-19,
+§ App migration); decisions are recorded per feature below.
 Combines the backend agent's answers (2026-09-25) with this repo's
 code.
 
@@ -40,7 +40,7 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 | [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `patchExpense`/`patchIncome`/`patchTransfer` (amount, date, category, description, accounts; not the type). Omit unchanged variables. Delete → `deleteTransaction` (returns only the id). One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
 | [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
 | [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Account delete cascades (warn the user; § Decided: deleting referenced accounts/categories). Currency picker → per-account currency |
-| [[State Management]] | `currencyState` (cosmetic) conflicts with real per-account currencies. IDs become strings |
+| [[State Management]] | Done: `currencyState` removed, currency per account, string IDs |
 | [[Balance Sync]] | Read balances from create/`patch*` responses (select `from`/`to { balance }`). Refetch after `deleteTransaction`, account/category deletes, and for an account a patch moved a transaction off |
 | [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/v3` |
 | [[GraphQL Codegen]] | Point at the v3 schema (`schema.graphqls`); regenerate; rewrite all documents |
@@ -221,7 +221,32 @@ By design (backend, confirmed by the human, 2026-10-19):
 - `patch*` can't clear `convertedAmount`: null means "unchanged". A
   cross- → same-currency move needs delete + re-create.
 
-App work (all of it; nothing migrated yet): the impact table above.
+App work: see § App migration.
+
+## App migration (2026-10-19)
+
+Scope picked by the human: full cutover on `feature/api-v3`, a currency
+per account (picked on create), tests against an in-memory v3 mock
+([[Build and Test]]), schema copied into the repo ([[GraphQL Codegen]]).
+
+Done in the cutover commit:
+
+- Every service and document on v3; string IDs; `Money` flattened to
+  `balance`/`amount` numbers plus `Account.currency`.
+- Bootstrap: `initializeUser`, then all accounts and categories (paged,
+  by name). Lists and reports page through `transactions` (`first` 50)
+  with local-offset dates and `toDate` inclusive.
+- Edits send only changed fields through `patch*`
+  (`buildTransactionPatch`); on the receiving side of a cross-currency
+  transfer the amount edit goes to `convertedAmount`.
+- Balances: from create/patch responses (`replaceAccounts`), a refetch
+  after `deleteTransaction`.
+- Services return `errorCode` (`extensions.code`) on failure.
+- Empty descriptions are sent as null, no longer `"-"`.
+
+Still to do on the app: account edit modal, category rename, error
+toasts per code, a converted-amount field for cross-currency transfers,
+one currency per report.
 
 ## Data migration
 

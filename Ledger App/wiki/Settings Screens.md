@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, settings]
 sources: [src/components/setting/AccountSetting.tsx, src/components/setting/CategorySetting.tsx, src/components/setting/PageSetting.tsx, src/components/bases/EditAndDeleteSetting.tsx, src/components/bases/TextBoxWithButton.tsx]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Settings Screens
@@ -14,9 +14,9 @@ Reached from [[Bottom Menu]] → Settings.
 - List via `EditAndDeleteSetting` with delete ✕ only. Its `modifyModal`
   (edit ✎) is optional; neither settings screen passes one since
   2026-10-18. Name + balance editing comes back with v3 ([[Account]]).
-- Currency picker (`฿ € $ ¥ ₩`) → `currencyState` ([[State Management]]).
-- Create: `TextBoxWithButton` (name only) → `createAccount`;
-  list re-sorted by name.
+- Create: `TextBoxWithButton` with a currency dropdown (THB/USD/EUR/
+  JPY) → `createAccount` with a zero balance; list re-sorted by name.
+  The global currency picker is gone (2026-10-19; [[State Management]]).
 
 ## Category (`/category/setting`)
 

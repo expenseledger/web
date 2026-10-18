@@ -2,13 +2,15 @@
 type: entity
 tags: [backend, api]
 sources: [codegen.ts, schema.graphql, src/service/model/gql/graphql.ts]
-updated: 2026-09-25
+updated: 2026-10-19
 ---
 
 # GraphQL API
 
-This page describes **API v2**, the backend the app uses today. A new
-backend, **API v3**, will replace it — see [[API v3 Migration]].
+This page describes **API v2**, which the app used until the v3
+cutover on branch `feature/api-v3` (2026-10-19). The app now talks to
+**API v3** ([[API v3]], [[API v3 Migration]]); this page is history
+until v2 is retired.
 
 Backend: **Postgraphile** over PostgreSQL; source and internals in
 [[API v2 Backend]]. Production
@@ -28,14 +30,10 @@ Core types: `Owner`, `Account`, `Category`, `Transaction` — see
 [[Account]], [[Category]], [[Transaction]]. All have `ownerId: String`,
 `createdAt`, `updatedAt`.
 
-## Two schema sources (important)
+## Schema sources
 
-- `codegen.ts` pulls the **remote** schema; generated types in
-  `src/service/model/gql/graphql.ts` are current (they include `transferV2`,
-  `createCategoryV2`, `update*`, `Category.type`).
-- `schema.graphql` in the repo root is **stale**: it lacks those
-  mutations and `Category.type`, and has old `transfer`/`createCategory`.
-  Don't trust it — see [[Known Issues]]. `.graphqlconfig` points IDE
-  tooling at it.
+Before the cutover, `codegen.ts` pulled the remote v2 schema and the
+root `schema.graphql` was a stale v2 copy. Since 2026-10-19
+`schema.graphql` is the **v3** schema ([[GraphQL Codegen]]).
 
 See [[GraphQL Codegen]] for regeneration.

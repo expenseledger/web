@@ -191,3 +191,14 @@ rows can't be patched at all. Touched [[API v3 Migration]],
 Backend human decided: no DB constraint for now; existing from = to
 transfers, if any, will be removed by a migration. Touched
 [[API v3 Migration]].
+
+## [2026-10-19] update | migrate the app to API v3
+
+Human picked a full cutover, per-account currency, a copied schema and
+an in-memory mock. Added `src/mock/mockV3.ts` and moved every service,
+document and screen to v3 on `feature/api-v3`. `VITE_SERVER_URL` is now
+the full endpoint. Found: Prettier breaks the `graphql()` lookup until
+codegen reruns. Touched [[API v3 Migration]], [[API v3]],
+[[GraphQL API]], [[GraphQL Codegen]], [[Build and Test]],
+[[State Management]], [[Settings Screens]], [[Apollo Client]],
+[[Environment Variables]], [[Bottom Menu]], [[Overview]].

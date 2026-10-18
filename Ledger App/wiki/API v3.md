@@ -7,9 +7,10 @@ updated: 2026-10-19
 
 # API v3
 
-The **new** backend (`ledger-api-v3`), not yet used by this app. The app
-runs on API v2 today ([[GraphQL API]]). Everything here comes from the
-backend agent (2026-09-25); paths are relative to `ledger-api-v3/`.
+The **new** backend (`ledger-api-v3`). The app uses it since the cutover
+on branch `feature/api-v3` (2026-10-19; [[API v3 Migration]]). Most of
+this page comes from the backend agent (2026-09-25); paths are relative
+to `ledger-api-v3/`.
 
 Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 [[API v3 Migration]]
@@ -27,7 +28,9 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   1.0.0, plus `latest` on main) → Kubernetes via a Helm chart kept
   elsewhere. DB credentials come from OpenBao/Vault.
 - Public endpoint: **`https://ledger.forestware.org/api/v3`** (human,
-  2026-09-25).
+  2026-09-25). The ingress maps it to the app's `/graphql`, so clients
+  use it as is, with no `/graphql` suffix (human via backend agent,
+  2026-10-19).
 - The backend repo has its own Obsidian wiki (`Ledger/wiki/`) with
   domain docs and decision records.
 

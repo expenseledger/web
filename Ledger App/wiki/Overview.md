@@ -2,7 +2,7 @@
 type: synthesis
 tags: [overview]
 sources: [README.md, package.json, src/components/App.tsx]
-updated: 2026-09-25
+updated: 2026-10-19
 ---
 
 # Overview
@@ -10,8 +10,10 @@ updated: 2026-09-25
 **Expense Ledger** (`expense-ledger-web`, v1.110.0) is a mobile-first PWA
 for tracking personal expenses, income, and transfers across multiple
 accounts, with monthly reports. This repo is the **frontend only**; the
-backend is a Postgraphile GraphQL API over PostgreSQL, hosted separately at
-`expense-ledger.forestware.org` (see [[GraphQL API]]).
+backend is API v3 (Spring for GraphQL over PostgreSQL) at
+`ledger.forestware.org/api/v3` since the cutover on `feature/api-v3`
+(2026-10-19; [[API v3]]). It replaces the Postgraphile API v2
+([[GraphQL API]]).
 
 ## Domain in one paragraph
 
@@ -24,7 +26,7 @@ account), or TRANSFER (between two). The server keeps each account's
 ## Architecture at a glance
 
 ```
-Firebase Auth ──ID token──▶ Apollo Client ──▶ Postgraphile /graphql
+Firebase Auth ──ID token──▶ Apollo Client ──▶ API v3 (GraphQL)
                                  ▲
 React pages ──▶ service layer ───┘      Jotai atoms (accounts, categories,
       │                                  settings) ◀── Layout bootstrap

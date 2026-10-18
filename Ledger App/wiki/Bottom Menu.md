@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, navigation]
 sources: [src/components/menu/Menu.tsx, src/components/bases/Drawer.tsx]
-updated: 2026-09-25
+updated: 2026-10-19
 ---
 
 # Bottom Menu
@@ -13,7 +13,7 @@ three tabs animated by `motion`:
 
 - **Home** → `/`.
 - **Accounts** → toggles a `Drawer` listing every [[Account]] balance and
-  the total (`totalAccountsBalanceState`), with a **Hide balance** switch
+  one total per currency (`totalBalancesByCurrencyState`), with a **Hide balance** switch
   (`isHideBalanceOnMenuState`, persisted).
 - **Settings** → toggles a `Drawer` with links to the
   [[Settings Screens]], **Sign out**, and the app version

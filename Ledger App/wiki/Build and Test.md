@@ -2,7 +2,7 @@
 type: ops
 tags: [tooling, testing]
 sources: [package.json, jest.config.json, babel.config.json, src/setupTests.ts, src/tests/, eslint.config.js, .prettierrc]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Build and Test
@@ -29,5 +29,12 @@ updated: 2026-10-18
 - Coverage: every base component ([[Base Components]]), `AccountCard`
   (snapshot), every service and helper. **No tests for screens**
   (Home, More, TransactionList, Report, Settings, Menu).
-- Service tests mock `src/lib/apollo` (`query`/`mutate` as `jest.fn()`)
-  and `common/utils.log` — follow this pattern for new services.
+- Service tests replace `src/lib/apollo` with `src/tests/mock/mockClient.ts`:
+  a real Apollo client on a `SchemaLink` (with validation) over the
+  in-memory API v3 in `src/mock/mockV3.ts`, so the real documents run
+  against the schema. Call `resetMockV3()` in `beforeEach`; spy on
+  `mockClient.query`/`mutate` to force failures. Also mock
+  `common/utils.log` (2026-10-19).
+- The mock (`src/mock/mockV3.ts`) follows the backend's rules: balances,
+  validation order, error codes, paging (≤ 50, offset cursors), and
+  whole-day date filters. Keep it in step with [[API v3]].

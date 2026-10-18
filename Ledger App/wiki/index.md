@@ -33,9 +33,9 @@ Schema/conventions: `../CLAUDE.md`.
 - [[Account]] — untyped, server-owned balance, no editing yet.
 - [[Category]] — untyped; every form lists every category.
 - [[Transaction]] — EXPENSE/INCOME/TRANSFER, sign convention, rules.
-- [[GraphQL API]] — API v2 (current): Postgraphile, stale local schema.
+- [[GraphQL API]] — API v2 (replaced by v3 on `feature/api-v3`): Postgraphile.
 - [[API v2 Backend]] — v2 server source: SQL functions, RLS, cascades.
-- [[API v3]] — new backend: stack, auth, init, errors, paging, dates.
+- [[API v3]] — backend the app uses: stack, auth, init, errors, paging, dates.
 - [[API v3 Data Model]] — Money, Account, Category, Transaction in v3.
 - [[API v3 Operations]] — v2 operation → v3 operation mapping.
 

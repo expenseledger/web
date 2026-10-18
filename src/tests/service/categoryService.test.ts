@@ -1,10 +1,5 @@
 import client from "../../lib/apollo";
-import {
-    createCategory,
-    deleteCategory,
-    getAllCategories,
-    updateCategory,
-} from "../../service/categoryService";
+import { createCategory, deleteCategory, getAllCategories } from "../../service/categoryService";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
@@ -21,7 +16,7 @@ jest.mock("../../common/utils", () => ({
 const mockClient = client as jest.Mocked<typeof client>;
 
 describe("categoryService", () => {
-    const serverCategory = { id: 1, name: "Food", type: "EXPENSE" };
+    const serverCategory = { id: 1, name: "Food" };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -64,7 +59,7 @@ describe("categoryService", () => {
                 data: { createCategoryV2: { category: serverCategory } },
             } as never);
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
+            const result = await createCategory({ name: "Food" });
 
             expect(result.addedCategory).toEqual(serverCategory);
         });
@@ -75,7 +70,7 @@ describe("categoryService", () => {
                 error: { message: "failed" },
             } as never);
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
+            const result = await createCategory({ name: "Food" });
 
             expect(result.addedCategory).toBeNull();
         });
@@ -83,7 +78,7 @@ describe("categoryService", () => {
         it("returns null on unexpected error", async () => {
             mockClient.mutate.mockRejectedValue(new Error("network"));
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
+            const result = await createCategory({ name: "Food" });
 
             expect(result.addedCategory).toBeNull();
         });
@@ -115,49 +110,6 @@ describe("categoryService", () => {
             const result = await deleteCategory({ id: 1 });
 
             expect(result.isSuccess).toBe(false);
-        });
-    });
-
-    describe("updateCategory", () => {
-        it("returns updated category on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { updateCategory: { category: serverCategory } },
-            } as never);
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toEqual(serverCategory);
-        });
-
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toBeNull();
-        });
-
-        it("returns null on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toBeNull();
         });
     });
 });

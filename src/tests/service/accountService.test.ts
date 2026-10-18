@@ -4,7 +4,6 @@ import {
     deleteAccount,
     getAccount,
     getAllAccount,
-    updateAccount,
 } from "../../service/accountService";
 
 jest.mock("../../lib/apollo", () => ({
@@ -22,7 +21,7 @@ jest.mock("../../common/utils", () => ({
 const mockClient = client as jest.Mocked<typeof client>;
 
 describe("accountService", () => {
-    const serverAccount = { id: 1, name: "Cash", balance: 100, type: "CASH" };
+    const serverAccount = { id: 1, name: "Cash", balance: 100 };
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -96,7 +95,7 @@ describe("accountService", () => {
                 data: { createAccount: { account: serverAccount } },
             } as never);
 
-            const result = await createAccount({ name: "Cash", type: "CASH" });
+            const result = await createAccount({ name: "Cash" });
 
             expect(result.account).toEqual(serverAccount);
         });
@@ -107,7 +106,7 @@ describe("accountService", () => {
                 error: { message: "failed" },
             } as never);
 
-            const result = await createAccount({ name: "Cash", type: "CASH" });
+            const result = await createAccount({ name: "Cash" });
 
             expect(result.account).toBeNull();
         });
@@ -115,7 +114,7 @@ describe("accountService", () => {
         it("returns null account on unexpected error", async () => {
             mockClient.mutate.mockRejectedValue(new Error("network"));
 
-            const result = await createAccount({ name: "Cash", type: "CASH" });
+            const result = await createAccount({ name: "Cash" });
 
             expect(result.account).toBeNull();
         });
@@ -147,49 +146,6 @@ describe("accountService", () => {
             const result = await deleteAccount({ id: 1 });
 
             expect(result.isSuccess).toBe(false);
-        });
-    });
-
-    describe("updateAccount", () => {
-        it("returns updated account on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { updateAccount: { account: serverAccount } },
-            } as never);
-
-            const result = await updateAccount({
-                id: 1,
-                name: "Cash",
-                type: "CASH",
-            });
-
-            expect(result.account).toEqual(serverAccount);
-        });
-
-        it("returns null account when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await updateAccount({
-                id: 1,
-                name: "Cash",
-                type: "CASH",
-            });
-
-            expect(result.account).toBeNull();
-        });
-
-        it("returns null account on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await updateAccount({
-                id: 1,
-                name: "Cash",
-                type: "CASH",
-            });
-
-            expect(result.account).toBeNull();
         });
     });
 });

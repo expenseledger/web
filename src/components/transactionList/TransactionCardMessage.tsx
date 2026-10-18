@@ -21,7 +21,6 @@ interface UpdateTransactionModalProps {
     category: Category;
     description: string;
     occurredAt: Date;
-    transactionType: TransactionType;
     onCancel: () => void;
     onConfirm: (
         amount: number,
@@ -116,9 +115,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                 <InputBox>
                     <Dropdown
                         className="column"
-                        options={categoryOptions
-                            .filter((c) => c.type === props.transactionType || c.type === "ANY")
-                            .map((c) => c.name)}
+                        options={categoryOptions.map((c) => c.name)}
                         updateSelectedValue={updateCategoryHandler}
                         defaultValue={props.category.name}
                     />
@@ -201,7 +198,6 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     category={props.category}
                     description={props.description}
                     occurredAt={props.occurredAt}
-                    transactionType={props.type}
                     onCancel={onCancelUpdateHandler}
                     onConfirm={onConfirmUpdateHandler}
                     triggerer={

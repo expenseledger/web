@@ -6,11 +6,11 @@ describe("transactoinHelper", () => {
             const date = "2024-06-15T10:00:00.000Z";
             const serverData = {
                 id: 42,
-                fromAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
+                fromAccount: { id: 1, name: "Cash", balance: 100 },
                 toAccount: null as any,
                 amount: 50,
                 type: "EXPENSE",
-                category: { id: 2, name: "Food", type: "EXPENSE" },
+                category: { id: 2, name: "Food" },
                 description: "Lunch",
                 date,
             };

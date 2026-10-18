@@ -1,9 +1,4 @@
-import {
-    allAccountTypes,
-    allCategoryTypes,
-    allTransactionType,
-    httpStatus,
-} from "../../service/constants";
+import { allTransactionType, httpStatus } from "../../service/constants";
 
 describe("constants", () => {
     it("exports http status codes", () => {
@@ -12,14 +7,6 @@ describe("constants", () => {
             internalServerError: 500,
             ok: 200,
         });
-    });
-
-    it("exports account types", () => {
-        expect(allAccountTypes).toEqual(["CASH", "BANK", "CREDIT"]);
-    });
-
-    it("exports category types", () => {
-        expect(allCategoryTypes).toEqual(["ANY", "INCOME", "EXPENSE", "TRANSFER"]);
     });
 
     it("exports transaction types", () => {

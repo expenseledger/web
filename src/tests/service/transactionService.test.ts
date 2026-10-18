@@ -25,11 +25,11 @@ const mockClient = client as jest.Mocked<typeof client>;
 
 const serverTransaction = {
     id: 1,
-    fromAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
+    fromAccount: { id: 1, name: "Cash", balance: 100 },
     toAccount: null as any,
     amount: 50,
     type: "EXPENSE",
-    category: { id: 2, name: "Food", type: "EXPENSE" },
+    category: { id: 2, name: "Food" },
     description: "Lunch",
     date: "2024-06-15T10:00:00.000Z",
 };
@@ -95,7 +95,7 @@ describe("transactionService", () => {
                 ...serverTransaction,
                 type: "INCOME",
                 fromAccount: null as any,
-                toAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
+                toAccount: { id: 1, name: "Cash", balance: 100 },
             };
 
             mockClient.mutate.mockResolvedValue({
@@ -136,7 +136,7 @@ describe("transactionService", () => {
             const transferTransaction = {
                 ...serverTransaction,
                 type: "TRANSFER",
-                toAccount: { id: 2, name: "Bank", type: "BANK", balance: 200 },
+                toAccount: { id: 2, name: "Bank", balance: 200 },
             };
 
             mockClient.mutate.mockResolvedValue({

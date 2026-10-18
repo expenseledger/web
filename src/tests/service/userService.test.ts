@@ -18,8 +18,8 @@ describe("userService", () => {
 
     describe("getUserData", () => {
         it("returns user categories and accounts on success", async () => {
-            const accounts = [{ id: 1, name: "Cash", type: "CASH", balance: 100 }];
-            const categories = [{ id: 2, name: "Food", type: "EXPENSE" }];
+            const accounts = [{ id: 1, name: "Cash", balance: 100 }];
+            const categories = [{ id: 2, name: "Food" }];
 
             mockClient.mutate.mockResolvedValue({
                 data: {

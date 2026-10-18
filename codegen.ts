@@ -9,6 +9,9 @@ const config: CodegenConfig = {
             presetConfig: {
                 fragmentMasking: false,
             },
+            config: {
+                scalars: { Cursor: "any", Datetime: "any" },
+            },
         },
     },
 };

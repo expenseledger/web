@@ -6,16 +6,13 @@ import {
     CreateAccountRequest,
     DeleteAccountRequest,
     GetAccountRequest,
-    UpdateAccountRequest,
 } from "./model/Requests/index";
 import {
     CreateAccountResponse,
     DeleteAccountResponse,
     GetAccountResponse,
     GetAllAccountResponse,
-    UpdateAccountResponse,
 } from "./model/Responses/index";
-import { AccountType } from "./model/gql/graphql";
 
 const GET_ALL_ACCOUNTS = graphql(`
     query GetAllAccounts {
@@ -24,7 +21,6 @@ const GET_ALL_ACCOUNTS = graphql(`
                 id
                 balance
                 name
-                type
             }
         }
     }
@@ -36,19 +32,18 @@ const GET_ACCOUNT_BY_ID = graphql(`
             id
             name
             balance
-            type
         }
     }
 `);
 
+// v2 requires a type; the app no longer uses it (API v3 has none).
 const CREATE_ACCOUNT = graphql(`
-    mutation CreateAccount($name: String!, $type: AccountType!) {
-        createAccount(input: { name: $name, type: $type, balance: 0.0 }) {
+    mutation CreateAccount($name: String!) {
+        createAccount(input: { name: $name, type: CASH, balance: 0.0 }) {
             account {
                 balance
                 id
                 name
-                type
             }
         }
     }
@@ -61,20 +56,6 @@ const DELETE_ACCOUNT_BY_ID = graphql(`
                 balance
                 id
                 name
-                type
-            }
-        }
-    }
-`);
-
-const UPDATE_ACCOUNT_BY_ID = graphql(`
-    mutation UpdateAccount($id: Int!, $name: String!, $type: AccountType!) {
-        updateAccount(input: { id: $id, name: $name, type: $type }) {
-            account {
-                balance
-                id
-                name
-                type
             }
         }
     }
@@ -84,7 +65,6 @@ export const accountFragment = graphql(`
     fragment PlainAccount on Account {
         id
         name
-        type
         balance
     }
 `);
@@ -150,7 +130,6 @@ export async function createAccount(request: CreateAccountRequest): Promise<Crea
             mutation: CREATE_ACCOUNT,
             variables: {
                 name: request.name,
-                type: request.type as AccountType,
             },
         });
 
@@ -199,37 +178,6 @@ export async function deleteAccount(request: DeleteAccountRequest): Promise<Dele
 
         return {
             isSuccess: false,
-        };
-    }
-}
-
-export async function updateAccount(request: UpdateAccountRequest): Promise<UpdateAccountResponse> {
-    try {
-        const response = await client.mutate({
-            mutation: UPDATE_ACCOUNT_BY_ID,
-            variables: {
-                id: request.id,
-                name: request.name,
-                type: request.type as AccountType,
-            },
-        });
-
-        if (response.error) {
-            log(`Cannot update account`, response.error);
-
-            return {
-                account: null,
-            };
-        }
-
-        return {
-            account: mapAccountFromServer(response.data.updateAccount.account),
-        };
-    } catch (err) {
-        log("cannot update account, unexpected error", err);
-
-        return {
-            account: null,
         };
     }
 }

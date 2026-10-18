@@ -1,24 +1,17 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { CategoryType } from "./constants";
-import { CategoryType as CategorytypeGql } from "./model/gql/graphql";
 import Category from "./model/Category";
 import { graphql } from "./model/gql";
 import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
-import { UpdateCategoryRequest } from "./model/Requests/index";
-import {
-    CreateCategoryResponse,
-    DeleteCategoryResponse,
-    UpdateCategoryResponse,
-} from "./model/Responses/index";
+import { CreateCategoryResponse, DeleteCategoryResponse } from "./model/Responses/index";
 
+// v2 requires a type; ANY shows the category in every transaction form.
 const CREATE_CATEGORY = graphql(`
-    mutation CreateCategory($name: String!, $type: CategoryType!) {
-        createCategoryV2(input: { name: $name, type: $type }) {
+    mutation CreateCategory($name: String!) {
+        createCategoryV2(input: { name: $name, type: ANY }) {
             category {
                 id
                 name
-                type
             }
         }
     }
@@ -32,20 +25,8 @@ const DELETE_CATEGORY = graphql(`
                     nodes {
                         id
                         name
-                        type
                     }
                 }
-            }
-        }
-    }
-`);
-const UPDATE_CATEGORY = graphql(`
-    mutation UpdateCategory($id: Int!, $name: String!, $type: CategoryType!) {
-        updateCategory(input: { id: $id, name: $name, type: $type }) {
-            category {
-                id
-                name
-                type
             }
         }
     }
@@ -57,7 +38,6 @@ const GET_ALL_CATEGORIES = graphql(`
             nodes {
                 id
                 name
-                type
             }
         }
     }
@@ -67,7 +47,6 @@ export const categoryFragment = graphql(`
     fragment PlainCategory on Category {
         id
         name
-        type
     }
 `);
 
@@ -101,7 +80,6 @@ export async function createCategory(
             mutation: CREATE_CATEGORY,
             variables: {
                 name: request.name,
-                type: request.type as CategorytypeGql,
             },
         });
 
@@ -151,43 +129,6 @@ export async function deleteCategory(
 
         return {
             isSuccess: false,
-        };
-    }
-}
-
-export async function updateCategory(
-    request: UpdateCategoryRequest
-): Promise<UpdateCategoryResponse> {
-    try {
-        const response = await client.mutate({
-            mutation: UPDATE_CATEGORY,
-            variables: {
-                id: request.id,
-                name: request.name,
-                type: request.type as CategorytypeGql,
-            },
-        });
-
-        if (response.error) {
-            log("Cannot update category", response.error);
-
-            return {
-                updatedCategory: null,
-            };
-        }
-
-        return {
-            updatedCategory: {
-                id: response.data.updateCategory.category.id,
-                name: response.data.updateCategory.category.name,
-                type: response.data.updateCategory.category.type as CategoryType,
-            },
-        };
-    } catch (err) {
-        log("cannot update category, unexpected error", err);
-
-        return {
-            updatedCategory: null,
         };
     }
 }

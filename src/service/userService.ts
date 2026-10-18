@@ -10,7 +10,6 @@ const CURRENT_USER = graphql(`
                     nodes {
                         id
                         name
-                        type
                         balance
                     }
                 }
@@ -18,7 +17,6 @@ const CURRENT_USER = graphql(`
                     nodes {
                         id
                         name
-                        type
                     }
                 }
             }

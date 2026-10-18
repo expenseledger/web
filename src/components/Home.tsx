@@ -243,9 +243,7 @@ const Home: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={categories
-                                .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
-                                .map((c) => c.name)}
+                            options={categories.map((c) => c.name)}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

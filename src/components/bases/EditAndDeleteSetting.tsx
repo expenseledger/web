@@ -11,13 +11,13 @@ export interface Item {
 
 export interface EditAndDelteSettingProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    modifyModal?: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     items: Item[];
 }
 
 interface ItemBoxProps {
     deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    modifyModal?: (id: number, triggerer: React.ReactElement) => React.ReactElement;
     item: Item;
 }
 
@@ -65,14 +65,16 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         return (
             <Flex>
-                <Text mr="1" color={color.primary as any}>
-                    {props.modifyModal(
-                        props.item.id,
-                        <Text mr="1" color={color.primary as any}>
-                            <Pencil1Icon />
-                        </Text>
-                    )}
-                </Text>
+                {props.modifyModal ? (
+                    <Text mr="1" color={color.primary as any}>
+                        {props.modifyModal(
+                            props.item.id,
+                            <Text mr="1" color={color.primary as any}>
+                                <Pencil1Icon />
+                            </Text>
+                        )}
+                    </Text>
+                ) : null}
                 <Text color="red">
                     <Cross2Icon onClick={onDeleteHandler} />
                 </Text>

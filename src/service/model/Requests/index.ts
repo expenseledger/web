@@ -1,6 +1,3 @@
-import type { AccountType } from "../../constants";
-import type { CategoryType } from "./../../constants";
-
 // Transaction
 interface AddTransactionRequest {
     amount: number;
@@ -35,22 +32,15 @@ export interface DeleteTranactionRequest {
 // Category
 export interface CreateCategoryRequest {
     name: string;
-    type: CategoryType;
 }
 
 export interface DeleteCategoryRequest {
     id: number;
 }
-export interface UpdateCategoryRequest {
-    id: number;
-    name: string;
-    type: CategoryType;
-}
 
 // Account
 export interface CreateAccountRequest {
     name: string;
-    type: AccountType;
 }
 
 export interface GetAccountRequest {
@@ -59,12 +49,6 @@ export interface GetAccountRequest {
 
 export interface DeleteAccountRequest {
     id: number;
-}
-
-export interface UpdateAccountRequest {
-    id: number;
-    name: string;
-    type: AccountType;
 }
 
 // Transaction

@@ -310,19 +310,6 @@ const More: React.FC = () => {
         setIsLoading(false);
     };
 
-    const getCategoriesByTransactionType = () => {
-        const transactionTypeIdx = transactionTypeTabActive.findIndex((x) => x === true);
-
-        switch (transactionTypes[transactionTypeIdx]) {
-            case "EXPENSE":
-                return categories.filter((c) => c.type === "ANY" || c.type === "EXPENSE");
-            case "INCOME":
-                return categories.filter((c) => c.type === "ANY" || c.type === "INCOME");
-            case "TRANSFER":
-                return categories.filter((c) => c.type === "ANY" || c.type === "TRANSFER");
-        }
-    };
-
     const renderAccountSection = () => {
         const isTransfer = transactionTypeTabActive[2];
         const render = (
@@ -445,7 +432,7 @@ const More: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={getCategoriesByTransactionType().map((x) => x.name)}
+                            options={categories.map((x) => x.name)}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

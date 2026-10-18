@@ -2,22 +2,22 @@
 type: ops
 tags: [tooling, testing]
 sources: [package.json, jest.config.json, babel.config.json, src/setupTests.ts, src/tests/, eslint.config.js, .prettierrc]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # Build and Test
 
 | Task | Command |
 |---|---|
-| Dev server (port 3000, opens browser) | `yarn start` |
-| Type-check | `yarn compile` |
-| Prod build (`tsc && vite build` → `build/`) | `yarn build` |
-| Preview build | `yarn preview` |
-| Tests | `yarn test` / `yarn jest path/to/file.test.tsx` / `-t "name"` |
-| Lint / fix | `yarn lint` / `yarn lint:fix` (ESLint on `./src/`) |
-| Format | `yarn format` (Prettier) |
-| Regenerate GraphQL types | `yarn gen-gql-model` — [[GraphQL Codegen]] |
-| Release | `yarn release` (release-it) — [[CI and Deployment]] |
+| Dev server (port 3000, opens browser) | `npm start` |
+| Type-check | `npm run compile` |
+| Prod build (`tsc && vite build` → `build/`) | `npm run build` |
+| Preview build | `npm run preview` |
+| Tests | `npm test` / `npx jest path/to/file.test.tsx` / `-t "name"` |
+| Lint / fix | `npm run lint` / `npm run lint:fix` (ESLint on `./src/`) |
+| Format | `npm run format` (Prettier) |
+| Regenerate GraphQL types | `npm run gen-gql-model` — [[GraphQL Codegen]] |
+| Release | `npm run release` (release-it) — [[CI and Deployment]] |
 
 ## Tests
 

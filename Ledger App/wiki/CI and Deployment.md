@@ -2,18 +2,18 @@
 type: ops
 tags: [ci, deployment]
 sources: [.github/workflows/, .release-it.json]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # CI and Deployment
 
-Hosting: **Vercel** (via `yarn dlx vercel`). GitHub Actions, Node 26:
+Hosting: **Vercel** (via `npx vercel`). GitHub Actions, Node 26:
 
 | Workflow | Trigger | Does |
 |---|---|---|
-| `pull_request.yml` | PR to `main`, manual | `yarn install`, `yarn build`, `yarn test` |
+| `pull_request.yml` | PR to `main`, manual | `npm ci`, `npm run build`, `npm test` |
 | `deploy_preview.yml` | PR comment containing `/deploy` | Calls `deploy.yml` (preview); bot comments the preview URL |
-| `release.yml` | Manual only | `yarn release --ci -- minor`, then production deploy |
+| `release.yml` | Manual only | `npm run release -- --ci -- minor`, then production deploy |
 | `deploy.yml` | Reusable / manual | Preview or `--prod` Vercel deploy |
 
 ## Releases

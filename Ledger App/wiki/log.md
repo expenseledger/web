@@ -121,6 +121,21 @@ payload; Leave dropped for accounts; in-place transfer rewrite. Noted
 the `committedAt` → `occurredAt` rename (V5). Touched
 [[API v3 Migration]], [[API v3 Data Model]], [[Open Questions]].
 
+## [2026-10-18] update | switch from Yarn to npm
+
+Replaced Yarn 4 with npm: `package-lock.json` (seeded from yarn's tree,
+same versions), `.npmrc` with `legacy-peer-deps`, CI uses `npm ci` and
+`npx vercel`. Touched [[Tech Stack]], [[Build and Test]],
+[[CI and Deployment]], [[GraphQL Codegen]].
+
+## [2026-10-18] update | resolve peer dependency conflicts
+
+Dropped `legacy-peer-deps`. Human decisions: keep `react-firebaseui`
+via `overrides`; replace eslint-plugin-react with `@eslint-react`;
+downgrade graphql to 16. Also aliased `typescript` to the TS 6 API
+package and swapped `react-spring` for `@react-spring/web`. Lint works
+again. Touched [[Tech Stack]], [[Authentication]], [[Home Screen]].
+
 ## [2026-10-18] update | deleteAccount with history implemented
 
 Backend agent: implemented (local, not pushed) with a cut scope.

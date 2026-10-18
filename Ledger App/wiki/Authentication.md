@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, auth]
 sources: [src/lib/firebase.ts, src/components/hoc/WithAuthProtection.tsx, src/components/signIn/SignIn.tsx, src/lib/apollo.ts]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # Authentication
@@ -15,7 +15,8 @@ env vars ([[Environment Variables]]). Only `apiKey`, `authDomain`,
 ## Sign-in
 
 [[Sign In Screen]] uses `react-firebaseui` (`StyledFirebaseAuth`) with
-Email and Google providers, popup flow. `onAuthStateChanged` navigates to
+Email and Google providers, popup flow. It doesn't support React 19 or
+Firebase 12; `overrides` in `package.json` force it to install. `onAuthStateChanged` navigates to
 `/` once a user exists.
 
 ## Guarding routes

@@ -7,8 +7,7 @@ updated: 2026-10-18
 
 # GraphQL Codegen
 
-- Command: `yarn gen-gql-model` (`graphql-codegen`; `npx graphql-codegen`
-  without yarn).
+- Command: `npm run gen-gql-model` (`graphql-codegen`).
 - Config `codegen.ts`: schema = remote production endpoint
   ([[GraphQL API]]); documents = `src/**/*.ts` (so only `.ts` files are
   scanned — operations must live in services, not `.tsx`); preset

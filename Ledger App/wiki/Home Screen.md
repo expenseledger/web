@@ -11,7 +11,7 @@ Route `/`. The fast path: **add an expense** in a few taps.
 
 - **Account carousel**: Swiper (loop, pagination) of `AccountCard`s. Only
   the selected card shows its balance (others animate to 0 via
-  react-spring). Initial slide = `backToHomeParam.accountId` if present
+  `@react-spring/web`). Initial slide = `backToHomeParam.accountId` if present
   ([[Routing and Layout]]).
 - Links for the selected account: **Transactions** →
   [[Transaction List Screen]], **Report** → [[Report Screen]] (passes

@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Category.ts, src/service/constants.ts, src/service/categoryService.ts]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Category
@@ -15,7 +15,8 @@ interface Category { id: number; name: string }
   every category. v2 still stores ANY/INCOME/EXPENSE/TRANSFER; created
   via `createCategoryV2` with a hardcoded `ANY` (the stale local schema
   has only v1 — see [[GraphQL API]]). API v3 has no category type.
-- No rename for now; the human will reimplement it on v3.
+- No rename for now; the human will reimplement it on v3 with
+  `patchCategory` (available 2026-10-19; [[API v3 Operations]]).
 - Reports group by category name ([[Report Screen]]).
 - Deleting a category **cascade-deletes its transactions without
   reversing balances**, so account balances drift from history

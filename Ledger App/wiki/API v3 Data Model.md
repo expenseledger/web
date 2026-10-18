@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3, domain]
 sources: [backend agent 2026-09-25]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # API v3 Data Model
@@ -78,7 +78,11 @@ Create and `patch*` responses can return updated balances (select
 - `deleteCategory` is a hard delete that first moves its transactions
   to the user's "None" category (no balance changes). Deleting "None"
   (matched by name) is refused with `BAD_REQUEST` /
-  `CATEGORY_UNDELETABLE` (2026-10-18; [[API v3 Migration]]).
+  `CATEGORY_PROTECTED` (renamed from `CATEGORY_UNDELETABLE` 2026-10-19;
+  also refuses renaming "None"; [[API v3 Migration]]).
+- Account and category names are unique per user (`NAME_TAKEN`).
+  `patchAccount` can rename and set the balance directly;
+  `patchCategory` can rename (2026-10-19).
 
 ## IDs
 

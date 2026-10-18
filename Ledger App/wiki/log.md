@@ -165,3 +165,15 @@ replaced `rollBack` (returns only the id); full error enum; 27 commits
 unpushed. Still missing: account/category rename, direct balance set,
 from ≠ to, import. Touched [[API v3 Migration]], [[API v3 Operations]],
 [[API v3 Data Model]], [[API v3]], [[Open Questions]].
+
+## [2026-10-19] ingest | v3 expectations check with backend agent
+
+Sent `ledger-api-v3-d0` our expectations. Done: `patchAccount` (rename,
+direct balance set), `patchCategory` (rename), `NAME_TAKEN`;
+`CATEGORY_UNDELETABLE` renamed `CATEGORY_PROTECTED`. By design (human
+confirmed): no opening balance validation (overdraft allowed), and
+`convertedAmount` can't be cleared. 56 commits unpushed;
+issuer must come from env. from ≠ to in progress by another agent.
+Touched [[API v3 Migration]], [[API v3 Operations]],
+[[API v3 Data Model]], [[API v3]], [[Open Questions]], [[Account]],
+[[Category]].

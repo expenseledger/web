@@ -1,8 +1,8 @@
 ---
 type: synthesis
 tags: [migration, v3, planning]
-sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, src/, expense-ledger-api]
-updated: 2026-10-18
+sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, src/, expense-ledger-api]
+updated: 2026-10-19
 ---
 
 # API v3 Migration
@@ -18,7 +18,8 @@ code.
 - Money objects replace plain numbers
 - No account or category types
 - Custom transaction date via `occurredAt` (2026-10-18; description added 2026-09-25)
-- No account/category update mutations (transactions: `patch*`, 2026-10-05)
+- Updates via `patch*`: transactions (2026-10-05), accounts and
+  categories (`patchAccount`/`patchCategory`, 2026-10-19)
 - Hard deletes (no longer blocked while referenced, 2026-10-18)
 - `initializeUser` replaces `currentUser`
 - Renamed mutations
@@ -61,7 +62,8 @@ These are v2 features the app uses that v3 lacks today:
    (human, 2026-10-04; § Decided: month navigation)
 5. ~~Account/category types~~ — **dropped** (human, 2026-10-18;
    § Decided: types)
-6. Renaming accounts/categories
+6. ~~Renaming accounts/categories~~ — **done**: `patchAccount`,
+   `patchCategory` (backend agent `ledger-api-v3-d0`, 2026-10-19)
 7. ~~Closing accounts that have history~~ — **decided**: no soft
    close; hard delete with transfer rewrite (human, 2026-10-18;
    § Decided: deleting referenced accounts/categories)
@@ -171,30 +173,46 @@ commits, not pushed). Scope cut like `deleteAccount`:
   amount, accounts, description and `occurredAt`; no balance changes.
   Picking a target is a possible future feature.
 - Deleting "None" (matched by name) is refused: `BAD_REQUEST`,
-  `extensions.code` `CATEGORY_UNDELETABLE`. Unknown or not-owned id →
+  `extensions.code` `CATEGORY_PROTECTED` (was `CATEGORY_UNDELETABLE`
+  until 2026-10-19; it also refuses renaming "None"). Unknown or not-owned id →
   `RESOURCE_NOT_FOUND`.
 - **Client**: refetch transactions after a delete. "None"'s Delete
   button is already hidden (2026-10-18, on v2).
 
-## What's left (2026-10-18)
+## What's left (2026-10-19)
 
-From the backend agent `ledger-api-v3-14`, checked against v3 `main`.
+From the backend agent `ledger-api-v3-d0`, checked against local v3
+`main` (2026-10-19).
 
-Backend gaps blocking app features:
+Done since 2026-10-18:
 
-- No account rename or direct balance set (name and currency are
-  immutable) → blocks the account edit modal ([[Settings Screens]]).
-- No category rename → blocks the category edit modal.
-- from ≠ to (T6) decided, not built.
-- Duplicate account/category names return an untyped internal error;
-  `createAccount` doesn't validate the opening balance.
-- `patch*` can't clear `convertedAmount` (cross- → same-currency move
-  needs delete + re-create).
-- No v2 import or adjustment transaction (§ Data migration).
-- **Not pushed**: local v3 `main` is 27 commits ahead of origin (all
-  2026-10-18 work: deletes, `occurredAt`, `INVALID_DATE_TIME`, account
-  moves in patches). Deployed version unknown.
-- Endpoint host and Firebase issuer are deploy-time config, unconfirmed.
+- `patchAccount(id, name?, balance: MoneyInput?): Account!`: rename,
+  and set the balance directly (no transaction). Currency is fixed;
+  another currency → `CURRENCY_MISMATCH`.
+- `patchCategory(id, name?): Category!`: rename. "None" →
+  `CATEGORY_PROTECTED`.
+- Duplicate account/category names (create or patch) → `NAME_TAKEN`.
+
+Backend gaps:
+
+- from ≠ to (T6): being built by another agent (2026-10-19).
+- No v2 import or adjustment transaction; not needed (manual Postgres
+  migration, § Data migration).
+- **Not pushed**: local v3 `main` is 56 commits ahead of `origin/main`
+  (`a44ea45`, only tag `v1.0.0`). Deployed version unknown; the human
+  must confirm push and deploy.
+- Firebase issuer isn't in `application.yaml`: it must come from env
+  (`SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=
+  https://securetoken.google.com/expense-ledger-a0aa2`) in the Helm
+  values. Unverified, as is the endpoint host.
+
+By design (backend, confirmed by the human, 2026-10-19):
+
+- `createAccount` doesn't validate the opening balance: overdraft is
+  allowed, so negative balances are valid (backend ADR 0005). No error
+  code.
+- `patch*` can't clear `convertedAmount`: null means "unchanged". A
+  cross- → same-currency move needs delete + re-create.
 
 App work (all of it; nothing migrated yet): the impact table above.
 
@@ -226,6 +244,6 @@ App work (all of it; nothing migrated yet): the impact table above.
 Transaction mutations have typed codes (`CURRENCY_MISMATCH`,
 `NON_POSITIVE_AMOUNT`, `INVALID_TRANSACTION`, `INVALID_DATE_TIME`,
 `RESOURCE_NOT_FOUND`), so the app can show specific toasts.
-Account/category mutations only give `RESOURCE_NOT_FOUND` and
-`CATEGORY_UNDELETABLE`; anything else (e.g. duplicate name) needs a
-generic failure toast ([[API v3]] § Errors, [[Notifications]]).
+Account/category mutations give `RESOURCE_NOT_FOUND`,
+`CATEGORY_PROTECTED`, `NAME_TAKEN` and (balance) `CURRENCY_MISMATCH`;
+anything else needs a generic failure toast ([[API v3]] § Errors, [[Notifications]]).

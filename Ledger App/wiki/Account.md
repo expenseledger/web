@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Account.ts, src/service/constants.ts, src/service/accountService.ts, src/components/setting/AccountSetting.tsx]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Account
@@ -30,7 +30,8 @@ interface Account { id: number; name: string; balance: number }
   removed with the type. The human will reimplement name + balance
   editing on v3. Planned: setting a balance changes the account's balance
   **directly**, not via an "Adjust balance" transaction (the v2 app
-  posted a phantom INCOME/EXPENSE under category "Other").
+  posted a phantom INCOME/EXPENSE under category "Other"). v3's
+  `patchAccount` supports both (2026-10-19; [[API v3 Operations]]).
 - Home shows accounts as a swipeable card carousel (6 gradient colors
   cycling by index) — [[Home Screen]].
 

@@ -5,20 +5,20 @@ import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
 import { color } from "../../common/constants";
 
 export interface Item {
-    id: number;
+    id: string;
     name: string;
     undeletable?: boolean;
 }
 
 export interface EditAndDelteSettingProps {
-    deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal?: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    modifyModal?: (id: string, triggerer: React.ReactElement) => React.ReactElement;
     items: Item[];
 }
 
 interface ItemBoxProps {
-    deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal?: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    modifyModal?: (id: string, triggerer: React.ReactElement) => React.ReactElement;
     item: Item;
 }
 

@@ -8,4 +8,13 @@ export const allTransactionType: TransactionType[] = ["EXPENSE", "INCOME", "TRAN
 
 export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";
 
-export type Currency = "฿" | "€";
+export type Currency = "THB" | "USD" | "EUR" | "JPY";
+
+export const allCurrencies: Currency[] = ["THB", "USD", "EUR", "JPY"];
+
+export const currencySymbols: Record<Currency, string> = {
+    THB: "฿",
+    USD: "$",
+    EUR: "€",
+    JPY: "¥",
+};

@@ -31,8 +31,8 @@ const CategorySetting: React.FC = () => {
         addNotification("Create category successful", "success");
     };
 
-    const removeCategoryHandler = async (id: string | number) => {
-        const response = await deleteCategory({ id: id as number });
+    const removeCategoryHandler = async (id: string) => {
+        const response = await deleteCategory({ id });
 
         if (!response.isSuccess) {
             addNotification("Delete category failed", "danger");

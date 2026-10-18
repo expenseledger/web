@@ -1,56 +1,111 @@
-import client from "../../lib/apollo";
 import {
     createAccount,
     deleteAccount,
     getAccount,
     getAllAccount,
+    patchAccount,
 } from "../../service/accountService";
+import { mockClient, resetMockV3 } from "../mock/mockClient";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
-    default: {
-        query: jest.fn(),
-        mutate: jest.fn(),
-    },
+    default: jest.requireActual("../mock/mockClient").mockClient,
 }));
 
 jest.mock("../../common/utils", () => ({
     log: jest.fn(),
 }));
 
-const mockClient = client as jest.Mocked<typeof client>;
-
 describe("accountService", () => {
-    const serverAccount = { id: 1, name: "Cash", balance: 100 };
+    beforeEach(async () => {
+        jest.restoreAllMocks();
+        await resetMockV3();
+    });
 
-    beforeEach(() => {
-        jest.clearAllMocks();
+    describe("createAccount", () => {
+        it("creates an account with a zero balance in the given currency", async () => {
+            const result = await createAccount({ name: "Cash", currency: "JPY" });
+
+            expect(result.account).toEqual({
+                id: expect.any(String),
+                name: "Cash",
+                balance: 0,
+                currency: "JPY",
+            });
+        });
+
+        it("returns the error code of a taken name", async () => {
+            await createAccount({ name: "Cash", currency: "THB" });
+
+            const result = await createAccount({ name: "Cash", currency: "THB" });
+
+            expect(result).toEqual({ account: null, errorCode: "NAME_TAKEN" });
+        });
+
+        it("returns null on an unexpected error", async () => {
+            jest.spyOn(mockClient, "mutate").mockRejectedValueOnce(new Error("network"));
+
+            const result = await createAccount({ name: "Cash", currency: "THB" });
+
+            expect(result.account).toBeNull();
+        });
+    });
+
+    describe("patchAccount", () => {
+        it("renames the account and sets its balance", async () => {
+            const { account } = await createAccount({ name: "Cash", currency: "THB" });
+
+            const result = await patchAccount({
+                id: account.id,
+                name: "Wallet",
+                balance: { amount: 12.5, currency: "THB" },
+            });
+
+            expect(result.account).toEqual({ ...account, name: "Wallet", balance: 12.5 });
+        });
+
+        it("returns the error code of a balance in another currency", async () => {
+            const { account } = await createAccount({ name: "Cash", currency: "THB" });
+
+            const result = await patchAccount({
+                id: account.id,
+                balance: { amount: 1, currency: "USD" },
+            });
+
+            expect(result).toEqual({ account: null, errorCode: "CURRENCY_MISMATCH" });
+        });
+    });
+
+    describe("deleteAccount", () => {
+        it("deletes the account", async () => {
+            const { account } = await createAccount({ name: "Cash", currency: "THB" });
+
+            const result = await deleteAccount({ id: account.id });
+
+            expect(result.isSuccess).toBe(true);
+            expect((await getAllAccount()).accounts).toEqual([]);
+        });
+
+        it("returns the error code of an unknown account", async () => {
+            const result = await deleteAccount({ id: "999" });
+
+            expect(result).toEqual({ isSuccess: false, errorCode: "RESOURCE_NOT_FOUND" });
+        });
     });
 
     describe("getAllAccount", () => {
-        it("returns mapped accounts on success", async () => {
-            mockClient.query.mockResolvedValue({
-                data: { accounts: { nodes: [serverAccount] } },
-            } as never);
+        it("pages through more than 50 accounts", async () => {
+            for (let i = 0; i < 52; i++) {
+                await createAccount({ name: `Account ${i}`, currency: "THB" });
+            }
 
             const result = await getAllAccount();
 
-            expect(result.accounts).toEqual([serverAccount]);
+            expect(result.accounts).toHaveLength(52);
         });
 
-        it("returns empty accounts when response has error", async () => {
-            mockClient.query.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await getAllAccount();
-
-            expect(result.accounts).toEqual([]);
-        });
-
-        it("returns empty accounts on unexpected error", async () => {
-            mockClient.query.mockRejectedValue(new Error("network"));
+        it("returns no accounts on an unexpected error", async () => {
+            jest.spyOn(mockClient, "query").mockRejectedValueOnce(new Error("network"));
 
             const result = await getAllAccount();
 
@@ -59,93 +114,14 @@ describe("accountService", () => {
     });
 
     describe("getAccount", () => {
-        it("returns mapped account on success", async () => {
-            mockClient.query.mockResolvedValue({
-                data: { account: serverAccount },
-            } as never);
+        it("returns the account", async () => {
+            const { account } = await createAccount({ name: "Cash", currency: "THB" });
 
-            const result = await getAccount({ id: 1 });
-
-            expect(result.account).toEqual(serverAccount);
+            expect((await getAccount({ id: account.id })).account).toEqual(account);
         });
 
-        it("returns null account when response has error", async () => {
-            mockClient.query.mockResolvedValue({
-                data: null,
-                error: { message: "not found" },
-            } as never);
-
-            const result = await getAccount({ id: 99 });
-
-            expect(result.account).toBeNull();
-        });
-
-        it("returns null account on unexpected error", async () => {
-            mockClient.query.mockRejectedValue(new Error("network"));
-
-            const result = await getAccount({ id: 1 });
-
-            expect(result.account).toBeNull();
-        });
-    });
-
-    describe("createAccount", () => {
-        it("returns created account on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { createAccount: { account: serverAccount } },
-            } as never);
-
-            const result = await createAccount({ name: "Cash" });
-
-            expect(result.account).toEqual(serverAccount);
-        });
-
-        it("returns null account when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await createAccount({ name: "Cash" });
-
-            expect(result.account).toBeNull();
-        });
-
-        it("returns null account on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await createAccount({ name: "Cash" });
-
-            expect(result.account).toBeNull();
-        });
-    });
-
-    describe("deleteAccount", () => {
-        it("returns success on successful deletion", async () => {
-            mockClient.mutate.mockResolvedValue({ data: {} } as never);
-
-            const result = await deleteAccount({ id: 1 });
-
-            expect(result.isSuccess).toBe(true);
-        });
-
-        it("returns failure when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await deleteAccount({ id: 1 });
-
-            expect(result.isSuccess).toBe(false);
-        });
-
-        it("returns failure on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await deleteAccount({ id: 1 });
-
-            expect(result.isSuccess).toBe(false);
+        it("returns null for an unknown account", async () => {
+            expect((await getAccount({ id: "999" })).account).toBeNull();
         });
     });
 });

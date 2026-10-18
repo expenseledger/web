@@ -1,49 +1,60 @@
-import client from "../../lib/apollo";
+import { createAccount } from "../../service/accountService";
+import { createCategory } from "../../service/categoryService";
 import { getUserData } from "../../service/userService";
+import { mockClient, resetMockV3 } from "../mock/mockClient";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
-    default: {
-        query: jest.fn(),
-        mutate: jest.fn(),
-    },
+    default: jest.requireActual("../mock/mockClient").mockClient,
 }));
 
-const mockClient = client as jest.Mocked<typeof client>;
+jest.mock("../../common/utils", () => ({
+    log: jest.fn(),
+}));
 
 describe("userService", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+    beforeEach(async () => {
+        jest.restoreAllMocks();
+        await resetMockV3();
     });
 
     describe("getUserData", () => {
-        it("returns user categories and accounts on success", async () => {
-            const accounts = [{ id: 1, name: "Cash", balance: 100 }];
-            const categories = [{ id: 2, name: "Food" }];
-
-            mockClient.mutate.mockResolvedValue({
-                data: {
-                    currentUser: {
-                        owner: {
-                            accounts: { nodes: accounts },
-                            categories: { nodes: categories },
-                        },
-                    },
-                },
-            } as never);
+        it("initializes the user and returns accounts and categories by name", async () => {
+            await createAccount({ name: "Wallet", currency: "THB" });
+            await createAccount({ name: "Bank", currency: "EUR" });
 
             const result = await getUserData();
 
-            expect(result).toEqual({ accounts, categories });
+            expect(result.accounts).toEqual([
+                { id: expect.any(String), name: "Bank", balance: 0, currency: "EUR" },
+                { id: expect.any(String), name: "Wallet", balance: 0, currency: "THB" },
+            ]);
+            expect(result.categories.map((c) => c.name)).toEqual([
+                "Bills",
+                "Entertainment",
+                "Food",
+                "Groceries",
+                "None",
+                "Salary",
+                "Transport",
+            ]);
         });
 
-        it("throws when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "unauthorized" },
-            } as never);
+        it("pages through more than 50 categories", async () => {
+            await getUserData();
+            for (let i = 0; i < 45; i++) {
+                await createCategory({ name: `Category ${i}` });
+            }
 
-            await expect(getUserData()).rejects.toThrow("unauthorized");
+            const result = await getUserData();
+
+            expect(result.categories).toHaveLength(52);
+        });
+
+        it("throws when a request fails", async () => {
+            jest.spyOn(mockClient, "mutate").mockRejectedValueOnce(new Error("network"));
+
+            await expect(getUserData()).rejects.toThrow("network");
         });
     });
 });

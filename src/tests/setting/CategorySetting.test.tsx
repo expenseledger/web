@@ -25,8 +25,8 @@ describe("CategorySetting", () => {
     it("hides the delete button of the None category", () => {
         const store = createStore();
         store.set(categoriesState, [
-            { id: 1, name: "Food" },
-            { id: 2, name: "None" },
+            { id: "1", name: "Food" },
+            { id: "2", name: "None" },
         ]);
 
         renderWithProviders(<CategorySetting />, { store });

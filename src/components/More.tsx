@@ -1,10 +1,11 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
-import { TransactionType } from "../service/constants";
+import { currencySymbols, TransactionType } from "../service/constants";
+import { replaceAccounts } from "../service/helper/accountHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
@@ -16,7 +17,7 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
 import { useBackToHome } from "./Layout";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
 interface CurrentValue {
     fromAccountIdx: number;
@@ -44,7 +45,6 @@ const More: React.FC = () => {
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const location = useLocation();
-    const currency = useAtomValue(currencyState);
     const homeProps = location.state as HomeProps;
     const initialCurrentValue: CurrentValue = {
         fromAccountIdx: homeProps?.accountIdx ?? 0,
@@ -116,7 +116,7 @@ const More: React.FC = () => {
 
         return true;
     };
-    const validateTransferAccount = (fromAcccountId: number, toAccountId: number) => {
+    const validateTransferAccount = (fromAcccountId: string, toAccountId: string) => {
         if (fromAcccountId === toAccountId) {
             addNotification("Please select different destination account", "danger");
 
@@ -138,29 +138,19 @@ const More: React.FC = () => {
                 return false;
             }
 
+            const account = accounts[fromAccountIdx];
             const request: AddExpenseRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: categories[categoryIdx]?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                fromAccountId: account.id,
             };
 
             const response = await addExpense(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.fromAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.fromAccount]));
                 addNotification("AddExpense sucess", "success");
 
                 return true;
@@ -186,29 +176,19 @@ const More: React.FC = () => {
                 return false;
             }
 
+            const account = accounts[fromAccountIdx];
             const request: AddIncomeRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: categories[categoryIdx]?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                toAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                toAccountId: account.id,
             };
 
             const response = await addIncome(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.toAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.toAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.toAccount]));
                 addNotification("AddIncome sucess", "success");
 
                 return true;
@@ -230,44 +210,32 @@ const More: React.FC = () => {
             const numberedAmount = toNumber(amount);
             const isValid =
                 validateAmount(numberedAmount) &&
-                validateTransferAccount(fromAccountIdx, toAccountIdx);
+                validateTransferAccount(accounts[fromAccountIdx]?.id, accounts[toAccountIdx]?.id);
 
             if (!isValid) {
                 setIsLoading(false);
                 return false;
             }
 
+            const fromAccount = accounts[fromAccountIdx];
             const request: AddTransferRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: fromAccount.currency },
+                categoryId: categories[categoryIdx]?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                toAccountId: accounts[toAccountIdx]?.id ?? 0,
-                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                toAccountId: accounts[toAccountIdx]?.id,
+                fromAccountId: fromAccount.id,
             };
 
             const response = await addTransfer(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.id === response.transaction.fromAccount.id) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    if (a.id === response.transaction.toAccount.id) {
-                        return {
-                            ...a,
-                            balance: response.transaction.toAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(
+                    replaceAccounts(accounts, [
+                        response.transaction.fromAccount,
+                        response.transaction.toAccount,
+                    ])
+                );
                 addNotification("AddTransfer success", "success");
 
                 return true;
@@ -314,7 +282,7 @@ const More: React.FC = () => {
         const isTransfer = transactionTypeTabActive[2];
         const render = (
             title: string,
-            balance: number,
+            account: Account,
             updateAccount: (value: string) => void,
             value: string,
             overrideOptions: Account[]
@@ -336,7 +304,10 @@ const More: React.FC = () => {
                         />
                     </Box>
                     <Box>
-                        <BalanceWithCurrency balance={balance} />
+                        <BalanceWithCurrency
+                            balance={account?.balance ?? 0}
+                            currency={account?.currency ?? "THB"}
+                        />
                     </Box>
                 </Flex>
             </Flex>
@@ -346,14 +317,14 @@ const More: React.FC = () => {
             <>
                 {render(
                     "From",
-                    accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                    accounts[currentValue.fromAccountIdx],
                     updateSelectedFromAccount,
                     accounts[currentValue.fromAccountIdx]?.name,
                     accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx].id)
                 )}
                 {render(
                     "To",
-                    accounts[currentValue.toAccountIdx]?.balance ?? 0,
+                    accounts[currentValue.toAccountIdx],
                     updateSelectedToAccount,
                     accounts[currentValue.toAccountIdx]?.name,
                     accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx].id)
@@ -362,7 +333,7 @@ const More: React.FC = () => {
         ) : (
             render(
                 "Account",
-                accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                accounts[currentValue.fromAccountIdx],
                 updateSelectedFromAccount,
                 accounts[currentValue.fromAccountIdx]?.name,
                 null
@@ -405,7 +376,12 @@ const More: React.FC = () => {
                             name="expnese"
                             type="number"
                             value={currentValue.amount}
-                            addOn={{ text: currency, position: "front" }}
+                            addOn={{
+                                text: currencySymbols[
+                                    accounts[currentValue.fromAccountIdx]?.currency
+                                ],
+                                position: "front",
+                            }}
                         />
                     </Box>
                 </Flex>

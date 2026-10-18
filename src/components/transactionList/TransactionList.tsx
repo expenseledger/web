@@ -4,7 +4,14 @@ import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
 import dayjs from "../../lib/dayjs";
-import { compareTransactionsDesc } from "../../service/helper/transactoinHelper";
+import { getAllAccount } from "../../service/accountService";
+import { replaceAccounts } from "../../service/helper/accountHelper";
+import {
+    amountFor,
+    buildTransactionPatch,
+    compareTransactionsDesc,
+    EditedTransaction,
+} from "../../service/helper/transactoinHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
 import { Transaction } from "../../service/model/Transaction";
 import {
@@ -65,21 +72,22 @@ export const TransactionList: React.FC = () => {
     const navigate = useNavigate();
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const { setBackToHomeParam } = useBackToHome();
+    const currency = accounts.find((a) => a.id === accountId)?.currency ?? "THB";
 
     const isShown = useCallback(
         (tx: Transaction) =>
             !isPaidOnly ||
             tx.type == "EXPENSE" ||
-            (tx.type == "TRANSFER" && tx.fromAccount?.id === +accountId),
+            (tx.type == "TRANSFER" && tx.fromAccount?.id === accountId),
         [accountId, isPaidOnly]
     );
 
     useEffect(() => {
         let ignore = false;
 
-        setBackToHomeParam({ accountId: +accountId });
+        setBackToHomeParam({ accountId });
         setIsLoading(true);
-        listTransactionsPage({ accountId: +accountId, first: PAGE_SIZE }).then((response) => {
+        listTransactionsPage({ accountId, first: PAGE_SIZE }).then((response) => {
             if (ignore) {
                 return;
             }
@@ -107,7 +115,7 @@ export const TransactionList: React.FC = () => {
 
         setIsFetchingMore(true);
         const response = await listTransactionsPage({
-            accountId: +accountId,
+            accountId,
             first: PAGE_SIZE,
             after: endCursor,
         });
@@ -140,7 +148,7 @@ export const TransactionList: React.FC = () => {
         return () => observer.disconnect();
     }, [loadMore]);
 
-    const removeTransactionHandler = async (id: number) => {
+    const removeTransactionHandler = async (id: string) => {
         const response = await deleteTransaction({
             id,
         });
@@ -151,44 +159,26 @@ export const TransactionList: React.FC = () => {
         }
 
         addNotification("Delete transaction succes", "success");
-
-        const updatedAccounts = accounts.map((ac) => {
-            if (ac.id === Number.parseInt(accountId)) {
-                const tx = transactions.find((t) => t.id === id);
-
-                return {
-                    ...ac,
-                    balance: tx.type === "INCOME" ? ac.balance - tx.amount : ac.balance + tx.amount,
-                };
-            }
-
-            return ac;
-        });
         setTransactions(transactions.filter((x) => x.id !== id));
-        setAccounts(updatedAccounts);
+
+        // deleteTransaction returns only the id, so reload the balances.
+        const { accounts: refreshed } = await getAllAccount();
+        if (refreshed.length !== 0) {
+            setAccounts(refreshed);
+        }
     };
-    const updateTransactionHandler = async (
-        id: number,
-        amount: number,
-        categoryId: number,
-        description: string,
-        occurredAt: Date
-    ) => {
-        const result = await updateTransaction({
-            id,
-            amount,
-            categoryId,
-            description,
-            occurredAt,
-        });
+    const updateTransactionHandler = async (tx: Transaction, edited: EditedTransaction) => {
+        const patch = buildTransactionPatch(tx, accountId, edited);
+        const result = await updateTransaction(patch);
 
         if (!result.updatedTransaction) {
             addNotification("Update transaction failed", "danger");
             return;
         }
 
-        const tx = transactions.find((t) => t.id === id);
-        setTransactions(mergeTransactions(transactions, [{ ...tx, ...result.updatedTransaction }]));
+        const updated = result.updatedTransaction;
+        setTransactions(mergeTransactions(transactions, [updated]));
+        setAccounts(replaceAccounts(accounts, [updated.fromAccount, updated.toAccount]));
         addNotification("Update transaction success", "success");
     };
     const getAmount = (tx: Transaction) => {
@@ -196,7 +186,7 @@ export const TransactionList: React.FC = () => {
             case "EXPENSE":
                 return -tx.amount;
             case "TRANSFER":
-                return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
+                return tx.toAccount.id === accountId ? amountFor(tx, accountId) : -tx.amount;
             case "INCOME":
             default:
                 return tx.amount;
@@ -214,6 +204,7 @@ export const TransactionList: React.FC = () => {
                 <Box key={day} mt="3">
                     <TransactionCard
                         date={new Date(day)}
+                        currency={currency}
                         items={dayTransactions.map((y) => {
                             return {
                                 amount: getAmount(y),
@@ -223,13 +214,12 @@ export const TransactionList: React.FC = () => {
                                 date: y.date,
                                 onDelete: () => removeTransactionHandler(y.id),
                                 onUpdate: (amount, categoryId, description, occurredAt) =>
-                                    updateTransactionHandler(
-                                        y.id,
+                                    updateTransactionHandler(y, {
                                         amount,
                                         categoryId,
                                         description,
-                                        occurredAt
-                                    ),
+                                        occurredAt,
+                                    }),
                             };
                         })}
                     />
@@ -267,6 +257,7 @@ export const TransactionList: React.FC = () => {
                             </Text>
                             {isComplete && (
                                 <AmountTxt
+                                    currency={currency}
                                     amount={monthTransactions
                                         .map(getAmount)
                                         .reduce((prev, cur) => prev + cur, 0)}

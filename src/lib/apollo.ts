@@ -1,9 +1,10 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient } from "@apollo/client";
 import { HttpLink } from "@apollo/client/link/http";
 import { SetContextLink } from "@apollo/client/link/context";
 import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
 import { RetryLink } from "@apollo/client/link/retry";
+import { createCache } from "./apolloCache";
 
 const httpLink = new HttpLink({
     uri: getServerUrl,
@@ -45,7 +46,7 @@ const retryLink = new RetryLink({
 
 const client = new ApolloClient({
     link: authLink.concat(httpLink).concat(retryLink),
-    cache: new InMemoryCache(),
+    cache: createCache(),
 });
 
 export default client;

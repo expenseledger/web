@@ -1,25 +1,20 @@
 import React from "react";
-import { accountsState, currencyState } from "../../common/shareState";
+import { accountsState } from "../../common/shareState";
 import { createAccount, deleteAccount } from "../../service/accountService";
-import { Currency } from "../../service/constants";
-import { allCurrencies } from "../../service/helper/accountHelper";
+import { allCurrencies, Currency } from "../../service/constants";
 import { useNotification } from "../../service/helper/notificationHelper";
-import Dropdown from "../bases/Dropdown";
 import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
-import { Card, Flex, Text } from "@radix-ui/themes";
+import { Flex } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useAtom(accountsState);
-    const [currency, setCurrency] = useAtom(currencyState);
     const { addNotification } = useNotification();
-    const currencyHandler = (currency: string) => {
-        setCurrency(currency as Currency);
-    };
-    const createAccountHandler = async (accountName: string) => {
+    const createAccountHandler = async (accountName: string, currency: string) => {
         const response = await createAccount({
             name: accountName,
+            currency: currency as Currency,
         });
 
         if (!response.account) {
@@ -35,12 +30,12 @@ const AccountSetting: React.FC = () => {
         addNotification("Create account success", "success");
     };
 
-    const deleteAccountHandler = async (id: string | number) => {
-        const isSuccess = await deleteAccount({
-            id: +id,
+    const deleteAccountHandler = async (id: string) => {
+        const response = await deleteAccount({
+            id,
         });
 
-        if (!isSuccess) {
+        if (!response.isSuccess) {
             addNotification("Delete account failed", "danger");
             return;
         }
@@ -48,19 +43,6 @@ const AccountSetting: React.FC = () => {
         setAccounts(accounts.filter((x) => x.id !== id));
         addNotification("Delete account success", "success");
     };
-    const renderCurrencySelectionPanel = (
-        <Card>
-            <Flex align="center" justify="between">
-                <Text>Currency</Text>
-                <Dropdown
-                    options={allCurrencies}
-                    updateSelectedValue={currencyHandler}
-                    variant="ghost"
-                    defaultValue={currency}
-                />
-            </Flex>
-        </Card>
-    );
 
     return (
         <Flex direction="column" gap="3">
@@ -70,12 +52,12 @@ const AccountSetting: React.FC = () => {
                     return { id: x.id, name: x.name };
                 })}
             />
-            {renderCurrencySelectionPanel}
             <TextBoxWithButton
                 name="add"
                 type="text"
                 buttonType="primary"
                 buttonText="Create"
+                dropdown={allCurrencies}
                 onClick={createAccountHandler}
             />
         </Flex>

@@ -1,32 +1,38 @@
+import type { TransactionType } from "../../constants";
+import type { Currency } from "../../constants";
+import type { Money } from "../Money";
+
 // Transaction
 interface AddTransactionRequest {
-    amount: number;
-    categoryId?: number;
+    amount: Money;
+    categoryId?: string;
     description?: string;
     date: Date;
 }
 export interface AddExpenseRequest extends AddTransactionRequest {
-    fromAccountId: number;
+    fromAccountId: string;
 }
 
 export interface AddIncomeRequest extends AddTransactionRequest {
-    toAccountId: number;
+    toAccountId: string;
 }
 
 export interface AddTransferRequest extends AddTransactionRequest {
-    fromAccountId: number;
-    toAccountId: number;
+    fromAccountId: string;
+    toAccountId: string;
+    convertedAmount?: Money;
 }
 
 export interface ListTransactionsRequest {
-    accountId: number;
-    from: Date;
-    until: Date;
-    useCache?: boolean;
+    accountId: string;
+    /** First day, inclusive. */
+    fromDate: Date;
+    /** Last day, inclusive. */
+    toDate: Date;
 }
 
 export interface DeleteTranactionRequest {
-    id: number;
+    id: string;
 }
 
 // Category
@@ -34,35 +40,50 @@ export interface CreateCategoryRequest {
     name: string;
 }
 
+export interface PatchCategoryRequest {
+    id: string;
+    name: string;
+}
+
 export interface DeleteCategoryRequest {
-    id: number;
+    id: string;
 }
 
 // Account
 export interface CreateAccountRequest {
     name: string;
+    currency: Currency;
+}
+
+export interface PatchAccountRequest {
+    id: string;
+    name?: string;
+    balance?: Money;
 }
 
 export interface GetAccountRequest {
-    id: number;
+    id: string;
 }
 
 export interface DeleteAccountRequest {
-    id: number;
+    id: string;
 }
 
 // Transaction
 
 export interface ListTransactionsPageRequest {
-    accountId: number;
+    accountId: string;
     first: number;
     after?: string;
 }
 
+/** Omitted fields stay unchanged; a null description clears it. */
 export interface UpdateTransactionRequest {
-    id: number;
-    amount: number;
-    categoryId: number;
-    description: string;
-    occurredAt: Date;
+    id: string;
+    type: TransactionType;
+    amount?: Money;
+    convertedAmount?: Money;
+    categoryId?: string;
+    description?: string | null;
+    occurredAt?: Date;
 }

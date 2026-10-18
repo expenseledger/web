@@ -31,6 +31,7 @@ const Report: React.FC = () => {
     const [selectableAccounts, setSelectableAccounts] =
         useState<SelectableAccount[]>(initalSelectedAccounts);
     const navigate = useNavigate();
+    const currency = selectableAccounts.find((a) => a.isSelected)?.currency ?? "THB";
 
     const backToHome = useCallback(() => {
         navigate("/");
@@ -50,15 +51,13 @@ const Report: React.FC = () => {
         }
 
         let ignore = false;
-        const from = month;
-        const until = from.add(1, "M");
 
         Promise.all(
             selectedAccounts.map((a) =>
                 listTransactions({
                     accountId: a.id,
-                    from: from.toDate(),
-                    until: until.toDate(),
+                    fromDate: month.toDate(),
+                    toDate: month.endOf("month").toDate(),
                 })
             )
         )
@@ -95,7 +94,7 @@ const Report: React.FC = () => {
                 />
             </Card>
             <Card mt="3" mb="5">
-                <BarChartReport transactions={transactions} />
+                <BarChartReport transactions={transactions} currency={currency} />
             </Card>
             <Card mt="3" mb="5">
                 <Grid
@@ -106,18 +105,26 @@ const Report: React.FC = () => {
                     mt="3"
                     mb="5">
                     <Box>
-                        <PieChartReport transactions={transactions} isExpense={false} />
+                        <PieChartReport
+                            transactions={transactions}
+                            isExpense={false}
+                            currency={currency}
+                        />
                     </Box>
                     <Box>
-                        <PieChartReport transactions={transactions} isExpense={true} />
+                        <PieChartReport
+                            transactions={transactions}
+                            isExpense={true}
+                            currency={currency}
+                        />
                     </Box>
                 </Grid>
             </Card>
             <Box mt="3" mb="5">
-                <TableReport transations={transactions} isExpense={false} />
+                <TableReport transations={transactions} isExpense={false} currency={currency} />
             </Box>
             <Box mt="3" mb="5">
-                <TableReport transations={transactions} isExpense={true} />
+                <TableReport transations={transactions} isExpense={true} currency={currency} />
             </Box>
         </AnimatedPage>
     );

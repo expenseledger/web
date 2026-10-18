@@ -2,9 +2,11 @@ import React, { useCallback, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
+import { currencySymbols } from "../service/constants";
+import { replaceAccounts } from "../service/helper/accountHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -17,7 +19,7 @@ import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
 import { BackToHomeParam, useBackToHome } from "./Layout";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
 import { Navigation, Pagination } from "swiper/modules";
 
@@ -55,7 +57,6 @@ const Home: React.FC = () => {
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
-    const currency = useAtomValue(currencyState);
     const backToHomeParam = useLocation().state as BackToHomeParam;
     const { setBackToHomeParam } = useBackToHome();
 
@@ -95,28 +96,19 @@ const Home: React.FC = () => {
                 setIsLoading(false);
                 return;
             }
+            const account = accounts[accountIdx];
             const request: AddExpenseRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
-                fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: description === "" ? "-" : description,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: categories[categoryIdx]?.id,
+                fromAccountId: account.id,
+                description,
                 date: dayjs(date).toDate(),
             };
 
             const response = await addExpense(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.fromAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.fromAccount]));
                 addNotification("AddExpense sucess", "success");
 
                 setCurrentValue({
@@ -147,7 +139,7 @@ const Home: React.FC = () => {
                     key={idx}
                     id={idx}
                     balance={currentValue.accountIdx === idx ? x.balance : 0}
-                    currency={currency}
+                    currency={currencySymbols[x.currency]}
                     name={x.name}
                 />
             </SwiperSlide>
@@ -217,7 +209,10 @@ const Home: React.FC = () => {
                             name="expense"
                             type="number"
                             value={currentValue.amount}
-                            addOn={{ text: currency, position: "front" }}
+                            addOn={{
+                                text: currencySymbols[accounts[currentValue.accountIdx]?.currency],
+                                position: "front",
+                            }}
                         />
                     </Box>
                 </Flex>

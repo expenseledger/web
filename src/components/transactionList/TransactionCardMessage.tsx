@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import { categoriesState, currencyState } from "../../common/shareState";
+import { categoriesState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
-import { TransactionType } from "../../service/constants";
+import { Currency, currencySymbols, TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import DateBox from "../bases/DateBox";
@@ -18,13 +18,14 @@ import { useAtomValue } from "jotai";
 
 interface UpdateTransactionModalProps {
     amount: number;
+    currency: Currency;
     category: Category;
     description: string;
     occurredAt: Date;
     onCancel: () => void;
     onConfirm: (
         amount: number,
-        categoryId: number,
+        categoryId: string,
         description: string,
         occuredAt: Date
     ) => Promise<void>;
@@ -33,13 +34,14 @@ interface UpdateTransactionModalProps {
 
 interface TransactionCardMessageProps {
     amount: number;
+    currency: Currency;
     type: TransactionType;
     category: Category;
     description: string;
     onDelete: () => Promise<void>;
     onUpdate: (
         amount: number,
-        categoryId: number,
+        categoryId: string,
         description: string,
         occuredAt: Date
     ) => Promise<void>;
@@ -63,7 +65,7 @@ const InputBox = styled(Box)`
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
     const categoryOptions = useAtomValue(categoriesState);
-    const currency = useAtomValue(currencyState);
+    const currency = currencySymbols[props.currency];
     const [updatedAmountText, setUpdatedAmountText] = React.useState(
         Math.abs(props.amount).toString()
     );
@@ -85,7 +87,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
             onConfirmHandler={() =>
                 props.onConfirm(
                     toNumber(updatedAmountText),
-                    updateCategory.id,
+                    updateCategory?.id,
                     updatedDescription,
                     dayjs(updatedOccuredAt).toDate()
                 )
@@ -117,7 +119,7 @@ const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) =>
                         className="column"
                         options={categoryOptions.map((c) => c.name)}
                         updateSelectedValue={updateCategoryHandler}
-                        defaultValue={props.category.name}
+                        defaultValue={props.category?.name}
                     />
                 </InputBox>
                 <Box>
@@ -160,7 +162,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
     };
     const onConfirmUpdateHandler = async (
         amount: number,
-        categoryId: number,
+        categoryId: string,
         description: string,
         occuredAt: Date
     ) => {
@@ -195,6 +197,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
             <UpdateBox>
                 <UpdateTransactionModal
                     amount={props.amount}
+                    currency={props.currency}
                     category={props.category}
                     description={props.description}
                     occurredAt={props.occurredAt}
@@ -225,7 +228,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                     <Text weight="bold">Amount:</Text>
                 </Box>
                 <Box>
-                    <AmountTxt amount={props.amount} />
+                    <AmountTxt amount={props.amount} currency={props.currency} />
                 </Box>
                 <Box>
                     <Text weight="bold">Category:</Text>

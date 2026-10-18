@@ -1,40 +1,29 @@
 import client from "../lib/apollo";
+import { fetchAllAccounts } from "./accountService";
+import { fetchAllCategories } from "./categoryService";
 import { graphql } from "./model/gql";
 import User from "./model/User";
 
-const CURRENT_USER = graphql(`
-    mutation CurrentUser {
-        currentUser(input: {}) {
-            owner {
-                accounts(orderBy: [NAME_ASC]) {
-                    nodes {
-                        id
-                        name
-                        balance
-                    }
-                }
-                categories(orderBy: [NAME_ASC]) {
-                    nodes {
-                        id
-                        name
-                    }
-                }
-            }
-        }
+const INITIALIZE_USER = graphql(`
+    mutation InitializeUser {
+        initializeUser
     }
 `);
 
+/** Seeds the user's default categories (idempotent), then loads everything. */
 export async function getUserData(): Promise<User> {
     const result = await client.mutate({
-        mutation: CURRENT_USER,
+        mutation: INITIALIZE_USER,
     });
 
     if (result.error) {
         throw new Error(result.error.message);
     }
 
+    const [accounts, categories] = await Promise.all([fetchAllAccounts(), fetchAllCategories()]);
+
     return {
-        categories: result.data.currentUser.owner.categories.nodes,
-        accounts: result.data.currentUser.owner.accounts.nodes,
+        categories,
+        accounts,
     };
 }

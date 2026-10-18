@@ -21,7 +21,7 @@ backend agent, 2026-09-25.
 | `categories` | `categories(first!, after, sort)` | Plus `category(id)` |
 | `createCategoryV2` | `createCategory(name)` | No type |
 | `updateCategory` | **none** | |
-| `deleteCategory` | `deleteCategory(id): ID!` | Hard delete; fails if the category is in use |
+| `deleteCategory` | `deleteCategory(id): ID!` | Hard delete; moves its transactions to "None"; "None" itself is refused (`CATEGORY_UNDELETABLE`) (2026-10-18) |
 | `spend` | `withdraw(fromAccountId, amount: MoneyInput, categoryId?, description?)` → `Expense!` | |
 | `receive` | `deposit(toAccountId, amount, categoryId?, description?)` → `Income!` | |
 | `transferV2` | `transfer(fromAccountId, toAccountId, amount, convertedAmount?, categoryId?, description?)` → `Transfer` (nullable) | `convertedAmount` is required iff currencies differ |

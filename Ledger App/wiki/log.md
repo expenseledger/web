@@ -143,3 +143,11 @@ Signature stays `deleteAccount(id): ID!`; always cascades D's own
 transactions and rewrites transfers; no Reassign/Leave. Replaced the
 draft proposal. Touched [[API v3 Migration]], [[API v3 Operations]],
 [[API v3 Data Model]].
+
+## [2026-10-18] update | deleteCategory implemented
+
+Briefed the backend agent on category delete; it implemented it (local,
+not pushed). Signature stays `deleteCategory(id): ID!`; transactions
+always move to "None"; deleting "None" fails with
+`CATEGORY_UNDELETABLE`. Touched [[API v3 Migration]],
+[[API v3 Operations]], [[API v3 Data Model]], [[API v3]].

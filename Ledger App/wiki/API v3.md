@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, human 2026-09-25]
-updated: 2026-09-25
+updated: 2026-10-18
 ---
 
 # API v3
@@ -56,7 +56,8 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   `TOO_MANY_ROWS`, `CATEGORY_DEFAULTS_NOT_FOUND`, and on transaction
   mutations `CURRENCY_MISMATCH`, `NON_POSITIVE_AMOUNT`,
   `INVALID_TRANSACTION` (BAD_REQUEST). These three were added 2026-09-25
-  and were INTERNAL_ERROR before.
+  and were INTERNAL_ERROR before. `deleteCategory` on "None" gives
+  `CATEGORY_UNDELETABLE` (BAD_REQUEST, 2026-10-18).
 - **Everything else is a generic INTERNAL_ERROR with no code**:
   duplicate names, FK violations, bad date strings. The client can't tell these apart.
 - A missing or invalid token gets **HTTP 401** from Spring Security, not a

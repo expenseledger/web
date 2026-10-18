@@ -78,12 +78,10 @@ balance }`), which suits [[Balance Sync]].
 - `deleteAccount` is a hard delete that cascades D's expenses and
   incomes and rewrites its transfers into Expense/Income on the other
   account (2026-10-18; [[API v3 Migration]]).
-- `deleteCategory` is a **hard delete**, blocked by FKs
-  (NO ACTION) while transactions reference it. The error surfaces as a
-  generic INTERNAL_ERROR. In practice only unused accounts and categories
-  can be deleted (untested path).
-- Deleting the unused "None" category is allowed. After that,
-  uncategorised transactions fail with `CATEGORY_DEFAULTS_NOT_FOUND`.
+- `deleteCategory` is a hard delete that first moves its transactions
+  to the user's "None" category (no balance changes). Deleting "None"
+  (matched by name) is refused with `BAD_REQUEST` /
+  `CATEGORY_UNDELETABLE` (2026-10-18; [[API v3 Migration]]).
 
 ## IDs
 

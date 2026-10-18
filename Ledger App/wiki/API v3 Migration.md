@@ -19,7 +19,7 @@ code.
 - No account or category types
 - No custom transaction date (description was added 2026-09-25)
 - No account/category update mutations (`updateTransaction` added 2026-09-25)
-- Hard deletes; categories blocked while referenced
+- Hard deletes (no longer blocked while referenced, 2026-10-18)
 - `initializeUser` replaces `currentUser`
 - Renamed mutations
 - A single `accountId` filter
@@ -157,11 +157,22 @@ remove transactions. This narrows the three options for categories:
   Leave can't apply (a transaction can't point at a missing category);
   reassigning to "None" is its v3 equivalent.
 - **Protect "None"**: the backend must refuse to delete it, and
-  [[Settings Screens]] hides its Delete button. Today it can be deleted
-  while unused, after which uncategorised transactions fail with
-  `CATEGORY_DEFAULTS_NOT_FOUND` ([[API v3 Data Model]]).
-- Backend asks (reassign on delete, protect "None"): the human raises
-  them with the backend.
+  [[Settings Screens]] hides its Delete button. Before 2026-10-18 it
+  could be deleted while unused, breaking uncategorised transactions
+  with `CATEGORY_DEFAULTS_NOT_FOUND` ([[API v3 Data Model]]).
+
+**Implemented** (backend agent `ledger-api-v3-24`, 2026-10-18; local
+commits, not pushed). Scope cut like `deleteAccount`:
+
+- Signature unchanged: `deleteCategory(id: ID!): ID!`.
+- Transactions always move to the user's "None" category, keeping id,
+  amount, accounts, description and `occurredAt`; no balance changes.
+  Picking a target is a possible future feature.
+- Deleting "None" (matched by name) is refused: `BAD_REQUEST`,
+  `extensions.code` `CATEGORY_UNDELETABLE`. Unknown or not-owned id →
+  `RESOURCE_NOT_FOUND`.
+- **Client**: refetch transactions after a delete; hide "None"'s
+  Delete button.
 
 ## Data migration
 

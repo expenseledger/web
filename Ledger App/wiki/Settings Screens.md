@@ -11,9 +11,10 @@ Reached from [[Bottom Menu]] → Settings.
 
 ## Account (`/account/setting`)
 
-- List via `EditAndDeleteSetting` with delete ✕ only. Its `modifyModal`
-  (edit ✎) is optional; neither settings screen passes one since
-  2026-10-18. Name + balance editing comes back with v3 ([[Account]]).
+- List via `EditAndDeleteSetting` with edit ✎ ("Edit <name>") and
+  delete ✕. Edit opens `EditAccountModal` (name + balance): it calls
+  `patchAccount` with only the changed fields, and the balance is set
+  **directly**, with no adjustment transaction (2026-10-19).
 - Create: `TextBoxWithButton` with a currency dropdown (THB/USD/EUR/
   JPY) → `createAccount` with a zero balance; list re-sorted by name.
   The global currency picker is gone (2026-10-19; [[State Management]]).

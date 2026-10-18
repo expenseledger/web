@@ -30,8 +30,8 @@ interface Account { id: number; name: string; balance: number }
   removed with the type. The human will reimplement name + balance
   editing on v3. Planned: setting a balance changes the account's balance
   **directly**, not via an "Adjust balance" transaction (the v2 app
-  posted a phantom INCOME/EXPENSE under category "Other"). v3's
-  `patchAccount` supports both (2026-10-19; [[API v3 Operations]]).
+  posted a phantom INCOME/EXPENSE under category "Other"). Back on v3
+  via `patchAccount` (2026-10-19; [[Settings Screens]]).
 - Home shows accounts as a swipeable card carousel (6 gradient colors
   cycling by index) — [[Home Screen]].
 

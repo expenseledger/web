@@ -202,3 +202,9 @@ codegen reruns. Touched [[API v3 Migration]], [[API v3]],
 [[GraphQL API]], [[GraphQL Codegen]], [[Build and Test]],
 [[State Management]], [[Settings Screens]], [[Apollo Client]],
 [[Environment Variables]], [[Bottom Menu]], [[Overview]].
+
+## [2026-10-19] update | account edit modal
+
+Account settings edit name and balance through `patchAccount`; the
+balance is set directly. Touched [[Settings Screens]], [[Account]],
+[[API v3 Migration]].

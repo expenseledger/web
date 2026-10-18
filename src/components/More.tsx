@@ -268,7 +268,7 @@ const More: React.FC = () => {
         return false;
     };
 
-    const addTransaction = () => {
+    const addTransaction = async () => {
         const doTransaction = () => {
             const transactionTypeIdx = transactionTypeTabActive.findIndex((x) => x === true);
 
@@ -284,9 +284,9 @@ const More: React.FC = () => {
 
         setIsLoading(true);
 
-        const result = doTransaction();
+        const isSuccess = await doTransaction();
 
-        if (result) {
+        if (isSuccess) {
             setCurrentValue({
                 ...currentValue,
                 description: "",

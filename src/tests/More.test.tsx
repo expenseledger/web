@@ -1,4 +1,4 @@
-import { fireEvent, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, screen, waitFor } from "@testing-library/react";
 import { createStore } from "jotai";
 import { MemoryRouter, Outlet, Route, Routes } from "react-router-dom";
 import More from "../components/More";
@@ -7,7 +7,7 @@ import { createAccount, patchAccount } from "../service/accountService";
 import { Currency } from "../service/constants";
 import { getUserData } from "../service/userService";
 import { renderWithProviders } from "./bases/testUtils";
-import { resetMockV3 } from "./mock/mockClient";
+import { mockClient, resetMockV3 } from "./mock/mockClient";
 
 jest.mock("../lib/apollo", () => ({
     __esModule: true,
@@ -58,7 +58,26 @@ async function renderMore() {
 
 describe("More", () => {
     beforeEach(async () => {
+        jest.restoreAllMocks();
         await resetMockV3();
+    });
+
+    it("clears the amount after adding and keeps it when adding fails", async () => {
+        await account("Cash", "THB", 100);
+        await renderMore();
+        const amount = screen.getByLabelText("Amount") as HTMLInputElement;
+
+        fireEvent.change(amount, { target: { value: "30" } });
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+        await waitFor(() => expect(amount.value).toBe(""));
+
+        const mutate = jest.spyOn(mockClient, "mutate").mockRejectedValueOnce(new Error("down"));
+        fireEvent.change(amount, { target: { value: "40" } });
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+        await waitFor(() => expect(mutate).toHaveBeenCalled());
+        await act(() => Promise.resolve());
+
+        expect(amount.value).toBe("40");
     });
 
     it("adds a transaction for today when opened directly", async () => {

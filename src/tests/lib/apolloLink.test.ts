@@ -13,6 +13,12 @@ const QUERY = gql`
     }
 `;
 
+const MUTATION = gql`
+    mutation {
+        initializeUser
+    }
+`;
+
 const RESULT = { accounts: { pageInfo: { hasNextPage: false } } };
 
 /** A client whose server fails with `failures` in turn, then succeeds. */
@@ -39,6 +45,7 @@ function setup(failures: Error[] = []) {
 
     return {
         query: () => client.query({ query: QUERY, fetchPolicy: "network-only" }),
+        mutate: () => client.mutate({ mutation: MUTATION }),
         onUnauthorized,
         tokens,
         requests: () => requests,
@@ -63,5 +70,26 @@ describe("createLink", () => {
 
         expect(onUnauthorized).toHaveBeenCalledTimes(1);
         expect(requests()).toBe(2);
+    });
+
+    it("retries a query after a network error", async () => {
+        const { query, requests } = setup([new Error("offline"), new Error("offline")]);
+
+        expect((await query()).data).toEqual(RESULT);
+        expect(requests()).toBe(3);
+    });
+
+    it("doesn't retry a mutation", async () => {
+        const { mutate, requests } = setup([new Error("offline")]);
+
+        await expect(mutate()).rejects.toThrow("offline");
+        expect(requests()).toBe(1);
+    });
+
+    it("doesn't retry a client error", async () => {
+        const { query, requests } = setup([httpError(400)]);
+
+        await expect(query()).rejects.toThrow("HTTP error");
+        expect(requests()).toBe(1);
     });
 });

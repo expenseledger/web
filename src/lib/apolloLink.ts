@@ -1,5 +1,6 @@
 import { ApolloLink } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
+import { ServerError } from "@apollo/client/errors";
 import { RetryLink } from "@apollo/client/link/retry";
 import { createUnauthorizedLink } from "./unauthorizedLink";
 
@@ -35,10 +36,15 @@ export function createLink(options: LinkOptions): ApolloLink {
     const retryLink = new RetryLink({
         attempts: {
             max: 5,
-            retryIf: (error, operation) => operation.operationType === "query",
+            // A 4xx won't change on retry (a 401 is the unauthorized link's job).
+            retryIf: (error, operation) =>
+                operation.operationType === "query" &&
+                !(ServerError.is(error) && error.statusCode >= 400 && error.statusCode < 500),
         },
         delay: options.retryDelay ?? ((attempt) => 1000 * 2 ** (attempt - 1)),
     });
 
-    return unauthorizedLink.concat(authLink).concat(options.httpLink).concat(retryLink);
+    // The HTTP link terminates the chain, so it goes last. Retries pass through
+    // authLink again, so each attempt sends the current token.
+    return ApolloLink.from([unauthorizedLink, retryLink, authLink, options.httpLink]);
 }

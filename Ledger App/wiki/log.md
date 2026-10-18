@@ -185,3 +185,9 @@ not pushed, schema unchanged. `transfer`/`patchTransfer` reject from =
 to with `INVALID_TRANSACTION`; domain check only, so existing from = to
 rows can't be patched at all. Touched [[API v3 Migration]],
 [[API v3 Operations]], [[API v3]].
+
+## [2026-10-19] update | from = to rows: remove if found
+
+Backend human decided: no DB constraint for now; existing from = to
+transfers, if any, will be removed by a migration. Touched
+[[API v3 Migration]].

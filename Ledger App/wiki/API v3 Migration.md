@@ -199,8 +199,10 @@ Backend gaps:
   `transfer` and `patchTransfer` (checked on the final state) →
   `INVALID_TRANSACTION`. Domain check only, no DB constraint: existing
   from = to rows still load, but **any** patch to them is now rejected
-  (even description/category/date). Backend hasn't decided how to
-  handle those rows; relevant to the data migration.
+  (even description/category/date). Decided (backend human,
+  2026-10-19): no DB constraint for now; if any such rows exist, a
+  migration will remove them (no one has checked yet). Relevant to the
+  data migration: skip or fix v2 transfers with from = to.
 - No v2 import or adjustment transaction; not needed (manual Postgres
   migration, § Data migration).
 - **Not pushed**: local v3 `main` is 56 commits ahead of `origin/main`

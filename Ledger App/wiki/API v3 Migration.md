@@ -244,9 +244,7 @@ Done in the cutover commit:
 - Services return `errorCode` (`extensions.code`) on failure.
 - Empty descriptions are sent as null, no longer `"-"`.
 
-Still to do on the app: error
-toasts per code, a converted-amount field for cross-currency transfers,
-one currency per report.
+Still to do on the app: one currency per report.
 
 ## Data migration
 

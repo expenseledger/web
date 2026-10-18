@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen]
 sources: [src/components/More.tsx]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # More Screen
@@ -18,7 +18,13 @@ Income / Transfer**.
 - Changing the from-account sets `backToHomeParam` so the title link
   returns to that account.
 - Validation: amount > 0; transfer from ≠ to ([[Transaction]]).
+- Cross-currency transfer: when From and To differ in currency, a
+  **Converted amount** field (in To's currency) appears and is sent as
+  `convertedAmount` (2026-10-19; [[API v3 Data Model]]).
+- Amounts show the selected account's currency symbol.
+- Failure toasts explain v3 error codes ([[Notifications]]).
 - After success patches balances ([[Balance Sync]]).
 
-Several bugs live here (async not awaited, default date, to-account
-index) — see [[Known Issues]].
+Bugs remain here (async not awaited, to-account index) — see
+[[Known Issues]]. Tested in `src/tests/More.test.tsx` against the v3
+mock.

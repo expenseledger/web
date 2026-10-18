@@ -2,7 +2,7 @@
 type: synthesis
 tags: [bugs, tech-debt]
 sources: [src/]
-updated: 2026-10-18
+updated: 2026-10-19
 ---
 
 # Known Issues
@@ -20,9 +20,10 @@ Remove an entry once fixed and note it in [[log]].
    the result is always a truthy Promise, so amount/description clear
    even on failure, and `isLoading` flips back immediately (double
    submits possible). [[More Screen]]
-3. **More: bad default date** — `date: homeProps?.date ??
-   Date.now.toString()` stringifies the *function*, giving an invalid date
-   when `/more` is opened without router state.
+3. ~~**More: bad default date**~~ — fixed 2026-10-19: it used
+   `Date.now.toString()` (the function's source) when `/more` was opened
+   without router state; on v3 every add failed with
+   `INVALID_DATE_TIME`. Now today.
 4. **More: to-account default** — for the last account index `i` in a
    list of `n`, `toAccountIdx = n - i + 1` (e.g. n=3, i=2 → 2 = same as
    from). With a single account, transfer mode indexes `accounts[1]` and

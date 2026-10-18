@@ -213,3 +213,11 @@ balance is set directly. Touched [[Settings Screens]], [[Account]],
 
 Category settings rename through `patchCategory`; "None" has no edit
 button. Touched [[Settings Screens]], [[Category]], [[API v3 Migration]].
+
+## [2026-10-19] update | error toasts, More date bug, cross-currency transfers
+
+Failure toasts describe v3 error codes. Fixed More's invalid default
+date (broke every add on v3). More asks for a converted amount when a
+transfer crosses currencies. Codegen now runs Prettier on its output.
+Touched [[Notifications]], [[More Screen]], [[Known Issues]],
+[[API v3 Migration]].

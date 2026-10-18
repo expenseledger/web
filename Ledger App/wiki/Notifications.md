@@ -2,7 +2,7 @@
 type: concept
 tags: [ui, feedback]
 sources: [src/service/helper/notificationHelper.ts, src/components/bases/Toast.tsx, src/components/bases/Notification.tsx]
-updated: 2026-09-25
+updated: 2026-10-19
 ---
 
 # Notifications
@@ -16,4 +16,7 @@ User feedback is toast-only.
   or on ✕ click. Types: primary, info, success, link, warning, danger,
   none.
 - Convention: every mutation handler toasts success/failure. Service
-  errors are only `console.log`ged ([[Service Layer]]).
+  errors are `console.log`ged and returned as `errorCode` (API v3
+  `extensions.code`); `describeError(code, fallback)` in
+  `service/helper/errorHelper.ts` turns it into e.g. "Create account
+  failed: the name is already taken" (2026-10-19).

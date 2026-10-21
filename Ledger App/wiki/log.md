@@ -298,3 +298,8 @@ The dev proxy and `.sample.env` now use `/api/graphql`; the ingress
 change is requested from dotta-8f and pending. Touched [[API v3]],
 [[API Path Conventions]], [[Environment Variables]], [[Overview]],
 [[API v3 Migration]].
+
+## [2026-10-22] update | /api/graphql route ready
+
+The deploy agent added the `/api/graphql` route; it's live once its
+repo's main is pushed. Touched [[API v3]].

@@ -30,9 +30,12 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 - Public endpoint: **`https://ledger.forestware.org/api/graphql`**,
   mapped by the ingress to the app's `/graphql`; clients use it as is.
   It replaces `/api/v3` (2026-09-25), which stays until the app
-  switches (human, 2026-10-22). The app config moved first; the
-  ingress change was requested from the deploy agent (dotta-8f) on
-  2026-10-22 and isn't confirmed yet.
+  switches (human, 2026-10-22). The app config moved first. The deploy
+  agent (dotta-8f, 2026-10-22) added the route in the deploy repo's
+  `apps/ledger-api-v3/release.yaml` (PathPrefix + full-path rewrite
+  to `/graphql`, so `/api/graphql/anything` also reaches `/graphql`;
+  `/api/v3` kept as a deprecated rule). It goes live when that repo's
+  main is pushed (Flux); not confirmed live yet.
 - No version in the path (human, 2026-10-22), as in GitLab: the
   GraphQL API evolves by deprecating fields, and a path version would
   wrongly cover any other API on the host. See [[API Path Conventions]].

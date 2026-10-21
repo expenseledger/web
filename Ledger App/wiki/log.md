@@ -245,3 +245,17 @@ out. Touched [[Apollo Client]], [[Authentication]].
 Moved the link chain into `createLink` (`lib/apolloLink.ts`) and put
 the retry link before the HTTP link; it skips 4xx. Touched
 [[Apollo Client]], [[Known Issues]].
+
+## [2026-10-21] update | local API blocks browser CORS preflight
+
+UI test against `localhost:8080` stuck on Loading: preflight gets 401
+with no CORS headers. Asked the backend to enable CORS. Touched
+[[API v3]], [[Known Issues]].
+
+## [2026-10-21] update | UI test against the local API
+
+After the backend enabled CORS, ran Home, More (expense, income,
+transfer), Transaction List (delete, edit), Report and Account
+settings on `localhost:8080`; all worked. Known Issues 7 and 8 are
+already fixed; found 12 (stale edit form after a delete). Touched
+[[Known Issues]], [[API v3]].

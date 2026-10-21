@@ -2,7 +2,7 @@
 type: synthesis
 tags: [bugs, tech-debt]
 sources: [src/]
-updated: 2026-10-19
+updated: 2026-10-21
 ---
 
 # Known Issues
@@ -32,18 +32,26 @@ Remove an entry once fixed and note it in [[log]].
 6. **Delete account failure never reported** —
    `src/components/setting/AccountSetting.tsx`: `const isSuccess = await
    deleteAccount(...)` is an object (`{ isSuccess }`), always truthy.
-7. **Delete incoming transfer adjusts balance the wrong way** —
-   `TransactionList.tsx` `removeTransactionHandler`: anything not INCOME
-   gets `+amount`, but deleting a TRANSFER *into* this account should
-   subtract. The other account in a transfer isn't patched at all.
-   [[Balance Sync]]
-8. **Editing a transaction doesn't refresh balances** — the
-   `updateTransaction` response's account balances are ignored.
+7. ~~**Delete incoming transfer adjusts balance the wrong way**~~ —
+   fixed by the v3 migration: delete reloads all balances. Verified
+   in the UI 2026-10-21. [[Balance Sync]]
+8. ~~**Editing a transaction doesn't refresh balances**~~ — fixed by
+   the v3 migration: the update response's accounts replace the local
+   ones. Verified in the UI 2026-10-21.
 9. ~~**Report stuck on spinner**~~ — fixed 2026-10-04: with no account
    selected the report now renders empty. [[Report Screen]]
 10. **Balance matching by name** — Home/More expense & income patch
     `accountsState` by account *name* (transfer uses id). Works only
     because names are unique per owner.
+11. **Stuck on "Loading…" when the API is unreachable** — seen
+    2026-10-21: `getUserData` failed with `Failed to fetch` and the
+    app never left the loading screen or showed an error.
+12. **Edit form shows another transaction's values** — seen
+    2026-10-21: `TransactionCard.tsx` keys rows by index, and
+    `UpdateTransactionModal` seeds `useState` from props once. After a
+    delete shifts the rows, a row's edit form keeps the previous
+    occupant's amount/description/date, and Confirm patches *this*
+    transaction with them. A reload clears it. [[Transaction List Screen]]
 
 ## API v2 backend
 

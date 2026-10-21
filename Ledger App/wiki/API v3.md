@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, human 2026-09-25]
-updated: 2026-10-19
+updated: 2026-10-21
 ---
 
 # API v3
@@ -67,6 +67,11 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   e.g. FK violations. The client can't tell these apart.
 - A missing or invalid token gets **HTTP 401** from Spring Security, not a
   GraphQL error.
+- **CORS** (2026-10-21, backend `ea73da8`): allowed origins come from
+  `ledger.cors.allowed-origins` (empty by default, so none in prod);
+  the local launcher allows `localhost:5173` and `:3000`. Only `POST`
+  and `OPTIONS` cross-origin, so send queries as POST. Before this the
+  preflight got 401 and the dev app showed `Failed to fetch`.
 
 ## Pagination
 

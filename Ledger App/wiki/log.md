@@ -303,3 +303,8 @@ change is requested from dotta-8f and pending. Touched [[API v3]],
 
 The deploy agent added the `/api/graphql` route; it's live once its
 repo's main is pushed. Touched [[API v3]].
+
+## [2026-10-22] update | drop /api/v3 without a transition
+
+Nothing uses `/api/v3`, so its rule is removed along with adding
+`/api/graphql` (requested from dotta-8f). Touched [[API v3]].

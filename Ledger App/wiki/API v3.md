@@ -29,12 +29,12 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   elsewhere. DB credentials come from OpenBao/Vault.
 - Public endpoint: **`https://ledger.forestware.org/api/graphql`**,
   mapped by the ingress to the app's `/graphql`; clients use it as is.
-  It replaces `/api/v3` (2026-09-25), which stays until the app
-  switches (human, 2026-10-22). The app config moved first. The deploy
+  It replaces `/api/v3` (2026-09-25), dropped with no transition
+  since nothing used it (human, 2026-10-22). The app config moved first. The deploy
   agent (dotta-8f, 2026-10-22) added the route in the deploy repo's
   `apps/ledger-api-v3/release.yaml` (PathPrefix + full-path rewrite
   to `/graphql`, so `/api/graphql/anything` also reaches `/graphql`;
-  `/api/v3` kept as a deprecated rule). It goes live when that repo's
+  the `/api/v3` rule removal was requested). It goes live when that repo's
   main is pushed (Flux); not confirmed live yet.
 - No version in the path (human, 2026-10-22), as in GitLab: the
   GraphQL API evolves by deprecating fields, and a path version would

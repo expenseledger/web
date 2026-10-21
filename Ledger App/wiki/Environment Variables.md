@@ -29,7 +29,6 @@ default): with `API_PROXY_TARGET=https://ledger.forestware.org`,
 `yarn start` proxies `/api/graphql` there (`server.proxy` in `vite.config.ts`). The proxy strips the `Origin`
 header; browsers send it even on same-origin POSTs, and Spring would
 see `localhost` vs `ledger.forestware.org` and answer 403. Deployed
-builds keep the full URL ([[API v3]]). Until the ingress serves
-`/api/graphql`, the proxy gets 404s.
+builds keep the full URL ([[API v3]]).
 
 See [[Authentication]].

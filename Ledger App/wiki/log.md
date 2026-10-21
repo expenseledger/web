@@ -308,3 +308,8 @@ repo's main is pushed. Touched [[API v3]].
 
 Nothing uses `/api/v3`, so its rule is removed along with adding
 `/api/graphql` (requested from dotta-8f). Touched [[API v3]].
+
+## [2026-10-22] update | /api/graphql live
+
+Deployed (main@8c1ffae): `/api/graphql` answers 401 without a token,
+`/api/v3` 404. Touched [[API v3]], [[Environment Variables]].

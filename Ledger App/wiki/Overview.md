@@ -2,7 +2,7 @@
 type: synthesis
 tags: [overview]
 sources: [README.md, package.json, src/components/App.tsx]
-updated: 2026-10-19
+updated: 2026-10-22
 ---
 
 # Overview
@@ -11,7 +11,7 @@ updated: 2026-10-19
 for tracking personal expenses, income, and transfers across multiple
 accounts, with monthly reports. This repo is the **frontend only**; the
 backend is API v3 (Spring for GraphQL over PostgreSQL) at
-`ledger.forestware.org/api/v3` since the cutover on `feature/api-v3`
+`ledger.forestware.org/api/graphql` (was `/api/v3`) since the cutover on `feature/api-v3`
 (2026-10-19; [[API v3]]). It replaces the Postgraphile API v2
 ([[GraphQL API]]).
 

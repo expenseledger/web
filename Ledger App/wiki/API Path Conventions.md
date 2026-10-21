@@ -2,13 +2,13 @@
 type: synthesis
 tags: [api, versioning]
 sources: [human 2026-10-21, docs.github.com, docs.gitlab.com, shopify.dev]
-updated: 2026-10-21
+updated: 2026-10-22
 ---
 
 # API Path Conventions
 
 How public APIs put more than one protocol on one host, and where the
-version goes. Background for the `/api/v3` decision ([[API v3]]).
+version goes. Background for the `/api/graphql` decision ([[API v3]]).
 
 ## Examples (checked 2026-10-21)
 
@@ -30,7 +30,8 @@ version goes. Background for the `/api/v3` decision ([[API v3]]).
 
 ## Ledger
 
-`/api/v3` is the GraphQL API's version, so it has no `/graphql` suffix
-(human, 2026-10-21). That's the first pattern, except that the GraphQL
-API does carry a version. A future REST API would get a sibling path
+The endpoint is `/api/graphql`, with no version (human, 2026-10-22):
+the first pattern, like GitLab. Retire fields with `@deprecated` and a
+removal date in the reason. A future REST API would get a sibling path
 with its own version, e.g. `/api/rest/v1` (inferred; nothing planned).
+On 2026-10-21 the choice was `/api/v3` with no `/graphql` suffix.

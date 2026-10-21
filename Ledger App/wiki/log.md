@@ -290,3 +290,11 @@ Touched [[Tech Stack]], [[Build and Test]], [[CI and Deployment]],
 Recorded why the public endpoint stays `/api/v3`: the version belongs
 to the GraphQL API. Compared GitHub, GitLab, Shopify and Yelp. Touched
 [[API v3]], new [[API Path Conventions]], [[index]].
+
+## [2026-10-22] update | API path moves to /api/graphql
+
+Replaces the 2026-10-21 decision: no version in the path, like GitLab.
+The dev proxy and `.sample.env` now use `/api/graphql`; the ingress
+change is requested from dotta-8f and pending. Touched [[API v3]],
+[[API Path Conventions]], [[Environment Variables]], [[Overview]],
+[[API v3 Migration]].

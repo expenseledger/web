@@ -2,7 +2,7 @@
 type: synthesis
 tags: [migration, v3, planning]
 sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, human 2026-10-19, src/, expense-ledger-api]
-updated: 2026-10-19
+updated: 2026-10-22
 ---
 
 # API v3 Migration
@@ -42,7 +42,7 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 | [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Account delete cascades (warn the user; § Decided: deleting referenced accounts/categories). Currency picker → per-account currency |
 | [[State Management]] | Done: `currencyState` removed, currency per account, string IDs |
 | [[Balance Sync]] | Read balances from create/`patch*` responses (select `from`/`to { balance }`). Refetch after `deleteTransaction`, account/category deletes, and for an account a patch moved a transaction off |
-| [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/v3` |
+| [[Apollo Client]] / [[Authentication]] | Same Firebase bearer token (project `expense-ledger-a0aa2`). Handle HTTP 401 separately from GraphQL errors. New endpoint `https://ledger.forestware.org/api/graphql` (was `/api/v3` until 2026-10-22) |
 | [[GraphQL Codegen]] | Point at the v3 schema (`schema.graphqls`); regenerate; rewrite all documents |
 | Dates | Filters must send local-offset strings (e.g. `+07:00`), **not** `toISOString()`. The current code passes `Date` objects |
 

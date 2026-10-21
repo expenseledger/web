@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, human 2026-09-25]
-updated: 2026-10-21
+updated: 2026-10-22
 ---
 
 # API v3
@@ -27,14 +27,15 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 - GitLab CI → multi-arch container image (tagged with the version, e.g.
   1.0.0, plus `latest` on main) → Kubernetes via a Helm chart kept
   elsewhere. DB credentials come from OpenBao/Vault.
-- Public endpoint: **`https://ledger.forestware.org/api/v3`** (human,
-  2026-09-25). The ingress maps it to the app's `/graphql`, so clients
-  use it as is, with no `/graphql` suffix (human via backend agent,
-  2026-10-19).
-- Don't add a `/graphql` suffix (human, 2026-10-21): "v3" is the
-  GraphQL API's version, not the host's. A REST API added later would
-  get its own path and version line, so `/api/v3/<anything>` would
-  wrongly imply it belongs to v3. See [[API Path Conventions]].
+- Public endpoint: **`https://ledger.forestware.org/api/graphql`**,
+  mapped by the ingress to the app's `/graphql`; clients use it as is.
+  It replaces `/api/v3` (2026-09-25), which stays until the app
+  switches (human, 2026-10-22). The app config moved first; the
+  ingress change was requested from the deploy agent (dotta-8f) on
+  2026-10-22 and isn't confirmed yet.
+- No version in the path (human, 2026-10-22), as in GitLab: the
+  GraphQL API evolves by deprecating fields, and a path version would
+  wrongly cover any other API on the host. See [[API Path Conventions]].
 - The backend repo has its own Obsidian wiki (`Ledger/wiki/`) with
   domain docs and decision records.
 

@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, tooling]
 sources: [package.json, eslint.config.js, vite.config.ts, babel.config.json, jest.config.json]
-updated: 2026-10-18
+updated: 2026-10-21
 ---
 
 # Tech Stack
@@ -25,17 +25,18 @@ updated: 2026-10-18
 | Routing | `react-router-dom` 7 — see [[Routing and Layout]] |
 | Tests | Jest 30 + jsdom + Testing Library, Babel transform — see [[Build and Test]] |
 | Hosting | Vercel — see [[CI and Deployment]] |
-| Package mgr | npm (`package-lock.json`), Node ≥ 22 (CI uses Node 26) |
+| Package mgr | Yarn 4 (`yarn.lock`, `node-modules` linker), Node ≥ 22 (CI uses Node 26) |
 
 Notes:
 
-- Switched from Yarn 4 to npm on 2026-10-18. The lockfile was seeded
-  from yarn's tree, so versions match it (a newer `styled-components`
-  changes class hashes and breaks the `AccountCard` snapshot).
-- npm enforces peer dependencies, which yarn only warned about:
+- Switched to npm on 2026-10-18 and back to Yarn 4 on 2026-10-21. Each
+  lockfile was seeded from the previous one, so versions match (a newer
+  `styled-components` changes class hashes and breaks the `AccountCard`
+  snapshot).
+- Peer-dependency fixes made for npm, kept under yarn:
   - `react-firebaseui` (and `firebaseui`) have no release for React 19
-    or Firebase 12; `overrides` in `package.json` forces our versions.
-    Unsupported: check it first if sign-in misbehaves.
+    or Firebase 12; yarn only warns (YN0060). Unsupported: check it
+    first if sign-in misbehaves.
   - TypeScript 7 has no API, so `typescript` is aliased to
     `@typescript/typescript6` for typescript-eslint, and
     `@typescript/native` (TS 7) provides `tsc`.

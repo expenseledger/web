@@ -276,3 +276,11 @@ cards) by stable values. Touched [[Known Issues]].
 `npm start` proxies `/api/v3` to `ledger.forestware.org` with `Origin`
 stripped, so local dev needs no CORS change on the API. Touched
 [[Environment Variables]].
+
+## [2026-10-21] update | switch back from npm to Yarn
+
+Restored Yarn 4.17.1 (`.yarnrc.yml`, `.yarn/releases`, `yarn.lock`
+seeded from the pre-npm lockfile). The npm peer-dependency fixes stay;
+`overrides` is gone. CI uses `yarn install` and `yarn dlx vercel`.
+Touched [[Tech Stack]], [[Build and Test]], [[CI and Deployment]],
+[[GraphQL Codegen]], [[Authentication]], [[Environment Variables]].

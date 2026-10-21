@@ -2,12 +2,12 @@
 type: ops
 tags: [tooling, data]
 sources: [codegen.ts, schema.graphql, src/service/model/gql/]
-updated: 2026-10-19
+updated: 2026-10-21
 ---
 
 # GraphQL Codegen
 
-- Command: `npm run gen-gql-model` (`graphql-codegen`).
+- Command: `yarn gen-gql-model` (`graphql-codegen`).
 - Config `codegen.ts`: schema = the local `schema.graphql`, a copy of
   the v3 `schema.graphqls` plus the `*Connection`/`*Edge`/`PageInfo`
   types Spring for GraphQL generates at runtime ([[API v3]]); documents

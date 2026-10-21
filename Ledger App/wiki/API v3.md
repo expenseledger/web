@@ -34,7 +34,7 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   agent (dotta-8f, 2026-10-22) added the route in the deploy repo's
   `apps/ledger-api-v3/release.yaml` (PathPrefix + full-path rewrite
   to `/graphql`, so `/api/graphql/anything` also reaches `/graphql`;
-  the `/api/v3` rule removal was requested). It goes live when that repo's
+  replacing the `/api/v3` rule, which is removed). It goes live when that repo's
   main is pushed (Flux); not confirmed live yet.
 - No version in the path (human, 2026-10-22), as in GitLab: the
   GraphQL API evolves by deprecating fields, and a path version would

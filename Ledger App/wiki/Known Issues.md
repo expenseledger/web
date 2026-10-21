@@ -46,12 +46,11 @@ Remove an entry once fixed and note it in [[log]].
 11. **Stuck on "Loading…" when the API is unreachable** — seen
     2026-10-21: `getUserData` failed with `Failed to fetch` and the
     app never left the loading screen or showed an error.
-12. **Edit form shows another transaction's values** — seen
-    2026-10-21: `TransactionCard.tsx` keys rows by index, and
-    `UpdateTransactionModal` seeds `useState` from props once. After a
-    delete shifts the rows, a row's edit form keeps the previous
-    occupant's amount/description/date, and Confirm patches *this*
-    transaction with them. A reload clears it. [[Transaction List Screen]]
+12. ~~**Edit form shows another transaction's values**~~ — fixed
+    2026-10-21: rows were keyed by index and `UpdateTransactionModal`
+    seeds its state once, so after a delete a row's edit form kept the
+    previous row's values and Confirm saved them. `TransactionCard`
+    now keys rows by transaction id. [[Transaction List Screen]]
 
 ## API v2 backend
 

@@ -259,3 +259,8 @@ transfer), Transaction List (delete, edit), Report and Account
 settings on `localhost:8080`; all worked. Known Issues 7 and 8 are
 already fixed; found 12 (stale edit form after a delete). Touched
 [[Known Issues]], [[API v3]].
+
+## [2026-10-21] update | fix stale edit form after a delete
+
+`TransactionCard` keys rows by transaction id, not index. Touched
+[[Known Issues]].

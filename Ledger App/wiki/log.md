@@ -284,3 +284,9 @@ seeded from the pre-npm lockfile). The npm peer-dependency fixes stay;
 `overrides` is gone. CI uses `yarn install` and `yarn dlx vercel`.
 Touched [[Tech Stack]], [[Build and Test]], [[CI and Deployment]],
 [[GraphQL Codegen]], [[Authentication]], [[Environment Variables]].
+
+## [2026-10-21] query | no /graphql suffix on API v3
+
+Recorded why the public endpoint stays `/api/v3`: the version belongs
+to the GraphQL API. Compared GitHub, GitLab, Shopify and Yelp. Touched
+[[API v3]], new [[API Path Conventions]], [[index]].

@@ -1,7 +1,7 @@
 ---
 type: meta
 tags: [index]
-updated: 2026-10-19
+updated: 2026-10-21
 ---
 
 # Index
@@ -15,6 +15,7 @@ Schema/conventions: `../CLAUDE.md`.
 - [[Known Issues]] — bugs and tech debt found in the code.
 - [[Open Questions]] — unknowns needing backend sources or answers.
 - [[API v3 Migration]] — v2→v3 breaking changes, screen impact, gaps.
+- [[API Path Conventions]] — protocols and versions on one host; why no `/graphql`.
 
 ## Architecture (concept)
 

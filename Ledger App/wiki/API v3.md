@@ -31,6 +31,10 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   2026-09-25). The ingress maps it to the app's `/graphql`, so clients
   use it as is, with no `/graphql` suffix (human via backend agent,
   2026-10-19).
+- Don't add a `/graphql` suffix (human, 2026-10-21): "v3" is the
+  GraphQL API's version, not the host's. A REST API added later would
+  get its own path and version line, so `/api/v3/<anything>` would
+  wrongly imply it belongs to v3. See [[API Path Conventions]].
 - The backend repo has its own Obsidian wiki (`Ledger/wiki/`) with
   domain docs and decision records.
 

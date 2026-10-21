@@ -51,6 +51,10 @@ Remove an entry once fixed and note it in [[log]].
     seeds its state once, so after a delete a row's edit form kept the
     previous row's values and Confirm saved them. `TransactionCard`
     now keys rows by transaction id. [[Transaction List Screen]]
+13. ~~**Settings: pending delete dropped when the list changes**~~ —
+    fixed 2026-10-21: `EditAndDeleteSetting` keyed rows by index and
+    item boxes by id, so adding an item above remounted the boxes and
+    cancelled a pending delete confirmation. Rows are keyed by id now.
 
 ## API v2 backend
 
@@ -90,3 +94,6 @@ Found in `expense-ledger-api` on 2026-09-25 ([[API v2 Backend]]).
 - `toNumber` removes only the first comma.
 - `AccountSetting` isn't wrapped in `AnimatedPage`.
 - README "Tables" / "Batch update (timer)" sections are outdated.
+- List keys: no list renders keyed by position since 2026-10-21; keep
+  it that way, as rows with state (edit forms, pending deletes) pick
+  up another item's state when the list shifts (issues 12, 13).

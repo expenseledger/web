@@ -264,3 +264,9 @@ already fixed; found 12 (stale edit form after a delete). Touched
 
 `TransactionCard` keys rows by transaction id, not index. Touched
 [[Known Issues]].
+
+## [2026-10-21] update | stable list keys everywhere
+
+Fixed the settings list dropping a pending delete (issue 13) and keyed
+the other lists (account slides, dropdown options, pie cells, day
+cards) by stable values. Touched [[Known Issues]].

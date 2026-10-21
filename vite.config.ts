@@ -90,5 +90,16 @@ export default defineConfig({
     server: {
         open: true,
         port: 3000,
+        // Forwards /api/v3 to the deployed API, so local dev works with
+        // VITE_SERVER_URL=/api/v3 and no localhost in the API's CORS list.
+        // The Origin header is dropped, or Spring rejects the request as
+        // cross-origin (localhost vs ledger.forestware.org) with a 403.
+        proxy: {
+            "/api/v3": {
+                target: "https://ledger.forestware.org",
+                changeOrigin: true,
+                configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
+            },
+        },
     },
 });

@@ -53,5 +53,5 @@ Schema/conventions: `../CLAUDE.md`.
 
 - [[Build and Test]] — scripts, Jest setup, coverage gaps.
 - [[CI and Deployment]] — GitHub Actions, Vercel, release-it.
-- [[Environment Variables]] — `VITE_*` config.
+- [[Environment Variables]] — `VITE_*` config, dev proxy to API v3.
 - [[GraphQL Codegen]] — regenerating typed documents.

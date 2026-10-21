@@ -270,3 +270,9 @@ already fixed; found 12 (stale edit form after a delete). Touched
 Fixed the settings list dropping a pending delete (issue 13) and keyed
 the other lists (account slides, dropdown options, pie cells, day
 cards) by stable values. Touched [[Known Issues]].
+
+## [2026-10-21] update | dev proxy to the deployed API v3
+
+`npm start` proxies `/api/v3` to `ledger.forestware.org` with `Origin`
+stripped, so local dev needs no CORS change on the API. Touched
+[[Environment Variables]].

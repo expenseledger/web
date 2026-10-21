@@ -1,8 +1,8 @@
 ---
 type: ops
 tags: [config]
-sources: [.sample.env, src/lib/firebase.ts, src/lib/rr.ts, src/env.d.ts]
-updated: 2026-10-19
+sources: [.sample.env, src/lib/firebase.ts, src/lib/rr.ts, src/env.d.ts, vite.config.ts]
+updated: 2026-10-21
 ---
 
 # Environment Variables
@@ -19,5 +19,15 @@ Vite-style: `VITE_*`, read via `import.meta.env`. Template:
 | `VITE_FIREBASE_MESSAGING_SENDER_ID` | 〃 | |
 | `VITE_FIREBASE_APP_ID` | 〃 | |
 | `VITE_FIREBASE_PROJECT_ID`, `VITE_FIREBASE_BUCKET` | — | In template, unused |
+
+## Local dev against the deployed API
+
+API v3's CORS list is empty in production and won't get `localhost`.
+So in dev set `VITE_SERVER_URL=/api/v3` (the `.sample.env` default):
+`npm start` proxies `/api/v3` to `https://ledger.forestware.org`
+(`server.proxy` in `vite.config.ts`). The proxy strips the `Origin`
+header; browsers send it even on same-origin POSTs, and Spring would
+see `localhost` vs `ledger.forestware.org` and answer 403. Deployed
+builds keep the full URL ([[API v3]]).
 
 See [[Authentication]].

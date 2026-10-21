@@ -48,7 +48,7 @@ function apiProxy(target: string | undefined): Record<string, ProxyOptions> | un
     }
 
     return {
-        "/api/v3": {
+        "/api/graphql": {
             target,
             changeOrigin: true,
             configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
@@ -104,10 +104,10 @@ export default defineConfig(({ mode }) => ({
     server: {
         open: true,
         port: 3000,
-        // Forwards /api/v3 to API_PROXY_TARGET (e.g. the deployed API), so
-        // local dev works with VITE_SERVER_URL=/api/v3 and no localhost in
-        // the API's CORS list. The Origin header is dropped, or Spring
-        // rejects the request as cross-origin with a 403.
+        // Forwards /api/graphql to API_PROXY_TARGET (e.g. the deployed API),
+        // so local dev works with VITE_SERVER_URL=/api/graphql and no
+        // localhost in the API's CORS list. The Origin header is dropped, or
+        // Spring rejects the request as cross-origin with a 403.
         proxy: apiProxy(loadEnv(mode, process.cwd(), "").API_PROXY_TARGET),
     },
 }));

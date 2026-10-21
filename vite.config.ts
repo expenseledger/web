@@ -1,7 +1,7 @@
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 import { graphql } from "graphql";
-import { defineConfig, Plugin } from "vite";
+import { defineConfig, loadEnv, Plugin, ProxyOptions } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgrPlugin from "vite-plugin-svgr";
 import babel from "@rolldown/plugin-babel";
@@ -42,8 +42,22 @@ function mockApiV3(): Plugin {
     };
 }
 
+function apiProxy(target: string | undefined): Record<string, ProxyOptions> | undefined {
+    if (!target) {
+        return undefined;
+    }
+
+    return {
+        "/api/v3": {
+            target,
+            changeOrigin: true,
+            configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
+        },
+    };
+}
+
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         mockApiV3(),
         react(),
@@ -90,16 +104,10 @@ export default defineConfig({
     server: {
         open: true,
         port: 3000,
-        // Forwards /api/v3 to the deployed API, so local dev works with
-        // VITE_SERVER_URL=/api/v3 and no localhost in the API's CORS list.
-        // The Origin header is dropped, or Spring rejects the request as
-        // cross-origin (localhost vs ledger.forestware.org) with a 403.
-        proxy: {
-            "/api/v3": {
-                target: "https://ledger.forestware.org",
-                changeOrigin: true,
-                configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
-            },
-        },
+        // Forwards /api/v3 to API_PROXY_TARGET (e.g. the deployed API), so
+        // local dev works with VITE_SERVER_URL=/api/v3 and no localhost in
+        // the API's CORS list. The Origin header is dropped, or Spring
+        // rejects the request as cross-origin with a 403.
+        proxy: apiProxy(loadEnv(mode, process.cwd(), "").API_PROXY_TARGET),
     },
-});
+}));

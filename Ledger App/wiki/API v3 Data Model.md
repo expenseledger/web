@@ -87,7 +87,8 @@ Create and `patch*` responses can return updated balances (select
   `CATEGORY_PROTECTED` (renamed from `CATEGORY_UNDELETABLE` 2026-10-19;
   also refuses renaming "Other"; [[API v3 Migration]]).
 - Account and category names are unique per user, ignoring case
-  (`NAME_TAKEN`; case-insensitive since 2026-10-24).
+  (`NAME_TAKEN`; case-insensitive since 2026-10-24), trimmed and never
+  blank (`BLANK_NAME`).
   `patchAccount` can rename and set the balance directly;
   `patchCategory` can rename (2026-10-19).
 

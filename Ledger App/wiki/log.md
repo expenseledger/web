@@ -401,3 +401,8 @@ Single-row queries return null; `transfer` is `Transfer!`;
 `SUB_MINOR_UNIT_AMOUNT`; case-insensitive `NAME_TAKEN`. App: schema,
 codegen, mock, `getAccount`, error text. Updated [[API v3]],
 [[API v3 Data Model]], [[Service Layer]].
+
+## [2026-10-24] update | API v3 TOO_FEW_ROWS, BLANK_NAME, trimmed names
+
+Source: backend agent `ledger-api-v3-8f` (local main, not deployed).
+App: mock and error text. Updated [[API v3]], [[API v3 Data Model]].

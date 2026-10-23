@@ -84,7 +84,12 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   name on create or patch), both BAD_REQUEST. Since 2026-10-24 (local
   main, not deployed): `SUB_MINOR_UNIT_AMOUNT` (BAD_REQUEST) for any
   amount or balance finer than the currency's minor unit (JPY 0
-  decimals, others 2), and `NAME_TAKEN` ignores case.
+  decimals, others 2), and `NAME_TAKEN` ignores case. Then
+  `TOO_FEW_ROWS` (`first` < 1) and `BLANK_NAME` (empty or whitespace
+  name on create/patch of accounts and categories), both BAD_REQUEST.
+- Names are trimmed on create and rename, so the returned name can
+  differ from the input (" Food " → "Food"). A migration trimmed stored
+  names and renamed blank ones "Unnamed" (2026-10-24).
 - `account(id)`, `category(id)` and `transaction(id)` return **null**
   for a missing or another user's id, not `RESOURCE_NOT_FOUND`
   (2026-10-24, main@58bcbe8); mutations still raise it.
@@ -103,7 +108,8 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
 - Relay connections: `edges { cursor node }`, `pageInfo { hasNextPage
   … endCursor }`. Forward-only (`first`, `after`), with opaque
   offset-based cursors.
-- `first` is **required, max 50** (`TOO_MANY_ROWS` above that). There's
+- `first` is **required, 1–50** (`TOO_MANY_ROWS` above, `TOO_FEW_ROWS`
+  below). There's
   **no totalCount**. Keep `first` constant while paging.
 - `sort: [{ property, direction }]` uses entity property names
   (`occurredAt`, `id`, `name`); the default is `id ASC`.
@@ -135,10 +141,9 @@ updates.
 
 ## Findings from app testing (2026-10-24)
 
-Backend agent `ledger-api-v3-8f`, 2026-10-24. Logged, not fixed:
-`first` ≤ 0 isn't rejected (`0` → INTERNAL_ERROR, `-1` → all rows;
-same for categories and transactions), and names aren't trimmed or
-checked for blanks.
+Backend agent `ledger-api-v3-8f`, 2026-10-24. Fixed the same day:
+`first` ≤ 0 wasn't rejected (now `TOO_FEW_ROWS`), and names weren't
+trimmed or checked for blanks (now trimmed, `BLANK_NAME`).
 
 - `NAME_TAKEN` was case-sensitive. Now it ignores case; recasing an
   item's own name is allowed. A migration renamed clashing accounts

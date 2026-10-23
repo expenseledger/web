@@ -44,7 +44,7 @@ Schema/conventions: `../CLAUDE.md`.
 
 - [[Home Screen]] — account carousel + quick expense.
 - [[More Screen]] — expense/income/transfer form.
-- [[Transaction List Screen]] — infinite scroll by month, edit/delete, paid-only.
+- [[Transaction List Screen]] — month swiper, edit/delete, paid-only.
 - [[Report Screen]] — weekly bar, category pies/tables.
 - [[Settings Screens]] — account, category, page settings.
 - [[Sign In Screen]] — FirebaseUI.

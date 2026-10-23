@@ -42,7 +42,7 @@ the shared [[Apollo Client]].
 | `transactionService.updateTransaction` | `updateTransaction` |
 | `transactionService.deleteTransaction` | `deleteTransaction` |
 | `transactionService.listTransactions` | two `transactions` queries (see below) |
-| `transactionService.listTransactionsPage` | one `transactions` query, cursor-paged (see below) |
+| `transactionService.getTransactionMonthYearList` | one query, `oldest`/`newest` aliases of `transactions` (see below) |
 
 Shared fragments: `PlainAccount`, `PlainCategory`, `PlainTransaction`.
 Mutations return the transaction with its accounts (incl. new `balance`),
@@ -56,14 +56,16 @@ merges the nodes, sums `totalCount`, and sorts by date desc then id desc.
 Used per month by [[Report Screen]]. The shared comparator is
 `compareTransactionsDesc` in `transactoinHelper.ts`.
 
-## listTransactionsPage
+## getTransactionMonthYearList
 
-One query: `filter: { or: [toAccountId, fromAccountId] }`,
-`orderBy: [DATE_DESC, ID_DESC]`, `first`/`after`. Returns
-`{ items, endCursor, hasNextPage }`, or **null** on failure (not an
-empty page, so callers can tell them apart). Always `network-only`.
-Used by [[Transaction List Screen]]. The v2 month list query
-(`transactionMonthYearListByAccountId`) is no longer called.
+v3 has no month list, so one query (`GetTransactionDateRange`) asks
+`transactions` twice with `first: 1`: `occurredAt` ASC (`oldest`) and
+DESC (`newest`), filtered by `accountId`. `monthYearsBetween` in
+`transactoinHelper.ts` turns that into every local month (`YYYY-MM`)
+from oldest to newest, newest first, so months without transactions
+are included. No transactions or a failure → `[]`. Always
+`network-only`. Used by [[Transaction List Screen]] and
+[[Report Screen]]. Replaced `listTransactionsPage` (2026-10-23).
 
 ## Helpers
 

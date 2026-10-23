@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, reporting]
 sources: [src/components/report/]
-updated: 2026-10-19
+updated: 2026-10-23
 ---
 
 # Report Screen
@@ -15,10 +15,12 @@ accounts.
   (at least one must stay checked). One currency at a time: checking an
   account in another currency switches to that account alone, and the
   report shows that currency's symbol (2026-10-19).
-- Month: `MonthPicker` (prev/next), starts on the current month, no
-  bounds; months with nothing show empty widgets ([[API v3 Migration]]
-  § Decided: month navigation).
-- No account selected → empty report (no spinner).
+- Month: `MonthYearSwiper` over the merged, deduplicated
+  `getTransactionMonthYearList` of the selected accounts, newest first
+  (empty months included; [[API v3 Migration]] § Decided: month
+  navigation).
+- No account selected, or none of them has transactions → empty report
+  (no spinner; Known Issue 9).
 - Transactions = `listTransactions` per account for the month, flattened,
   **TRANSFERs removed**, sorted by date asc.
 - Widgets (recharts):

@@ -37,8 +37,8 @@ Details: [[API v3 Data Model]], [[API v3 Operations]].
 | Bootstrap ([[Routing and Layout]]) | Call `initializeUser` once, then page through `accounts` and `categories` (≤ 50 each) instead of one `currentUser` |
 | [[Home Screen]] | `withdraw` with Money in the account's currency. Date → `occurredAt`. Description → `description` (send null, not `"-"`, when it's empty) Category can be omitted |
 | [[More Screen]] | `deposit`/`transfer`; cross-currency transfers need a `convertedAmount` input. The date is lost; description maps to `description`. Category filtering by type already removed (2026-10-18) |
-| [[Transaction List Screen]] | Already an infinite scroll; swap the page query (§ Decided: month navigation). Must page through results (no totalCount). Edit → `patchExpense`/`patchIncome`/`patchTransfer` (amount, date, category, description, accounts; not the type). Omit unchanged variables. Delete → `deleteTransaction` (returns only the id). One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
-| [[Report Screen]] | Already a free month picker (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
+| [[Transaction List Screen]] | Month swiper as on `main`, months from the date range (§ Decided: month navigation). Must page through each month (no totalCount). Edit → `patchExpense`/`patchIncome`/`patchTransfer` (amount, date, category, description, accounts; not the type). Omit unchanged variables. Delete → `deleteTransaction` (returns only the id). One `accountId` query replaces the two to/from queries. Direction via `__typename` + `from`/`to` |
+| [[Report Screen]] | Month swiper as on `main` (§ Decided: month navigation). Must page through every transaction per month and account. Unaffected by the loss of category types (it splits by transaction type and groups by category name). Still client-side aggregation |
 | [[Settings Screens]] | Types and edit modals already removed (2026-10-18). To add on v3: account name + balance edit (balance set directly, § Decided: types), category rename. Account delete cascades (warn the user; § Decided: deleting referenced accounts/categories). Currency picker → per-account currency |
 | [[State Management]] | Done: `currencyState` removed, currency per account, string IDs |
 | [[Balance Sync]] | Read balances from create/`patch*` responses (select `from`/`to { balance }`). Refetch after `deleteTransaction`, account/category deletes, and for an account a patch moved a transaction off |
@@ -94,6 +94,13 @@ backdating (item 1) is possible, so months can have gaps.
   the month list. On v3, `listTransactionsPage` maps to `transactions`
   with `accountId` and a date sort ([[Service Layer]]).
 - The last loaded month shows no total while more pages exist.
+
+**Revised** (human, 2026-10-23): the infinite scroll and the free
+month picker are taken out again, so the API v3 PR has no UI change;
+UI improvements go in a separate PR later. Both screens use `main`'s
+`MonthYearSwiper`. Still no backend month list: the months span the
+account's oldest to newest transaction (two `first: 1` queries), so
+empty months between them get a slide ([[Service Layer]]).
 
 ## Decided: types and editing
 

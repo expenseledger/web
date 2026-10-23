@@ -330,3 +330,13 @@ create/edit. Pickers hold the category by id. Touched [[Category]],
 [[API v3 Data Model]], [[API v3 Operations]], [[API v3 Migration]],
 [[Home Screen]], [[More Screen]], [[Transaction List Screen]],
 [[Settings Screens]], [[Known Issues]], [[Service Layer]], [[index]].
+
+## [2026-10-23] update | month swiper back for the API v3 PR
+
+Human decision: restore `main`'s month swiper on the transaction list
+and report so the API v3 PR has no UI change; UI work goes in a later
+PR. Months come from the oldest and newest transaction, empty months
+included; no backend change. Known Issue 9's fix kept. Branch
+`feature/api-v3-month-swiper`. Touched [[Transaction List Screen]],
+[[Report Screen]], [[Service Layer]], [[Base Components]],
+[[API v3 Migration]], [[index]].

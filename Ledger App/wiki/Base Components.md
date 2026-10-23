@@ -2,7 +2,7 @@
 type: concept
 tags: [ui, components]
 sources: [src/components/bases/]
-updated: 2026-10-04
+updated: 2026-10-23
 ---
 
 # Base Components
@@ -21,7 +21,7 @@ has a test in `src/tests/bases/` ([[Build and Test]]).
 | `Switch` | Toggle with label, rounded/size/RTL options |
 | `EditAndDeleteSetting` | List with edit/delete per item (settings) |
 | `TextBoxWithButton` | Input + optional dropdown + button; `onClick(value, dropdownValue)` |
-| `MonthPicker` | Prev/next month stepper over a dayjs month ("MMMM YYYY") |
+| `MonthYearSwiper` | RTL Swiper of `YYYY-MM` months ("MMMM YYYY"), newest first; "No data" when empty |
 | `AmountTxt` / `BalanceWithCurrency` | Formatted money with currency atom; can mask |
 | `MessageBox` | Colored box (used for transaction rows) |
 | `Loading` | Full-page spinner |

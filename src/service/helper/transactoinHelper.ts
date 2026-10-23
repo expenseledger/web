@@ -38,6 +38,22 @@ export function compareTransactionsDesc(a: Transaction, b: Transaction): number 
     return +b.id - +a.id;
 }
 
+/** Every local month (`YYYY-MM`) from `oldest`'s to `newest`'s, newest first. */
+export function monthYearsBetween(oldest: Date, newest: Date): string[] {
+    const first = dayjs(oldest).startOf("month");
+    const monthYears: string[] = [];
+
+    for (
+        let month = dayjs(newest).startOf("month");
+        !month.isBefore(first);
+        month = month.subtract(1, "M")
+    ) {
+        monthYears.push(month.format("YYYY-MM"));
+    }
+
+    return monthYears;
+}
+
 /** ISO-8601 with the local offset, e.g. `2026-09-01T00:00:00+07:00`, as API v3 expects. */
 export function toOffsetDateTime(date: Date): string {
     return dayjs(date).format("YYYY-MM-DDTHH:mm:ssZ");

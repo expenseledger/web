@@ -2,6 +2,7 @@ import {
     buildTransactionPatch,
     compareTransactionsDesc,
     mapTransactionFromServer,
+    monthYearsBetween,
     toOffsetDateTime,
 } from "../../../service/helper/transactoinHelper";
 import Transaction from "../../../service/model/Transaction";
@@ -74,6 +75,26 @@ describe("transactoinHelper", () => {
             const high = { ...expense, id: "10" };
 
             expect([older, low, high].sort(compareTransactionsDesc)).toEqual([high, low, older]);
+        });
+    });
+
+    describe("monthYearsBetween", () => {
+        it("lists every month from the oldest to the newest, newest first", () => {
+            const oldest = new Date(2025, 10, 30, 23, 59);
+            const newest = new Date(2026, 1, 1);
+
+            expect(monthYearsBetween(oldest, newest)).toEqual([
+                "2026-02",
+                "2026-01",
+                "2025-12",
+                "2025-11",
+            ]);
+        });
+
+        it("lists one month when both are in it", () => {
+            expect(monthYearsBetween(new Date(2026, 1, 1), new Date(2026, 1, 28))).toEqual([
+                "2026-02",
+            ]);
         });
     });
 

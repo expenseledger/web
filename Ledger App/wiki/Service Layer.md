@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, data]
 sources: [src/service/accountService.ts, src/service/categoryService.ts, src/service/transactionService.ts, src/service/userService.ts, src/service/helper/, src/service/model/]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # Service Layer
@@ -82,3 +82,11 @@ are included. No transactions or a failure → `[]`. Always
 `AddTransactionDto`, `httpStatus`, `getAllAccount`, `getAccount`,
 `getAllCategories` exist but no component calls them (inferred: legacy;
 initial data comes from `currentUser`).
+
+## Money rounding
+
+Every amount or balance a service sends (add, patch transaction, patch
+account) goes through `roundMoney` (`helper/moneyHelper.ts`). It rounds
+half away from zero to `currencyDecimals` (JPY 0, others 2), because API
+v3 keeps 4 decimals and doesn't round ([[API v3]], 2026-10-24). An amount
+that rounds to 0 gets `NON_POSITIVE_AMOUNT` from the server.

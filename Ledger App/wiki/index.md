@@ -15,6 +15,7 @@ Schema/conventions: `../CLAUDE.md`.
 - [[Known Issues]] — bugs and tech debt found in the code.
 - [[Open Questions]] — unknowns needing backend sources or answers.
 - [[API v3 Migration]] — v2→v3 breaking changes, screen impact, gaps.
+- [[PR Split]] — PR #131 holds only the v3 migration; other branches.
 - [[API Path Conventions]] — protocols and versions on one host; why no `/graphql`.
 
 ## Architecture (concept)

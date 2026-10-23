@@ -2,7 +2,7 @@
 type: synthesis
 tags: [bugs, tech-debt]
 sources: [src/]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # Known Issues
@@ -55,6 +55,16 @@ Remove an entry once fixed and note it in [[log]].
     fixed 2026-10-21: `EditAndDeleteSetting` keyed rows by index and
     item boxes by id, so adding an item above remounted the boxes and
     cancelled a pending delete confirmation. Rows are keyed by id now.
+14. **Edit saves "-" as the description** — seen 2026-10-24:
+    `TransactionCard` maps a missing description to `"-"` for display
+    and passes it on, so the edit form is prefilled with `-` and Confirm
+    sends `description: "-"`. Also on `main`, so a separate PR
+    ([[PR Split]]). [[Transaction List Screen]]
+15. **Report from a direct URL has no accounts** — seen 2026-10-24:
+    `Report` seeds its account checkboxes once from `accountsState`
+    and `location.state`, so opening or reloading `/report` shows no
+    accounts to pick. Also on `main`, so a separate PR ([[PR Split]]).
+    [[Report Screen]]
 
 ## API v2 backend
 

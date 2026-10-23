@@ -126,3 +126,22 @@ Concurrency (2026-09-25): transaction mutations use pessimistic row
 locks (`SELECT … FOR UPDATE`). They lock the transaction row first, then
 its accounts in ID order, so they can't deadlock. A test covers lost
 updates.
+
+## Findings from app testing (2026-10-24)
+
+Backend agent `ledger-api-v3-8f`, 2026-10-24. Logged, not fixed:
+`first` ≤ 0 isn't rejected (`0` → INTERNAL_ERROR, `-1` → all rows;
+same for categories and transactions), and names aren't trimmed or
+checked for blanks.
+
+- `NAME_TAKEN` is case-sensitive (plain `UNIQUE(name, user_id)`);
+  intent asked of the author. Assume case-sensitive.
+- Category type is only a hint, by design (author, 2026-10-23): the
+  server never checks it against the transaction type. Filter on the
+  client ([[Category]]).
+- No rounding policy: amounts are `NUMERIC(19,4)`, and the server
+  doesn't know minor units. Asked of the author; until then the client
+  rounds to the currency's minor unit ([[Service Layer]]).
+- Nullability quirks (`transfer` → nullable `Transfer`, `category(id)`
+  nullable) have been there since the first schema. Asked of the author;
+  code against the schema as it is.

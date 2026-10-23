@@ -351,3 +351,39 @@ server's `isInitialized`), dev mock, the "Other" checks and tests.
 Touched [[API v3]], [[API v3 Data Model]], [[API v3 Operations]],
 [[API v3 Migration]], [[Category]], [[Settings Screens]],
 [[Build and Test]].
+
+## [2026-10-24] test | App against local API v3
+
+Drove the app in Chrome against `localhost:8080`. `.env`
+`VITE_SERVER_URL=/graphql` 404'd (the dev proxy only maps
+`/api/graphql`); pointed it at `http://localhost:8080/graphql`.
+Home/More add, edit, delete, transfers, Report, account and category
+settings work. Added issues 14–16 to [[Known Issues]]. Sent API findings
+(`first` ≤ 0, unvalidated names, case-sensitive NAME_TAKEN, category
+type not enforced, sub-unit amounts, nullability) to backend agent
+`ledger-api-v3-8f`.
+
+## [2026-10-24] ingest | Backend answers to the test findings
+
+Source: backend agent `ledger-api-v3-8f`. Added "Findings from app
+testing" to [[API v3]].
+
+## [2026-10-24] change | Round money to the currency's minor unit
+
+Services round amounts and balances before sending (`roundMoney`,
+`currencyDecimals`). Updated [[Service Layer]] and [[API v3]].
+
+## [2026-10-24] update | PR #131 split
+
+Human decision: PR #131 (`feature/api-v3`) keeps only the API
+migration and the wiki; tooling, `main`'s existing bugs and new UX
+go to `chore/tooling`, `fix/stable-list-keys` and
+`feature/one-currency-report`, stacked on it and left stale for now.
+Added [[PR Split]]. Not yet in `index.md`; [[Known Issues]] 16 still
+reads the split as a regression.
+
+## [2026-10-24] lint | Known Issues 16 vs PR Split
+
+Removed [[Known Issues]] 16: the missing stable keys and one-currency
+reports are by design ([[PR Split]]). Marked 14–15 as `main` bugs for a
+separate PR. Added [[PR Split]] to [[index]].

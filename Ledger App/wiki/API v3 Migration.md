@@ -2,7 +2,7 @@
 type: synthesis
 tags: [migration, v3, planning]
 sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, human 2026-10-19, src/, expense-ledger-api]
-updated: 2026-10-22
+updated: 2026-10-23
 ---
 
 # API v3 Migration
@@ -61,7 +61,8 @@ These are v2 features the app uses that v3 lacks today:
 4. ~~Month list per account~~ — **not needed**; handled on the client
    (human, 2026-10-04; § Decided: month navigation)
 5. ~~Account/category types~~ — **dropped** (human, 2026-10-18;
-   § Decided: types)
+   § Decided: types). Category type **coming back** (human,
+   2026-10-23; § Decided: category type); needs v3 support
 6. ~~Renaming accounts/categories~~ — **done**: `patchAccount`,
    `patchCategory` (backend agent `ledger-api-v3-d0`, 2026-10-19)
 7. ~~Closing accounts that have history~~ — **decided**: no soft
@@ -107,6 +108,19 @@ too; the human will reimplement them on v3:
 - Category: name.
 
 Data migration can ignore v2 types.
+
+## Decided: category type
+
+(human, 2026-10-23) Reverses the category half of § Decided: types, so
+transaction forms list only fitting categories. Account types stay
+dropped.
+
+- `type: ANY | EXPENSE | INCOME | TRANSFER`, as in v2. ANY fits every
+  form. Existing categories and "None" become ANY.
+- Set on create, changeable via `patchCategory`.
+- A picker hint only: the server doesn't check it against the
+  transaction type, so retyping never invalidates history.
+- Blocked on v3: `Category` has no `type` yet.
 
 ## Decided: deleting referenced accounts/categories
 

@@ -313,3 +313,10 @@ Nothing uses `/api/v3`, so its rule is removed along with adding
 
 Deployed (main@8c1ffae): `/api/graphql` answers 401 without a token,
 `/api/v3` 404. Touched [[API v3]], [[Environment Variables]].
+
+## [2026-10-23] update | bring back category type
+
+Human decision: categories get ANY/EXPENSE/INCOME/TRANSFER again so
+forms list only fitting categories; UI filter only, no server check.
+Waits on v3 adding the field. Touched [[API v3 Migration]],
+[[Category]].

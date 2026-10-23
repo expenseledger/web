@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Category.ts, src/service/constants.ts, src/service/categoryService.ts]
-updated: 2026-10-19
+updated: 2026-10-23
 ---
 
 # Category
@@ -15,6 +15,9 @@ interface Category { id: number; name: string }
   every category. v2 still stores ANY/INCOME/EXPENSE/TRANSFER; created
   via `createCategoryV2` with a hardcoded `ANY` (the stale local schema
   has only v1 — see [[GraphQL API]]). API v3 has no category type.
+- **Type returning** (decided 2026-10-23, not built): ANY/EXPENSE/
+  INCOME/TRANSFER, picker filter only — [[API v3 Migration]]
+  § Decided: category type.
 - Rename via `patchCategory` in [[Settings Screens]] (2026-10-19);
   "None" can't be renamed.
 - Reports group by category name ([[Report Screen]]).

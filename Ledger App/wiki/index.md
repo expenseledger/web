@@ -1,7 +1,7 @@
 ---
 type: meta
 tags: [index]
-updated: 2026-10-22
+updated: 2026-10-23
 ---
 
 # Index
@@ -32,7 +32,7 @@ Schema/conventions: `../CLAUDE.md`.
 ## Domain (entity)
 
 - [[Account]] — untyped, server-owned balance, no editing yet.
-- [[Category]] — untyped; every form lists every category.
+- [[Category]] — untyped for now; type (picker filter) decided to return.
 - [[Transaction]] — EXPENSE/INCOME/TRANSFER, sign convention, rules.
 - [[GraphQL API]] — API v2 (replaced by v3 on `feature/api-v3`): Postgraphile.
 - [[API v2 Backend]] — v2 server source: SQL functions, RLS, cascades.

@@ -3,6 +3,7 @@ import { log } from "../common/utils";
 import client from "../lib/apollo";
 import { mapAccountFromServer } from "./helper/accountHelper";
 import { getErrorCode } from "./helper/errorHelper";
+import { roundMoney } from "./helper/moneyHelper";
 import { fetchAllPages, MAX_PAGE_SIZE } from "./helper/pagingHelper";
 import Account from "./model/Account";
 import {
@@ -179,7 +180,7 @@ export async function patchAccount(request: PatchAccountRequest): Promise<PatchA
             variables: {
                 id: request.id,
                 name: request.name,
-                balance: request.balance,
+                balance: roundMoney(request.balance),
             },
         });
 

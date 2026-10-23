@@ -64,6 +64,17 @@ describe("accountService", () => {
             expect(result.account).toEqual({ ...account, name: "Wallet", balance: 12.5 });
         });
 
+        it("rounds the balance to the currency's minor unit", async () => {
+            const { account } = await createAccount({ name: "Cash", currency: "JPY" });
+
+            const result = await patchAccount({
+                id: account.id,
+                balance: { amount: 1000.4, currency: "JPY" },
+            });
+
+            expect(result.account.balance).toBe(1000);
+        });
+
         it("returns the error code of a balance in another currency", async () => {
             const { account } = await createAccount({ name: "Cash", currency: "THB" });
 

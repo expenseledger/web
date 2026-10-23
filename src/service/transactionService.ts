@@ -1,6 +1,7 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
 import { getErrorCode } from "./helper/errorHelper";
+import { roundMoney } from "./helper/moneyHelper";
 import { fetchAllPages, MAX_PAGE_SIZE } from "./helper/pagingHelper";
 import {
     compareTransactionsDesc,
@@ -257,7 +258,7 @@ export async function addExpense(request: AddExpenseRequest): Promise<AddExpense
         const response = await client.mutate({
             mutation: ADD_EXPENSE,
             variables: {
-                amount: request.amount,
+                amount: roundMoney(request.amount),
                 categoryId: request.categoryId,
                 description: request.description || null,
                 fromAccountId: request.fromAccountId,
@@ -286,7 +287,7 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
         const response = await client.mutate({
             mutation: ADD_INCOME,
             variables: {
-                amount: request.amount,
+                amount: roundMoney(request.amount),
                 description: request.description || null,
                 categoryId: request.categoryId,
                 toAccountId: request.toAccountId,
@@ -316,8 +317,8 @@ export async function addTransfer(request: AddTransferRequest): Promise<AddTrans
         const response = await client.mutate({
             mutation: ADD_TRANSFER,
             variables: {
-                amount: request.amount,
-                convertedAmount: request.convertedAmount,
+                amount: roundMoney(request.amount),
+                convertedAmount: roundMoney(request.convertedAmount),
                 description: request.description || null,
                 categoryId: request.categoryId,
                 fromAccountId: request.fromAccountId,
@@ -455,7 +456,7 @@ export async function getTransactionMonthYearList(
 async function patchTransaction(request: UpdateTransactionRequest) {
     const variables = {
         id: request.id,
-        amount: request.amount,
+        amount: roundMoney(request.amount),
         categoryId: request.categoryId,
         description: request.description,
         occurredAt: request.occurredAt && toOffsetDateTime(request.occurredAt),
@@ -475,7 +476,7 @@ async function patchTransaction(request: UpdateTransactionRequest) {
         case "TRANSFER": {
             const response = await client.mutate({
                 mutation: PATCH_TRANSFER,
-                variables: { ...variables, convertedAmount: request.convertedAmount },
+                variables: { ...variables, convertedAmount: roundMoney(request.convertedAmount) },
             });
 
             return { error: response.error, data: response.data?.patchTransfer };

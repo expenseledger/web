@@ -17,6 +17,14 @@ export type Currency = "THB" | "USD" | "EUR" | "JPY";
 
 export const allCurrencies: Currency[] = ["THB", "USD", "EUR", "JPY"];
 
+/** Digits after the decimal point in each currency's minor unit. */
+export const currencyDecimals: Record<Currency, number> = {
+    THB: 2,
+    USD: 2,
+    EUR: 2,
+    JPY: 0,
+};
+
 export const currencySymbols: Record<Currency, string> = {
     THB: "฿",
     USD: "$",

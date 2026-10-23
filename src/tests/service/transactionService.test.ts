@@ -93,6 +93,17 @@ describe("transactionService", () => {
             expect(result).toEqual({ transaction: null, errorCode: "NON_POSITIVE_AMOUNT" });
         });
 
+        it("rounds the amount to the currency's minor unit", async () => {
+            const result = await addExpense({
+                amount: thb(0.005),
+                fromAccountId: cash.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction.amount).toBe(0.01);
+            expect(result.transaction.fromAccount.balance).toBe(99.99);
+        });
+
         it("returns null on an unexpected error", async () => {
             jest.spyOn(mockClient, "mutate").mockRejectedValueOnce(new Error("network"));
 
@@ -145,6 +156,21 @@ describe("transactionService", () => {
 
             expect(result.transaction.convertedAmount).toBe(1);
             expect(result.transaction.toAccount.balance).toBe(1);
+        });
+
+        it("rounds both amounts to their currencies' minor units", async () => {
+            const yen = await account("Yen", 0, "JPY");
+
+            const result = await addTransfer({
+                amount: thb(40.126),
+                convertedAmount: { amount: 175.5, currency: "JPY" },
+                fromAccountId: cash.id,
+                toAccountId: yen.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction.amount).toBe(40.13);
+            expect(result.transaction.convertedAmount).toBe(176);
         });
 
         it("returns the error code of a transfer to the same account", async () => {
@@ -266,6 +292,22 @@ describe("transactionService", () => {
                 amount: 50,
                 fromAccount: { ...cash, balance: 50 },
             });
+        });
+
+        it("rounds the patched amount", async () => {
+            const { transaction } = await addIncome({
+                amount: thb(10),
+                toAccountId: bank.id,
+                date: new Date(),
+            });
+
+            const result = await updateTransaction({
+                id: transaction.id,
+                type: "INCOME",
+                amount: thb(20.499),
+            });
+
+            expect(result.updatedTransaction.amount).toBe(20.5);
         });
 
         it("patches a transfer", async () => {

@@ -4,6 +4,7 @@ import { categoriesState } from "../../common/shareState";
 import { toNumber } from "../../common/utils";
 import dayjs from "../../lib/dayjs";
 import { Currency, currencySymbols, TransactionType } from "../../service/constants";
+import { categoriesFor } from "../../service/helper/categoryHelper";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import DateBox from "../bases/DateBox";
@@ -19,6 +20,7 @@ import { useAtomValue } from "jotai";
 interface UpdateTransactionModalProps {
     amount: number;
     currency: Currency;
+    type: TransactionType;
     category: Category;
     description: string;
     occurredAt: Date;
@@ -64,7 +66,13 @@ const InputBox = styled(Box)`
 `;
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
-    const categoryOptions = useAtomValue(categoriesState);
+    const fittingCategories = categoriesFor(useAtomValue(categoriesState), props.type);
+    // Keep its own category even when it doesn't fit, so editing another
+    // field never changes it.
+    const categoryOptions =
+        !props.category || fittingCategories.some((c) => c.id === props.category.id)
+            ? fittingCategories
+            : [...fittingCategories, props.category];
     const currency = currencySymbols[props.currency];
     const [updatedAmountText, setUpdatedAmountText] = React.useState(
         Math.abs(props.amount).toString()
@@ -198,6 +206,7 @@ const TransactionCardMessageComponent: React.FC<TransactionCardMessageProps> = (
                 <UpdateTransactionModal
                     amount={props.amount}
                     currency={props.currency}
+                    type={props.type}
                     category={props.category}
                     description={props.description}
                     occurredAt={props.occurredAt}

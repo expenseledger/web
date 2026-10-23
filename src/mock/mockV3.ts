@@ -393,7 +393,7 @@ export function createMockV3(sdl: string): MockV3 {
         // Categories
         createCategory: ({ name, type }) => {
             requireUniqueName(categories, name);
-            const row = { id: nextId(), name, type };
+            const row = { id: nextId(), name, type: type ?? "ANY" };
             categories.set(row.id, row);
 
             return row;

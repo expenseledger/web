@@ -1,8 +1,7 @@
 # API v3 schema, copied from ledger-api-v3
 # src/main/resources/graphql/schema.graphqls (local main, 2026-10-19).
 # Refresh by hand when the backend schema changes.
-# CategoryType: agreed with the backend agent on 2026-10-23, ahead of
-# its implementation.
+# CategoryType: ledger-api-v3 main@9f27aad (local, 2026-10-23).
 #
 type Query {
     accounts(first: Int!, after: String, sort: [OrderInput!]): AccountConnection!

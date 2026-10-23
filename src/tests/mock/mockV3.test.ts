@@ -100,6 +100,9 @@ describe("mock API v3", () => {
 
     it("creates a category as ANY unless given a type, and retypes it", async () => {
         const { gift } = await ok(`mutation { gift: createCategory(name: "Gift") { type } }`);
+        const { tip } = await ok(
+            `mutation { tip: createCategory(name: "Tip", type: null) { type } }`
+        );
         const { bonus } = await ok(
             `mutation { bonus: createCategory(name: "Bonus", type: INCOME) { id type } }`
         );
@@ -113,6 +116,7 @@ describe("mock API v3", () => {
         );
 
         expect(gift.type).toBe("ANY");
+        expect(tip.type).toBe("ANY");
         expect(bonus.type).toBe("INCOME");
         expect(renamed.type).toBe("INCOME");
         expect(retyped).toEqual({ name: "Bonuses", type: "TRANSFER" });

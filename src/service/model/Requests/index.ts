@@ -79,12 +79,6 @@ export interface GetTransactionMonthYearListRequest {
     accountId: string;
 }
 
-export interface ListTransactionsPageRequest {
-    accountId: string;
-    first: number;
-    after?: string;
-}
-
 /** Omitted fields stay unchanged; a null description clears it. */
 export interface UpdateTransactionRequest {
     id: string;

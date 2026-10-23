@@ -9,7 +9,6 @@ import {
     deleteTransaction,
     getTransactionMonthYearList,
     listTransactions,
-    listTransactionsPage,
     updateTransaction,
 } from "../../service/transactionService";
 import { getUserData } from "../../service/userService";
@@ -197,35 +196,6 @@ describe("transactionService", () => {
             });
 
             expect(result.items).toHaveLength(52);
-        });
-    });
-
-    describe("listTransactionsPage", () => {
-        it("returns transactions on either side of the account, newest first", async () => {
-            await addExpense({
-                amount: thb(1),
-                fromAccountId: cash.id,
-                date: new Date(2026, 0, 1),
-            });
-            await addTransfer({
-                amount: thb(1),
-                fromAccountId: bank.id,
-                toAccountId: cash.id,
-                date: new Date(2026, 0, 3),
-            });
-            await addIncome({ amount: thb(1), toAccountId: cash.id, date: new Date(2026, 0, 2) });
-
-            const first = await listTransactionsPage({ accountId: cash.id, first: 2 });
-            const second = await listTransactionsPage({
-                accountId: cash.id,
-                first: 2,
-                after: first.endCursor,
-            });
-
-            expect(first.items.map((t) => t.type)).toEqual(["TRANSFER", "INCOME"]);
-            expect(first.hasNextPage).toBe(true);
-            expect(second.items.map((t) => t.type)).toEqual(["EXPENSE"]);
-            expect(second.hasNextPage).toBe(false);
         });
     });
 

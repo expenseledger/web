@@ -15,7 +15,6 @@ import {
     AddTransferRequest,
     DeleteTranactionRequest,
     GetTransactionMonthYearListRequest,
-    ListTransactionsPageRequest,
     ListTransactionsRequest,
     UpdateTransactionRequest,
 } from "./model/Requests";
@@ -24,7 +23,6 @@ import {
     AddIncomeResponse,
     AddTransferResponse,
     GetTransactionMonthYearListResponse,
-    ListTransactionsPageResponse,
     ListTransactionsResponse,
     UpdateTransactionResponse,
 } from "./model/Responses";
@@ -412,40 +410,6 @@ export async function deleteTransaction(
             isSuccess: false,
             errorCode: getErrorCode(err),
         };
-    }
-}
-
-export async function listTransactionsPage(
-    request: ListTransactionsPageRequest
-): Promise<ListTransactionsPageResponse> {
-    try {
-        const response = await client.query({
-            query: GET_TRANSACTIONS_PAGE,
-            variables: {
-                accountId: request.accountId,
-                first: request.first,
-                after: request.after,
-            },
-            fetchPolicy: "network-only",
-        });
-
-        if (response.error) {
-            log("list transactions page failed", response.error);
-
-            return null;
-        }
-
-        const { edges, pageInfo } = response.data.transactions;
-
-        return {
-            items: edges.filter((edge) => edge).map((edge) => mapTransactionFromServer(edge.node)),
-            endCursor: pageInfo.endCursor,
-            hasNextPage: pageInfo.hasNextPage,
-        };
-    } catch (err) {
-        log("list transactions page failed, unexpected error", err);
-
-        return null;
     }
 }
 

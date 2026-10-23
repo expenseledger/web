@@ -1,5 +1,7 @@
+/// <reference types="node" />
 import "@testing-library/jest-dom";
 import React from "react";
+import { TextDecoder, TextEncoder } from "util";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -11,3 +13,6 @@ globalThis.ResizeObserver = class ResizeObserver {
     unobserve() {}
     disconnect() {}
 };
+
+// jsdom lacks these; react-router needs them.
+Object.assign(globalThis, { TextEncoder, TextDecoder });

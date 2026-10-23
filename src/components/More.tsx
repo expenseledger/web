@@ -1,10 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
-import { TransactionType } from "../service/constants";
+import { currencySymbols, TransactionType } from "../service/constants";
+import { replaceAccounts } from "../service/helper/accountHelper";
+import { categoriesFor } from "../service/helper/categoryHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
@@ -16,20 +18,23 @@ import Dropdown from "./bases/Dropdown";
 import TextBox from "./bases/TextBox";
 import { Box, Flex, Grid, Tabs, Text } from "@radix-ui/themes";
 import { useBackToHome } from "./Layout";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
+import { describeError } from "../service/helper/errorHelper";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
+    /** What the to account receives when the transfer crosses currencies. */
+    convertedAmount: string;
     date: string;
     description: string;
 }
 
 interface HomeProps {
     accountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
     date: string;
 }
@@ -44,19 +49,16 @@ const More: React.FC = () => {
     const { addNotification } = useNotification();
     const [isLoading, setIsLoading] = React.useState(false);
     const location = useLocation();
-    const currency = useAtomValue(currencyState);
     const homeProps = location.state as HomeProps;
+    const fromAccountIdx = homeProps?.accountIdx ?? 0;
     const initialCurrentValue: CurrentValue = {
-        fromAccountIdx: homeProps?.accountIdx ?? 0,
-        toAccountIdx:
-            (homeProps?.accountIdx ?? 0) == 0
-                ? 1
-                : homeProps.accountIdx + 1 >= accounts.length
-                  ? accounts.length - homeProps.accountIdx + 1
-                  : homeProps.accountIdx + 1,
-        categoryIdx: homeProps?.categoryIdx ?? 0,
+        fromAccountIdx,
+        // The account after From, wrapping around; none when there's only one.
+        toAccountIdx: accounts.length > 1 ? (fromAccountIdx + 1) % accounts.length : undefined,
+        categoryId: homeProps?.categoryId,
         amount: homeProps?.amount ?? "",
-        date: homeProps?.date ?? Date.now.toString(),
+        convertedAmount: "",
+        date: homeProps?.date ?? dayjs().format("YYYY-MM-DD"),
         description: "",
     };
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialCurrentValue);
@@ -66,6 +68,11 @@ const More: React.FC = () => {
         false,
     ]);
     const transactionTypes: TransactionType[] = ["EXPENSE", "INCOME", "TRANSFER"];
+    const transactionType = transactionTypes[transactionTypeTabActive.findIndex((x) => x)];
+    const categoryOptions = categoriesFor(categories, transactionType);
+    // Falls back to the first option, which is what the dropdown shows.
+    const selectedCategory =
+        categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const { setBackToHomeParam } = useBackToHome();
 
     const transactionTypeTabOnClickHandler = (e: any) => {
@@ -84,8 +91,8 @@ const More: React.FC = () => {
         });
     };
     const updateSelectedCategory = (value: string) => {
-        const idx = categories.findIndex((x) => x.name === value);
-        updateField("categoryIdx", idx);
+        const category = categoryOptions.find((x) => x.name === value);
+        updateField("categoryId", category?.id);
     };
     const updateSelectedFromAccount = (value: string) => {
         const idx = accounts.findIndex((x) => x.name === value);
@@ -101,6 +108,7 @@ const More: React.FC = () => {
     };
     const updateSelectedDate = (value: string) => updateField("date", value);
     const updateExpense = (value: string) => updateField("amount", value);
+    const updateConvertedAmount = (value: string) => updateField("convertedAmount", value);
     const updateDescription = (value: string) => updateField("description", value);
 
     const validateAmount = (amount: number) => {
@@ -116,7 +124,13 @@ const More: React.FC = () => {
 
         return true;
     };
-    const validateTransferAccount = (fromAcccountId: number, toAccountId: number) => {
+    const validateTransferAccount = (fromAcccountId: string, toAccountId: string) => {
+        if (!toAccountId) {
+            addNotification("Please add another account to transfer to", "danger");
+
+            return false;
+        }
+
         if (fromAcccountId === toAccountId) {
             addNotification("Please select different destination account", "danger");
 
@@ -127,7 +141,7 @@ const More: React.FC = () => {
     };
 
     const doAddExpense = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -138,35 +152,25 @@ const More: React.FC = () => {
                 return false;
             }
 
+            const account = accounts[fromAccountIdx];
             const request: AddExpenseRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                fromAccountId: account.id,
             };
 
             const response = await addExpense(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.fromAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.fromAccount]));
                 addNotification("AddExpense sucess", "success");
 
                 return true;
             }
 
-            addNotification("AddExpense failed", "danger");
+            addNotification(describeError(response.errorCode, "AddExpense failed"), "danger");
         } catch {
             addNotification("AddExpense failed", "danger");
         }
@@ -175,7 +179,7 @@ const More: React.FC = () => {
     };
 
     const doAddIncome = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -186,35 +190,25 @@ const More: React.FC = () => {
                 return false;
             }
 
+            const account = accounts[fromAccountIdx];
             const request: AddIncomeRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                toAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                toAccountId: account.id,
             };
 
             const response = await addIncome(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.toAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.toAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.toAccount]));
                 addNotification("AddIncome sucess", "success");
 
                 return true;
             }
 
-            addNotification("AddIncome failed", "danger");
+            addNotification(describeError(response.errorCode, "AddIncome failed"), "danger");
         } catch {
             addNotification("AddIncome failed", "danger");
         }
@@ -223,14 +217,19 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const { fromAccountIdx, toAccountIdx, categoryIdx, amount, date, description } =
+        const { fromAccountIdx, toAccountIdx, amount, convertedAmount, date, description } =
             currentValue;
 
         try {
+            const fromAccount = accounts[fromAccountIdx];
+            const toAccount = accounts[toAccountIdx];
+            const isCrossCurrency = fromAccount?.currency !== toAccount?.currency;
             const numberedAmount = toNumber(amount);
+            const numberedConvertedAmount = toNumber(convertedAmount);
             const isValid =
                 validateAmount(numberedAmount) &&
-                validateTransferAccount(fromAccountIdx, toAccountIdx);
+                (!isCrossCurrency || validateAmount(numberedConvertedAmount)) &&
+                validateTransferAccount(fromAccount?.id, toAccount?.id);
 
             if (!isValid) {
                 setIsLoading(false);
@@ -238,42 +237,32 @@ const More: React.FC = () => {
             }
 
             const request: AddTransferRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
+                amount: { amount: numberedAmount, currency: fromAccount.currency },
+                convertedAmount: isCrossCurrency
+                    ? { amount: numberedConvertedAmount, currency: toAccount.currency }
+                    : undefined,
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
-                description: description === "" ? "-" : description,
-                toAccountId: accounts[toAccountIdx]?.id ?? 0,
-                fromAccountId: accounts[fromAccountIdx]?.id ?? 0,
+                description,
+                toAccountId: toAccount?.id,
+                fromAccountId: fromAccount.id,
             };
 
             const response = await addTransfer(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.id === response.transaction.fromAccount.id) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    if (a.id === response.transaction.toAccount.id) {
-                        return {
-                            ...a,
-                            balance: response.transaction.toAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(
+                    replaceAccounts(accounts, [
+                        response.transaction.fromAccount,
+                        response.transaction.toAccount,
+                    ])
+                );
                 addNotification("AddTransfer success", "success");
 
                 return true;
             }
 
-            addNotification("AddTransfer failed", "danger");
+            addNotification(describeError(response.errorCode, "AddTransfer failed"), "danger");
         } catch {
             addNotification("AddTransfer failed", "danger");
         }
@@ -281,7 +270,7 @@ const More: React.FC = () => {
         return false;
     };
 
-    const addTransaction = () => {
+    const addTransaction = async () => {
         const doTransaction = () => {
             const transactionTypeIdx = transactionTypeTabActive.findIndex((x) => x === true);
 
@@ -297,37 +286,25 @@ const More: React.FC = () => {
 
         setIsLoading(true);
 
-        const result = doTransaction();
+        const isSuccess = await doTransaction();
 
-        if (result) {
+        if (isSuccess) {
             setCurrentValue({
                 ...currentValue,
                 description: "",
                 amount: "",
+                convertedAmount: "",
             });
         }
 
         setIsLoading(false);
     };
 
-    const getCategoriesByTransactionType = () => {
-        const transactionTypeIdx = transactionTypeTabActive.findIndex((x) => x === true);
-
-        switch (transactionTypes[transactionTypeIdx]) {
-            case "EXPENSE":
-                return categories.filter((c) => c.type === "ANY" || c.type === "EXPENSE");
-            case "INCOME":
-                return categories.filter((c) => c.type === "ANY" || c.type === "INCOME");
-            case "TRANSFER":
-                return categories.filter((c) => c.type === "ANY" || c.type === "TRANSFER");
-        }
-    };
-
     const renderAccountSection = () => {
         const isTransfer = transactionTypeTabActive[2];
         const render = (
             title: string,
-            balance: number,
+            account: Account,
             updateAccount: (value: string) => void,
             value: string,
             overrideOptions: Account[]
@@ -349,7 +326,10 @@ const More: React.FC = () => {
                         />
                     </Box>
                     <Box>
-                        <BalanceWithCurrency balance={balance} />
+                        <BalanceWithCurrency
+                            balance={account?.balance ?? 0}
+                            currency={account?.currency ?? "THB"}
+                        />
                     </Box>
                 </Flex>
             </Flex>
@@ -359,27 +339,56 @@ const More: React.FC = () => {
             <>
                 {render(
                     "From",
-                    accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                    accounts[currentValue.fromAccountIdx],
                     updateSelectedFromAccount,
                     accounts[currentValue.fromAccountIdx]?.name,
-                    accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx].id)
+                    accounts.filter((x) => x.id !== accounts[currentValue.toAccountIdx]?.id)
                 )}
                 {render(
                     "To",
-                    accounts[currentValue.toAccountIdx]?.balance ?? 0,
+                    accounts[currentValue.toAccountIdx],
                     updateSelectedToAccount,
                     accounts[currentValue.toAccountIdx]?.name,
-                    accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx].id)
+                    accounts.filter((x) => x.id !== accounts[currentValue.fromAccountIdx]?.id)
                 )}
+                {renderConvertedAmount()}
             </>
         ) : (
             render(
                 "Account",
-                accounts[currentValue.fromAccountIdx]?.balance ?? 0,
+                accounts[currentValue.fromAccountIdx],
                 updateSelectedFromAccount,
                 accounts[currentValue.fromAccountIdx]?.name,
                 null
             )
+        );
+    };
+
+    const renderConvertedAmount = () => {
+        const toCurrency = accounts[currentValue.toAccountIdx]?.currency;
+
+        if (toCurrency === accounts[currentValue.fromAccountIdx]?.currency) {
+            return null;
+        }
+
+        return (
+            <Flex direction="column">
+                <Box>
+                    <Text weight="bold" size="1">
+                        Converted amount
+                    </Text>
+                </Box>
+                <Box>
+                    <TextBox
+                        updateValue={updateConvertedAmount}
+                        name="converted-amount"
+                        ariaLabel="Converted amount"
+                        type="number"
+                        value={currentValue.convertedAmount}
+                        addOn={{ text: currencySymbols[toCurrency], position: "front" }}
+                    />
+                </Box>
+            </Flex>
         );
     };
 
@@ -416,9 +425,15 @@ const More: React.FC = () => {
                         <TextBox
                             updateValue={updateExpense}
                             name="expnese"
+                            ariaLabel="Amount"
                             type="number"
                             value={currentValue.amount}
-                            addOn={{ text: currency, position: "front" }}
+                            addOn={{
+                                text: currencySymbols[
+                                    accounts[currentValue.fromAccountIdx]?.currency
+                                ],
+                                position: "front",
+                            }}
                         />
                     </Box>
                 </Flex>
@@ -445,7 +460,8 @@ const More: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={getCategoriesByTransactionType().map((x) => x.name)}
+                            options={categoryOptions.map((x) => x.name)}
+                            defaultValue={selectedCategory?.name}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

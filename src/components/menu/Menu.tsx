@@ -10,6 +10,7 @@ import {
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { AnimatePresence, motion } from "motion/react";
+import { Currency } from "../../service/constants";
 import Account from "../../service/model/Account";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import Drawer from "../bases/Drawer";
@@ -21,7 +22,7 @@ import { color } from "../../common/constants";
 
 interface MenuProps {
     accounts: Account[];
-    totalAccountBalance: number;
+    totalBalances: { currency: Currency; balance: number }[];
     signOutFunc: () => void;
     version: string;
 }
@@ -181,22 +182,28 @@ const Menu: React.FC<MenuProps> = (props) => {
                                         <Box ml="2">
                                             <BalanceWithCurrency
                                                 balance={x.balance}
+                                                currency={x.currency}
                                                 isHideBalance={isHideBalance}
                                             />
                                         </Box>
                                     </React.Fragment>
                                 ))}
-                                <Flex justify="end">
-                                    <Text mr="2">=</Text>
-                                </Flex>
-                                <Box ml="2">
-                                    <Text weight="bold">
-                                        <BalanceWithCurrency
-                                            balance={props.totalAccountBalance}
-                                            isHideBalance={isHideBalance}
-                                        />
-                                    </Text>
-                                </Box>
+                                {props.totalBalances.map((total) => (
+                                    <React.Fragment key={total.currency}>
+                                        <Flex justify="end">
+                                            <Text mr="2">=</Text>
+                                        </Flex>
+                                        <Box ml="2">
+                                            <Text weight="bold">
+                                                <BalanceWithCurrency
+                                                    balance={total.balance}
+                                                    currency={total.currency}
+                                                    isHideBalance={isHideBalance}
+                                                />
+                                            </Text>
+                                        </Box>
+                                    </React.Fragment>
+                                ))}
                             </Grid>
                             <Flex justify="end" mt="3">
                                 <Switch

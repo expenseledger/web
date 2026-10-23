@@ -1,4 +1,7 @@
-import client from "../../lib/apollo";
+import { createAccount, patchAccount } from "../../service/accountService";
+import { getAllCategories } from "../../service/categoryService";
+import Account from "../../service/model/Account";
+import { Money } from "../../service/model/Money";
 import {
     addExpense,
     addIncome,
@@ -8,330 +11,337 @@ import {
     listTransactions,
     updateTransaction,
 } from "../../service/transactionService";
+import { getUserData } from "../../service/userService";
+import { initializeUserWithoutAccounts, mockClient, resetMockV3 } from "../mock/mockClient";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
-    default: {
-        query: jest.fn(),
-        mutate: jest.fn(),
-    },
+    default: jest.requireActual("../mock/mockClient").mockClient,
 }));
 
 jest.mock("../../common/utils", () => ({
     log: jest.fn(),
 }));
 
-const mockClient = client as jest.Mocked<typeof client>;
+const thb = (amount: number): Money => ({ amount, currency: "THB" });
 
-const serverTransaction = {
-    id: 1,
-    fromAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
-    toAccount: null as any,
-    amount: 50,
-    type: "EXPENSE",
-    category: { id: 2, name: "Food", type: "EXPENSE" },
-    description: "Lunch",
-    date: "2024-06-15T10:00:00.000Z",
-};
+async function account(name: string, balance: number, currency: Money["currency"] = "THB") {
+    const { account } = await createAccount({ name, currency });
+
+    return (await patchAccount({ id: account.id, balance: { amount: balance, currency } }))
+        .account as Account;
+}
 
 describe("transactionService", () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
+    let cash: Account;
+    let bank: Account;
+
+    beforeEach(async () => {
+        jest.restoreAllMocks();
+        await resetMockV3();
+        await initializeUserWithoutAccounts();
+        await getUserData();
+        cash = await account("Cash", 100);
+        bank = await account("Bank", 0);
     });
 
     describe("addExpense", () => {
-        it("returns mapped transaction on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { spend: { transaction: serverTransaction } },
-            } as never);
+        it("returns the expense with the new balance", async () => {
+            const food = (await getAllCategories()).find((c) => c.name === "Food");
+            const date = new Date(2026, 0, 2);
 
             const result = await addExpense({
-                amount: 50,
-                categoryId: 2,
+                amount: thb(30),
+                categoryId: food.id,
                 description: "Lunch",
-                fromAccountId: 1,
-                date: new Date("2024-06-15"),
+                fromAccountId: cash.id,
+                date,
             });
 
-            expect(result?.transaction.id).toBe(1);
-            expect(result?.transaction.amount).toBe(50);
+            expect(result.transaction).toEqual({
+                id: expect.any(String),
+                type: "EXPENSE",
+                fromAccount: { ...cash, balance: 70 },
+                toAccount: null,
+                amount: 30,
+                convertedAmount: null,
+                category: food,
+                description: "Lunch",
+                date,
+            });
         });
 
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
+        it("defaults to the Other category and no description", async () => {
             const result = await addExpense({
-                amount: 50,
-                categoryId: 2,
-                description: "Lunch",
-                fromAccountId: 1,
+                amount: thb(30),
+                description: "",
+                fromAccountId: cash.id,
                 date: new Date(),
             });
 
-            expect(result).toBeNull();
+            expect(result.transaction.category.name).toBe("Other");
+            expect(result.transaction.description).toBeNull();
         });
 
-        it("returns null on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
+        it("returns the error code of a rejected expense", async () => {
             const result = await addExpense({
-                amount: 50,
-                categoryId: 2,
-                description: "Lunch",
-                fromAccountId: 1,
+                amount: thb(0),
+                fromAccountId: cash.id,
                 date: new Date(),
             });
 
-            expect(result).toBeNull();
+            expect(result).toEqual({ transaction: null, errorCode: "NON_POSITIVE_AMOUNT" });
+        });
+
+        it("rounds the amount to the currency's minor unit", async () => {
+            const result = await addExpense({
+                amount: thb(0.005),
+                fromAccountId: cash.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction.amount).toBe(0.01);
+            expect(result.transaction.fromAccount.balance).toBe(99.99);
+        });
+
+        it("returns null on an unexpected error", async () => {
+            jest.spyOn(mockClient, "mutate").mockRejectedValueOnce(new Error("network"));
+
+            const result = await addExpense({
+                amount: thb(1),
+                fromAccountId: cash.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction).toBeNull();
         });
     });
 
     describe("addIncome", () => {
-        it("returns mapped transaction on success", async () => {
-            const incomeTransaction = {
-                ...serverTransaction,
-                type: "INCOME",
-                fromAccount: null as any,
-                toAccount: { id: 1, name: "Cash", type: "CASH", balance: 100 },
-            };
-
-            mockClient.mutate.mockResolvedValue({
-                data: { receive: { transaction: incomeTransaction } },
-            } as never);
-
+        it("returns the income with the new balance", async () => {
             const result = await addIncome({
-                amount: 100,
-                categoryId: 2,
-                description: "Salary",
-                toAccountId: 1,
-                date: new Date("2024-06-15"),
-            });
-
-            expect(result?.transaction.type).toBe("INCOME");
-        });
-
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await addIncome({
-                amount: 100,
-                categoryId: 2,
-                description: "Salary",
-                toAccountId: 1,
+                amount: thb(5),
+                toAccountId: bank.id,
                 date: new Date(),
             });
 
-            expect(result).toBeNull();
+            expect(result.transaction.type).toBe("INCOME");
+            expect(result.transaction.toAccount.balance).toBe(5);
         });
     });
 
     describe("addTransfer", () => {
-        it("returns mapped transaction on success", async () => {
-            const transferTransaction = {
-                ...serverTransaction,
-                type: "TRANSFER",
-                toAccount: { id: 2, name: "Bank", type: "BANK", balance: 200 },
-            };
-
-            mockClient.mutate.mockResolvedValue({
-                data: { transferV2: { transaction: transferTransaction } },
-            } as never);
-
+        it("moves money between the accounts", async () => {
             const result = await addTransfer({
-                amount: 50,
-                categoryId: 2,
-                description: "Transfer",
-                fromAccountId: 1,
-                toAccountId: 2,
-                date: new Date("2024-06-15"),
-            });
-
-            expect(result?.transaction.type).toBe("TRANSFER");
-        });
-
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await addTransfer({
-                amount: 50,
-                categoryId: 2,
-                description: "Transfer",
-                fromAccountId: 1,
-                toAccountId: 2,
+                amount: thb(40),
+                fromAccountId: cash.id,
+                toAccountId: bank.id,
                 date: new Date(),
             });
 
-            expect(result).toBeNull();
+            expect(result.transaction.fromAccount.balance).toBe(60);
+            expect(result.transaction.toAccount.balance).toBe(40);
+        });
+
+        it("sends the converted amount between currencies", async () => {
+            const euro = await account("Euro", 0, "EUR");
+
+            const result = await addTransfer({
+                amount: thb(40),
+                convertedAmount: { amount: 1, currency: "EUR" },
+                fromAccountId: cash.id,
+                toAccountId: euro.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction.convertedAmount).toBe(1);
+            expect(result.transaction.toAccount.balance).toBe(1);
+        });
+
+        it("rounds both amounts to their currencies' minor units", async () => {
+            const yen = await account("Yen", 0, "JPY");
+
+            const result = await addTransfer({
+                amount: thb(40.126),
+                convertedAmount: { amount: 175.5, currency: "JPY" },
+                fromAccountId: cash.id,
+                toAccountId: yen.id,
+                date: new Date(),
+            });
+
+            expect(result.transaction.amount).toBe(40.13);
+            expect(result.transaction.convertedAmount).toBe(176);
+        });
+
+        it("returns the error code of a transfer to the same account", async () => {
+            const result = await addTransfer({
+                amount: thb(1),
+                fromAccountId: cash.id,
+                toAccountId: cash.id,
+                date: new Date(),
+            });
+
+            expect(result.errorCode).toBe("INVALID_TRANSACTION");
         });
     });
 
     describe("listTransactions", () => {
-        const request = {
-            accountId: 1,
-            from: new Date("2024-01-01"),
-            until: new Date("2024-12-31"),
-        };
+        it("returns every transaction of the account within whole local days", async () => {
+            const dates = [
+                new Date(2026, 7, 31, 23, 30),
+                new Date(2026, 8, 1, 0, 30),
+                new Date(2026, 8, 30, 23, 30),
+                new Date(2026, 9, 1, 0, 30),
+            ];
+            for (const date of dates) {
+                await addExpense({ amount: thb(1), fromAccountId: cash.id, date });
+            }
+            await addIncome({ amount: thb(1), toAccountId: bank.id, date: dates[1] });
 
-        it("returns merged and sorted transactions on success", async () => {
-            const older = {
-                ...serverTransaction,
-                id: 1,
-                date: "2024-01-01T00:00:00.000Z",
-            };
-            const newer = {
-                ...serverTransaction,
-                id: 2,
-                date: "2024-06-01T00:00:00.000Z",
-            };
+            const result = await listTransactions({
+                accountId: cash.id,
+                fromDate: new Date(2026, 8, 1),
+                toDate: new Date(2026, 8, 30),
+            });
 
-            mockClient.query
-                .mockResolvedValueOnce({
-                    data: { transactions: { nodes: [older], totalCount: 1 } },
-                } as never)
-                .mockResolvedValueOnce({
-                    data: { transactions: { nodes: [newer], totalCount: 1 } },
-                } as never);
-
-            const result = await listTransactions(request);
-
-            expect(result.length).toBe(2);
-            expect(result.items[0].id).toBe(2);
-            expect(result.items[1].id).toBe(1);
+            expect(result.items.map((t) => t.date)).toEqual([dates[2], dates[1]]);
         });
 
-        it("uses network-only fetch policy when useCache is false", async () => {
-            mockClient.query.mockResolvedValue({
-                data: { transactions: { nodes: [], totalCount: 0 } },
-            } as never);
+        it("pages through more than 50 transactions", async () => {
+            for (let i = 0; i < 52; i++) {
+                await addExpense({
+                    amount: thb(1),
+                    fromAccountId: cash.id,
+                    date: new Date(2026, 8, 2),
+                });
+            }
 
-            await listTransactions({ ...request, useCache: false });
+            const result = await listTransactions({
+                accountId: cash.id,
+                fromDate: new Date(2026, 8, 1),
+                toDate: new Date(2026, 8, 30),
+            });
 
-            expect(mockClient.query).toHaveBeenCalledWith(
-                expect.objectContaining({ fetchPolicy: "network-only" })
-            );
-        });
-
-        it("returns empty result when a query has error", async () => {
-            mockClient.query
-                .mockResolvedValueOnce({
-                    data: { transactions: { nodes: [], totalCount: 0 } },
-                    error: { message: "failed" },
-                } as never)
-                .mockResolvedValueOnce({
-                    data: { transactions: { nodes: [], totalCount: 0 } },
-                } as never);
-
-            const result = await listTransactions(request);
-
-            expect(result).toEqual({ length: 0, items: [] });
-        });
-
-        it("returns empty result on unexpected error", async () => {
-            mockClient.query.mockRejectedValue(new Error("network"));
-
-            const result = await listTransactions(request);
-
-            expect(result).toEqual({ length: 0, items: [] });
-        });
-    });
-
-    describe("deleteTransaction", () => {
-        it("returns success on successful deletion", async () => {
-            mockClient.mutate.mockResolvedValue({ data: {} } as never);
-
-            const result = await deleteTransaction({ id: 1 });
-
-            expect(result.isSuccess).toBe(true);
-        });
-
-        it("returns failure when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await deleteTransaction({ id: 1 });
-
-            expect(result.isSuccess).toBe(false);
+            expect(result.items).toHaveLength(52);
         });
     });
 
     describe("getTransactionMonthYearList", () => {
-        it("returns month year list on success", async () => {
-            mockClient.query.mockResolvedValue({
-                data: {
-                    transactionMonthYearListByAccountId: {
-                        nodes: ["2024-06", "2024-05"],
-                    },
-                },
-            } as never);
+        it("lists the months from the oldest to the newest transaction, newest first", async () => {
+            await addIncome({ amount: thb(1), toAccountId: cash.id, date: new Date(2026, 0, 31) });
+            await addTransfer({
+                amount: thb(1),
+                fromAccountId: bank.id,
+                toAccountId: cash.id,
+                date: new Date(2025, 10, 1),
+            });
+            await addExpense({
+                amount: thb(1),
+                fromAccountId: bank.id,
+                date: new Date(2024, 0, 1),
+            });
 
-            const result = await getTransactionMonthYearList({ accountId: 1 });
+            const result = await getTransactionMonthYearList({ accountId: cash.id });
 
-            expect(result.monthYears).toEqual(["2024-06", "2024-05"]);
+            expect(result.monthYears).toEqual(["2026-01", "2025-12", "2025-11"]);
         });
 
-        it("returns empty list when response has error", async () => {
-            mockClient.query.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
+        it("lists no months for an account without transactions", async () => {
+            expect(await getTransactionMonthYearList({ accountId: cash.id })).toEqual({
+                monthYears: [],
+            });
+        });
+    });
 
-            const result = await getTransactionMonthYearList({ accountId: 1 });
+    describe("deleteTransaction", () => {
+        it("deletes the transaction", async () => {
+            const { transaction } = await addExpense({
+                amount: thb(1),
+                fromAccountId: cash.id,
+                date: new Date(),
+            });
 
-            expect(result.monthYears).toEqual([]);
+            expect(await deleteTransaction({ id: transaction.id })).toEqual({ isSuccess: true });
         });
 
-        it("returns empty list on unexpected error", async () => {
-            mockClient.query.mockRejectedValue(new Error("network"));
-
-            const result = await getTransactionMonthYearList({ accountId: 1 });
-
-            expect(result.monthYears).toEqual([]);
+        it("returns the error code of an unknown transaction", async () => {
+            expect(await deleteTransaction({ id: "999" })).toEqual({
+                isSuccess: false,
+                errorCode: "RESOURCE_NOT_FOUND",
+            });
         });
     });
 
     describe("updateTransaction", () => {
-        it("returns updated transaction on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { updateTransaction: { transaction: serverTransaction } },
-            } as never);
-
-            const result = await updateTransaction({
-                id: 1,
-                amount: 50,
-                categoryId: 2,
-                description: "Updated",
-                occurredAt: new Date("2024-06-15"),
+        it("patches only the given fields and returns the new balance", async () => {
+            const { transaction } = await addExpense({
+                amount: thb(30),
+                description: "Lunch",
+                fromAccountId: cash.id,
+                date: new Date(2026, 0, 2),
             });
 
-            expect(result.updatedTransaction?.id).toBe(1);
+            const result = await updateTransaction({
+                id: transaction.id,
+                type: "EXPENSE",
+                amount: thb(50),
+            });
+
+            expect(result.updatedTransaction).toEqual({
+                ...transaction,
+                amount: 50,
+                fromAccount: { ...cash, balance: 50 },
+            });
         });
 
-        it("returns null updated transaction when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await updateTransaction({
-                id: 1,
-                amount: 50,
-                categoryId: 2,
-                description: "Updated",
-                occurredAt: new Date(),
+        it("rounds the patched amount", async () => {
+            const { transaction } = await addIncome({
+                amount: thb(10),
+                toAccountId: bank.id,
+                date: new Date(),
             });
 
-            expect(result.updatedTransaction).toBeNull();
+            const result = await updateTransaction({
+                id: transaction.id,
+                type: "INCOME",
+                amount: thb(20.499),
+            });
+
+            expect(result.updatedTransaction.amount).toBe(20.5);
+        });
+
+        it("patches a transfer", async () => {
+            const { transaction } = await addTransfer({
+                amount: thb(10),
+                fromAccountId: cash.id,
+                toAccountId: bank.id,
+                date: new Date(),
+            });
+
+            const result = await updateTransaction({
+                id: transaction.id,
+                type: "TRANSFER",
+                description: null,
+                occurredAt: new Date(2026, 0, 5),
+            });
+
+            expect(result.updatedTransaction.date).toEqual(new Date(2026, 0, 5));
+        });
+
+        it("returns the error code of a rejected patch", async () => {
+            const { transaction } = await addIncome({
+                amount: thb(10),
+                toAccountId: bank.id,
+                date: new Date(),
+            });
+
+            const result = await updateTransaction({
+                id: transaction.id,
+                type: "INCOME",
+                amount: { amount: 1, currency: "EUR" },
+            });
+
+            expect(result).toEqual({ updatedTransaction: null, errorCode: "CURRENCY_MISMATCH" });
         });
     });
 });

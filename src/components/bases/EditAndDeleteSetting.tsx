@@ -5,19 +5,21 @@ import { Text, Card, Flex, Separator, Box, ScrollArea } from "@radix-ui/themes";
 import { color } from "../../common/constants";
 
 export interface Item {
-    id: number;
+    id: string;
     name: string;
+    undeletable?: boolean;
+    uneditable?: boolean;
 }
 
 export interface EditAndDelteSettingProps {
-    deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    modifyModal?: (id: string, triggerer: React.ReactElement) => React.ReactElement;
     items: Item[];
 }
 
 interface ItemBoxProps {
-    deleteFuncHandler: (value: number) => Promise<void>;
-    modifyModal: (id: number, triggerer: React.ReactElement) => React.ReactElement;
+    deleteFuncHandler: (value: string) => Promise<void>;
+    modifyModal?: (id: string, triggerer: React.ReactElement) => React.ReactElement;
     item: Item;
 }
 
@@ -65,17 +67,24 @@ const ItemBox: React.FC<ItemBoxProps> = (props) => {
 
         return (
             <Flex>
-                <Text mr="1" color={color.primary as any}>
-                    {props.modifyModal(
-                        props.item.id,
-                        <Text mr="1" color={color.primary as any}>
-                            <Pencil1Icon />
-                        </Text>
-                    )}
-                </Text>
-                <Text color="red">
-                    <Cross2Icon onClick={onDeleteHandler} />
-                </Text>
+                {props.modifyModal && !props.item.uneditable ? (
+                    <Text mr="1" color={color.primary as any}>
+                        {props.modifyModal(
+                            props.item.id,
+                            <Text mr="1" color={color.primary as any}>
+                                <Pencil1Icon aria-label={`Edit ${props.item.name}`} />
+                            </Text>
+                        )}
+                    </Text>
+                ) : null}
+                {props.item.undeletable ? null : (
+                    <Text color="red">
+                        <Cross2Icon
+                            aria-label={`Delete ${props.item.name}`}
+                            onClick={onDeleteHandler}
+                        />
+                    </Text>
+                )}
             </Flex>
         );
     };

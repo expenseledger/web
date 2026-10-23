@@ -1,40 +1,27 @@
-import { AccountType } from "../constants";
+import { Currency } from "../constants";
 import Account from "../model/Account";
-import { allAccountTypes } from "./../constants";
-
-export const allAccountTypesString = allAccountTypes.map(mapAccountTypeToString);
-
-export const allCurrencies = ["฿", "€", "$", "¥", "₩"];
-
-export function mapAccountTypeToString(accountType: AccountType): string {
-    switch (accountType) {
-        case "BANK":
-            return "Bank Account";
-        case "CASH":
-            return "Cash";
-        case "CREDIT":
-            return "Credit";
-    }
-}
-
-export function mapStringToAccountType(accountType: string): AccountType {
-    switch (accountType) {
-        case "Bank Account":
-            return "BANK";
-        case "Cash":
-            return "CASH";
-        case "Credit":
-            return "CREDIT";
-        default:
-            throw new Error(`${accountType} is not defined`);
-    }
-}
 
 export function mapAccountFromServer(account: any): Account {
     return {
         id: account.id,
         name: account.name,
-        balance: account.balance,
-        type: account.type,
+        balance: account.balance.amount,
+        currency: account.balance.currency,
     };
+}
+
+/** Swaps in the updated copies of accounts, matched by id. */
+export function replaceAccounts(accounts: Account[], updated: Account[]): Account[] {
+    const byId = new Map(updated.filter((a) => a).map((a) => [a.id, a]));
+
+    return accounts.map((a) => byId.get(a.id) ?? a);
+}
+
+export function sumBalancesByCurrency(
+    accounts: Account[]
+): { currency: Currency; balance: number }[] {
+    const totals = new Map<Currency, number>();
+    accounts.forEach((a) => totals.set(a.currency, (totals.get(a.currency) ?? 0) + a.balance));
+
+    return [...totals.entries()].map(([currency, balance]) => ({ currency, balance }));
 }

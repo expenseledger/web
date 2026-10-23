@@ -1,12 +1,72 @@
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { readFileSync } from "node:fs";
+import { graphql } from "graphql";
+import { defineConfig, loadEnv, Plugin, ProxyOptions } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgrPlugin from "vite-plugin-svgr";
 import babel from "@rolldown/plugin-babel";
+import { createMockV3 } from "./src/mock/mockV3";
+
+/**
+ * Serves the in-memory API v3 at /mock/graphql in `npm start`, seeded
+ * with a few accounts. Use it with VITE_SERVER_URL=http://localhost:3000/mock/graphql.
+ * Data lives until the dev server restarts; auth is ignored.
+ */
+function mockApiV3(): Plugin {
+    return {
+        name: "mock-api-v3",
+        apply: "serve",
+        configureServer(server) {
+            const { schema, rootValue } = createMockV3(readFileSync("schema.graphql", "utf8"));
+            // initializeUser seeds Cash and Bank with no balance; give them some.
+            rootValue.initializeUser({ currency: "THB" });
+            const { edges } = rootValue.accounts({ first: 50 }) as {
+                edges: { node: { id: string; name: string } }[];
+            };
+            const balances: Record<string, number> = { Cash: 1000, Bank: 25000 };
+            edges.forEach(({ node: { id, name } }) =>
+                rootValue.patchAccount({ id, balance: { amount: balances[name], currency: "THB" } })
+            );
+            rootValue.createAccount({ name: "Euro", balance: { amount: 100, currency: "EUR" } });
+
+            server.middlewares.use("/mock/graphql", (req, res) => {
+                let body = "";
+                req.on("data", (chunk) => (body += chunk));
+                req.on("end", async () => {
+                    const { query, variables, operationName } = JSON.parse(body || "{}");
+                    const result = await graphql({
+                        schema,
+                        rootValue,
+                        source: query,
+                        variableValues: variables,
+                        operationName,
+                    });
+                    res.setHeader("Content-Type", "application/json");
+                    res.end(JSON.stringify(result));
+                });
+            });
+        },
+    };
+}
+
+function apiProxy(target: string | undefined): Record<string, ProxyOptions> | undefined {
+    if (!target) {
+        return undefined;
+    }
+
+    return {
+        "/api/graphql": {
+            target,
+            changeOrigin: true,
+            configure: (proxy) => proxy.on("proxyReq", (req) => req.removeHeader("origin")),
+        },
+    };
+}
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
+        mockApiV3(),
         react(),
         babel({
             plugins: ["babel-plugin-react-compiler"],
@@ -51,5 +111,10 @@ export default defineConfig({
     server: {
         open: true,
         port: 3000,
+        // Forwards /api/graphql to API_PROXY_TARGET (e.g. the deployed API),
+        // so local dev works with VITE_SERVER_URL=/api/graphql and no
+        // localhost in the API's CORS list. The Origin header is dropped, or
+        // Spring rejects the request as cross-origin with a 403.
+        proxy: apiProxy(loadEnv(mode, process.cwd(), "").API_PROXY_TARGET),
     },
-});
+}));

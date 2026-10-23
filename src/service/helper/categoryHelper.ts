@@ -1,31 +1,20 @@
-import { allCategoryTypes, CategoryType } from "./../constants";
+import { allCategoryTypes, CategoryType, TransactionType } from "../constants";
+import Category from "../model/Category";
 
-export const allCategoryTypesString = allCategoryTypes.map(mapCategoryTypeToString);
+export const categoryTypeLabels: Record<CategoryType, string> = {
+    ANY: "Any",
+    EXPENSE: "Expense",
+    INCOME: "Income",
+    TRANSFER: "Transfer",
+};
 
-export function mapCategoryTypeToString(categoryType: CategoryType): string {
-    switch (categoryType) {
-        case "ANY":
-            return "Any";
-        case "EXPENSE":
-            return "Expense";
-        case "INCOME":
-            return "Income";
-        case "TRANSFER":
-            return "Transfer";
-    }
+export const allCategoryTypeLabels = allCategoryTypes.map((t) => categoryTypeLabels[t]);
+
+export function categoryTypeFromLabel(label: string): CategoryType {
+    return allCategoryTypes.find((t) => categoryTypeLabels[t] === label);
 }
 
-export function mapStringToCategoryType(categoryType: string): CategoryType {
-    switch (categoryType) {
-        case "Any":
-            return "ANY";
-        case "Expense":
-            return "EXPENSE";
-        case "Income":
-            return "INCOME";
-        case "Transfer":
-            return "TRANSFER";
-        default:
-            throw new Error(`${categoryType} is not defined`);
-    }
+/** The categories a transaction of this type can pick: its own type and ANY. */
+export function categoriesFor(categories: Category[], type: TransactionType): Category[] {
+    return categories.filter((c) => c.type === "ANY" || c.type === type);
 }

@@ -1,6 +1,14 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { mapTransactionFromServer } from "./helper/transactoinHelper";
+import { getErrorCode } from "./helper/errorHelper";
+import { roundMoney } from "./helper/moneyHelper";
+import { fetchAllPages, MAX_PAGE_SIZE } from "./helper/pagingHelper";
+import {
+    compareTransactionsDesc,
+    mapTransactionFromServer,
+    monthYearsBetween,
+    toOffsetDateTime,
+} from "./helper/transactoinHelper";
 import { graphql } from "./model/gql";
 import {
     AddExpenseRequest,
@@ -20,218 +28,227 @@ import {
     UpdateTransactionResponse,
 } from "./model/Responses";
 import { DeleteTransactionResponse } from "./model/Responses/index";
-import { Transaction } from "./model/Transaction";
 
 export const transactionFragment = graphql(`
     fragment PlainTransaction on Transaction {
+        __typename
         id
-        amount
+        amount {
+            amount
+            currency
+        }
         description
-        type
-        date
-        categoryId
-        fromAccountId
-        toAccountId
+        occurredAt
+        category {
+            ...PlainCategory
+        }
+        ... on Expense {
+            from {
+                ...PlainAccount
+            }
+        }
+        ... on Income {
+            to {
+                ...PlainAccount
+            }
+        }
+        ... on Transfer {
+            from {
+                ...PlainAccount
+            }
+            to {
+                ...PlainAccount
+            }
+            convertedAmount {
+                amount
+                currency
+            }
+        }
     }
 `);
 
 const ADD_EXPENSE = graphql(`
     mutation AddExpense(
-        $amount: Float!
-        $description: String!
-        $categoryId: Int!
-        $fromAccountId: Int!
-        $occurredAt: Datetime!
+        $amount: MoneyInput!
+        $description: String
+        $categoryId: ID
+        $fromAccountId: ID!
+        $occurredAt: String
     ) {
-        spend(
-            input: {
-                amount: $amount
-                description: $description
-                categoryId: $categoryId
-                fromAccountId: $fromAccountId
-                occurredAt: $occurredAt
-            }
+        withdraw(
+            amount: $amount
+            description: $description
+            categoryId: $categoryId
+            fromAccountId: $fromAccountId
+            occurredAt: $occurredAt
         ) {
-            transaction {
-                ...PlainTransaction
-                fromAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
+            ...PlainTransaction
         }
     }
 `);
 
 const ADD_INCOME = graphql(`
     mutation AddIncome(
-        $amount: Float!
-        $description: String!
-        $categoryId: Int!
-        $toAccountId: Int!
-        $occurredAt: Datetime!
+        $amount: MoneyInput!
+        $description: String
+        $categoryId: ID
+        $toAccountId: ID!
+        $occurredAt: String
     ) {
-        receive(
-            input: {
-                amount: $amount
-                description: $description
-                categoryId: $categoryId
-                toAccountId: $toAccountId
-                occurredAt: $occurredAt
-            }
+        deposit(
+            amount: $amount
+            description: $description
+            categoryId: $categoryId
+            toAccountId: $toAccountId
+            occurredAt: $occurredAt
         ) {
-            transaction {
-                ...PlainTransaction
-                toAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
+            ...PlainTransaction
         }
     }
 `);
 
 const ADD_TRANSFER = graphql(`
     mutation AddTransfer(
-        $amount: Float!
-        $description: String!
-        $categoryId: Int!
-        $fromAccountId: Int!
-        $toAccountId: Int!
-        $occurredAt: Datetime!
+        $amount: MoneyInput!
+        $convertedAmount: MoneyInput
+        $description: String
+        $categoryId: ID
+        $fromAccountId: ID!
+        $toAccountId: ID!
+        $occurredAt: String
     ) {
-        transferV2(
-            input: {
-                amount: $amount
-                description: $description
-                categoryId: $categoryId
-                fromAccountId: $fromAccountId
-                toAccountId: $toAccountId
-                occurredAt: $occurredAt
-            }
+        transfer(
+            amount: $amount
+            convertedAmount: $convertedAmount
+            description: $description
+            categoryId: $categoryId
+            fromAccountId: $fromAccountId
+            toAccountId: $toAccountId
+            occurredAt: $occurredAt
         ) {
-            transaction {
-                ...PlainTransaction
-                fromAccount {
-                    ...PlainAccount
-                }
-                toAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
+            ...PlainTransaction
         }
     }
 `);
 
 const DELETE_TRANSACTION = graphql(`
-    mutation DeleteTransaction($transactionId: Int!) {
-        deleteTransaction(input: { id: $transactionId }) {
-            transaction {
-                ...PlainTransaction
-                fromAccount {
-                    ...PlainAccount
-                }
-                toAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
-        }
+    mutation DeleteTransaction($transactionId: ID!) {
+        deleteTransaction(id: $transactionId)
     }
 `);
 
-const GET_TRANSACTIONS_BY_TO_ACCOUNT_ID = graphql(`
-    query GetTransactions($accountId: Int!, $from: Datetime!, $until: Datetime!) {
-        transactions(
-            condition: { toAccountId: $accountId }
-            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
-        ) {
-            nodes {
-                ...PlainTransaction
-                toAccount {
-                    ...PlainAccount
-                }
-                fromAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
-            totalCount
-        }
-    }
-`);
-
-const GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID = graphql(`
-    query GetTransactionsByFromAccount($accountId: Int!, $from: Datetime!, $until: Datetime!) {
-        transactions(
-            condition: { fromAccountId: $accountId }
-            filter: { date: { greaterThanOrEqualTo: $from, lessThan: $until } }
-        ) {
-            nodes {
-                ...PlainTransaction
-                toAccount {
-                    ...PlainAccount
-                }
-                fromAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
-                }
-            }
-            totalCount
-        }
-    }
-`);
-
-const GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID = graphql(`
-    query GetTransactionMonthYearListByAccountId($accountId: Int!) {
-        transactionMonthYearListByAccountId(accountId: $accountId) {
-            nodes
-        }
-    }
-`);
-
-const UPDATE_TRANSACTION = graphql(`
-    mutation UpdateTransaction(
-        $id: Int!
-        $amount: Float!
-        $description: String!
-        $categoryId: Int!
-        $occurredAt: Datetime!
+const GET_TRANSACTIONS_PAGE = graphql(`
+    query GetTransactionsPage(
+        $first: Int!
+        $after: String
+        $accountId: ID
+        $fromDate: String
+        $toDate: String
     ) {
-        updateTransaction(
-            input: {
-                id: $id
-                amount: $amount
-                description: $description
-                categoryId: $categoryId
-                occurredAt: $occurredAt
-            }
+        transactions(
+            first: $first
+            after: $after
+            sort: [{ property: "occurredAt", direction: DESC }, { property: "id", direction: DESC }]
+            filter: { accountId: $accountId, fromDate: $fromDate, toDate: $toDate }
         ) {
-            transaction {
-                ...PlainTransaction
-                fromAccount {
-                    ...PlainAccount
-                }
-                toAccount {
-                    ...PlainAccount
-                }
-                category {
-                    ...PlainCategory
+            edges {
+                node {
+                    ...PlainTransaction
                 }
             }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+`);
+
+const GET_TRANSACTION_DATE_RANGE = graphql(`
+    query GetTransactionDateRange($accountId: ID) {
+        oldest: transactions(
+            first: 1
+            sort: [{ property: "occurredAt", direction: ASC }]
+            filter: { accountId: $accountId }
+        ) {
+            edges {
+                node {
+                    occurredAt
+                }
+            }
+        }
+        newest: transactions(
+            first: 1
+            sort: [{ property: "occurredAt", direction: DESC }]
+            filter: { accountId: $accountId }
+        ) {
+            edges {
+                node {
+                    occurredAt
+                }
+            }
+        }
+    }
+`);
+
+const PATCH_EXPENSE = graphql(`
+    mutation PatchExpense(
+        $id: ID!
+        $amount: MoneyInput
+        $categoryId: ID
+        $description: String
+        $occurredAt: String
+    ) {
+        patchExpense(
+            id: $id
+            amount: $amount
+            categoryId: $categoryId
+            description: $description
+            occurredAt: $occurredAt
+        ) {
+            ...PlainTransaction
+        }
+    }
+`);
+
+const PATCH_INCOME = graphql(`
+    mutation PatchIncome(
+        $id: ID!
+        $amount: MoneyInput
+        $categoryId: ID
+        $description: String
+        $occurredAt: String
+    ) {
+        patchIncome(
+            id: $id
+            amount: $amount
+            categoryId: $categoryId
+            description: $description
+            occurredAt: $occurredAt
+        ) {
+            ...PlainTransaction
+        }
+    }
+`);
+
+const PATCH_TRANSFER = graphql(`
+    mutation PatchTransfer(
+        $id: ID!
+        $amount: MoneyInput
+        $convertedAmount: MoneyInput
+        $categoryId: ID
+        $description: String
+        $occurredAt: String
+    ) {
+        patchTransfer(
+            id: $id
+            amount: $amount
+            convertedAmount: $convertedAmount
+            categoryId: $categoryId
+            description: $description
+            occurredAt: $occurredAt
+        ) {
+            ...PlainTransaction
         }
     }
 `);
@@ -241,27 +258,27 @@ export async function addExpense(request: AddExpenseRequest): Promise<AddExpense
         const response = await client.mutate({
             mutation: ADD_EXPENSE,
             variables: {
-                amount: request.amount,
+                amount: roundMoney(request.amount),
                 categoryId: request.categoryId,
-                description: request.description,
+                description: request.description || null,
                 fromAccountId: request.fromAccountId,
-                occurredAt: request.date,
+                occurredAt: toOffsetDateTime(request.date),
             },
         });
 
         if (response.error) {
             log(`Add expense failed`, response.error);
 
-            return null;
+            return { transaction: null, errorCode: getErrorCode(response.error) };
         }
 
         return {
-            transaction: mapTransactionFromServer(response.data.spend.transaction),
+            transaction: mapTransactionFromServer(response.data.withdraw),
         };
     } catch (err) {
         log("Add expense failed, unexpected error", err);
 
-        return null;
+        return { transaction: null, errorCode: getErrorCode(err) };
     }
 }
 
@@ -270,141 +287,100 @@ export async function addIncome(request: AddIncomeRequest): Promise<AddIncomeRes
         const response = await client.mutate({
             mutation: ADD_INCOME,
             variables: {
-                amount: request.amount,
-                description: request.description,
+                amount: roundMoney(request.amount),
+                description: request.description || null,
                 categoryId: request.categoryId,
                 toAccountId: request.toAccountId,
-                occurredAt: request.date,
+                occurredAt: toOffsetDateTime(request.date),
             },
         });
 
         if (response.error) {
             log("Add income failed", response.error);
 
-            return null;
+            return { transaction: null, errorCode: getErrorCode(response.error) };
         }
 
         return {
-            transaction: mapTransactionFromServer(response.data.receive.transaction),
+            transaction: mapTransactionFromServer(response.data.deposit),
         };
     } catch (err) {
         log("Add income failed, unexpected error", err);
 
-        return null;
+        return { transaction: null, errorCode: getErrorCode(err) };
     }
 }
 
+/** `convertedAmount` is required between currencies and refused otherwise. */
 export async function addTransfer(request: AddTransferRequest): Promise<AddTransferResponse> {
     try {
         const response = await client.mutate({
             mutation: ADD_TRANSFER,
             variables: {
-                amount: request.amount,
-                description: request.description,
+                amount: roundMoney(request.amount),
+                convertedAmount: roundMoney(request.convertedAmount),
+                description: request.description || null,
                 categoryId: request.categoryId,
                 fromAccountId: request.fromAccountId,
                 toAccountId: request.toAccountId,
-                occurredAt: request.date,
+                occurredAt: toOffsetDateTime(request.date),
             },
         });
 
         if (response.error) {
             log("Add transfer failed", response.error);
 
-            return null;
+            return { transaction: null, errorCode: getErrorCode(response.error) };
         }
 
         return {
-            transaction: mapTransactionFromServer(response.data.transferV2.transaction),
+            transaction: mapTransactionFromServer(response.data.transfer),
         };
     } catch (err) {
         log("Add transfer failed, unexpected error", err);
 
-        return null;
+        return { transaction: null, errorCode: getErrorCode(err) };
     }
 }
 
+/** Every transaction on either side of the account, within whole local days. */
 export async function listTransactions(
     request: ListTransactionsRequest
 ): Promise<ListTransactionsResponse> {
     try {
-        const [resToAcc, resFromAcc] = await Promise.all([
-            client.query({
-                query: GET_TRANSACTIONS_BY_TO_ACCOUNT_ID,
+        const nodes = await fetchAllPages(async (after) => {
+            const response = await client.query({
+                query: GET_TRANSACTIONS_PAGE,
                 variables: {
+                    first: MAX_PAGE_SIZE,
+                    after,
                     accountId: request.accountId,
-                    from: request.from,
-                    until: request.until,
+                    fromDate: toOffsetDateTime(request.fromDate),
+                    toDate: toOffsetDateTime(request.toDate),
                 },
-                fetchPolicy: request.useCache ? "cache-first" : "network-only",
-            }),
-            client.query({
-                query: GET_TRANSACTIONS_BY_FROM_ACCOUNT_ID,
-                variables: {
-                    accountId: request.accountId,
-                    from: request.from,
-                    until: request.until,
-                },
-                fetchPolicy: request.useCache ? "cache-first" : "network-only",
-            }),
-        ]);
-        const result = {
-            transactions: [
-                ...resToAcc.data.transactions.nodes,
-                ...resFromAcc.data.transactions.nodes,
-            ],
-            totalCount:
-                resToAcc.data.transactions.totalCount + resFromAcc.data.transactions.totalCount,
-        };
+                fetchPolicy: "network-only",
+            });
 
-        if (resToAcc.error || resFromAcc.error) {
-            if (resToAcc.error) {
-                log("list transactions failed", resToAcc.error);
-            }
-            if (resFromAcc.error) {
-                log("list transactions failed", resFromAcc.error);
+            if (response.error) {
+                throw response.error;
             }
 
-            return {
-                length: 0,
-                items: [],
-            };
-        }
+            return response.data.transactions;
+        });
 
         return {
-            length: result.totalCount,
-            items: result.transactions
-                .map(mapTransactionFromServer)
-                .sort((a: Transaction, b: Transaction) => {
-                    if (b.date > a.date) {
-                        return 1;
-                    }
-
-                    if (b.date < a.date) {
-                        return -1;
-                    }
-
-                    if (b.id > a.id) {
-                        return 1;
-                    }
-
-                    if (b.id < a.id) {
-                        return -1;
-                    }
-
-                    return 0;
-                }),
+            items: nodes.map(mapTransactionFromServer).sort(compareTransactionsDesc),
         };
     } catch (err) {
-        log("list transactions failed, unexpected error", err);
+        log("list transactions failed", err);
 
         return {
-            length: 0,
             items: [],
         };
     }
 }
 
+/** Reverses the balance change and deletes the transaction. */
 export async function deleteTransaction(
     request: DeleteTranactionRequest
 ): Promise<DeleteTransactionResponse> {
@@ -421,6 +397,7 @@ export async function deleteTransaction(
 
             return {
                 isSuccess: false,
+                errorCode: getErrorCode(response.error),
             };
         }
 
@@ -432,19 +409,25 @@ export async function deleteTransaction(
 
         return {
             isSuccess: false,
+            errorCode: getErrorCode(err),
         };
     }
 }
 
+/**
+ * Every month from the account's oldest to its newest transaction, newest first.
+ * API v3 has no month list, so months without transactions are included.
+ */
 export async function getTransactionMonthYearList(
     request: GetTransactionMonthYearListRequest
 ): Promise<GetTransactionMonthYearListResponse> {
     try {
         const response = await client.query({
-            query: GET_TRANSACTION_MONTH_YEAR_LIST_BY_ACCOUNT_ID,
+            query: GET_TRANSACTION_DATE_RANGE,
             variables: {
                 accountId: request.accountId,
             },
+            fetchPolicy: "network-only",
         });
 
         if (response.error) {
@@ -455,8 +438,11 @@ export async function getTransactionMonthYearList(
             };
         }
 
+        const oldest = response.data.oldest.edges[0]?.node.occurredAt;
+        const newest = response.data.newest.edges[0]?.node.occurredAt;
+
         return {
-            monthYears: response.data.transactionMonthYearListByAccountId.nodes,
+            monthYears: oldest ? monthYearsBetween(new Date(oldest), new Date(newest)) : [],
         };
     } catch (err) {
         log("get transaction month year list failed, unexpected error", err);
@@ -467,39 +453,62 @@ export async function getTransactionMonthYearList(
     }
 }
 
+async function patchTransaction(request: UpdateTransactionRequest) {
+    const variables = {
+        id: request.id,
+        amount: roundMoney(request.amount),
+        categoryId: request.categoryId,
+        description: request.description,
+        occurredAt: request.occurredAt && toOffsetDateTime(request.occurredAt),
+    };
+
+    switch (request.type) {
+        case "EXPENSE": {
+            const response = await client.mutate({ mutation: PATCH_EXPENSE, variables });
+
+            return { error: response.error, data: response.data?.patchExpense };
+        }
+        case "INCOME": {
+            const response = await client.mutate({ mutation: PATCH_INCOME, variables });
+
+            return { error: response.error, data: response.data?.patchIncome };
+        }
+        case "TRANSFER": {
+            const response = await client.mutate({
+                mutation: PATCH_TRANSFER,
+                variables: { ...variables, convertedAmount: roundMoney(request.convertedAmount) },
+            });
+
+            return { error: response.error, data: response.data?.patchTransfer };
+        }
+    }
+}
+
+/** Changes only the request's given fields; the type can't change. */
 export async function updateTransaction(
     request: UpdateTransactionRequest
 ): Promise<UpdateTransactionResponse> {
     try {
-        const response = await client.mutate({
-            mutation: UPDATE_TRANSACTION,
-            variables: {
-                id: request.id,
-                amount: request.amount,
-                description: request.description,
-                categoryId: request.categoryId,
-                occurredAt: request.occurredAt,
-            },
-        });
+        const response = await patchTransaction(request);
 
         if (response.error) {
             log("update transaction failed", response.error);
 
             return {
                 updatedTransaction: null,
+                errorCode: getErrorCode(response.error),
             };
         }
 
         return {
-            updatedTransaction: mapTransactionFromServer(
-                response.data.updateTransaction.transaction
-            ),
+            updatedTransaction: mapTransactionFromServer(response.data),
         };
     } catch (err) {
         log("update transaction failed, unexpected error", err);
 
         return {
             updatedTransaction: null,
+            errorCode: getErrorCode(err),
         };
     }
 }

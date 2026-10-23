@@ -111,3 +111,8 @@ fabric.properties
 
 dev-dist/
 
+
+# Obsidian
+Ledger App/.obsidian/workspace*.json
+Ledger App/.obsidian/cache
+Ledger App/.trash/

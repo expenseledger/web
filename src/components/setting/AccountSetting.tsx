@@ -1,217 +1,28 @@
 import React from "react";
-import { accountsState, categoriesState, currencyState } from "../../common/shareState";
-import { toNumber } from "../../common/utils";
-import dayjs from "../../lib/dayjs";
-import { createAccount, deleteAccount, updateAccount } from "../../service/accountService";
-import { createCategory } from "../../service/categoryService";
-import { AccountType, Currency } from "../../service/constants";
-import {
-    allAccountTypesString,
-    allCurrencies,
-    mapAccountTypeToString,
-    mapStringToAccountType,
-} from "../../service/helper/accountHelper";
+import { accountsState } from "../../common/shareState";
+import { createAccount, deleteAccount, patchAccount } from "../../service/accountService";
+import { allCurrencies, Currency } from "../../service/constants";
+import { replaceAccounts } from "../../service/helper/accountHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
-import { addExpense, addIncome } from "../../service/transactionService";
-import Dropdown from "../bases/Dropdown";
+import Account from "../../service/model/Account";
 import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
-import Modal from "../bases/Modal";
-import TextBox from "../bases/TextBox";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
-import { Box, Card, Flex, Grid, Text } from "@radix-ui/themes";
-import { useAtom, useAtomValue } from "jotai";
-import { a } from "react-spring";
-
-interface ModifyModalProps {
-    id: number;
-    triggerer: React.ReactElement;
-}
-
-const ModifyModal: React.FC<ModifyModalProps> = (props) => {
-    const categories = useAtomValue(categoriesState);
-    const [accounts, setAccounts] = useAtom(accountsState);
-    const { addNotification } = useNotification();
-    const [name, setName] = React.useState("");
-    const [balanceText, setBalanceText] = React.useState<string>("");
-    const [type, setType] = React.useState<AccountType>("CASH");
-    const currency = useAtomValue(currencyState);
-    const getOtherCategory = async () => {
-        const other = categories.find((x) => x.name.toLowerCase() === "other");
-
-        if (!other) {
-            const response = await createCategory({
-                name: "Other",
-                type: "ANY",
-            });
-
-            if (!response.addedCategory) {
-                addNotification("Create Other category failed", "danger");
-                return;
-            }
-
-            return response.addedCategory;
-        }
-
-        return other;
-    };
-
-    const modifyAccount = async () => {
-        const account = accounts.find((x) => x.id === props.id);
-        if (!account) {
-            addNotification("Account not found", "danger");
-            return;
-        }
-
-        const otherCategory = await getOtherCategory();
-        if (!otherCategory) {
-            return;
-        }
-
-        const balance = toNumber(balanceText);
-        if (Number.isNaN(balance)) {
-            addNotification("Invalid balance", "danger");
-            return;
-        }
-
-        const balanceChanged = balance !== account.balance;
-        const amount = Math.abs(balance - account.balance);
-        const [updateAccountRes, adjustBalanceRes] = await Promise.all([
-            name !== account.name || type !== account.type
-                ? updateAccount({
-                      id: props.id,
-                      name,
-                      type,
-                  })
-                : Promise.resolve({ account: null }),
-            !balanceChanged
-                ? Promise.resolve({ transaction: null })
-                : balance > account.balance
-                  ? addIncome({
-                        amount,
-                        categoryId: otherCategory.id,
-                        toAccountId: account.id,
-                        description: "Adjust balance",
-                        date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
-                    })
-                  : addExpense({
-                        amount,
-                        categoryId: otherCategory.id,
-                        fromAccountId: account.id,
-                        description: "Adjust balance",
-                        date: dayjs(dayjs().format("YYYY-MM-DD")).toDate(),
-                    }),
-        ]);
-
-        if (
-            ((name !== account.name || type !== account.type) && !updateAccountRes.account) ||
-            (balanceChanged && !adjustBalanceRes.transaction)
-        ) {
-            addNotification("Update account failed", "danger");
-
-            return;
-        }
-
-        const tAccounts = accounts.map((a) => {
-            if (a.id === props.id) {
-                return {
-                    ...a,
-                    balance,
-                    name,
-                    type,
-                };
-            }
-
-            return a;
-        });
-
-        setAccounts(tAccounts);
-        addNotification("Update account success", "success");
-    };
-
-    const accountNameHandler = (value: string) => {
-        setName(value);
-    };
-
-    const accountTypeHandler = (value: string) => {
-        setType(mapStringToAccountType(value));
-    };
-
-    const accountBalanceHandler = (value: string) => {
-        setBalanceText(value);
-    };
-
-    React.useEffect(() => {
-        const account = accounts.find((x) => x.id === props.id);
-        setName(account.name);
-        setType(account.type);
-        setBalanceText(account.balance.toString());
-    }, [accounts, props.id]);
-
-    return (
-        <Modal
-            title="Update Account"
-            onConfirmHandler={modifyAccount}
-            cancelBtnTxt="Cancel"
-            cancelBtnType="default"
-            confirmBtnTxt="Confirm"
-            confirmBtnType="primary"
-            triggerer={props.triggerer}>
-            <Grid columns="2" gap="3" my="3">
-                <Box>
-                    <Text>Name</Text>
-                </Box>
-                <Box>
-                    <TextBox
-                        className="column"
-                        name="category-modify"
-                        updateValue={accountNameHandler}
-                        value={name}
-                    />
-                </Box>
-                <Box>
-                    <Text>Type</Text>
-                </Box>
-                <Box>
-                    <Dropdown
-                        className="column"
-                        options={allAccountTypesString}
-                        updateSelectedValue={accountTypeHandler}
-                        defaultValue={mapAccountTypeToString(type)}
-                    />
-                </Box>
-                <Box>
-                    <Text>Balance</Text>
-                </Box>
-                <Box>
-                    <TextBox
-                        addOn={{ position: "front", text: currency }}
-                        className="column"
-                        name="category-modify"
-                        updateValue={accountBalanceHandler}
-                        type="number"
-                        value={balanceText}
-                    />
-                </Box>
-            </Grid>
-        </Modal>
-    );
-};
+import EditAccountModal from "./EditAccountModal";
+import { Flex } from "@radix-ui/themes";
+import { useAtom } from "jotai";
+import { describeError } from "../../service/helper/errorHelper";
 
 const AccountSetting: React.FC = () => {
     const [accounts, setAccounts] = useAtom(accountsState);
-    const [currency, setCurrency] = useAtom(currencyState);
     const { addNotification } = useNotification();
-    const currencyHandler = (currency: string) => {
-        setCurrency(currency as Currency);
-    };
-    const createAccountHandler = async (accountName: string, accountType: string) => {
+    const createAccountHandler = async (accountName: string, currency: string) => {
         const response = await createAccount({
             name: accountName,
-            type: mapStringToAccountType(accountType),
+            currency: currency as Currency,
         });
 
         if (!response.account) {
-            addNotification("Create account failed", "danger");
+            addNotification(describeError(response.errorCode, "Create account failed"), "danger");
             return;
         }
 
@@ -223,50 +34,77 @@ const AccountSetting: React.FC = () => {
         addNotification("Create account success", "success");
     };
 
-    const deleteAccountHandler = async (id: string | number) => {
-        const isSuccess = await deleteAccount({
-            id: +id,
+    const editAccountHandler = async (account: Account, name: string, balance: number) => {
+        if (Number.isNaN(balance)) {
+            addNotification("Balance should be a number", "danger");
+            return;
+        }
+
+        const response = await patchAccount({
+            id: account.id,
+            name: name !== account.name ? name : undefined,
+            balance:
+                balance !== account.balance
+                    ? { amount: balance, currency: account.currency }
+                    : undefined,
         });
 
-        if (!isSuccess) {
-            addNotification("Delete account failed", "danger");
+        if (!response.account) {
+            addNotification(describeError(response.errorCode, "Edit account failed"), "danger");
+            return;
+        }
+
+        setAccounts(
+            replaceAccounts(accounts, [response.account]).sort((a, b) =>
+                a.name.localeCompare(b.name)
+            )
+        );
+        addNotification("Edit account success", "success");
+    };
+    const editAccountModal = (id: string, triggerer: React.ReactElement) => {
+        const account = accounts.find((a) => a.id === id);
+
+        return (
+            <EditAccountModal
+                // Remount after a save so the fields start from the saved values.
+                key={`${account.name}-${account.balance}`}
+                account={account}
+                onSave={(name, balance) => editAccountHandler(account, name, balance)}
+                triggerer={triggerer}
+            />
+        );
+    };
+
+    const deleteAccountHandler = async (id: string) => {
+        const response = await deleteAccount({
+            id,
+        });
+
+        if (!response.isSuccess) {
+            addNotification(describeError(response.errorCode, "Delete account failed"), "danger");
             return;
         }
 
         setAccounts(accounts.filter((x) => x.id !== id));
         addNotification("Delete account success", "success");
     };
-    const renderCurrencySelectionPanel = (
-        <Card>
-            <Flex align="center" justify="between">
-                <Text>Currency</Text>
-                <Dropdown
-                    options={allCurrencies}
-                    updateSelectedValue={currencyHandler}
-                    variant="ghost"
-                    defaultValue={currency}
-                />
-            </Flex>
-        </Card>
-    );
 
     return (
         <Flex direction="column" gap="3">
             <EditAndDeleteSetting
                 deleteFuncHandler={deleteAccountHandler}
+                modifyModal={editAccountModal}
                 items={accounts.map((x) => {
                     return { id: x.id, name: x.name };
                 })}
-                modifyModal={(id, triggerer) => <ModifyModal id={id} triggerer={triggerer} />}
             />
-            {renderCurrencySelectionPanel}
             <TextBoxWithButton
                 name="add"
                 type="text"
                 buttonType="primary"
                 buttonText="Create"
+                dropdown={allCurrencies}
                 onClick={createAccountHandler}
-                dropdown={allAccountTypesString}
             />
         </Flex>
     );

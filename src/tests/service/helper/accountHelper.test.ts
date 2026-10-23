@@ -1,54 +1,40 @@
 import {
-    allAccountTypesString,
-    allCurrencies,
     mapAccountFromServer,
-    mapAccountTypeToString,
-    mapStringToAccountType,
+    replaceAccounts,
+    sumBalancesByCurrency,
 } from "../../../service/helper/accountHelper";
 
+const cash = { id: "1", name: "Cash", balance: 100, currency: "THB" as const };
+const bank = { id: "2", name: "Bank", balance: 5, currency: "EUR" as const };
+const wallet = { id: "3", name: "Wallet", balance: 20, currency: "THB" as const };
+
 describe("accountHelper", () => {
-    describe("mapAccountTypeToString", () => {
-        it.each([
-            ["BANK", "Bank Account"],
-            ["CASH", "Cash"],
-            ["CREDIT", "Credit"],
-        ] as const)("maps %s to %s", (type, label) => {
-            expect(mapAccountTypeToString(type)).toBe(label);
-        });
-    });
-
-    describe("mapStringToAccountType", () => {
-        it.each([
-            ["Bank Account", "BANK"],
-            ["Cash", "CASH"],
-            ["Credit", "CREDIT"],
-        ] as const)("maps %s to %s", (label, type) => {
-            expect(mapStringToAccountType(label)).toBe(type);
-        });
-
-        it("throws for unknown account type", () => {
-            expect(() => mapStringToAccountType("Unknown")).toThrow("Unknown is not defined");
-        });
-    });
-
     describe("mapAccountFromServer", () => {
-        it("maps server account to Account", () => {
-            const serverAccount = {
-                id: 1,
-                name: "Savings",
-                balance: 500,
-                type: "BANK",
-            };
-
-            expect(mapAccountFromServer(serverAccount)).toEqual(serverAccount);
+        it("flattens the balance money", () => {
+            expect(
+                mapAccountFromServer({
+                    id: "1",
+                    name: "Cash",
+                    balance: { amount: 100, currency: "THB" },
+                })
+            ).toEqual(cash);
         });
     });
 
-    it("exports all account type strings", () => {
-        expect(allAccountTypesString).toEqual(["Cash", "Bank Account", "Credit"]);
+    describe("replaceAccounts", () => {
+        it("replaces accounts by id and ignores missing ones", () => {
+            const updated = { ...bank, balance: 1 };
+
+            expect(replaceAccounts([cash, bank], [updated, null])).toEqual([cash, updated]);
+        });
     });
 
-    it("exports supported currencies", () => {
-        expect(allCurrencies).toEqual(["฿", "€", "$", "¥", "₩"]);
+    describe("sumBalancesByCurrency", () => {
+        it("sums balances per currency in order of first appearance", () => {
+            expect(sumBalancesByCurrency([cash, bank, wallet])).toEqual([
+                { currency: "THB", balance: 120 },
+                { currency: "EUR", balance: 5 },
+            ]);
+        });
     });
 });

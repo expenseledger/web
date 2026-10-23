@@ -7,6 +7,7 @@ import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
 import { currencySymbols } from "../service/constants";
 import { replaceAccounts } from "../service/helper/accountHelper";
+import { categoriesFor } from "../service/helper/categoryHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -26,7 +27,7 @@ import { describeError } from "../service/helper/errorHelper";
 
 interface CurrentValue {
     accountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
     date: string;
     description: string;
@@ -47,13 +48,14 @@ const StyledMoreButton = styled(Button)`
 const Home: React.FC = () => {
     const initialState: CurrentValue = {
         accountIdx: 0,
-        categoryIdx: 0,
+        categoryId: undefined,
         amount: "",
         date: dayjs().format("YYYY-MM-DD"),
         description: "",
     };
     const [accounts, setAccounts] = useAtom(accountsState);
     const [categories] = useAtom(categoriesState);
+    const categoryOptions = categoriesFor(categories, "EXPENSE");
     const { addNotification } = useNotification();
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
@@ -73,15 +75,18 @@ const Home: React.FC = () => {
         (idx: number) => updateField("accountIdx", idx),
         [updateField]
     );
+    // Falls back to the first option, which is what the dropdown shows.
+    const selectedCategory =
+        categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const updateSelectedCategory = (value: string) => {
-        const idx = categories.findIndex((x) => x.name === value);
+        const category = categoryOptions.find((x) => x.name === value);
 
-        updateField("categoryIdx", idx);
+        updateField("categoryId", category?.id);
     };
     const updateExpense = (value: string) => updateField("amount", value);
 
     const addTransaction = async () => {
-        const { accountIdx, amount, date, categoryIdx, description } = currentValue;
+        const { accountIdx, amount, date, description } = currentValue;
 
         setIsLoading(true);
 
@@ -100,7 +105,7 @@ const Home: React.FC = () => {
             const account = accounts[accountIdx];
             const request: AddExpenseRequest = {
                 amount: { amount: numberedAmount, currency: account.currency },
-                categoryId: categories[categoryIdx]?.id,
+                categoryId: selectedCategory?.id,
                 fromAccountId: account.id,
                 description,
                 date: dayjs(date).toDate(),
@@ -130,7 +135,7 @@ const Home: React.FC = () => {
     };
 
     const toMorePage = () => {
-        navigate("/more", { state: { ...currentValue } });
+        navigate("/more", { state: { ...currentValue, categoryId: selectedCategory?.id } });
     };
 
     const renderAccountCards = () => {
@@ -208,6 +213,7 @@ const Home: React.FC = () => {
                         <TextBox
                             updateValue={updateExpense}
                             name="expense"
+                            ariaLabel="Amount"
                             type="number"
                             value={currentValue.amount}
                             addOn={{
@@ -239,7 +245,8 @@ const Home: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={categories.map((c) => c.name)}
+                            options={categoryOptions.map((c) => c.name)}
+                            defaultValue={selectedCategory?.name}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

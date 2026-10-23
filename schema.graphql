@@ -1,6 +1,8 @@
 # API v3 schema, copied from ledger-api-v3
 # src/main/resources/graphql/schema.graphqls (local main, 2026-10-19).
 # Refresh by hand when the backend schema changes.
+# CategoryType: agreed with the backend agent on 2026-10-23, ahead of
+# its implementation.
 #
 type Query {
     accounts(first: Int!, after: String, sort: [OrderInput!]): AccountConnection!
@@ -16,9 +18,9 @@ type Mutation {
     createAccount(name: String!, balance: MoneyInput!): Account!
     deleteAccount(id: ID!): ID!
     patchAccount(id: ID!, name: String, balance: MoneyInput): Account!
-    createCategory(name: String!): Category!
+    createCategory(name: String!, type: CategoryType = ANY): Category!
     deleteCategory(id: ID!): ID!
-    patchCategory(id: ID!, name: String): Category!
+    patchCategory(id: ID!, name: String, type: CategoryType): Category!
     withdraw(fromAccountId: ID!, amount: MoneyInput!, categoryId: ID, description: String, occurredAt: String): Expense!
     deposit(toAccountId: ID!, amount: MoneyInput!, categoryId: ID, description: String, occurredAt: String): Income!
     transfer(fromAccountId: ID!, toAccountId: ID!, amount: MoneyInput!, convertedAmount: MoneyInput, categoryId: ID, description: String, occurredAt: String): Transfer
@@ -46,9 +48,17 @@ type Account {
     balance: Money!
 }
 
+enum CategoryType {
+    ANY
+    EXPENSE
+    INCOME
+    TRANSFER
+}
+
 type Category {
     id: ID!
     name: String!
+    type: CategoryType!
 }
 
 interface Transaction {

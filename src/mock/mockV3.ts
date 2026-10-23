@@ -8,6 +8,7 @@ import { buildSchema, GraphQLError, GraphQLSchema } from "graphql";
 
 type Currency = "USD" | "THB" | "EUR" | "JPY";
 type TxType = "Expense" | "Income" | "Transfer";
+type CategoryType = "ANY" | "EXPENSE" | "INCOME" | "TRANSFER";
 
 interface Money {
     amount: number;
@@ -23,6 +24,7 @@ interface AccountRow {
 interface CategoryRow {
     id: string;
     name: string;
+    type: CategoryType;
 }
 
 interface TxRow {
@@ -57,14 +59,14 @@ export interface MockV3 {
 
 const MAX_PAGE_SIZE = 50;
 const NONE = "None";
-const DEFAULT_CATEGORIES = [
-    "Food",
-    "Transport",
-    "Groceries",
-    "Bills",
-    "Entertainment",
-    "Salary",
-    NONE,
+const DEFAULT_CATEGORIES: [string, CategoryType][] = [
+    ["Food", "EXPENSE"],
+    ["Transport", "EXPENSE"],
+    ["Groceries", "EXPENSE"],
+    ["Bills", "EXPENSE"],
+    ["Entertainment", "EXPENSE"],
+    ["Salary", "INCOME"],
+    [NONE, "ANY"],
 ];
 const DATE_TIME_WITH_OFFSET = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -331,10 +333,10 @@ export function createMockV3(sdl: string): MockV3 {
         // Users
         initializeUser: () => {
             DEFAULT_CATEGORIES.filter(
-                (name) => ![...categories.values()].some((c) => c.name === name)
-            ).forEach((name) => {
+                ([name]) => ![...categories.values()].some((c) => c.name === name)
+            ).forEach(([name, type]) => {
                 const id = nextId();
-                categories.set(id, { id, name });
+                categories.set(id, { id, name, type });
             });
 
             return true;
@@ -389,24 +391,26 @@ export function createMockV3(sdl: string): MockV3 {
         },
 
         // Categories
-        createCategory: ({ name }) => {
+        createCategory: ({ name, type }) => {
             requireUniqueName(categories, name);
-            const row = { id: nextId(), name };
+            const row = { id: nextId(), name, type };
             categories.set(row.id, row);
 
             return row;
         },
-        patchCategory: ({ id, name }) => {
+        patchCategory: ({ id, name, type }) => {
             const row = getCategory(id);
 
             if (row.name === NONE) {
-                badRequest("CATEGORY_PROTECTED", "The None category can't be renamed");
+                badRequest("CATEGORY_PROTECTED", "The None category can't be changed");
             }
 
             if (name != null) {
                 requireUniqueName(categories, name, id);
                 row.name = name;
             }
+
+            row.type = type ?? row.type;
 
             return row;
         },

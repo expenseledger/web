@@ -81,6 +81,43 @@ describe("mock API v3", () => {
         ]);
     });
 
+    it("seeds the default category types", async () => {
+        const data = await ok(`{ categories(first: 50) { edges { node { name type } } } }`);
+        const types = Object.fromEntries(
+            data.categories.edges.map((e: any) => [e.node.name, e.node.type])
+        );
+
+        expect(types).toEqual({
+            Food: "EXPENSE",
+            Transport: "EXPENSE",
+            Groceries: "EXPENSE",
+            Bills: "EXPENSE",
+            Entertainment: "EXPENSE",
+            Salary: "INCOME",
+            None: "ANY",
+        });
+    });
+
+    it("creates a category as ANY unless given a type, and retypes it", async () => {
+        const { gift } = await ok(`mutation { gift: createCategory(name: "Gift") { type } }`);
+        const { bonus } = await ok(
+            `mutation { bonus: createCategory(name: "Bonus", type: INCOME) { id type } }`
+        );
+        const { renamed } = await ok(
+            `mutation ($id: ID!) { renamed: patchCategory(id: $id, name: "Bonuses") { type } }`,
+            { id: bonus.id }
+        );
+        const { retyped } = await ok(
+            `mutation ($id: ID!) { retyped: patchCategory(id: $id, type: TRANSFER) { name type } }`,
+            { id: bonus.id }
+        );
+
+        expect(gift.type).toBe("ANY");
+        expect(bonus.type).toBe("INCOME");
+        expect(renamed.type).toBe("INCOME");
+        expect(retyped).toEqual({ name: "Bonuses", type: "TRANSFER" });
+    });
+
     it("rejects a taken account name", async () => {
         await createAccount("Cash");
 
@@ -261,6 +298,11 @@ describe("mock API v3", () => {
                     id: byName.None,
                 }
             )
+        ).toBe("CATEGORY_PROTECTED");
+        expect(
+            await errorCode(`mutation ($id: ID!) { patchCategory(id: $id, type: INCOME) { id } }`, {
+                id: byName.None,
+            })
         ).toBe("CATEGORY_PROTECTED");
     });
 

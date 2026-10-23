@@ -6,6 +6,7 @@ import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
 import { currencySymbols, TransactionType } from "../service/constants";
 import { replaceAccounts } from "../service/helper/accountHelper";
+import { categoriesFor } from "../service/helper/categoryHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import Account from "../service/model/Account";
 import { AddExpenseRequest, AddIncomeRequest, AddTransferRequest } from "../service/model/Requests";
@@ -23,7 +24,7 @@ import { describeError } from "../service/helper/errorHelper";
 interface CurrentValue {
     fromAccountIdx: number;
     toAccountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
     /** What the to account receives when the transfer crosses currencies. */
     convertedAmount: string;
@@ -33,7 +34,7 @@ interface CurrentValue {
 
 interface HomeProps {
     accountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
     date: string;
 }
@@ -54,7 +55,7 @@ const More: React.FC = () => {
         fromAccountIdx,
         // The account after From, wrapping around; none when there's only one.
         toAccountIdx: accounts.length > 1 ? (fromAccountIdx + 1) % accounts.length : undefined,
-        categoryIdx: homeProps?.categoryIdx ?? 0,
+        categoryId: homeProps?.categoryId,
         amount: homeProps?.amount ?? "",
         convertedAmount: "",
         date: homeProps?.date ?? dayjs().format("YYYY-MM-DD"),
@@ -67,6 +68,11 @@ const More: React.FC = () => {
         false,
     ]);
     const transactionTypes: TransactionType[] = ["EXPENSE", "INCOME", "TRANSFER"];
+    const transactionType = transactionTypes[transactionTypeTabActive.findIndex((x) => x)];
+    const categoryOptions = categoriesFor(categories, transactionType);
+    // Falls back to the first option, which is what the dropdown shows.
+    const selectedCategory =
+        categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const { setBackToHomeParam } = useBackToHome();
 
     const transactionTypeTabOnClickHandler = (e: any) => {
@@ -85,8 +91,8 @@ const More: React.FC = () => {
         });
     };
     const updateSelectedCategory = (value: string) => {
-        const idx = categories.findIndex((x) => x.name === value);
-        updateField("categoryIdx", idx);
+        const category = categoryOptions.find((x) => x.name === value);
+        updateField("categoryId", category?.id);
     };
     const updateSelectedFromAccount = (value: string) => {
         const idx = accounts.findIndex((x) => x.name === value);
@@ -135,7 +141,7 @@ const More: React.FC = () => {
     };
 
     const doAddExpense = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -149,7 +155,7 @@ const More: React.FC = () => {
             const account = accounts[fromAccountIdx];
             const request: AddExpenseRequest = {
                 amount: { amount: numberedAmount, currency: account.currency },
-                categoryId: categories[categoryIdx]?.id,
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
                 description,
                 fromAccountId: account.id,
@@ -173,7 +179,7 @@ const More: React.FC = () => {
     };
 
     const doAddIncome = async () => {
-        const { fromAccountIdx, categoryIdx, amount, date, description } = currentValue;
+        const { fromAccountIdx, amount, date, description } = currentValue;
 
         try {
             const numberedAmount = toNumber(amount);
@@ -187,7 +193,7 @@ const More: React.FC = () => {
             const account = accounts[fromAccountIdx];
             const request: AddIncomeRequest = {
                 amount: { amount: numberedAmount, currency: account.currency },
-                categoryId: categories[categoryIdx]?.id,
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
                 description,
                 toAccountId: account.id,
@@ -211,15 +217,8 @@ const More: React.FC = () => {
     };
 
     const doAddTransfer = async () => {
-        const {
-            fromAccountIdx,
-            toAccountIdx,
-            categoryIdx,
-            amount,
-            convertedAmount,
-            date,
-            description,
-        } = currentValue;
+        const { fromAccountIdx, toAccountIdx, amount, convertedAmount, date, description } =
+            currentValue;
 
         try {
             const fromAccount = accounts[fromAccountIdx];
@@ -242,7 +241,7 @@ const More: React.FC = () => {
                 convertedAmount: isCrossCurrency
                     ? { amount: numberedConvertedAmount, currency: toAccount.currency }
                     : undefined,
-                categoryId: categories[categoryIdx]?.id,
+                categoryId: selectedCategory?.id,
                 date: dayjs(date).toDate(),
                 description,
                 toAccountId: toAccount?.id,
@@ -461,7 +460,8 @@ const More: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={categories.map((x) => x.name)}
+                            options={categoryOptions.map((x) => x.name)}
+                            defaultValue={selectedCategory?.name}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

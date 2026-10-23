@@ -37,7 +37,7 @@ async function account(name: string, currency: Currency, balance: number) {
     await patchAccount({ id: account.id, balance: { amount: balance, currency } });
 }
 
-async function renderMore(state?: { accountIdx: number }) {
+async function renderMore(state?: { accountIdx: number; categoryId?: string }) {
     const { accounts, categories } = await getUserData();
     const store = createStore();
     store.set(accountsState, accounts);
@@ -128,6 +128,43 @@ describe("More", () => {
 
         expect(from).toHaveTextContent("C");
         expect(to).toHaveTextContent("A");
+    });
+
+    it("lists only the categories that fit the transaction type", async () => {
+        await account("Cash", "THB", 100);
+        await renderMore();
+        const category = () => screen.getAllByRole("combobox")[1];
+
+        expect(category()).toHaveTextContent("Bills");
+
+        fireEvent.click(screen.getByRole("tab", { name: /Income/ }));
+        await waitFor(() => expect(category()).toHaveTextContent("None"));
+        fireEvent.click(category());
+
+        expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["None", "Salary"]);
+    });
+
+    it("adds the transaction with the category shown", async () => {
+        await account("Cash", "THB", 100);
+        const store = await renderMore();
+        const none = store.get(categoriesState).find((c) => c.name === "None");
+        const mutate = jest.spyOn(mockClient, "mutate");
+
+        fireEvent.click(screen.getByRole("tab", { name: /Income/ }));
+        fireEvent.change(screen.getByLabelText("Amount"), { target: { value: "30" } });
+        fireEvent.click(screen.getByRole("button", { name: "Add" }));
+
+        await waitFor(() => expect(mutate).toHaveBeenCalled());
+        expect(mutate.mock.calls[0][0].variables.categoryId).toBe(none.id);
+    });
+
+    it("starts with the category picked on Home", async () => {
+        await account("Cash", "THB", 100);
+        const { categories } = await getUserData();
+        const food = categories.find((c) => c.name === "Food");
+        await renderMore({ accountIdx: 0, categoryId: food.id });
+
+        expect(screen.getAllByRole("combobox")[1]).toHaveTextContent("Food");
     });
 
     it("refuses a transfer with a single account", async () => {

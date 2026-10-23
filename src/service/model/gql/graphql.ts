@@ -275,6 +275,23 @@ export type GetTransactionsPageQuery = {
     };
 };
 
+export type GetTransactionDateRangeQueryVariables = Exact<{
+    accountId?: string | number | null | undefined;
+}>;
+
+export type GetTransactionDateRangeQuery = {
+    oldest: {
+        edges: Array<{
+            node: { occurredAt: string } | { occurredAt: string } | { occurredAt: string };
+        } | null>;
+    };
+    newest: {
+        edges: Array<{
+            node: { occurredAt: string } | { occurredAt: string } | { occurredAt: string };
+        } | null>;
+    };
+};
+
 export type PatchExpenseMutationVariables = Exact<{
     id: string | number;
     amount?: MoneyInput | null | undefined;
@@ -2596,6 +2613,202 @@ export const GetTransactionsPageDocument = {
         },
     ],
 } as unknown as DocumentNode<GetTransactionsPageQuery, GetTransactionsPageQueryVariables>;
+export const GetTransactionDateRangeDocument = {
+    kind: "Document",
+    definitions: [
+        {
+            kind: "OperationDefinition",
+            operation: "query",
+            name: { kind: "Name", value: "GetTransactionDateRange" },
+            variableDefinitions: [
+                {
+                    kind: "VariableDefinition",
+                    variable: { kind: "Variable", name: { kind: "Name", value: "accountId" } },
+                    type: { kind: "NamedType", name: { kind: "Name", value: "ID" } },
+                },
+            ],
+            selectionSet: {
+                kind: "SelectionSet",
+                selections: [
+                    {
+                        kind: "Field",
+                        alias: { kind: "Name", value: "oldest" },
+                        name: { kind: "Name", value: "transactions" },
+                        arguments: [
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "first" },
+                                value: { kind: "IntValue", value: "1" },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "sort" },
+                                value: {
+                                    kind: "ListValue",
+                                    values: [
+                                        {
+                                            kind: "ObjectValue",
+                                            fields: [
+                                                {
+                                                    kind: "ObjectField",
+                                                    name: { kind: "Name", value: "property" },
+                                                    value: {
+                                                        kind: "StringValue",
+                                                        value: "occurredAt",
+                                                        block: false,
+                                                    },
+                                                },
+                                                {
+                                                    kind: "ObjectField",
+                                                    name: { kind: "Name", value: "direction" },
+                                                    value: { kind: "EnumValue", value: "ASC" },
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "filter" },
+                                value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                        {
+                                            kind: "ObjectField",
+                                            name: { kind: "Name", value: "accountId" },
+                                            value: {
+                                                kind: "Variable",
+                                                name: { kind: "Name", value: "accountId" },
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                        selectionSet: {
+                            kind: "SelectionSet",
+                            selections: [
+                                {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "edges" },
+                                    selectionSet: {
+                                        kind: "SelectionSet",
+                                        selections: [
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "node" },
+                                                selectionSet: {
+                                                    kind: "SelectionSet",
+                                                    selections: [
+                                                        {
+                                                            kind: "Field",
+                                                            name: {
+                                                                kind: "Name",
+                                                                value: "occurredAt",
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    {
+                        kind: "Field",
+                        alias: { kind: "Name", value: "newest" },
+                        name: { kind: "Name", value: "transactions" },
+                        arguments: [
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "first" },
+                                value: { kind: "IntValue", value: "1" },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "sort" },
+                                value: {
+                                    kind: "ListValue",
+                                    values: [
+                                        {
+                                            kind: "ObjectValue",
+                                            fields: [
+                                                {
+                                                    kind: "ObjectField",
+                                                    name: { kind: "Name", value: "property" },
+                                                    value: {
+                                                        kind: "StringValue",
+                                                        value: "occurredAt",
+                                                        block: false,
+                                                    },
+                                                },
+                                                {
+                                                    kind: "ObjectField",
+                                                    name: { kind: "Name", value: "direction" },
+                                                    value: { kind: "EnumValue", value: "DESC" },
+                                                },
+                                            ],
+                                        },
+                                    ],
+                                },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "filter" },
+                                value: {
+                                    kind: "ObjectValue",
+                                    fields: [
+                                        {
+                                            kind: "ObjectField",
+                                            name: { kind: "Name", value: "accountId" },
+                                            value: {
+                                                kind: "Variable",
+                                                name: { kind: "Name", value: "accountId" },
+                                            },
+                                        },
+                                    ],
+                                },
+                            },
+                        ],
+                        selectionSet: {
+                            kind: "SelectionSet",
+                            selections: [
+                                {
+                                    kind: "Field",
+                                    name: { kind: "Name", value: "edges" },
+                                    selectionSet: {
+                                        kind: "SelectionSet",
+                                        selections: [
+                                            {
+                                                kind: "Field",
+                                                name: { kind: "Name", value: "node" },
+                                                selectionSet: {
+                                                    kind: "SelectionSet",
+                                                    selections: [
+                                                        {
+                                                            kind: "Field",
+                                                            name: {
+                                                                kind: "Name",
+                                                                value: "occurredAt",
+                                                            },
+                                                        },
+                                                    ],
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                ],
+            },
+        },
+    ],
+} as unknown as DocumentNode<GetTransactionDateRangeQuery, GetTransactionDateRangeQueryVariables>;
 export const PatchExpenseDocument = {
     kind: "Document",
     definitions: [

@@ -75,6 +75,10 @@ export interface DeleteAccountRequest {
 
 // Transaction
 
+export interface GetTransactionMonthYearListRequest {
+    accountId: string;
+}
+
 export interface ListTransactionsPageRequest {
     accountId: string;
     first: number;

@@ -7,6 +7,7 @@ import {
     addIncome,
     addTransfer,
     deleteTransaction,
+    getTransactionMonthYearList,
     listTransactions,
     listTransactionsPage,
     updateTransaction,
@@ -225,6 +226,33 @@ describe("transactionService", () => {
             expect(first.hasNextPage).toBe(true);
             expect(second.items.map((t) => t.type)).toEqual(["EXPENSE"]);
             expect(second.hasNextPage).toBe(false);
+        });
+    });
+
+    describe("getTransactionMonthYearList", () => {
+        it("lists the months from the oldest to the newest transaction, newest first", async () => {
+            await addIncome({ amount: thb(1), toAccountId: cash.id, date: new Date(2026, 0, 31) });
+            await addTransfer({
+                amount: thb(1),
+                fromAccountId: bank.id,
+                toAccountId: cash.id,
+                date: new Date(2025, 10, 1),
+            });
+            await addExpense({
+                amount: thb(1),
+                fromAccountId: bank.id,
+                date: new Date(2024, 0, 1),
+            });
+
+            const result = await getTransactionMonthYearList({ accountId: cash.id });
+
+            expect(result.monthYears).toEqual(["2026-01", "2025-12", "2025-11"]);
+        });
+
+        it("lists no months for an account without transactions", async () => {
+            expect(await getTransactionMonthYearList({ accountId: cash.id })).toEqual({
+                monthYears: [],
+            });
         });
     });
 

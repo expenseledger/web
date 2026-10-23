@@ -5,6 +5,7 @@ import { fetchAllPages, MAX_PAGE_SIZE } from "./helper/pagingHelper";
 import {
     compareTransactionsDesc,
     mapTransactionFromServer,
+    monthYearsBetween,
     toOffsetDateTime,
 } from "./helper/transactoinHelper";
 import { graphql } from "./model/gql";
@@ -13,6 +14,7 @@ import {
     AddIncomeRequest,
     AddTransferRequest,
     DeleteTranactionRequest,
+    GetTransactionMonthYearListRequest,
     ListTransactionsPageRequest,
     ListTransactionsRequest,
     UpdateTransactionRequest,
@@ -21,6 +23,7 @@ import {
     AddExpenseResponse,
     AddIncomeResponse,
     AddTransferResponse,
+    GetTransactionMonthYearListResponse,
     ListTransactionsPageResponse,
     ListTransactionsResponse,
     UpdateTransactionResponse,
@@ -157,6 +160,33 @@ const GET_TRANSACTIONS_PAGE = graphql(`
             pageInfo {
                 hasNextPage
                 endCursor
+            }
+        }
+    }
+`);
+
+const GET_TRANSACTION_DATE_RANGE = graphql(`
+    query GetTransactionDateRange($accountId: ID) {
+        oldest: transactions(
+            first: 1
+            sort: [{ property: "occurredAt", direction: ASC }]
+            filter: { accountId: $accountId }
+        ) {
+            edges {
+                node {
+                    occurredAt
+                }
+            }
+        }
+        newest: transactions(
+            first: 1
+            sort: [{ property: "occurredAt", direction: DESC }]
+            filter: { accountId: $accountId }
+        ) {
+            edges {
+                node {
+                    occurredAt
+                }
             }
         }
     }
@@ -416,6 +446,45 @@ export async function listTransactionsPage(
         log("list transactions page failed, unexpected error", err);
 
         return null;
+    }
+}
+
+/**
+ * Every month from the account's oldest to its newest transaction, newest first.
+ * API v3 has no month list, so months without transactions are included.
+ */
+export async function getTransactionMonthYearList(
+    request: GetTransactionMonthYearListRequest
+): Promise<GetTransactionMonthYearListResponse> {
+    try {
+        const response = await client.query({
+            query: GET_TRANSACTION_DATE_RANGE,
+            variables: {
+                accountId: request.accountId,
+            },
+            fetchPolicy: "network-only",
+        });
+
+        if (response.error) {
+            log("get transaction month year list failed", response.error);
+
+            return {
+                monthYears: [],
+            };
+        }
+
+        const oldest = response.data.oldest.edges[0]?.node.occurredAt;
+        const newest = response.data.newest.edges[0]?.node.occurredAt;
+
+        return {
+            monthYears: oldest ? monthYearsBetween(new Date(oldest), new Date(newest)) : [],
+        };
+    } catch (err) {
+        log("get transaction month year list failed, unexpected error", err);
+
+        return {
+            monthYears: [],
+        };
     }
 }
 

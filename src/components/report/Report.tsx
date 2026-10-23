@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { accountsState } from "../../common/shareState";
 import dayjs from "../../lib/dayjs";
 import Transaction from "../../service/model/Transaction";
-import { listTransactions } from "../../service/transactionService";
+import { getTransactionMonthYearList, listTransactions } from "../../service/transactionService";
 import Loading from "../bases/Loading";
-import MonthPicker from "../bases/MonthPicker";
+import MonthYearSwiper from "../bases/MonthYearSwiper";
 import AccountSelection, { SelectableAccount } from "./AccountSelection";
 import BarChartReport from "./BarChartReport";
 import PieChartReport from "./PieChartReport";
@@ -27,7 +27,8 @@ const Report: React.FC = () => {
         : [];
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [transactions, setTransactions] = useState<Transaction[]>([]);
-    const [month, setMonth] = useState(() => dayjs().startOf("month"));
+    const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
+    const [monthYearList, setMonthYearList] = useState<string[]>([]);
     const [selectableAccounts, setSelectableAccounts] =
         useState<SelectableAccount[]>(initalSelectedAccounts);
     const navigate = useNavigate();
@@ -45,11 +46,42 @@ const Report: React.FC = () => {
         const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
 
         if (selectedAccounts.length === 0) {
+            setMonthYearList([]);
             setTransactions([]);
             setIsLoading(false);
             return;
         }
 
+        let ignore = false;
+
+        Promise.all(selectedAccounts.map((a) => getTransactionMonthYearList({ accountId: a.id })))
+            .then((responses) => {
+                if (ignore) {
+                    return;
+                }
+
+                const monthYears = responses.map((response) => response.monthYears).flat();
+                setMonthYearList([...new Set(monthYears)].sort((a, b) => b.localeCompare(a)));
+
+                if (monthYears.length === 0) {
+                    setTransactions([]);
+                    setIsLoading(false);
+                }
+            })
+            .catch(backToHome);
+
+        return () => {
+            ignore = true;
+        };
+    }, [backToHome, selectableAccounts]);
+
+    useEffect(() => {
+        if (monthYearList.length == 0) {
+            return;
+        }
+
+        const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
+        const month = dayjs(monthYearList[monthYearIdx]);
         let ignore = false;
 
         Promise.all(
@@ -80,13 +112,16 @@ const Report: React.FC = () => {
         return () => {
             ignore = true;
         };
-    }, [backToHome, month, selectableAccounts]);
+    }, [backToHome, monthYearIdx, monthYearList, selectableAccounts]);
 
     return isLoading ? (
         <Loading />
     ) : (
         <AnimatedPage>
-            <MonthPicker month={month} onChange={setMonth} />
+            <MonthYearSwiper
+                monthYearList={monthYearList}
+                onSlideChange={(swiper) => setMonthYearIdx(swiper.realIndex)}
+            />
             <Card mt="3" mb="5">
                 <AccountSelection
                     accounts={selectableAccounts}

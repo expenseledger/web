@@ -320,3 +320,13 @@ Human decision: categories get ANY/EXPENSE/INCOME/TRANSFER again so
 forms list only fitting categories; UI filter only, no server check.
 Waits on v3 adding the field. Touched [[API v3 Migration]],
 [[Category]].
+
+## [2026-10-23] ingest | category type back in the app and v3
+
+Backend agent `ledger-api-v3-d8` implemented the type (main@9f27aad,
+local, not deployed). App: schema, mock, service, `categoriesFor`
+filter on Home, More and the transaction edit modal, type on category
+create/edit. Pickers hold the category by id. Touched [[Category]],
+[[API v3 Data Model]], [[API v3 Operations]], [[API v3 Migration]],
+[[Home Screen]], [[More Screen]], [[Transaction List Screen]],
+[[Settings Screens]], [[Known Issues]], [[Service Layer]], [[index]].

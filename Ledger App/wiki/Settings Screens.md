@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, settings]
 sources: [src/components/setting/AccountSetting.tsx, src/components/setting/CategorySetting.tsx, src/components/setting/PageSetting.tsx, src/components/bases/EditAndDeleteSetting.tsx, src/components/bases/TextBoxWithButton.tsx]
-updated: 2026-10-19
+updated: 2026-10-23
 ---
 
 # Settings Screens
@@ -21,9 +21,9 @@ Reached from [[Bottom Menu]] → Settings.
 
 ## Category (`/category/setting`)
 
-Same list/create/delete pattern for [[Category]] (name only), plus
-rename: edit ✎ opens `RenameCategoryModal` → `patchCategory`
-(2026-10-19).
+Same list/create/delete pattern for [[Category]]. Create has a type
+dropdown (default Any). Edit ✎ opens `EditCategoryModal` (name and
+type) → `patchCategory` (2026-10-19; type 2026-10-23).
 
 The category named "None" has no delete ✕ and no edit ✎ (`undeletable`
 and `uneditable` item flags on `EditAndDeleteSetting`, matched by

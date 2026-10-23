@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, backend agent 2026-10-18, src/service/]
-updated: 2026-10-19
+updated: 2026-10-23
 ---
 
 # API v3 Operations
@@ -19,8 +19,8 @@ backend agent, 2026-09-25.
 | `updateAccount` | `patchAccount(id, name?, balance: MoneyInput?)` → `Account!` | Balance is overwritten directly, no transaction; currency fixed (`CURRENCY_MISMATCH`); taken name → `NAME_TAKEN` (2026-10-19) |
 | `closeAccount` | `deleteAccount(id): ID!` | Hard delete; deletes its expenses/incomes and rewrites its transfers (2026-10-18, [[API v3 Migration]]) |
 | `categories` | `categories(first!, after, sort)` | Plus `category(id)` |
-| `createCategoryV2` | `createCategory(name)` | No type |
-| `updateCategory` | `patchCategory(id, name?)` → `Category!` | Renaming "None" → `CATEGORY_PROTECTED`; taken name → `NAME_TAKEN` (2026-10-19) |
+| `createCategoryV2` | `createCategory(name, type = ANY)` | Type back 2026-10-23 |
+| `updateCategory` | `patchCategory(id, name?, type?)` → `Category!` | Renaming or retyping "None" → `CATEGORY_PROTECTED`; taken name → `NAME_TAKEN` (2026-10-19; type 2026-10-23) |
 | `deleteCategory` | `deleteCategory(id): ID!` | Hard delete; moves its transactions to "None"; "None" itself is refused (`CATEGORY_PROTECTED`, formerly `CATEGORY_UNDELETABLE`) (2026-10-19) |
 | `spend` | `withdraw(fromAccountId, amount: MoneyInput, categoryId?, description?, occurredAt?)` → `Expense!` | |
 | `receive` | `deposit(toAccountId, amount, categoryId?, description?, occurredAt?)` → `Income!` | |

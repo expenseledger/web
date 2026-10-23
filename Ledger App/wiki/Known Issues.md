@@ -2,7 +2,7 @@
 type: synthesis
 tags: [bugs, tech-debt]
 sources: [src/]
-updated: 2026-10-21
+updated: 2026-10-23
 ---
 
 # Known Issues
@@ -27,8 +27,8 @@ Remove an entry once fixed and note it in [[log]].
    next account (wrapping), or none; `Dropdown` no longer loops on empty
    options.
 5. ~~**Home: category shown ≠ category submitted**~~ — fixed
-   2026-10-18: pickers no longer filter by type, so index 0 is the
-   category shown. [[Home Screen]]
+   2026-10-18; kept fixed with type filtering back (2026-10-23) by
+   holding the pick by id. [[Home Screen]]
 6. **Delete account failure never reported** —
    `src/components/setting/AccountSetting.tsx`: `const isSuccess = await
    deleteAccount(...)` is an object (`{ isSuccess }`), always truthy.

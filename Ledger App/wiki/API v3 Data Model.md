@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3, domain]
 sources: [backend agent 2026-09-25]
-updated: 2026-10-19
+updated: 2026-10-23
 ---
 
 # API v3 Data Model
@@ -32,7 +32,12 @@ and balance is Money.** Inputs use `MoneyInput`.
 
 ## Category
 
-`Category { id: ID!, name }`. The `type` (ANY/INCOME/…) is **removed**.
+`Category { id: ID!, name, type: CategoryType! }`, with `CategoryType`
+`ANY | EXPENSE | INCOME | TRANSFER` (back 2026-10-23, ledger-api-v3
+main@9f27aad, local). Create defaults it to ANY (also for an explicit
+null); retyping "None" → `CATEGORY_PROTECTED`. Seeds: Food, Transport,
+Groceries, Bills, Entertainment are EXPENSE, Salary INCOME, None ANY.
+Migration V6 sets existing categories to ANY (backend agent, 2026-10-23).
 Names are unique per user. Seeded defaults include "None"; see
 [[API v3]].
 

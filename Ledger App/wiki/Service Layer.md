@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, data]
 sources: [src/service/accountService.ts, src/service/categoryService.ts, src/service/transactionService.ts, src/service/userService.ts, src/service/helper/, src/service/model/]
-updated: 2026-10-18
+updated: 2026-10-23
 ---
 
 # Service Layer
@@ -69,8 +69,9 @@ Used by [[Transaction List Screen]]. The v2 month list query
 
 - `retryHelper.withRetry(fn, n=3)` — exponential backoff 1 s·2^(n-1);
   used only for `getUserData` in [[Routing and Layout]].
-- `accountHelper` / `categoryHelper` — enum ↔ display string mappers
-  (`"BANK"` ↔ `"Bank Account"`, etc.), `allCurrencies`.
+- `accountHelper` — account mapping.
+- `categoryHelper` — `categoriesFor` picker filter, category type ↔
+  label (`"ANY"` ↔ `"Any"`).
 - `notificationHelper.useNotification()` — see [[Notifications]].
 - Note the file-name typo `transactoinHelper.ts`.
 

@@ -61,8 +61,8 @@ These are v2 features the app uses that v3 lacks today:
 4. ~~Month list per account~~ — **not needed**; handled on the client
    (human, 2026-10-04; § Decided: month navigation)
 5. ~~Account/category types~~ — **dropped** (human, 2026-10-18;
-   § Decided: types). Category type **coming back** (human,
-   2026-10-23; § Decided: category type); needs v3 support
+   § Decided: types). Category type **back** (human, 2026-10-23;
+   § Decided: category type)
 6. ~~Renaming accounts/categories~~ — **done**: `patchAccount`,
    `patchCategory` (backend agent `ledger-api-v3-d0`, 2026-10-19)
 7. ~~Closing accounts that have history~~ — **decided**: no soft
@@ -120,7 +120,8 @@ dropped.
 - Set on create, changeable via `patchCategory`.
 - A picker hint only: the server doesn't check it against the
   transaction type, so retyping never invalidates history.
-- Blocked on v3: `Category` has no `type` yet.
+- Done: ledger-api-v3 main@9f27aad (local, not deployed) and the app
+  (2026-10-23).
 
 ## Decided: deleting referenced accounts/categories
 

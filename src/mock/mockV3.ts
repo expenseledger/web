@@ -58,7 +58,7 @@ export interface MockV3 {
 }
 
 const MAX_PAGE_SIZE = 50;
-const NONE = "None";
+const OTHER = "Other";
 const DEFAULT_CATEGORIES: [string, CategoryType][] = [
     ["Food", "EXPENSE"],
     ["Transport", "EXPENSE"],
@@ -66,8 +66,9 @@ const DEFAULT_CATEGORIES: [string, CategoryType][] = [
     ["Bills", "EXPENSE"],
     ["Entertainment", "EXPENSE"],
     ["Salary", "INCOME"],
-    [NONE, "ANY"],
+    [OTHER, "ANY"],
 ];
+const DEFAULT_ACCOUNTS = ["Cash", "Bank"];
 const DATE_TIME_WITH_OFFSET = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:\d{2})$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -152,20 +153,21 @@ export function createMockV3(sdl: string): MockV3 {
     const categories = new Map<string, CategoryRow>();
     const transactions = new Map<string, TxRow>();
     let lastId = 0;
+    let initialized = false;
     const nextId = () => `${++lastId}`;
 
     const getAccount = (id: string) => accounts.get(id) ?? notFound("Account", id);
     const getCategory = (id: string) => categories.get(id) ?? notFound("Category", id);
     const getTx = (id: string) => transactions.get(id) ?? notFound("Transaction", id);
-    const noneCategory = () => [...categories.values()].find((c) => c.name === NONE);
+    const otherCategory = () => [...categories.values()].find((c) => c.name === OTHER);
 
-    function categoryIdOrNone(categoryId: string | null | undefined): string {
+    function categoryIdOrOther(categoryId: string | null | undefined): string {
         if (categoryId) {
             return getCategory(categoryId).id;
         }
 
         return (
-            noneCategory()?.id ??
+            otherCategory()?.id ??
             fail("INTERNAL_ERROR", "CATEGORY_DEFAULTS_NOT_FOUND", "Call initializeUser first")
         );
     }
@@ -254,7 +256,7 @@ export function createMockV3(sdl: string): MockV3 {
             toId: args.toAccountId,
             amount: args.amount,
             convertedAmount: args.convertedAmount ?? undefined,
-            categoryId: categoryIdOrNone(args.categoryId),
+            categoryId: categoryIdOrOther(args.categoryId),
             description: args.description ?? null,
             occurredAt: args.occurredAt ? toInstant(args.occurredAt) : new Date().toISOString(),
         };
@@ -279,7 +281,7 @@ export function createMockV3(sdl: string): MockV3 {
             toId: args.toAccountId ?? old.toId,
             amount: args.amount ?? old.amount,
             convertedAmount: args.convertedAmount ?? old.convertedAmount,
-            categoryId: "categoryId" in args ? categoryIdOrNone(args.categoryId) : old.categoryId,
+            categoryId: "categoryId" in args ? categoryIdOrOther(args.categoryId) : old.categoryId,
             description: "description" in args ? args.description : old.description,
             occurredAt: args.occurredAt ? toInstant(args.occurredAt) : old.occurredAt,
         };
@@ -331,13 +333,20 @@ export function createMockV3(sdl: string): MockV3 {
         transaction: ({ id }) => txNode(getTx(id)),
 
         // Users
-        initializeUser: () => {
-            DEFAULT_CATEGORIES.filter(
-                ([name]) => ![...categories.values()].some((c) => c.name === name)
-            ).forEach(([name, type]) => {
+        initializeUser: ({ currency }) => {
+            if (initialized) {
+                return true;
+            }
+
+            DEFAULT_CATEGORIES.forEach(([name, type]) => {
                 const id = nextId();
                 categories.set(id, { id, name, type });
             });
+            DEFAULT_ACCOUNTS.forEach((name) => {
+                const id = nextId();
+                accounts.set(id, { id, name, balance: { amount: 0, currency } });
+            });
+            initialized = true;
 
             return true;
         },
@@ -401,8 +410,8 @@ export function createMockV3(sdl: string): MockV3 {
         patchCategory: ({ id, name, type }) => {
             const row = getCategory(id);
 
-            if (row.name === NONE) {
-                badRequest("CATEGORY_PROTECTED", "The None category can't be changed");
+            if (row.name === OTHER) {
+                badRequest("CATEGORY_PROTECTED", "The Other category can't be changed");
             }
 
             if (name != null) {
@@ -417,14 +426,14 @@ export function createMockV3(sdl: string): MockV3 {
         deleteCategory: ({ id }) => {
             const row = getCategory(id);
 
-            if (row.name === NONE) {
-                badRequest("CATEGORY_PROTECTED", "The None category can't be deleted");
+            if (row.name === OTHER) {
+                badRequest("CATEGORY_PROTECTED", "The Other category can't be deleted");
             }
 
-            const noneId = categoryIdOrNone(null);
+            const otherId = categoryIdOrOther(null);
             transactions.forEach((tx) => {
                 if (tx.categoryId === id) {
-                    tx.categoryId = noneId;
+                    tx.categoryId = otherId;
                 }
             });
             categories.delete(id);

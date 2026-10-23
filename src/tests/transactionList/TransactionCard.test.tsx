@@ -9,7 +9,7 @@ const date = new Date("2026-10-21T00:00:00+07:00");
 const bills = { id: "c1", name: "Bills", type: "EXPENSE" as const };
 const categories = [
     bills,
-    { id: "c2", name: "None", type: "ANY" as const },
+    { id: "c2", name: "Other", type: "ANY" as const },
     { id: "c3", name: "Salary", type: "INCOME" as const },
 ];
 const item = (
@@ -30,9 +30,9 @@ const item = (
 
 describe("TransactionCard", () => {
     it.each([
-        ["an expense", "EXPENSE", ["Bills", "None"]],
+        ["an expense", "EXPENSE", ["Bills", "Other"]],
         // Its own category stays pickable even when it doesn't fit.
-        ["an income", "INCOME", ["None", "Salary", "Bills"]],
+        ["an income", "INCOME", ["Other", "Salary", "Bills"]],
     ] as const)("lists the categories that fit %s", async (_, type, names) => {
         const store = createStore();
         store.set(categoriesState, categories);

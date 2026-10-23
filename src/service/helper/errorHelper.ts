@@ -13,7 +13,7 @@ export function getErrorCode(error: unknown): string | undefined {
 
 const errorDescriptions: Record<string, string> = {
     NAME_TAKEN: "the name is already taken",
-    CATEGORY_PROTECTED: "the None category can't be changed",
+    CATEGORY_PROTECTED: "the Other category can't be changed",
     CURRENCY_MISMATCH: "the currency doesn't match the account",
     NON_POSITIVE_AMOUNT: "amounts must be more than 0",
     INVALID_TRANSACTION: "check the accounts and the converted amount",

@@ -18,8 +18,15 @@ function mockApiV3(): Plugin {
         apply: "serve",
         configureServer(server) {
             const { schema, rootValue } = createMockV3(readFileSync("schema.graphql", "utf8"));
-            rootValue.createAccount({ name: "Cash", balance: { amount: 1000, currency: "THB" } });
-            rootValue.createAccount({ name: "Bank", balance: { amount: 25000, currency: "THB" } });
+            // initializeUser seeds Cash and Bank with no balance; give them some.
+            rootValue.initializeUser({ currency: "THB" });
+            const { edges } = rootValue.accounts({ first: 50 }) as {
+                edges: { node: { id: string; name: string } }[];
+            };
+            const balances: Record<string, number> = { Cash: 1000, Bank: 25000 };
+            edges.forEach(({ node: { id, name } }) =>
+                rootValue.patchAccount({ id, balance: { amount: balances[name], currency: "THB" } })
+            );
             rootValue.createAccount({ name: "Euro", balance: { amount: 100, currency: "EUR" } });
 
             server.middlewares.use("/mock/graphql", (req, res) => {

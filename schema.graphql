@@ -2,6 +2,7 @@
 # src/main/resources/graphql/schema.graphqls (local main, 2026-10-19).
 # Refresh by hand when the backend schema changes.
 # CategoryType: ledger-api-v3 main@9f27aad (local, 2026-10-23).
+# initializeUser currency: ledger-api-v3 main@c5f644c (local, 2026-10-24).
 #
 type Query {
     accounts(first: Int!, after: String, sort: [OrderInput!]): AccountConnection!
@@ -13,7 +14,7 @@ type Query {
 }
 
 type Mutation {
-    initializeUser: Boolean
+    initializeUser(currency: Currency! = THB): Boolean
     createAccount(name: String!, balance: MoneyInput!): Account!
     deleteAccount(id: ID!): ID!
     patchAccount(id: ID!, name: String, balance: MoneyInput): Account!

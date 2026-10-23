@@ -10,7 +10,7 @@ const INITIALIZE_USER = graphql(`
     }
 `);
 
-/** Seeds the user's default categories (idempotent), then loads everything. */
+/** Seeds the user's default categories and accounts (idempotent), then loads everything. */
 export async function getUserData(): Promise<User> {
     const result = await client.mutate({
         mutation: INITIALIZE_USER,

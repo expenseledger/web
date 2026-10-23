@@ -21,12 +21,14 @@ describe("userService", () => {
     describe("getUserData", () => {
         it("initializes the user and returns accounts and categories by name", async () => {
             await createAccount({ name: "Wallet", currency: "THB" });
-            await createAccount({ name: "Bank", currency: "EUR" });
+            await createAccount({ name: "Savings", currency: "EUR" });
 
             const result = await getUserData();
 
             expect(result.accounts).toEqual([
-                { id: expect.any(String), name: "Bank", balance: 0, currency: "EUR" },
+                { id: expect.any(String), name: "Bank", balance: 0, currency: "THB" },
+                { id: expect.any(String), name: "Cash", balance: 0, currency: "THB" },
+                { id: expect.any(String), name: "Savings", balance: 0, currency: "EUR" },
                 { id: expect.any(String), name: "Wallet", balance: 0, currency: "THB" },
             ]);
             expect(result.categories.map((c) => c.name)).toEqual([
@@ -34,7 +36,7 @@ describe("userService", () => {
                 "Entertainment",
                 "Food",
                 "Groceries",
-                "None",
+                "Other",
                 "Salary",
                 "Transport",
             ]);

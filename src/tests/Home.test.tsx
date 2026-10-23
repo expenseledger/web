@@ -6,7 +6,7 @@ import { accountsState, categoriesState } from "../common/shareState";
 import { createAccount } from "../service/accountService";
 import { getUserData } from "../service/userService";
 import { renderWithProviders } from "./bases/testUtils";
-import { mockClient, resetMockV3 } from "./mock/mockClient";
+import { initializeUserWithoutAccounts, mockClient, resetMockV3 } from "./mock/mockClient";
 
 jest.mock("../lib/apollo", () => ({
     __esModule: true,
@@ -63,6 +63,7 @@ describe("Home", () => {
     beforeEach(async () => {
         jest.restoreAllMocks();
         await resetMockV3();
+        await initializeUserWithoutAccounts();
     });
 
     it("lists only the categories that fit an expense", async () => {
@@ -75,7 +76,7 @@ describe("Home", () => {
             "Entertainment",
             "Food",
             "Groceries",
-            "None",
+            "Other",
             "Transport",
         ]);
     });

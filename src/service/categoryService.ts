@@ -160,7 +160,7 @@ export async function patchCategory(request: PatchCategoryRequest): Promise<Patc
     }
 }
 
-/** Deletes the category; its transactions move to "None". */
+/** Deletes the category; its transactions move to "Other". */
 export async function deleteCategory(
     request: DeleteCategoryRequest
 ): Promise<DeleteCategoryResponse> {

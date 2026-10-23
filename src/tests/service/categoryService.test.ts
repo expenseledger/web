@@ -82,10 +82,10 @@ describe("categoryService", () => {
             expect(result.category).toEqual({ id: food.id, name: "Food", type: "ANY" });
         });
 
-        it("returns the error code of renaming None", async () => {
-            const none = await categoryNamed("None");
+        it("returns the error code of renaming Other", async () => {
+            const other = await categoryNamed("Other");
 
-            const result = await patchCategory({ id: none.id, name: "Other" });
+            const result = await patchCategory({ id: other.id, name: "Misc" });
 
             expect(result).toEqual({ category: null, errorCode: "CATEGORY_PROTECTED" });
         });
@@ -101,10 +101,10 @@ describe("categoryService", () => {
             expect(await categoryNamed("Food")).toBeUndefined();
         });
 
-        it("returns the error code of deleting None", async () => {
-            const none = await categoryNamed("None");
+        it("returns the error code of deleting Other", async () => {
+            const other = await categoryNamed("Other");
 
-            const result = await deleteCategory({ id: none.id });
+            const result = await deleteCategory({ id: other.id });
 
             expect(result).toEqual({ isSuccess: false, errorCode: "CATEGORY_PROTECTED" });
         });

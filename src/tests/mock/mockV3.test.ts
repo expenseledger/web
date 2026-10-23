@@ -61,9 +61,21 @@ const TRANSFER = `mutation ($from: ID!, $to: ID!, $amount: MoneyInput!, $convert
     }
 }`;
 
+async function accounts() {
+    const data = await ok(
+        `{ accounts(first: 50) { edges { node { id name balance { amount currency } } } } }`
+    );
+
+    return data.accounts.edges.map((e: any) => e.node);
+}
+
 beforeEach(async () => {
     mock = createMockV3(v3Sdl);
     await ok(`mutation { initializeUser }`);
+    // Start without the seeded accounts; the tests below create their own.
+    for (const { id } of await accounts()) {
+        await ok(`mutation ($id: ID!) { deleteAccount(id: $id) }`, { id });
+    }
 });
 
 describe("mock API v3", () => {
@@ -77,7 +89,29 @@ describe("mock API v3", () => {
             "Bills",
             "Entertainment",
             "Salary",
-            "None",
+            "Other",
+        ]);
+    });
+
+    it("seeds Cash and Bank with no balance in THB by default", async () => {
+        mock = createMockV3(v3Sdl);
+        await ok(`mutation { initializeUser }`);
+
+        expect((await accounts()).map((a: any) => [a.name, a.balance])).toEqual([
+            ["Cash", thb(0)],
+            ["Bank", thb(0)],
+        ]);
+    });
+
+    it("seeds the default accounts in the given currency once", async () => {
+        mock = createMockV3(v3Sdl);
+        await ok(`mutation { initializeUser(currency: EUR) }`);
+        const [cash] = await accounts();
+        await ok(`mutation ($id: ID!) { deleteAccount(id: $id) }`, { id: cash.id });
+        await ok(`mutation { initializeUser(currency: USD) }`);
+
+        expect((await accounts()).map((a: any) => [a.name, a.balance])).toEqual([
+            ["Bank", { amount: 0, currency: "EUR" }],
         ]);
     });
 
@@ -94,7 +128,7 @@ describe("mock API v3", () => {
             Bills: "EXPENSE",
             Entertainment: "EXPENSE",
             Salary: "INCOME",
-            None: "ANY",
+            Other: "ANY",
         });
     });
 
@@ -132,7 +166,7 @@ describe("mock API v3", () => {
         ).toBe("NAME_TAKEN");
     });
 
-    it("withdraws from the account and defaults the category to None", async () => {
+    it("withdraws from the account and defaults the category to Other", async () => {
         const cash = await createAccount("Cash");
 
         const data = await ok(WITHDRAW, {
@@ -142,7 +176,7 @@ describe("mock API v3", () => {
         });
 
         expect(data.withdraw.from.balance.amount).toBe(70);
-        expect(data.withdraw.category.name).toBe("None");
+        expect(data.withdraw.category.name).toBe("Other");
         expect(data.withdraw.occurredAt).toBe("2026-01-02T03:04:05.000Z");
     });
 
@@ -209,7 +243,7 @@ describe("mock API v3", () => {
         );
 
         expect(data.patchExpense.description).toBe("Lunch");
-        expect(data.patchExpense.category.name).toBe("None");
+        expect(data.patchExpense.category.name).toBe("Other");
         expect(data.patchExpense.from.balance.amount).toBe(50);
     });
 
@@ -274,7 +308,7 @@ describe("mock API v3", () => {
         expect(await balanceOf(cash)).toBe(80);
     });
 
-    it("moves transactions to None when deleting a category and protects None", async () => {
+    it("moves transactions to Other when deleting a category and protects Other", async () => {
         const cash = await createAccount("Cash");
         const categories = await ok(`{ categories(first: 50) { edges { node { id name } } } }`);
         const byName = Object.fromEntries(
@@ -291,21 +325,18 @@ describe("mock API v3", () => {
         const data = await ok(`query ($id: ID!) { transaction(id: $id) { category { name } } }`, {
             id: withdraw.id,
         });
-        expect(data.transaction.category.name).toBe("None");
+        expect(data.transaction.category.name).toBe("Other");
         expect(
-            await errorCode(`mutation ($id: ID!) { deleteCategory(id: $id) }`, { id: byName.None })
+            await errorCode(`mutation ($id: ID!) { deleteCategory(id: $id) }`, { id: byName.Other })
         ).toBe("CATEGORY_PROTECTED");
         expect(
-            await errorCode(
-                `mutation ($id: ID!) { patchCategory(id: $id, name: "Other") { id } }`,
-                {
-                    id: byName.None,
-                }
-            )
+            await errorCode(`mutation ($id: ID!) { patchCategory(id: $id, name: "Misc") { id } }`, {
+                id: byName.Other,
+            })
         ).toBe("CATEGORY_PROTECTED");
         expect(
             await errorCode(`mutation ($id: ID!) { patchCategory(id: $id, type: INCOME) { id } }`, {
-                id: byName.None,
+                id: byName.Other,
             })
         ).toBe("CATEGORY_PROTECTED");
     });

@@ -7,7 +7,7 @@ import { createAccount, patchAccount } from "../service/accountService";
 import { Currency } from "../service/constants";
 import { getUserData } from "../service/userService";
 import { renderWithProviders } from "./bases/testUtils";
-import { mockClient, resetMockV3 } from "./mock/mockClient";
+import { initializeUserWithoutAccounts, mockClient, resetMockV3 } from "./mock/mockClient";
 
 jest.mock("../lib/apollo", () => ({
     __esModule: true,
@@ -60,6 +60,7 @@ describe("More", () => {
     beforeEach(async () => {
         jest.restoreAllMocks();
         await resetMockV3();
+        await initializeUserWithoutAccounts();
     });
 
     it("clears the amount after adding and keeps it when adding fails", async () => {
@@ -138,16 +139,19 @@ describe("More", () => {
         expect(category()).toHaveTextContent("Bills");
 
         fireEvent.click(screen.getByRole("tab", { name: /Income/ }));
-        await waitFor(() => expect(category()).toHaveTextContent("None"));
+        await waitFor(() => expect(category()).toHaveTextContent("Other"));
         fireEvent.click(category());
 
-        expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual(["None", "Salary"]);
+        expect(screen.getAllByRole("option").map((o) => o.textContent)).toEqual([
+            "Other",
+            "Salary",
+        ]);
     });
 
     it("adds the transaction with the category shown", async () => {
         await account("Cash", "THB", 100);
         const store = await renderMore();
-        const none = store.get(categoriesState).find((c) => c.name === "None");
+        const other = store.get(categoriesState).find((c) => c.name === "Other");
         const mutate = jest.spyOn(mockClient, "mutate");
 
         fireEvent.click(screen.getByRole("tab", { name: /Income/ }));
@@ -155,7 +159,7 @@ describe("More", () => {
         fireEvent.click(screen.getByRole("button", { name: "Add" }));
 
         await waitFor(() => expect(mutate).toHaveBeenCalled());
-        expect(mutate.mock.calls[0][0].variables.categoryId).toBe(none.id);
+        expect(mutate.mock.calls[0][0].variables.categoryId).toBe(other.id);
     });
 
     it("starts with the category picked on Home", async () => {

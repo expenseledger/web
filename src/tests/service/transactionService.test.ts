@@ -12,7 +12,7 @@ import {
     updateTransaction,
 } from "../../service/transactionService";
 import { getUserData } from "../../service/userService";
-import { mockClient, resetMockV3 } from "../mock/mockClient";
+import { initializeUserWithoutAccounts, mockClient, resetMockV3 } from "../mock/mockClient";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
@@ -39,6 +39,7 @@ describe("transactionService", () => {
     beforeEach(async () => {
         jest.restoreAllMocks();
         await resetMockV3();
+        await initializeUserWithoutAccounts();
         await getUserData();
         cash = await account("Cash", 100);
         bank = await account("Bank", 0);
@@ -70,7 +71,7 @@ describe("transactionService", () => {
             });
         });
 
-        it("defaults to the None category and no description", async () => {
+        it("defaults to the Other category and no description", async () => {
             const result = await addExpense({
                 amount: thb(30),
                 description: "",
@@ -78,7 +79,7 @@ describe("transactionService", () => {
                 date: new Date(),
             });
 
-            expect(result.transaction.category.name).toBe("None");
+            expect(result.transaction.category.name).toBe("Other");
             expect(result.transaction.description).toBeNull();
         });
 

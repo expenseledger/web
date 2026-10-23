@@ -33,14 +33,14 @@ describe("CategorySetting", () => {
         await resetMockV3();
     });
 
-    it("hides the edit and delete buttons of the None category", async () => {
+    it("hides the edit and delete buttons of the Other category", async () => {
         await renderCategories();
 
         expect(screen.getByLabelText("Delete Food")).toBeInTheDocument();
         expect(screen.getByLabelText("Edit Food")).toBeInTheDocument();
-        expect(screen.getByText("None")).toBeInTheDocument();
-        expect(screen.queryByLabelText("Delete None")).not.toBeInTheDocument();
-        expect(screen.queryByLabelText("Edit None")).not.toBeInTheDocument();
+        expect(screen.getByText("Other")).toBeInTheDocument();
+        expect(screen.queryByLabelText("Delete Other")).not.toBeInTheDocument();
+        expect(screen.queryByLabelText("Edit Other")).not.toBeInTheDocument();
     });
 
     it("renames a category", async () => {

@@ -5,14 +5,14 @@ const categories: Category[] = [
     { id: "1", name: "Food", type: "EXPENSE" },
     { id: "2", name: "Salary", type: "INCOME" },
     { id: "3", name: "Savings", type: "TRANSFER" },
-    { id: "4", name: "None", type: "ANY" },
+    { id: "4", name: "Other", type: "ANY" },
 ];
 
 describe("categoriesFor", () => {
     it.each([
-        ["EXPENSE", ["Food", "None"]],
-        ["INCOME", ["Salary", "None"]],
-        ["TRANSFER", ["Savings", "None"]],
+        ["EXPENSE", ["Food", "Other"]],
+        ["INCOME", ["Salary", "Other"]],
+        ["TRANSFER", ["Savings", "Other"]],
     ] as const)("keeps %s and ANY categories in order", (type, names) => {
         expect(categoriesFor(categories, type).map((c) => c.name)).toEqual(names);
     });

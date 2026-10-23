@@ -2,7 +2,7 @@
 type: synthesis
 tags: [migration, v3, planning]
 sources: [backend agent 2026-09-25, human 2026-09-25, human 2026-10-04, backend agent 2026-10-18, backend agent 2026-10-19, human 2026-10-19, src/, expense-ledger-api]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # API v3 Migration
@@ -123,7 +123,7 @@ transaction forms list only fitting categories. Account types stay
 dropped.
 
 - `type: ANY | EXPENSE | INCOME | TRANSFER`, as in v2. ANY fits every
-  form. Existing categories and "None" become ANY.
+  form. Existing categories and "Other" become ANY.
 - Set on create, changeable via `patchCategory`.
 - A picker hint only: the server doesn't check it against the
   transaction type, so retyping never invalidates history.
@@ -177,12 +177,12 @@ label and moves no money, so deleting one must not touch balances or
 remove transactions. This narrows the three options for categories:
 
 - Deleting a category moves its transactions to a category the user
-  picks, defaulting to "None" (the v3 default for an omitted
+  picks, defaulting to "Other" (the v3 default for an omitted
   `categoryId`; [[API v3 Operations]]).
 - No Cascade: dropping real transactions with the label is the v2 bug.
   Leave can't apply (a transaction can't point at a missing category);
-  reassigning to "None" is its v3 equivalent.
-- **Protect "None"**: the backend must refuse to delete it, and
+  reassigning to "Other" is its v3 equivalent.
+- **Protect "Other"**: the backend must refuse to delete it, and
   [[Settings Screens]] hides its Delete button. Before 2026-10-18 it
   could be deleted while unused, breaking uncategorised transactions
   with `CATEGORY_DEFAULTS_NOT_FOUND` ([[API v3 Data Model]]).
@@ -191,14 +191,14 @@ remove transactions. This narrows the three options for categories:
 commits, not pushed). Scope cut like `deleteAccount`:
 
 - Signature unchanged: `deleteCategory(id: ID!): ID!`.
-- Transactions always move to the user's "None" category, keeping id,
+- Transactions always move to the user's "Other" category, keeping id,
   amount, accounts, description and `occurredAt`; no balance changes.
   Picking a target is a possible future feature.
-- Deleting "None" (matched by name) is refused: `BAD_REQUEST`,
+- Deleting "Other" (matched by name) is refused: `BAD_REQUEST`,
   `extensions.code` `CATEGORY_PROTECTED` (was `CATEGORY_UNDELETABLE`
-  until 2026-10-19; it also refuses renaming "None"). Unknown or not-owned id →
+  until 2026-10-19; it also refuses renaming "Other"). Unknown or not-owned id →
   `RESOURCE_NOT_FOUND`.
-- **Client**: refetch transactions after a delete. "None"'s Delete
+- **Client**: refetch transactions after a delete. "Other"'s Delete
   button is already hidden (2026-10-18, on v2).
 
 ## What's left (2026-10-19)
@@ -211,7 +211,7 @@ Done since 2026-10-18:
 - `patchAccount(id, name?, balance: MoneyInput?): Account!`: rename,
   and set the balance directly (no transaction). Currency is fixed;
   another currency → `CURRENCY_MISMATCH`.
-- `patchCategory(id, name?): Category!`: rename. "None" →
+- `patchCategory(id, name?): Category!`: rename. "Other" →
   `CATEGORY_PROTECTED`.
 - Duplicate account/category names (create or patch) → `NAME_TAKEN`.
 

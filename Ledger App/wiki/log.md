@@ -340,3 +340,14 @@ included; no backend change. Known Issue 9's fix kept. Branch
 `feature/api-v3-month-swiper`. Touched [[Transaction List Screen]],
 [[Report Screen]], [[Service Layer]], [[Base Components]],
 [[API v3 Migration]], [[index]].
+
+## [2026-10-24] ingest | default accounts and the "Other" category
+
+Backend agent `ledger-api-v3-65` (main@c5f644c and @592f9f5, local,
+not deployed): `initializeUser(currency = THB)` also seeds "Cash" and
+"Bank" at 0; the default category "None" is now "Other" (migration
+V7). App on `feature/api-v3`: schema, mock (seeds once, like the
+server's `isInitialized`), dev mock, the "Other" checks and tests.
+Touched [[API v3]], [[API v3 Data Model]], [[API v3 Operations]],
+[[API v3 Migration]], [[Category]], [[Settings Screens]],
+[[Build and Test]].

@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, backend agent 2026-10-18, src/service/]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # API v3 Operations
@@ -12,7 +12,7 @@ backend agent, 2026-09-25.
 
 | v2 (current) | v3 | Notes |
 |---|---|---|
-| `currentUser` | `initializeUser` + `accounts` + `categories` | The user row is auto-created on any authed request; `initializeUser` (idempotent, always `true`) seeds default categories incl. "None". Skip it → omitted `categoryId` fails with `CATEGORY_DEFAULTS_NOT_FOUND` |
+| `currentUser` | `initializeUser` + `accounts` + `categories` | The user row is auto-created on any authed request; `initializeUser(currency = THB)` (idempotent, always `true`) seeds default categories incl. "Other" and, since 2026-10-24, accounts "Cash" and "Bank" at 0 in `currency`. Skip it → omitted `categoryId` fails with `CATEGORY_DEFAULTS_NOT_FOUND` |
 | `accounts` | `accounts(first!, after, sort)` | Connection, max 50 per page |
 | `account(id)` | `account(id: ID!)` | Unknown id → NOT_FOUND |
 | `createAccount` | `createAccount(name, balance: MoneyInput!)` | No type; sets the opening balance and currency |
@@ -20,8 +20,8 @@ backend agent, 2026-09-25.
 | `closeAccount` | `deleteAccount(id): ID!` | Hard delete; deletes its expenses/incomes and rewrites its transfers (2026-10-18, [[API v3 Migration]]) |
 | `categories` | `categories(first!, after, sort)` | Plus `category(id)` |
 | `createCategoryV2` | `createCategory(name, type = ANY)` | Type back 2026-10-23 |
-| `updateCategory` | `patchCategory(id, name?, type?)` → `Category!` | Renaming or retyping "None" → `CATEGORY_PROTECTED`; taken name → `NAME_TAKEN` (2026-10-19; type 2026-10-23) |
-| `deleteCategory` | `deleteCategory(id): ID!` | Hard delete; moves its transactions to "None"; "None" itself is refused (`CATEGORY_PROTECTED`, formerly `CATEGORY_UNDELETABLE`) (2026-10-19) |
+| `updateCategory` | `patchCategory(id, name?, type?)` → `Category!` | Renaming or retyping "Other" → `CATEGORY_PROTECTED`; taken name → `NAME_TAKEN` (2026-10-19; type 2026-10-23) |
+| `deleteCategory` | `deleteCategory(id): ID!` | Hard delete; moves its transactions to "Other"; "Other" itself is refused (`CATEGORY_PROTECTED`, formerly `CATEGORY_UNDELETABLE`) (2026-10-19) |
 | `spend` | `withdraw(fromAccountId, amount: MoneyInput, categoryId?, description?, occurredAt?)` → `Expense!` | |
 | `receive` | `deposit(toAccountId, amount, categoryId?, description?, occurredAt?)` → `Income!` | |
 | `transferV2` | `transfer(fromAccountId, toAccountId, amount, convertedAmount?, categoryId?, description?, occurredAt?)` → `Transfer` (nullable) | `convertedAmount` is required iff currencies differ |
@@ -32,7 +32,7 @@ backend agent, 2026-09-25.
 
 Other rules:
 
-- `categoryId` is optional (it defaults to "None"). `0` or someone else's
+- `categoryId` is optional (it defaults to "Other"). `0` or someone else's
   id → NOT_FOUND.
 - Amount currency must equal the account currency (`CURRENCY_MISMATCH`).
   amount and convertedAmount must be > 0 (`NON_POSITIVE_AMOUNT`).
@@ -59,7 +59,7 @@ Dates and sort (backend agent, 2026-10-18):
   `fromAccountId` (Expense, Transfer), `toAccountId` (Income, Transfer),
   `convertedAmount` (Transfer). The id is kept. Type can't change
   (delete + create, new id).
-- **Omitted = unchanged.** `categoryId: null` resets to "None",
+- **Omitted = unchanged.** `categoryId: null` resets to "Other",
   `description: null` clears it. For every other argument `null` also
   means unchanged.
 - `convertedAmount` can't be cleared: moving a cross-currency transfer

@@ -2,7 +2,7 @@
 type: screen
 tags: [ui, screen, settings]
 sources: [src/components/setting/AccountSetting.tsx, src/components/setting/CategorySetting.tsx, src/components/setting/PageSetting.tsx, src/components/bases/EditAndDeleteSetting.tsx, src/components/bases/TextBoxWithButton.tsx]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # Settings Screens
@@ -25,7 +25,7 @@ Same list/create/delete pattern for [[Category]]. Create has a type
 dropdown (default Any). Edit ✎ opens `EditCategoryModal` (name and
 type) → `patchCategory` (2026-10-19; type 2026-10-23).
 
-The category named "None" has no delete ✕ and no edit ✎ (`undeletable`
+The category named "Other" has no delete ✕ and no edit ✎ (`undeletable`
 and `uneditable` item flags on `EditAndDeleteSetting`, matched by
 name), since v3 refuses both (`CATEGORY_PROTECTED`;
 [[API v3 Migration]]). The buttons are labelled "Delete <name>" and

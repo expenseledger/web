@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Category.ts, src/service/constants.ts, src/service/categoryService.ts]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # Category
@@ -20,7 +20,8 @@ type CategoryType = "ANY" | "EXPENSE" | "INCOME" | "TRANSFER";
   [[Transaction List Screen]]. The server never checks it
   ([[API v3 Migration]] § Decided: category type).
 - Name and type are edited via `patchCategory` in [[Settings Screens]];
-  "None" can't be changed.
+  "Other" (the default category, "None" until 2026-10-24) can't be
+  changed.
 - Reports group by category name ([[Report Screen]]).
 - Deleting a category **cascade-deletes its transactions without
   reversing balances**, so account balances drift from history

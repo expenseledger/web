@@ -2,7 +2,7 @@
 type: ops
 tags: [tooling, testing]
 sources: [package.json, jest.config.json, babel.config.json, src/setupTests.ts, src/tests/, eslint.config.js, .prettierrc]
-updated: 2026-10-21
+updated: 2026-10-24
 ---
 
 # Build and Test
@@ -10,7 +10,7 @@ updated: 2026-10-21
 | Task | Command |
 |---|---|
 | Dev server (port 3000, opens browser) | `yarn start` |
-| Dev without a backend | `yarn start` with `VITE_SERVER_URL=http://localhost:3000/mock/graphql`: the v3 mock, seeded with 3 accounts, in memory until restart (sign-in still uses Firebase) |
+| Dev without a backend | `yarn start` with `VITE_SERVER_URL=http://localhost:3000/mock/graphql`: the v3 mock, seeded with Cash and Bank (from `initializeUser`) and Euro, in memory until restart (sign-in still uses Firebase) |
 | Type-check | `yarn compile` |
 | Prod build (`tsc && vite build` → `build/`) | `yarn build` |
 | Preview build | `yarn preview` |

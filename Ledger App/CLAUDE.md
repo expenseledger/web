@@ -11,7 +11,7 @@ human curates sources, asks questions, and browses in Obsidian.
   - `raw/` — non-code sources the human drops in (tickets, notes, specs,
     clipped articles). Images go in `raw/assets/`.
   - **Backend agent** — backend code is not in `raw/`. Ask the Claude
-    session in charge of it (currently `ledger-api-v3-d8`) via
+    session in charge of it (currently `ledger-api-v3-65`) via
     SendMessage. Cite answers as "backend agent, YYYY-MM-DD" plus the
     backend file paths it gives.
   - **API v2 backend** — `gitlab.com/forestware/expense-ledger/

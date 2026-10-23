@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3]
 sources: [backend agent 2026-09-25, human 2026-09-25]
-updated: 2026-10-22
+updated: 2026-10-24
 ---
 
 # API v3
@@ -51,10 +51,21 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   (human, 2026-09-25).
 - User = JWT `sub` (Firebase UID). An `app_user` row is created
   automatically on the first authenticated request.
-- The client must call **`initializeUser: Boolean`** once (it's
-  idempotent). It seeds 7 categories: Food, Transport, Groceries,
-  Bills, Entertainment, Salary, None. Until then, uncategorised
-  transactions fail with `CATEGORY_DEFAULTS_NOT_FOUND`.
+- The client must call **`initializeUser(currency: Currency! = THB):
+  Boolean`** once. It seeds 7 categories (Food, Transport, Groceries,
+  Bills, Entertainment, Salary, Other) and, since 2026-10-24, two
+  accounts, "Cash" and "Bank", with balance 0 in `currency`. Until
+  then, uncategorised transactions fail with
+  `CATEGORY_DEFAULTS_NOT_FOUND`.
+- It is idempotent: later calls return `true`, add nothing and ignore
+  `currency`. `currency: null` is a validation error; omit it instead.
+  Users initialized before 2026-10-24 have no default accounts. The
+  seeded accounts are ordinary: renamable, editable, deletable
+  (backend agent `ledger-api-v3-65`, 2026-10-24; main@c5f644c, local,
+  not deployed).
+- The default category was "None" until 2026-10-24 (main@592f9f5,
+  local, not deployed). Migration V7 renames each user's "None"; a
+  user's own "Other" is merged into it.
 - No `currentUser` or profile type: fetch `accounts` and `categories`
   separately.
 
@@ -68,7 +79,7 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   mutations `CURRENCY_MISMATCH`, `NON_POSITIVE_AMOUNT`,
   `INVALID_TRANSACTION` (BAD_REQUEST). These three were added 2026-09-25
   and were INTERNAL_ERROR before. Also `INVALID_DATE_TIME`, and (2026-10-19)
-  `CATEGORY_PROTECTED` (delete or rename of "None"; replaced
+  `CATEGORY_PROTECTED` (delete or rename of "Other"; replaced
   `CATEGORY_UNDELETABLE`) and `NAME_TAKEN` (duplicate account/category
   name on create or patch), both BAD_REQUEST.
 - **Everything else is a generic INTERNAL_ERROR with no code**:

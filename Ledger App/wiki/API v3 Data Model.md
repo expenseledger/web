@@ -2,7 +2,7 @@
 type: entity
 tags: [backend, api, v3, domain]
 sources: [backend agent 2026-09-25]
-updated: 2026-10-23
+updated: 2026-10-24
 ---
 
 # API v3 Data Model
@@ -35,10 +35,11 @@ and balance is Money.** Inputs use `MoneyInput`.
 `Category { id: ID!, name, type: CategoryType! }`, with `CategoryType`
 `ANY | EXPENSE | INCOME | TRANSFER` (back 2026-10-23, ledger-api-v3
 main@9f27aad, local). Create defaults it to ANY (also for an explicit
-null); retyping "None" → `CATEGORY_PROTECTED`. Seeds: Food, Transport,
-Groceries, Bills, Entertainment are EXPENSE, Salary INCOME, None ANY.
+null); retyping "Other" → `CATEGORY_PROTECTED`. Seeds: Food, Transport,
+Groceries, Bills, Entertainment are EXPENSE, Salary INCOME, Other ANY.
 Migration V6 sets existing categories to ANY (backend agent, 2026-10-23).
-Names are unique per user. Seeded defaults include "None"; see
+Names are unique per user. Seeded defaults include "Other" ("None"
+until 2026-10-24, renamed by migration V7); see
 [[API v3]].
 
 ## Transaction
@@ -81,10 +82,10 @@ Create and `patch*` responses can return updated balances (select
   incomes and rewrites its transfers into Expense/Income on the other
   account (2026-10-18; [[API v3 Migration]]).
 - `deleteCategory` is a hard delete that first moves its transactions
-  to the user's "None" category (no balance changes). Deleting "None"
+  to the user's "Other" category (no balance changes). Deleting "Other"
   (matched by name) is refused with `BAD_REQUEST` /
   `CATEGORY_PROTECTED` (renamed from `CATEGORY_UNDELETABLE` 2026-10-19;
-  also refuses renaming "None"; [[API v3 Migration]]).
+  also refuses renaming "Other"; [[API v3 Migration]]).
 - Account and category names are unique per user (`NAME_TAKEN`).
   `patchAccount` can rename and set the balance directly;
   `patchCategory` can rename (2026-10-19).

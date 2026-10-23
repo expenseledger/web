@@ -88,5 +88,6 @@ initial data comes from `currentUser`).
 Every amount or balance a service sends (add, patch transaction, patch
 account) goes through `roundMoney` (`helper/moneyHelper.ts`). It rounds
 half away from zero to `currencyDecimals` (JPY 0, others 2), because API
-v3 keeps 4 decimals and doesn't round ([[API v3]], 2026-10-24). An amount
-that rounds to 0 gets `NON_POSITIVE_AMOUNT` from the server.
+v3 rejects finer amounts with `SUB_MINOR_UNIT_AMOUNT` ([[API v3]],
+2026-10-24). An amount that rounds to 0 gets `NON_POSITIVE_AMOUNT`.
+`getAccount` returns `account: null` for an unknown id.

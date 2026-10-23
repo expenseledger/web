@@ -228,8 +228,11 @@ Backend gaps:
 - No v2 import or adjustment transaction; not needed (manual Postgres
   migration, § Data migration).
 - **Not pushed**: local v3 `main` is 56 commits ahead of `origin/main`
-  (`a44ea45`, only tag `v1.0.0`). Deployed version unknown; the human
-  must confirm push and deploy.
+  (`a44ea45`, only tag `v1.0.0`). Since pushed: `origin/main` is tagged
+  `v3.0.0`. **Deployed is still image `6c6192e4`** (2026-09-06, before
+  `v1.0.0`; deploy repo `apps/ledger-api-v3/release.yaml`, checked
+  2026-10-24): `committedAt`, no `description`. The app fails there with
+  `Field 'occurredAt' … is undefined`. Deploying `v3.0.0` is pending.
 - Firebase issuer isn't in `application.yaml`: it must come from env
   (`SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=
   https://securetoken.google.com/expense-ledger-a0aa2`) in the Helm

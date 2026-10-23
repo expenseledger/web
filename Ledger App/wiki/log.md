@@ -387,3 +387,17 @@ reads the split as a regression.
 Removed [[Known Issues]] 16: the missing stable keys and one-currency
 reports are by design ([[PR Split]]). Marked 14–15 as `main` bugs for a
 separate PR. Added [[PR Split]] to [[index]].
+
+## [2026-10-24] update | Deployed API v3 is pre-v1.0.0
+
+The deploy repo pins image `6c6192e4`, whose schema lacks `occurredAt`
+and `description`, so the app's transaction list fails on the deployed
+API. Updated [[API v3 Migration]].
+
+## [2026-10-24] update | API v3 nullability, minor units, names
+
+Source: backend agent `ledger-api-v3-8f` (local main, not deployed).
+Single-row queries return null; `transfer` is `Transfer!`;
+`SUB_MINOR_UNIT_AMOUNT`; case-insensitive `NAME_TAKEN`. App: schema,
+codegen, mock, `getAccount`, error text. Updated [[API v3]],
+[[API v3 Data Model]], [[Service Layer]].

@@ -81,7 +81,13 @@ Related: [[API v3 Data Model]] · [[API v3 Operations]] ·
   and were INTERNAL_ERROR before. Also `INVALID_DATE_TIME`, and (2026-10-19)
   `CATEGORY_PROTECTED` (delete or rename of "Other"; replaced
   `CATEGORY_UNDELETABLE`) and `NAME_TAKEN` (duplicate account/category
-  name on create or patch), both BAD_REQUEST.
+  name on create or patch), both BAD_REQUEST. Since 2026-10-24 (local
+  main, not deployed): `SUB_MINOR_UNIT_AMOUNT` (BAD_REQUEST) for any
+  amount or balance finer than the currency's minor unit (JPY 0
+  decimals, others 2), and `NAME_TAKEN` ignores case.
+- `account(id)`, `category(id)` and `transaction(id)` return **null**
+  for a missing or another user's id, not `RESOURCE_NOT_FOUND`
+  (2026-10-24, main@58bcbe8); mutations still raise it.
 - **Everything else is a generic INTERNAL_ERROR with no code**:
   e.g. FK violations. The client can't tell these apart.
 - A missing or invalid token gets **HTTP 401** from Spring Security, not a
@@ -134,14 +140,16 @@ Backend agent `ledger-api-v3-8f`, 2026-10-24. Logged, not fixed:
 same for categories and transactions), and names aren't trimmed or
 checked for blanks.
 
-- `NAME_TAKEN` is case-sensitive (plain `UNIQUE(name, user_id)`);
-  intent asked of the author. Assume case-sensitive.
+- `NAME_TAKEN` was case-sensitive. Now it ignores case; recasing an
+  item's own name is allowed. A migration renamed clashing accounts
+  ("cash (2)") and merged clashing categories into "Other" or the
+  oldest row (backend agent, 2026-10-24).
 - Category type is only a hint, by design (author, 2026-10-23): the
   server never checks it against the transaction type. Filter on the
   client ([[Category]]).
-- No rounding policy: amounts are `NUMERIC(19,4)`, and the server
-  doesn't know minor units. Asked of the author; until then the client
-  rounds to the currency's minor unit ([[Service Layer]]).
-- Nullability quirks (`transfer` → nullable `Transfer`, `category(id)`
-  nullable) have been there since the first schema. Asked of the author;
-  code against the schema as it is.
+- Minor units: the server now rejects finer amounts
+  (`SUB_MINOR_UNIT_AMOUNT`), so the client rounds ([[Service Layer]]).
+  A migration rounded stored amounts half-even; any that would become 0
+  became one minor unit.
+- Nullability: fixed 2026-10-24. `transfer` returns `Transfer!`, and
+  the single-row queries are all nullable (above).

@@ -1,22 +1,25 @@
 import React from "react";
 import { categoriesState } from "../../common/shareState";
 import { createCategory, deleteCategory, patchCategory } from "../../service/categoryService";
+import { CategoryType } from "../../service/constants";
+import { allCategoryTypeLabels, categoryTypeFromLabel } from "../../service/helper/categoryHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
 import EditAndDeleteSetting from "../bases/EditAndDeleteSetting";
 import TextBoxWithButton from "../bases/TextBoxWithButton";
 import { Flex } from "@radix-ui/themes";
 import { useAtom } from "jotai";
 import AnimatedPage from "../AnimatedPage";
-import RenameCategoryModal from "./RenameCategoryModal";
+import EditCategoryModal from "./EditCategoryModal";
 import { describeError } from "../../service/helper/errorHelper";
 
 const CategorySetting: React.FC = () => {
     const [categories, setCategories] = useAtom(categoriesState);
     const { addNotification } = useNotification();
 
-    const addCategoryHandler = async (name: string) => {
+    const addCategoryHandler = async (name: string, typeLabel: string) => {
         const response = await createCategory({
             name,
+            type: categoryTypeFromLabel(typeLabel),
         });
 
         if (!response.addedCategory) {
@@ -33,11 +36,11 @@ const CategorySetting: React.FC = () => {
         addNotification("Create category successful", "success");
     };
 
-    const renameCategoryHandler = async (id: string, name: string) => {
-        const response = await patchCategory({ id, name });
+    const editCategoryHandler = async (id: string, name: string, type: CategoryType) => {
+        const response = await patchCategory({ id, name, type });
 
         if (!response.category) {
-            addNotification(describeError(response.errorCode, "Rename category failed"), "danger");
+            addNotification(describeError(response.errorCode, "Edit category failed"), "danger");
 
             return;
         }
@@ -47,16 +50,17 @@ const CategorySetting: React.FC = () => {
             .sort((a, b) => a.name.localeCompare(b.name));
 
         setCategories(newCategories);
-        addNotification("Rename category successful", "success");
+        addNotification("Edit category successful", "success");
     };
-    const renameCategoryModal = (id: string, triggerer: React.ReactElement) => {
+    const editCategoryModal = (id: string, triggerer: React.ReactElement) => {
         const category = categories.find((c) => c.id === id);
 
         return (
-            <RenameCategoryModal
-                key={category.name}
+            <EditCategoryModal
+                key={`${category.name}-${category.type}`}
                 name={category.name}
-                onSave={(name) => renameCategoryHandler(id, name)}
+                type={category.type}
+                onSave={(name, type) => editCategoryHandler(id, name, type)}
                 triggerer={triggerer}
             />
         );
@@ -82,9 +86,9 @@ const CategorySetting: React.FC = () => {
             <Flex direction="column" gap="3" mb="3">
                 <EditAndDeleteSetting
                     deleteFuncHandler={removeCategoryHandler}
-                    modifyModal={renameCategoryModal}
+                    modifyModal={editCategoryModal}
                     items={categories.map((x) => {
-                        // v3 refuses to delete or rename "None" (CATEGORY_PROTECTED).
+                        // v3 refuses to delete or change "None" (CATEGORY_PROTECTED).
                         const isNone = x.name === "None";
 
                         return { id: x.id, name: x.name, undeletable: isNone, uneditable: isNone };
@@ -95,6 +99,7 @@ const CategorySetting: React.FC = () => {
                     type="text"
                     buttonType="primary"
                     buttonText="Create"
+                    dropdown={allCategoryTypeLabels}
                     onClick={addCategoryHandler}
                 />
             </Flex>

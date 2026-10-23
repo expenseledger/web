@@ -54,4 +54,30 @@ describe("CategorySetting", () => {
         expect(store.get(categoriesState).map((c) => c.name)).toContain("Meals");
         expect(store.get(categoriesState).map((c) => c.name)).not.toContain("Food");
     });
+
+    it("creates a category with the picked type", async () => {
+        const store = await renderCategories();
+
+        fireEvent.click(screen.getByRole("combobox"));
+        fireEvent.click(screen.getByRole("option", { name: "Income" }));
+        fireEvent.change(screen.getByRole("textbox"), { target: { value: "Bonus" } });
+        fireEvent.click(screen.getByRole("button", { name: "Create" }));
+
+        await waitFor(() => expect(screen.getByText("Bonus")).toBeInTheDocument());
+        expect(store.get(categoriesState).find((c) => c.name === "Bonus").type).toBe("INCOME");
+    });
+
+    it("retypes a category", async () => {
+        const store = await renderCategories();
+
+        fireEvent.click(screen.getByLabelText("Edit Food"));
+        expect(screen.getByRole("combobox", { name: "Type" })).toHaveTextContent("Expense");
+        fireEvent.click(screen.getByRole("combobox", { name: "Type" }));
+        fireEvent.click(screen.getByRole("option", { name: "Any" }));
+        fireEvent.click(screen.getByRole("button", { name: "Save" }));
+
+        await waitFor(() =>
+            expect(store.get(categoriesState).find((c) => c.name === "Food").type).toBe("ANY")
+        );
+    });
 });

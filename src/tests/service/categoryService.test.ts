@@ -32,6 +32,14 @@ describe("categoryService", () => {
             expect(await getAllCategories()).toHaveLength(7);
         });
 
+        it("returns each category's type", async () => {
+            expect(await categoryNamed("Salary")).toEqual({
+                id: expect.any(String),
+                name: "Salary",
+                type: "INCOME",
+            });
+        });
+
         it("returns no categories on an unexpected error", async () => {
             jest.spyOn(mockClient, "query").mockRejectedValueOnce(new Error("network"));
 
@@ -41,13 +49,17 @@ describe("categoryService", () => {
 
     describe("createCategory", () => {
         it("creates the category", async () => {
-            const result = await createCategory({ name: "Rent" });
+            const result = await createCategory({ name: "Rent", type: "EXPENSE" });
 
-            expect(result.addedCategory).toEqual({ id: expect.any(String), name: "Rent" });
+            expect(result.addedCategory).toEqual({
+                id: expect.any(String),
+                name: "Rent",
+                type: "EXPENSE",
+            });
         });
 
         it("returns the error code of a taken name", async () => {
-            const result = await createCategory({ name: "Food" });
+            const result = await createCategory({ name: "Food", type: "ANY" });
 
             expect(result).toEqual({ addedCategory: null, errorCode: "NAME_TAKEN" });
         });
@@ -59,7 +71,15 @@ describe("categoryService", () => {
 
             const result = await patchCategory({ id: food.id, name: "Meals" });
 
-            expect(result.category).toEqual({ id: food.id, name: "Meals" });
+            expect(result.category).toEqual({ id: food.id, name: "Meals", type: "EXPENSE" });
+        });
+
+        it("retypes the category", async () => {
+            const food = await categoryNamed("Food");
+
+            const result = await patchCategory({ id: food.id, type: "ANY" });
+
+            expect(result.category).toEqual({ id: food.id, name: "Food", type: "ANY" });
         });
 
         it("returns the error code of renaming None", async () => {

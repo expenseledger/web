@@ -5,6 +5,8 @@ type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type Incremental<T> =
     T | { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
 import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
+export type CategoryType = "ANY" | "EXPENSE" | "INCOME" | "TRANSFER";
+
 export type Currency = "EUR" | "JPY" | "THB" | "USD";
 
 export type MoneyInput = {
@@ -65,20 +67,26 @@ export type DeleteAccountMutationVariables = Exact<{
 
 export type DeleteAccountMutation = { deleteAccount: string };
 
-export type PlainCategoryFragment = { id: string; name: string };
+export type PlainCategoryFragment = { id: string; name: string; type: CategoryType };
 
 export type CreateCategoryMutationVariables = Exact<{
     name: string;
+    type?: CategoryType | null | undefined;
 }>;
 
-export type CreateCategoryMutation = { createCategory: { id: string; name: string } };
+export type CreateCategoryMutation = {
+    createCategory: { id: string; name: string; type: CategoryType };
+};
 
 export type PatchCategoryMutationVariables = Exact<{
     id: string | number;
     name?: string | null | undefined;
+    type?: CategoryType | null | undefined;
 }>;
 
-export type PatchCategoryMutation = { patchCategory: { id: string; name: string } };
+export type PatchCategoryMutation = {
+    patchCategory: { id: string; name: string; type: CategoryType };
+};
 
 export type DeleteCategoryMutationVariables = Exact<{
     id: string | number;
@@ -93,7 +101,7 @@ export type GetCategoriesPageQueryVariables = Exact<{
 
 export type GetCategoriesPageQuery = {
     categories: {
-        edges: Array<{ node: { id: string; name: string } } | null>;
+        edges: Array<{ node: { id: string; name: string; type: CategoryType } } | null>;
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
     };
 };
@@ -105,7 +113,7 @@ type PlainTransaction_Expense_Fragment = {
     occurredAt: string;
     from: { id: string; name: string; balance: { amount: number; currency: Currency } };
     amount: { amount: number; currency: Currency };
-    category: { id: string; name: string } | null;
+    category: { id: string; name: string; type: CategoryType } | null;
 };
 
 type PlainTransaction_Income_Fragment = {
@@ -115,7 +123,7 @@ type PlainTransaction_Income_Fragment = {
     occurredAt: string;
     to: { id: string; name: string; balance: { amount: number; currency: Currency } };
     amount: { amount: number; currency: Currency };
-    category: { id: string; name: string } | null;
+    category: { id: string; name: string; type: CategoryType } | null;
 };
 
 type PlainTransaction_Transfer_Fragment = {
@@ -127,7 +135,7 @@ type PlainTransaction_Transfer_Fragment = {
     to: { id: string; name: string; balance: { amount: number; currency: Currency } };
     convertedAmount: { amount: number; currency: Currency } | null;
     amount: { amount: number; currency: Currency };
-    category: { id: string; name: string } | null;
+    category: { id: string; name: string; type: CategoryType } | null;
 };
 
 export type PlainTransactionFragment =
@@ -151,7 +159,7 @@ export type AddExpenseMutation = {
         occurredAt: string;
         from: { id: string; name: string; balance: { amount: number; currency: Currency } };
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     };
 };
 
@@ -171,7 +179,7 @@ export type AddIncomeMutation = {
         occurredAt: string;
         to: { id: string; name: string; balance: { amount: number; currency: Currency } };
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     };
 };
 
@@ -195,7 +203,7 @@ export type AddTransferMutation = {
         to: { id: string; name: string; balance: { amount: number; currency: Currency } };
         convertedAmount: { amount: number; currency: Currency } | null;
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     } | null;
 };
 
@@ -228,7 +236,7 @@ export type GetTransactionsPageQuery = {
                           balance: { amount: number; currency: Currency };
                       };
                       amount: { amount: number; currency: Currency };
-                      category: { id: string; name: string } | null;
+                      category: { id: string; name: string; type: CategoryType } | null;
                   }
                 | {
                       __typename: "Income";
@@ -241,7 +249,7 @@ export type GetTransactionsPageQuery = {
                           balance: { amount: number; currency: Currency };
                       };
                       amount: { amount: number; currency: Currency };
-                      category: { id: string; name: string } | null;
+                      category: { id: string; name: string; type: CategoryType } | null;
                   }
                 | {
                       __typename: "Transfer";
@@ -260,7 +268,7 @@ export type GetTransactionsPageQuery = {
                       };
                       convertedAmount: { amount: number; currency: Currency } | null;
                       amount: { amount: number; currency: Currency };
-                      category: { id: string; name: string } | null;
+                      category: { id: string; name: string; type: CategoryType } | null;
                   };
         } | null>;
         pageInfo: { hasNextPage: boolean; endCursor: string | null };
@@ -283,7 +291,7 @@ export type PatchExpenseMutation = {
         occurredAt: string;
         from: { id: string; name: string; balance: { amount: number; currency: Currency } };
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     };
 };
 
@@ -303,7 +311,7 @@ export type PatchIncomeMutation = {
         occurredAt: string;
         to: { id: string; name: string; balance: { amount: number; currency: Currency } };
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     };
 };
 
@@ -326,7 +334,7 @@ export type PatchTransferMutation = {
         to: { id: string; name: string; balance: { amount: number; currency: Currency } };
         convertedAmount: { amount: number; currency: Currency } | null;
         amount: { amount: number; currency: Currency };
-        category: { id: string; name: string } | null;
+        category: { id: string; name: string; type: CategoryType } | null;
     };
 };
 
@@ -346,6 +354,7 @@ export const PlainCategoryFragmentDoc = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -534,6 +543,7 @@ export const PlainTransactionFragmentDoc = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1001,6 +1011,12 @@ export const CreateCategoryDocument = {
                         type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
                     },
                 },
+                {
+                    kind: "VariableDefinition",
+                    variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+                    type: { kind: "NamedType", name: { kind: "Name", value: "CategoryType" } },
+                    defaultValue: { kind: "EnumValue", value: "ANY" },
+                },
             ],
             selectionSet: {
                 kind: "SelectionSet",
@@ -1013,6 +1029,11 @@ export const CreateCategoryDocument = {
                                 kind: "Argument",
                                 name: { kind: "Name", value: "name" },
                                 value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "type" },
+                                value: { kind: "Variable", name: { kind: "Name", value: "type" } },
                             },
                         ],
                         selectionSet: {
@@ -1037,6 +1058,7 @@ export const CreateCategoryDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1063,6 +1085,11 @@ export const PatchCategoryDocument = {
                     variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
                     type: { kind: "NamedType", name: { kind: "Name", value: "String" } },
                 },
+                {
+                    kind: "VariableDefinition",
+                    variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+                    type: { kind: "NamedType", name: { kind: "Name", value: "CategoryType" } },
+                },
             ],
             selectionSet: {
                 kind: "SelectionSet",
@@ -1080,6 +1107,11 @@ export const PatchCategoryDocument = {
                                 kind: "Argument",
                                 name: { kind: "Name", value: "name" },
                                 value: { kind: "Variable", name: { kind: "Name", value: "name" } },
+                            },
+                            {
+                                kind: "Argument",
+                                name: { kind: "Name", value: "type" },
+                                value: { kind: "Variable", name: { kind: "Name", value: "type" } },
                             },
                         ],
                         selectionSet: {
@@ -1104,6 +1136,7 @@ export const PatchCategoryDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1273,6 +1306,7 @@ export const GetCategoriesPageDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1388,6 +1422,7 @@ export const AddExpenseDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1669,6 +1704,7 @@ export const AddIncomeDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -1982,6 +2018,7 @@ export const AddTransferDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -2387,6 +2424,7 @@ export const GetTransactionsPageDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -2662,6 +2700,7 @@ export const PatchExpenseDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -2937,6 +2976,7 @@ export const PatchIncomeDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },
@@ -3228,6 +3268,7 @@ export const PatchTransferDocument = {
                 selections: [
                     { kind: "Field", name: { kind: "Name", value: "id" } },
                     { kind: "Field", name: { kind: "Name", value: "name" } },
+                    { kind: "Field", name: { kind: "Name", value: "type" } },
                 ],
             },
         },

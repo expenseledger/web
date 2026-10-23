@@ -18,7 +18,9 @@ export function mapTransactionFromServer(data: any): Transaction {
         toAccount: data.to ? mapAccountFromServer(data.to) : null,
         amount: data.amount.amount,
         convertedAmount: data.convertedAmount?.amount ?? null,
-        category: data.category ? { id: data.category.id, name: data.category.name } : null,
+        category: data.category
+            ? { id: data.category.id, name: data.category.name, type: data.category.type }
+            : null,
         description: data.description,
         date: new Date(data.occurredAt),
     };

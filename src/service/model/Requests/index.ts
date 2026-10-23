@@ -1,5 +1,5 @@
 import type { TransactionType } from "../../constants";
-import type { Currency } from "../../constants";
+import type { CategoryType, Currency } from "../../constants";
 import type { Money } from "../Money";
 
 // Transaction
@@ -38,11 +38,15 @@ export interface DeleteTranactionRequest {
 // Category
 export interface CreateCategoryRequest {
     name: string;
+    /** ANY when omitted. */
+    type?: CategoryType;
 }
 
+/** Omitted fields stay unchanged. */
 export interface PatchCategoryRequest {
     id: string;
-    name: string;
+    name?: string;
+    type?: CategoryType;
 }
 
 export interface DeleteCategoryRequest {

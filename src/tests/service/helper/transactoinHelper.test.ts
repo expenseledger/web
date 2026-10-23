@@ -16,7 +16,7 @@ const expense: Transaction = {
     toAccount: null,
     amount: 50,
     convertedAmount: null,
-    category: { id: "7", name: "Food" },
+    category: { id: "7", name: "Food", type: "EXPENSE" },
     description: "Lunch",
     date: new Date(2026, 0, 2, 12, 30),
 };
@@ -31,7 +31,7 @@ describe("transactoinHelper", () => {
                 convertedAmount: { amount: 1, currency: "EUR" },
                 from: { id: "1", name: "Cash", balance: { amount: 100, currency: "THB" } },
                 to: { id: "2", name: "Euro", balance: { amount: 5, currency: "EUR" } },
-                category: { id: "7", name: "Food" },
+                category: { id: "7", name: "Food", type: "EXPENSE" },
                 description: null,
                 occurredAt: "2026-01-02T03:04:05Z",
             });
@@ -43,7 +43,7 @@ describe("transactoinHelper", () => {
                 toAccount: euro,
                 amount: 40,
                 convertedAmount: 1,
-                category: { id: "7", name: "Food" },
+                category: { id: "7", name: "Food", type: "EXPENSE" },
                 description: null,
                 date: new Date("2026-01-02T03:04:05Z"),
             });

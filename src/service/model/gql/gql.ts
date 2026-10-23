@@ -20,9 +20,9 @@ type Documents = {
     "\n    mutation CreateAccount($name: String!, $balance: MoneyInput!) {\n        createAccount(name: $name, balance: $balance) {\n            ...PlainAccount\n        }\n    }\n": typeof types.CreateAccountDocument;
     "\n    mutation PatchAccount($id: ID!, $name: String, $balance: MoneyInput) {\n        patchAccount(id: $id, name: $name, balance: $balance) {\n            ...PlainAccount\n        }\n    }\n": typeof types.PatchAccountDocument;
     "\n    mutation DeleteAccount($id: ID!) {\n        deleteAccount(id: $id)\n    }\n": typeof types.DeleteAccountDocument;
-    "\n    fragment PlainCategory on Category {\n        id\n        name\n    }\n": typeof types.PlainCategoryFragmentDoc;
-    "\n    mutation CreateCategory($name: String!) {\n        createCategory(name: $name) {\n            ...PlainCategory\n        }\n    }\n": typeof types.CreateCategoryDocument;
-    "\n    mutation PatchCategory($id: ID!, $name: String) {\n        patchCategory(id: $id, name: $name) {\n            ...PlainCategory\n        }\n    }\n": typeof types.PatchCategoryDocument;
+    "\n    fragment PlainCategory on Category {\n        id\n        name\n        type\n    }\n": typeof types.PlainCategoryFragmentDoc;
+    "\n    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {\n        createCategory(name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n": typeof types.CreateCategoryDocument;
+    "\n    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {\n        patchCategory(id: $id, name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n": typeof types.PatchCategoryDocument;
     "\n    mutation DeleteCategory($id: ID!) {\n        deleteCategory(id: $id)\n    }\n": typeof types.DeleteCategoryDocument;
     '\n    query GetCategoriesPage($first: Int!, $after: String) {\n        categories(first: $first, after: $after, sort: [{ property: "name", direction: ASC }]) {\n            edges {\n                node {\n                    ...PlainCategory\n                }\n            }\n            pageInfo {\n                hasNextPage\n                endCursor\n            }\n        }\n    }\n': typeof types.GetCategoriesPageDocument;
     "\n    fragment PlainTransaction on Transaction {\n        __typename\n        id\n        amount {\n            amount\n            currency\n        }\n        description\n        occurredAt\n        category {\n            ...PlainCategory\n        }\n        ... on Expense {\n            from {\n                ...PlainAccount\n            }\n        }\n        ... on Income {\n            to {\n                ...PlainAccount\n            }\n        }\n        ... on Transfer {\n            from {\n                ...PlainAccount\n            }\n            to {\n                ...PlainAccount\n            }\n            convertedAmount {\n                amount\n                currency\n            }\n        }\n    }\n": typeof types.PlainTransactionFragmentDoc;
@@ -49,11 +49,11 @@ const documents: Documents = {
         types.PatchAccountDocument,
     "\n    mutation DeleteAccount($id: ID!) {\n        deleteAccount(id: $id)\n    }\n":
         types.DeleteAccountDocument,
-    "\n    fragment PlainCategory on Category {\n        id\n        name\n    }\n":
+    "\n    fragment PlainCategory on Category {\n        id\n        name\n        type\n    }\n":
         types.PlainCategoryFragmentDoc,
-    "\n    mutation CreateCategory($name: String!) {\n        createCategory(name: $name) {\n            ...PlainCategory\n        }\n    }\n":
+    "\n    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {\n        createCategory(name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n":
         types.CreateCategoryDocument,
-    "\n    mutation PatchCategory($id: ID!, $name: String) {\n        patchCategory(id: $id, name: $name) {\n            ...PlainCategory\n        }\n    }\n":
+    "\n    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {\n        patchCategory(id: $id, name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n":
         types.PatchCategoryDocument,
     "\n    mutation DeleteCategory($id: ID!) {\n        deleteCategory(id: $id)\n    }\n":
         types.DeleteCategoryDocument,
@@ -135,20 +135,20 @@ export function graphql(
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-    source: "\n    fragment PlainCategory on Category {\n        id\n        name\n    }\n"
-): (typeof documents)["\n    fragment PlainCategory on Category {\n        id\n        name\n    }\n"];
+    source: "\n    fragment PlainCategory on Category {\n        id\n        name\n        type\n    }\n"
+): (typeof documents)["\n    fragment PlainCategory on Category {\n        id\n        name\n        type\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-    source: "\n    mutation CreateCategory($name: String!) {\n        createCategory(name: $name) {\n            ...PlainCategory\n        }\n    }\n"
-): (typeof documents)["\n    mutation CreateCategory($name: String!) {\n        createCategory(name: $name) {\n            ...PlainCategory\n        }\n    }\n"];
+    source: "\n    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {\n        createCategory(name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n"
+): (typeof documents)["\n    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {\n        createCategory(name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
 export function graphql(
-    source: "\n    mutation PatchCategory($id: ID!, $name: String) {\n        patchCategory(id: $id, name: $name) {\n            ...PlainCategory\n        }\n    }\n"
-): (typeof documents)["\n    mutation PatchCategory($id: ID!, $name: String) {\n        patchCategory(id: $id, name: $name) {\n            ...PlainCategory\n        }\n    }\n"];
+    source: "\n    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {\n        patchCategory(id: $id, name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n"
+): (typeof documents)["\n    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {\n        patchCategory(id: $id, name: $name, type: $type) {\n            ...PlainCategory\n        }\n    }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */

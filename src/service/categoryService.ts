@@ -19,20 +19,21 @@ export const categoryFragment = graphql(`
     fragment PlainCategory on Category {
         id
         name
+        type
     }
 `);
 
 const CREATE_CATEGORY = graphql(`
-    mutation CreateCategory($name: String!) {
-        createCategory(name: $name) {
+    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {
+        createCategory(name: $name, type: $type) {
             ...PlainCategory
         }
     }
 `);
 
 const PATCH_CATEGORY = graphql(`
-    mutation PatchCategory($id: ID!, $name: String) {
-        patchCategory(id: $id, name: $name) {
+    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {
+        patchCategory(id: $id, name: $name, type: $type) {
             ...PlainCategory
         }
     }
@@ -76,7 +77,7 @@ export async function fetchAllCategories(): Promise<Category[]> {
         return response.data.categories;
     });
 
-    return nodes.map((c) => ({ id: c.id, name: c.name }));
+    return nodes.map((c) => ({ id: c.id, name: c.name, type: c.type }));
 }
 
 export async function getAllCategories(): Promise<Category[]> {
@@ -97,6 +98,7 @@ export async function createCategory(
             mutation: CREATE_CATEGORY,
             variables: {
                 name: request.name,
+                type: request.type,
             },
         });
 
@@ -109,10 +111,10 @@ export async function createCategory(
             };
         }
 
-        const { id, name } = response.data.createCategory;
+        const { id, name, type } = response.data.createCategory;
 
         return {
-            addedCategory: { id, name },
+            addedCategory: { id, name, type },
         };
     } catch (err) {
         log("cannot add category, unexpected error", err);
@@ -130,11 +132,12 @@ export async function patchCategory(request: PatchCategoryRequest): Promise<Patc
             variables: {
                 id: request.id,
                 name: request.name,
+                type: request.type,
             },
         });
 
         if (response.error) {
-            log("cannot rename category", response.error);
+            log("cannot update category", response.error);
 
             return {
                 category: null,
@@ -142,13 +145,13 @@ export async function patchCategory(request: PatchCategoryRequest): Promise<Patc
             };
         }
 
-        const { id, name } = response.data.patchCategory;
+        const { id, name, type } = response.data.patchCategory;
 
         return {
-            category: { id, name },
+            category: { id, name, type },
         };
     } catch (err) {
-        log("cannot rename category, unexpected error", err);
+        log("cannot update category, unexpected error", err);
 
         return {
             category: null,

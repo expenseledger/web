@@ -1,4 +1,5 @@
 import { buildSchema, GraphQLError, GraphQLSchema } from "graphql";
+import { currencyDecimals } from "../service/constants";
 
 /**
  * An in-memory API v3 for tests and local development. It follows the
@@ -107,6 +108,14 @@ function requirePositive(money: Money): void {
     }
 }
 
+function requireMinorUnit(money: Money): void {
+    const shifted = money.amount * 10 ** currencyDecimals[money.currency];
+
+    if (Math.abs(shifted - Math.round(shifted)) > 1e-6) {
+        badRequest("SUB_MINOR_UNIT_AMOUNT", `Amount finer than a ${money.currency} minor unit`);
+    }
+}
+
 function requireCurrency(expected: Currency, money: Money): void {
     if (money.currency !== expected) {
         badRequest("CURRENCY_MISMATCH", `Expected ${expected}, got ${money.currency}`);
@@ -177,7 +186,10 @@ export function createMockV3(sdl: string): MockV3 {
         name: string,
         id?: string
     ) {
-        if ([...rows.values()].some((row) => row.name === name && row.id !== id)) {
+        const taken = (row: { id: string; name: string }) =>
+            row.name.toLowerCase() === name.toLowerCase() && row.id !== id;
+
+        if ([...rows.values()].some(taken)) {
             badRequest("NAME_TAKEN", `Name '${name}' is taken`);
         }
     }
@@ -210,6 +222,7 @@ export function createMockV3(sdl: string): MockV3 {
         }
 
         requirePositive(tx.amount);
+        requireMinorUnit(tx.amount);
         requireCurrency((from ?? to).balance.currency, tx.amount);
 
         if (tx.type !== "Transfer") {
@@ -226,6 +239,7 @@ export function createMockV3(sdl: string): MockV3 {
             }
 
             requirePositive(tx.convertedAmount);
+            requireMinorUnit(tx.convertedAmount);
             requireCurrency(to.balance.currency, tx.convertedAmount);
         }
     }
@@ -325,12 +339,12 @@ export function createMockV3(sdl: string): MockV3 {
     const rootValue: MockV3["rootValue"] = {
         // Queries
         accounts: (args) => connection([...accounts.values()], args as PageArgs, accountNode),
-        account: ({ id }) => accountNode(getAccount(id)),
+        account: ({ id }) => (accounts.has(id) ? accountNode(accounts.get(id)) : null),
         categories: (args) => connection([...categories.values()], args as PageArgs, (c) => c),
-        category: ({ id }) => getCategory(id),
+        category: ({ id }) => categories.get(id) ?? null,
         transactions: (args) =>
             connection(filterTransactions(args.filter), args as PageArgs, txNode),
-        transaction: ({ id }) => txNode(getTx(id)),
+        transaction: ({ id }) => (transactions.has(id) ? txNode(transactions.get(id)) : null),
 
         // Users
         initializeUser: ({ currency }) => {
@@ -354,6 +368,7 @@ export function createMockV3(sdl: string): MockV3 {
         // Accounts
         createAccount: ({ name, balance }) => {
             requireUniqueName(accounts, name);
+            requireMinorUnit(balance);
             const row = { id: nextId(), name, balance: { ...balance } };
             accounts.set(row.id, row);
 
@@ -368,6 +383,7 @@ export function createMockV3(sdl: string): MockV3 {
 
             if (balance != null) {
                 requireCurrency(row.balance.currency, balance);
+                requireMinorUnit(balance);
             }
 
             row.name = name ?? row.name;

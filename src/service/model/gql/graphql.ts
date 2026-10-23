@@ -39,7 +39,7 @@ export type GetAccountByIdQueryVariables = Exact<{
 }>;
 
 export type GetAccountByIdQuery = {
-    account: { id: string; name: string; balance: { amount: number; currency: Currency } };
+    account: { id: string; name: string; balance: { amount: number; currency: Currency } } | null;
 };
 
 export type CreateAccountMutationVariables = Exact<{
@@ -204,7 +204,7 @@ export type AddTransferMutation = {
         convertedAmount: { amount: number; currency: Currency } | null;
         amount: { amount: number; currency: Currency };
         category: { id: string; name: string; type: CategoryType } | null;
-    } | null;
+    };
 };
 
 export type DeleteTransactionMutationVariables = Exact<{

@@ -3,14 +3,15 @@
 # Refresh by hand when the backend schema changes.
 # CategoryType: ledger-api-v3 main@9f27aad (local, 2026-10-23).
 # initializeUser currency: ledger-api-v3 main@c5f644c (local, 2026-10-24).
+# Nullable single-row queries, Transfer!: main@58bcbe8 (local, 2026-10-24).
 #
 type Query {
     accounts(first: Int!, after: String, sort: [OrderInput!]): AccountConnection!
-    account(id: ID!): Account!
+    account(id: ID!): Account
     categories(first: Int!, after: String, sort: [OrderInput!]): CategoryConnection!
     category(id: ID!): Category
     transactions(first: Int!, after: String, sort: [OrderInput!], filter: TransactionFilter): TransactionConnection!
-    transaction(id: ID!): Transaction!
+    transaction(id: ID!): Transaction
 }
 
 type Mutation {
@@ -23,7 +24,7 @@ type Mutation {
     patchCategory(id: ID!, name: String, type: CategoryType): Category!
     withdraw(fromAccountId: ID!, amount: MoneyInput!, categoryId: ID, description: String, occurredAt: String): Expense!
     deposit(toAccountId: ID!, amount: MoneyInput!, categoryId: ID, description: String, occurredAt: String): Income!
-    transfer(fromAccountId: ID!, toAccountId: ID!, amount: MoneyInput!, convertedAmount: MoneyInput, categoryId: ID, description: String, occurredAt: String): Transfer
+    transfer(fromAccountId: ID!, toAccountId: ID!, amount: MoneyInput!, convertedAmount: MoneyInput, categoryId: ID, description: String, occurredAt: String): Transfer!
     deleteTransaction(id: ID!): ID!
     patchExpense(id: ID!, fromAccountId: ID, amount: MoneyInput, categoryId: ID, description: String, occurredAt: String): Expense!
     patchIncome(id: ID!, toAccountId: ID, amount: MoneyInput, categoryId: ID, description: String, occurredAt: String): Income!

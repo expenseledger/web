@@ -166,6 +166,44 @@ describe("mock API v3", () => {
         ).toBe("NAME_TAKEN");
     });
 
+    it("rejects an account name taken in another case, but allows recasing its own", async () => {
+        const cash = await createAccount("Cash");
+
+        expect(
+            await errorCode(
+                `mutation { createAccount(name: "cash", balance: { amount: 0, currency: THB }) { id } }`
+            )
+        ).toBe("NAME_TAKEN");
+        expect(
+            await ok(`mutation ($id: ID!) { patchAccount(id: $id, name: "CASH") { name } }`, {
+                id: cash,
+            })
+        ).toEqual({ patchAccount: { name: "CASH" } });
+    });
+
+    it("rejects amounts finer than the currency's minor unit", async () => {
+        const cash = await createAccount("Cash");
+
+        expect(await errorCode(WITHDRAW, { from: cash, amount: thb(0.005) })).toBe(
+            "SUB_MINOR_UNIT_AMOUNT"
+        );
+        expect(
+            await errorCode(
+                `mutation { createAccount(name: "Yen", balance: { amount: 1.5, currency: JPY }) { id } }`
+            )
+        ).toBe("SUB_MINOR_UNIT_AMOUNT");
+        expect(await ok(WITHDRAW, { from: cash, amount: thb(0.01) })).toBeDefined();
+        expect(await balanceOf(cash)).toBe(99.99);
+    });
+
+    it("returns null for a missing account, category or transaction", async () => {
+        expect(
+            await ok(
+                `{ account(id: "999") { id } category(id: "999") { id } transaction(id: "999") { id } }`
+            )
+        ).toEqual({ account: null, category: null, transaction: null });
+    });
+
     it("withdraws from the account and defaults the category to Other", async () => {
         const cash = await createAccount("Cash");
 

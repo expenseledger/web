@@ -127,8 +127,9 @@ export async function getAccount(request: GetAccountRequest): Promise<GetAccount
             };
         }
 
+        // null for an unknown id (or another user's) since 2026-10-24.
         return {
-            account: mapAccountFromServer(response.data.account),
+            account: response.data.account && mapAccountFromServer(response.data.account),
         };
     } catch (err) {
         log(`cannot get account by id: ${request.id}, unexpected error`, err);

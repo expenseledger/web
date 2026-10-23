@@ -16,6 +16,7 @@ const errorDescriptions: Record<string, string> = {
     CATEGORY_PROTECTED: "the Other category can't be changed",
     CURRENCY_MISMATCH: "the currency doesn't match the account",
     NON_POSITIVE_AMOUNT: "amounts must be more than 0",
+    SUB_MINOR_UNIT_AMOUNT: "the amount has too many decimal places",
     INVALID_TRANSACTION: "check the accounts and the converted amount",
     INVALID_DATE_TIME: "the date isn't valid",
     RESOURCE_NOT_FOUND: "it no longer exists, please reload",

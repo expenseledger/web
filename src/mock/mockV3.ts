@@ -138,6 +138,10 @@ function compareBy(sort: Order[] = [{ property: "id", direction: "ASC" }]) {
 }
 
 function connection<T>(rows: Args[], { first, after, sort }: PageArgs, toNode: (row: any) => T) {
+    if (first < 1) {
+        badRequest("TOO_FEW_ROWS", "first must be at least 1");
+    }
+
     if (first > MAX_PAGE_SIZE) {
         badRequest("TOO_MANY_ROWS", `first must be at most ${MAX_PAGE_SIZE}`);
     }
@@ -181,17 +185,26 @@ export function createMockV3(sdl: string): MockV3 {
         );
     }
 
-    function requireUniqueName(
+    /** Trims the name and checks it like the backend: not blank, unique ignoring case. */
+    function cleanName(
         rows: Map<string, { id: string; name: string }>,
-        name: string,
+        rawName: string,
         id?: string
-    ) {
+    ): string {
+        const name = rawName.trim();
+
+        if (!name) {
+            badRequest("BLANK_NAME", "Name must not be blank");
+        }
+
         const taken = (row: { id: string; name: string }) =>
             row.name.toLowerCase() === name.toLowerCase() && row.id !== id;
 
         if ([...rows.values()].some(taken)) {
             badRequest("NAME_TAKEN", `Name '${name}' is taken`);
         }
+
+        return name;
     }
 
     const accountNode = (row: AccountRow) => ({
@@ -367,9 +380,9 @@ export function createMockV3(sdl: string): MockV3 {
 
         // Accounts
         createAccount: ({ name, balance }) => {
-            requireUniqueName(accounts, name);
+            const cleaned = cleanName(accounts, name);
             requireMinorUnit(balance);
-            const row = { id: nextId(), name, balance: { ...balance } };
+            const row = { id: nextId(), name: cleaned, balance: { ...balance } };
             accounts.set(row.id, row);
 
             return accountNode(row);
@@ -377,16 +390,14 @@ export function createMockV3(sdl: string): MockV3 {
         patchAccount: ({ id, name, balance }) => {
             const row = getAccount(id);
 
-            if (name != null) {
-                requireUniqueName(accounts, name, id);
-            }
+            const cleaned = name != null ? cleanName(accounts, name, id) : row.name;
 
             if (balance != null) {
                 requireCurrency(row.balance.currency, balance);
                 requireMinorUnit(balance);
             }
 
-            row.name = name ?? row.name;
+            row.name = cleaned;
             row.balance = balance ? { ...balance } : row.balance;
 
             return accountNode(row);
@@ -417,8 +428,7 @@ export function createMockV3(sdl: string): MockV3 {
 
         // Categories
         createCategory: ({ name, type }) => {
-            requireUniqueName(categories, name);
-            const row = { id: nextId(), name, type: type ?? "ANY" };
+            const row = { id: nextId(), name: cleanName(categories, name), type: type ?? "ANY" };
             categories.set(row.id, row);
 
             return row;
@@ -431,8 +441,7 @@ export function createMockV3(sdl: string): MockV3 {
             }
 
             if (name != null) {
-                requireUniqueName(categories, name, id);
-                row.name = name;
+                row.name = cleanName(categories, name, id);
             }
 
             row.type = type ?? row.type;

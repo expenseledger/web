@@ -410,9 +410,34 @@ describe("mock API v3", () => {
         expect(second.transactions.pageInfo.hasNextPage).toBe(false);
     });
 
-    it("rejects pages larger than 50", async () => {
+    it("rejects pages outside 1 to 50", async () => {
         expect(await errorCode(`{ accounts(first: 51) { edges { cursor } } }`)).toBe(
             "TOO_MANY_ROWS"
         );
+        expect(await errorCode(`{ categories(first: 0) { edges { cursor } } }`)).toBe(
+            "TOO_FEW_ROWS"
+        );
+        expect(await errorCode(`{ transactions(first: -1) { edges { cursor } } }`)).toBe(
+            "TOO_FEW_ROWS"
+        );
+    });
+
+    it("trims names and rejects blank ones", async () => {
+        const created = await ok(`mutation { createCategory(name: " Gifts ") { id name } }`);
+
+        expect(created.createCategory.name).toBe("Gifts");
+        expect(await errorCode(`mutation { createCategory(name: " gifts") { id } }`)).toBe(
+            "NAME_TAKEN"
+        );
+        expect(
+            await errorCode(
+                `mutation { createAccount(name: "  ", balance: { amount: 0, currency: THB }) { id } }`
+            )
+        ).toBe("BLANK_NAME");
+        expect(
+            await errorCode(`mutation ($id: ID!) { patchCategory(id: $id, name: "") { id } }`, {
+                id: created.createCategory.id,
+            })
+        ).toBe("BLANK_NAME");
     });
 });

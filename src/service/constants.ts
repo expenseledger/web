@@ -13,6 +13,13 @@ export const allCategoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TR
 /** ANY fits every transaction type; the others fit only their own. */
 export type CategoryType = "ANY" | TransactionType;
 
+export const categoryTypeLabels: Record<CategoryType, string> = {
+    ANY: "Any",
+    EXPENSE: "Expense",
+    INCOME: "Income",
+    TRANSFER: "Transfer",
+};
+
 export type Currency = "THB" | "USD" | "EUR" | "JPY";
 
 export const allCurrencies: Currency[] = ["THB", "USD", "EUR", "JPY"];

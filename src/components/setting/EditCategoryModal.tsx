@@ -1,10 +1,6 @@
 import React from "react";
-import { CategoryType } from "../../service/constants";
-import {
-    allCategoryTypeLabels,
-    categoryTypeFromLabel,
-    categoryTypeLabels,
-} from "../../service/helper/categoryHelper";
+import { CategoryType, categoryTypeLabels } from "../../service/constants";
+import { allCategoryTypeLabels, categoryTypeFromLabel } from "../../service/helper/categoryHelper";
 import Dropdown from "../bases/Dropdown";
 import Modal from "../bases/Modal";
 import TextBox from "../bases/TextBox";

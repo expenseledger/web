@@ -1,14 +1,8 @@
 import dayjs from "../../lib/dayjs";
-import { TransactionType } from "../constants";
+import { transactionTypes } from "../constants";
 import { UpdateTransactionRequest } from "../model/Requests";
 import { Transaction } from "../model/Transaction";
 import { mapAccountFromServer } from "./accountHelper";
-
-const transactionTypes: Record<string, TransactionType> = {
-    Expense: "EXPENSE",
-    Income: "INCOME",
-    Transfer: "TRANSFER",
-};
 
 export function mapTransactionFromServer(data: any): Transaction {
     return {

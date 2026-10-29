@@ -8,6 +8,12 @@ export const allTransactionType: TransactionType[] = ["EXPENSE", "INCOME", "TRAN
 
 export type TransactionType = "EXPENSE" | "INCOME" | "TRANSFER";
 
+export const transactionTypes: Record<string, TransactionType> = {
+    Expense: "EXPENSE",
+    Income: "INCOME",
+    Transfer: "TRANSFER",
+};
+
 export const allCategoryTypes: CategoryType[] = ["ANY", "EXPENSE", "INCOME", "TRANSFER"];
 
 /** ANY fits every transaction type; the others fit only their own. */

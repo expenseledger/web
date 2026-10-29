@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, data]
 sources: [src/service/accountService.ts, src/service/categoryService.ts, src/service/transactionService.ts, src/service/userService.ts, src/service/helper/, src/service/model/]
-updated: 2026-10-24
+updated: 2026-10-30
 ---
 
 # Service Layer
@@ -73,7 +73,8 @@ are included. No transactions or a failure → `[]`. Always
   used only for `getUserData` in [[Routing and Layout]].
 - `accountHelper` — account mapping.
 - `categoryHelper` — `categoriesFor` picker filter, category type ↔
-  label (`"ANY"` ↔ `"Any"`).
+  label (`"ANY"` ↔ `"Any"`). The label table, `categoryTypeLabels`,
+  lives in `constants.ts` beside `currencySymbols` (PR review).
 - `notificationHelper.useNotification()` — see [[Notifications]].
 - Note the file-name typo `transactoinHelper.ts`.
 

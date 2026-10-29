@@ -411,3 +411,8 @@ App: mock and error text. Updated [[API v3]], [[API v3 Data Model]].
 
 The Account model was still listed with `id: number` and no
 `currency`. Fixed [[Account]] and its `index.md` line.
+
+## [2026-10-30] update | Category type labels in constants
+
+PR #131 review: `categoryTypeLabels` moved from `categoryHelper.ts` to
+`constants.ts`. Updated [[Service Layer]].

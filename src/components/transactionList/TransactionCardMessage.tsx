@@ -67,8 +67,6 @@ const InputBox = styled(Box)`
 
 const UpdateTransactionModal: React.FC<UpdateTransactionModalProps> = (props) => {
     const fittingCategories = categoriesFor(useAtomValue(categoriesState), props.type);
-    // Keep its own category even when it doesn't fit, so editing another
-    // field never changes it.
     const categoryOptions =
         !props.category || fittingCategories.some((c) => c.id === props.category.id)
             ? fittingCategories

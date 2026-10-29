@@ -23,7 +23,6 @@ const client = new ApolloClient({
         httpLink: new HttpLink({ uri: getServerUrl }),
         getToken: () => getAuthToken(),
         refreshToken: async () => auth.currentUser?.getIdToken(true),
-        // Signing out makes the auth listeners send the user to the sign-in page.
         onUnauthorized: () => auth.signOut(),
     }),
     cache: createCache(),

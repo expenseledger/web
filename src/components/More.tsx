@@ -53,7 +53,6 @@ const More: React.FC = () => {
     const fromAccountIdx = homeProps?.accountIdx ?? 0;
     const initialCurrentValue: CurrentValue = {
         fromAccountIdx,
-        // The account after From, wrapping around; none when there's only one.
         toAccountIdx: accounts.length > 1 ? (fromAccountIdx + 1) % accounts.length : undefined,
         categoryId: homeProps?.categoryId,
         amount: homeProps?.amount ?? "",
@@ -70,7 +69,6 @@ const More: React.FC = () => {
     const transactionTypes: TransactionType[] = ["EXPENSE", "INCOME", "TRANSFER"];
     const transactionType = transactionTypes[transactionTypeTabActive.findIndex((x) => x)];
     const categoryOptions = categoriesFor(categories, transactionType);
-    // Falls back to the first option, which is what the dropdown shows.
     const selectedCategory =
         categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const { setBackToHomeParam } = useBackToHome();

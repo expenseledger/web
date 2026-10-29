@@ -10,7 +10,6 @@ export function mapAccountFromServer(account: any): Account {
     };
 }
 
-/** Swaps in the updated copies of accounts, matched by id. */
 export function replaceAccounts(accounts: Account[], updated: Account[]): Account[] {
     const byId = new Map(updated.filter((a) => a).map((a) => [a.id, a]));
 

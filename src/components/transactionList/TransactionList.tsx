@@ -41,7 +41,6 @@ const Root = styled.div`
     text-align: center;
 `;
 
-/** Replaces `updated` in place, dropping it if it was re-dated out of `monthYear`. */
 function replaceTransaction(
     transactions: Transaction[],
     updated: Transaction,
@@ -56,7 +55,6 @@ function replaceTransaction(
     return [...others, updated].sort(compareTransactionsDesc);
 }
 
-/** Groups newest-first transactions by key, keeping group order. */
 function groupBy(transactions: Transaction[], format: string): Map<string, Transaction[]> {
     const groups = new Map<string, Transaction[]>();
     transactions.forEach((tx) => {

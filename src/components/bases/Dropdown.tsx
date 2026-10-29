@@ -29,7 +29,6 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
     React.useEffect(() => {
         const isExist = props.options.includes(value);
 
-        // With no options there is nothing to fall back to.
         if (!isExist && props.options.length > 0) {
             setValue(props.options[0]);
             props.updateSelectedValue(props.options[0]);

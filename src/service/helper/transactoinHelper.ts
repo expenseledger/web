@@ -32,7 +32,6 @@ export function compareTransactionsDesc(a: Transaction, b: Transaction): number 
     return +b.id - +a.id;
 }
 
-/** Every local month (`YYYY-MM`) from `oldest`'s to `newest`'s, newest first. */
 export function monthYearsBetween(oldest: Date, newest: Date): string[] {
     const first = dayjs(oldest).startOf("month");
     const monthYears: string[] = [];
@@ -48,17 +47,14 @@ export function monthYearsBetween(oldest: Date, newest: Date): string[] {
     return monthYears;
 }
 
-/** ISO-8601 with the local offset, e.g. `2026-09-01T00:00:00+07:00`, as API v3 expects. */
 export function toOffsetDateTime(date: Date): string {
     return dayjs(date).format("YYYY-MM-DDTHH:mm:ssZ");
 }
 
-/** Whether `accountId` receives `tx`'s money in a cross-currency transfer. */
 function receivesConverted(tx: Transaction, accountId: string): boolean {
     return tx.convertedAmount != null && tx.toAccount?.id === accountId;
 }
 
-/** The amount of `tx` as `accountId` sees it, in that account's currency. */
 export function amountFor(tx: Transaction, accountId: string): number {
     return receivesConverted(tx, accountId) ? tx.convertedAmount : tx.amount;
 }
@@ -70,7 +66,6 @@ export interface EditedTransaction {
     occurredAt: Date;
 }
 
-/** A patch with only what the edit changed, as seen from `accountId`. */
 export function buildTransactionPatch(
     tx: Transaction,
     accountId: string,

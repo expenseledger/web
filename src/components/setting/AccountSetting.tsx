@@ -66,7 +66,6 @@ const AccountSetting: React.FC = () => {
 
         return (
             <EditAccountModal
-                // Remount after a save so the fields start from the saved values.
                 key={`${account.name}-${account.balance}`}
                 account={account}
                 onSave={(name, balance) => editAccountHandler(account, name, balance)}

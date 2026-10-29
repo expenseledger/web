@@ -75,7 +75,6 @@ const Home: React.FC = () => {
         (idx: number) => updateField("accountIdx", idx),
         [updateField]
     );
-    // Falls back to the first option, which is what the dropdown shows.
     const selectedCategory =
         categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const updateSelectedCategory = (value: string) => {

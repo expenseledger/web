@@ -380,7 +380,6 @@ export async function listTransactions(
     }
 }
 
-/** Reverses the balance change and deletes the transaction. */
 export async function deleteTransaction(
     request: DeleteTranactionRequest
 ): Promise<DeleteTransactionResponse> {

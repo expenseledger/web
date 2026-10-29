@@ -88,7 +88,6 @@ const CategorySetting: React.FC = () => {
                     deleteFuncHandler={removeCategoryHandler}
                     modifyModal={editCategoryModal}
                     items={categories.map((x) => {
-                        // v3 refuses to delete or change "Other" (CATEGORY_PROTECTED).
                         const isOther = x.name === "Other";
 
                         return {

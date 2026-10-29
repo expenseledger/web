@@ -1,9 +1,10 @@
-import type { AccountType } from "./../constants";
+import type { Currency } from "../constants";
+
 interface Account {
-    id: number;
+    id: string;
     name: string;
-    type: AccountType;
     balance: number;
+    currency: Currency;
 }
 
 export default Account;

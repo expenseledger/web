@@ -1,9 +1,17 @@
-import React, { ReactNode, startTransition, useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { accountsState } from "../../common/shareState";
 import Loading from "../../components/bases/Loading";
 import dayjs from "../../lib/dayjs";
+import { getAllAccount } from "../../service/accountService";
+import { replaceAccounts } from "../../service/helper/accountHelper";
+import {
+    amountFor,
+    buildTransactionPatch,
+    compareTransactionsDesc,
+    EditedTransaction,
+} from "../../service/helper/transactoinHelper";
 import { useNotification } from "../../service/helper/notificationHelper";
 import { Transaction } from "../../service/model/Transaction";
 import {
@@ -21,6 +29,7 @@ import Switch from "../bases/Switch";
 import { useBackToHome } from "../Layout";
 import { useAtom } from "jotai";
 import AnimatedPage from "../AnimatedPage";
+import { describeError } from "../../service/helper/errorHelper";
 
 const NoData = styled.div`
     font-weight: bold;
@@ -32,48 +41,57 @@ const Root = styled.div`
     text-align: center;
 `;
 
-interface HideAbleTransaction extends Transaction {
-    isHide: boolean;
+function replaceTransaction(
+    transactions: Transaction[],
+    updated: Transaction,
+    monthYear: string
+): Transaction[] {
+    const others = transactions.filter((tx) => tx.id !== updated.id);
+
+    if (dayjs(updated.date).format("YYYY-MM") !== monthYear) {
+        return others;
+    }
+
+    return [...others, updated].sort(compareTransactionsDesc);
+}
+
+function groupBy(transactions: Transaction[], format: string): Map<string, Transaction[]> {
+    const groups = new Map<string, Transaction[]>();
+    transactions.forEach((tx) => {
+        const key = dayjs(tx.date).format(format);
+        groups.set(key, [...(groups.get(key) ?? []), tx]);
+    });
+
+    return groups;
 }
 
 export const TransactionList: React.FC = () => {
     const [monthYearIdx, setMonthYearIdx] = useState<number>(0);
     const [monthYearList, setMonthYearList] = useState<string[]>(null);
-    const [transactions, setTransactions] = useState<HideAbleTransaction[]>(null);
-    const { addNotification } = useNotification();
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const { addNotification } = useNotification();
     const [accounts, setAccounts] = useAtom(accountsState);
     const { accountId } = useParams();
     const [isPaidOnly, setIsPaidOnly] = useState<boolean>(false);
     const navigate = useNavigate();
-    const mapPaidOnly = useCallback(
-        (tx: HideAbleTransaction | Transaction) => {
-            if (
-                !isPaidOnly ||
-                tx.type == "EXPENSE" ||
-                (tx.type == "TRANSFER" && tx.fromAccount?.id === +accountId)
-            ) {
-                return {
-                    ...tx,
-                    isHide: false,
-                };
-            }
+    const { setBackToHomeParam } = useBackToHome();
+    const currency = accounts.find((a) => a.id === accountId)?.currency ?? "THB";
 
-            return {
-                ...tx,
-                isHide: true,
-            };
-        },
+    const isShown = useCallback(
+        (tx: Transaction) =>
+            !isPaidOnly ||
+            tx.type == "EXPENSE" ||
+            (tx.type == "TRANSFER" && tx.fromAccount?.id === accountId),
         [accountId, isPaidOnly]
     );
     const backToHome = useCallback(() => {
         navigate("/");
     }, [navigate]);
-    const { setBackToHomeParam } = useBackToHome();
 
     useEffect(() => {
-        setBackToHomeParam({ accountId: +accountId });
-        getTransactionMonthYearList({ accountId: +accountId })
+        setBackToHomeParam({ accountId });
+        getTransactionMonthYearList({ accountId })
             .then((response) => {
                 setMonthYearList(response.monthYears);
             })
@@ -85,93 +103,69 @@ export const TransactionList: React.FC = () => {
             return;
         }
 
+        let ignore = false;
         const from = dayjs(monthYearList[monthYearIdx]);
-        const until = from.add(1, "M");
 
         listTransactions({
-            accountId: +accountId,
-            from: from.toDate(),
-            until: until.toDate(),
+            accountId,
+            fromDate: from.toDate(),
+            toDate: from.endOf("month").toDate(),
         }).then((response) => {
-            const hideAbleTransactions: HideAbleTransaction[] = response.items.map(mapPaidOnly);
-            setTransactions(hideAbleTransactions);
+            if (ignore) {
+                return;
+            }
+
+            setTransactions(response.items);
             setIsLoading(false);
         });
-    }, [accountId, mapPaidOnly, monthYearIdx, monthYearList]);
 
-    useEffect(() => {
-        startTransition(() => {
-            setTransactions((prevState) => prevState && prevState.map(mapPaidOnly));
-        });
-    }, [mapPaidOnly, isPaidOnly]);
+        return () => {
+            ignore = true;
+        };
+    }, [accountId, monthYearIdx, monthYearList]);
 
-    const removeTransactionHandler = async (id: number) => {
+    const removeTransactionHandler = async (id: string) => {
         const response = await deleteTransaction({
             id,
         });
 
         if (!response.isSuccess) {
-            addNotification("Delete transaction failed", "danger");
+            addNotification(
+                describeError(response.errorCode, "Delete transaction failed"),
+                "danger"
+            );
             return;
         }
 
         addNotification("Delete transaction succes", "success");
-
-        const updatedAccounts = accounts.map((ac) => {
-            if (ac.id === Number.parseInt(accountId)) {
-                const tx = transactions.find((t) => t.id === id);
-
-                return {
-                    ...ac,
-                    balance: tx.type === "INCOME" ? ac.balance - tx.amount : ac.balance + tx.amount,
-                };
-            }
-
-            return ac;
-        });
         setTransactions(transactions.filter((x) => x.id !== id));
-        setAccounts(updatedAccounts);
+
+        // deleteTransaction returns only the id, so reload the balances.
+        const { accounts: refreshed } = await getAllAccount();
+        if (refreshed.length !== 0) {
+            setAccounts(refreshed);
+        }
     };
-    const updateTransactionHandler = async (
-        id: number,
-        amount: number,
-        categoryId: number,
-        description: string,
-        occurredAt: Date
-    ) => {
-        const result = await updateTransaction({
-            id,
-            amount,
-            categoryId,
-            description,
-            occurredAt,
-        });
+    const updateTransactionHandler = async (tx: Transaction, edited: EditedTransaction) => {
+        const patch = buildTransactionPatch(tx, accountId, edited);
+        const result = await updateTransaction(patch);
 
         if (!result.updatedTransaction) {
-            addNotification("Update transaction failed", "danger");
+            addNotification(describeError(result.errorCode, "Update transaction failed"), "danger");
             return;
         }
 
-        const updatedTransactions = transactions.map((tx) => {
-            if (tx.id === id) {
-                return {
-                    ...tx,
-                    ...result.updatedTransaction,
-                };
-            }
-
-            return tx;
-        });
-
-        setTransactions(updatedTransactions);
+        const updated = result.updatedTransaction;
+        setTransactions(replaceTransaction(transactions, updated, monthYearList[monthYearIdx]));
+        setAccounts(replaceAccounts(accounts, [updated.fromAccount, updated.toAccount]));
         addNotification("Update transaction success", "success");
     };
-    const getAmount = (tx: HideAbleTransaction) => {
+    const getAmount = (tx: Transaction) => {
         switch (tx.type) {
             case "EXPENSE":
                 return -tx.amount;
             case "TRANSFER":
-                return tx.toAccount.id === +accountId ? tx.amount : -tx.amount;
+                return tx.toAccount.id === accountId ? amountFor(tx, accountId) : -tx.amount;
             case "INCOME":
             default:
                 return tx.amount;
@@ -181,69 +175,49 @@ export const TransactionList: React.FC = () => {
     const paidOnlyOnChangeHandler = () => {
         setIsPaidOnly((prevState) => !prevState);
     };
-    const getTransactionCards = () => {
-        const dateSet: Set<string> = new Set();
-        const toReturn: ReactNode[] = [];
-        transactions
-            .filter((x) => !x.isHide)
-            .forEach((x) => dateSet.add(dayjs(x.date).format("YYYY-MM-DD")));
-
-        dateSet.forEach((x, idx) =>
-            toReturn.push(
-                <TransactionCard
-                    key={idx}
-                    date={new Date(x)}
-                    items={transactions
-                        .filter((x) => !x.isHide)
-                        .filter((y) => x === dayjs(y.date).format("YYYY-MM-DD"))
-                        .map((y) => {
-                            return {
-                                amount: getAmount(y),
-                                type: y.type,
-                                description: y.description,
-                                category: y.category,
-                                date: y.date,
-                                onDelete: () => removeTransactionHandler(y.id),
-                                onUpdate: (amount, categoryId, description, occurredAt) =>
-                                    updateTransactionHandler(
-                                        y.id,
-                                        amount,
-                                        categoryId,
-                                        description,
-                                        occurredAt
-                                    ),
-                            };
-                        })}
-                />
-            )
-        );
-
-        return toReturn;
-    };
     const renderTransactionCards = () => {
-        const cards = getTransactionCards();
+        const days = groupBy(transactions.filter(isShown), "YYYY-MM-DD");
 
-        if (cards.length > 0) {
-            return cards.map((c, idx) => {
-                return (
-                    <Box key={idx} mt={idx > 0 ? "3" : "0"}>
-                        <>{c}</>
-                    </Box>
-                );
-            });
+        if (days.size === 0) {
+            return (
+                <NoData>
+                    <Text color="red" size="7">
+                        No data
+                    </Text>
+                </NoData>
+            );
         }
 
-        return (
-            <NoData>
-                <Text color="red" size="7">
-                    No data
-                </Text>
-            </NoData>
-        );
+        return [...days.entries()].map(([day, dayTransactions], idx) => (
+            <Box key={day} mt={idx > 0 ? "3" : "0"}>
+                <TransactionCard
+                    date={new Date(day)}
+                    currency={currency}
+                    items={dayTransactions.map((y) => {
+                        return {
+                            id: y.id,
+                            amount: getAmount(y),
+                            type: y.type,
+                            description: y.description,
+                            category: y.category,
+                            date: y.date,
+                            onDelete: () => removeTransactionHandler(y.id),
+                            onUpdate: (amount, categoryId, description, occurredAt) =>
+                                updateTransactionHandler(y, {
+                                    amount,
+                                    categoryId,
+                                    description,
+                                    occurredAt,
+                                }),
+                        };
+                    })}
+                />
+            </Box>
+        ));
     };
     const renderSummaryCard = () => {
         const totalAmount = transactions
-            .filter((x) => !x.isHide)
+            .filter(isShown)
             .map(getAmount)
             .reduce((prev, cur) => prev + cur, 0);
 
@@ -263,7 +237,7 @@ export const TransactionList: React.FC = () => {
                             size="small"
                         />
                     </Box>
-                    <AmountTxt amount={totalAmount} />
+                    <AmountTxt currency={currency} amount={totalAmount} />
                 </Flex>
             </Card>
         );

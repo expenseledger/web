@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
+import { Currency, currencySymbols } from "../../service/constants";
 import Transaction from "../../service/model/Transaction";
 import {
     EXPENSE_COLOR,
@@ -10,7 +10,6 @@ import {
     incomeFilter,
 } from "./reportHelper";
 import { Table, Text } from "@radix-ui/themes";
-import { useAtomValue } from "jotai";
 
 interface ReportTableData {
     category: string;
@@ -22,6 +21,7 @@ interface ReportTableData {
 interface TableReportProps {
     transations: Transaction[];
     isExpense: boolean;
+    currency: Currency;
 }
 
 const NoDataDiv = styled.div`
@@ -45,7 +45,7 @@ const StyledTableRoot = styled(Table.Root)`
 >;
 
 const TableReport: React.FC<TableReportProps> = (props) => {
-    const currency = useAtomValue(currencyState);
+    const currency = currencySymbols[props.currency];
     const getReportTableData = (
         transactions: Transaction[],
         isExpense: boolean

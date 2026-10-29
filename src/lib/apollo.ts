@@ -1,13 +1,9 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloClient } from "@apollo/client";
 import { HttpLink } from "@apollo/client/link/http";
-import { SetContextLink } from "@apollo/client/link/context";
 import { auth } from "./firebase";
 import { getServerUrl } from "./rr";
-import { RetryLink } from "@apollo/client/link/retry";
-
-const httpLink = new HttpLink({
-    uri: getServerUrl,
-});
+import { createCache } from "./apolloCache";
+import { createLink } from "./apolloLink";
 
 const getAuthToken = async (retry = 0): Promise<string> => {
     const token = await auth.currentUser?.getIdToken();
@@ -22,30 +18,14 @@ const getAuthToken = async (retry = 0): Promise<string> => {
     }
 };
 
-const authLink = new SetContextLink(async (prevContext) => {
-    const token = await getAuthToken();
-
-    return {
-        headers: {
-            ...prevContext.headers,
-            authorization: token ? `Bearer ${token}` : "",
-        },
-    };
-});
-
-const retryLink = new RetryLink({
-    attempts: {
-        max: 5,
-        retryIf: (error, operation) => operation.operationType === "query",
-    },
-    delay: (attempt) => {
-        return 1000 * 2 ** (attempt - 1);
-    },
-});
-
 const client = new ApolloClient({
-    link: authLink.concat(httpLink).concat(retryLink),
-    cache: new InMemoryCache(),
+    link: createLink({
+        httpLink: new HttpLink({ uri: getServerUrl }),
+        getToken: () => getAuthToken(),
+        refreshToken: async () => auth.currentUser?.getIdToken(true),
+        onUnauthorized: () => auth.signOut(),
+    }),
+    cache: createCache(),
 });
 
 export default client;

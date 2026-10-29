@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
 import { Cell, Pie, PieChart, PieSectorShapeProps, ResponsiveContainer, Sector } from "recharts";
 import styled from "styled-components";
-import { currencyState } from "../../common/shareState";
 import { formatNumber, groupBy } from "../../common/utils";
+import { Currency, currencySymbols } from "../../service/constants";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, expenseFilter, incomeFilter } from "./reportHelper";
 import { Text, Flex } from "@radix-ui/themes";
-import { useAtomValue } from "jotai";
-import { render } from "@testing-library/react";
 
 interface PieChartReportProps {
     transactions: Transaction[];
     isExpense: boolean;
+    currency: Currency;
 }
 
 interface PieChartData {
@@ -26,7 +25,7 @@ const TotalAmountFlex = styled(Flex)`
 ` as unknown as React.ComponentType<React.ComponentProps<typeof Flex> & { $isExpense: boolean }>;
 
 const PieChartReport: React.FC<PieChartReportProps> = (props) => {
-    const currency = useAtomValue(currencyState);
+    const currency = currencySymbols[props.currency];
     const [pieChartData, setPieChartData] = useState<PieChartData[]>([]);
 
     const getPieChartData = (transactions: Transaction[], isExpense: boolean): PieChartData[] => {
@@ -170,6 +169,7 @@ const PieChartReport: React.FC<PieChartReportProps> = (props) => {
                                       .reduce((acc, current) => acc + current)
                                 : 0
                         }
+                        currency={props.currency}
                     />
                 </Text>
             </TotalAmountFlex>

@@ -29,9 +29,7 @@ jest.mock("swiper/modules", () => ({
 
 describe("MonthYearSwiper", () => {
     it("shows no data message when list is empty", () => {
-        renderWithProviders(
-            <MonthYearSwiper monthYearList={[]} onSlideChange={jest.fn()} />
-        );
+        renderWithProviders(<MonthYearSwiper monthYearList={[]} onSlideChange={jest.fn()} />);
 
         expect(screen.getByText("No data")).toBeInTheDocument();
     });

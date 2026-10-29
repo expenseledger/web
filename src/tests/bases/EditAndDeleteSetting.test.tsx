@@ -4,11 +4,11 @@ import { renderWithProviders } from "./testUtils";
 
 describe("EditAndDeleteSetting", () => {
     const items = [
-        { id: 1, name: "Cash" },
-        { id: 2, name: "Bank" },
+        { id: "1", name: "Cash" },
+        { id: "2", name: "Bank" },
     ];
 
-    const modifyModal = (id: number, triggerer: React.ReactElement) => (
+    const modifyModal = (id: string, triggerer: React.ReactElement) => (
         <button type="button" data-testid={`edit-${id}`}>
             {triggerer}
         </button>
@@ -32,7 +32,7 @@ describe("EditAndDeleteSetting", () => {
 
         renderWithProviders(
             <EditAndDeleteSetting
-                items={[{ id: 1, name: "Cash" }]}
+                items={[{ id: "1", name: "Cash" }]}
                 deleteFuncHandler={deleteFuncHandler}
                 modifyModal={modifyModal}
             />
@@ -45,7 +45,7 @@ describe("EditAndDeleteSetting", () => {
         fireEvent.click(screen.getByRole("button", { name: "Confirm" }));
 
         await waitFor(() => {
-            expect(deleteFuncHandler).toHaveBeenCalledWith(1);
+            expect(deleteFuncHandler).toHaveBeenCalledWith("1");
         });
     });
 });

@@ -7,5 +7,5 @@ export function getServerUrl(): string {
         index = 0;
     }
 
-    return `${urls[index++]}/graphql`;
+    return urls[index++];
 }

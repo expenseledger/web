@@ -4,9 +4,9 @@ import { renderWithProviders } from "./testUtils";
 
 describe("AmountTxt", () => {
     it("renders formatted amount with currency", () => {
-        renderWithProviders(<AmountTxt amount={500} />);
+        renderWithProviders(<AmountTxt amount={500} currency="USD" />);
 
-        expect(screen.getByText("฿")).toBeInTheDocument();
+        expect(screen.getByText("$")).toBeInTheDocument();
         expect(screen.getByText("500.00")).toBeInTheDocument();
     });
 });

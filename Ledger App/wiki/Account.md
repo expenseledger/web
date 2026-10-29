@@ -2,7 +2,7 @@
 type: entity
 tags: [domain]
 sources: [src/service/model/Account.ts, src/service/constants.ts, src/service/accountService.ts, src/components/setting/AccountSetting.tsx]
-updated: 2026-10-19
+updated: 2026-10-30
 ---
 
 # Account
@@ -10,9 +10,11 @@ updated: 2026-10-19
 A money container owned by the user.
 
 ```ts
-interface Account { id: number; name: string; balance: number }
+interface Account { id: string; name: string; balance: number; currency: Currency }
 ```
 
+- `id` is a `string` since the v3 migration: v3 exposes ids as GraphQL
+  `ID`, which serializes as a string ([[API v3 Data Model]]).
 - **No type in the app** (2026-10-18). v2 still stores CASH/BANK/CREDIT;
   `createAccount` always sends `CASH` because v2 requires one. API v3 has
   no account type.

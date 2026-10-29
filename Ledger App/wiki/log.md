@@ -406,3 +406,8 @@ codegen, mock, `getAccount`, error text. Updated [[API v3]],
 
 Source: backend agent `ledger-api-v3-8f` (local main, not deployed).
 App: mock and error text. Updated [[API v3]], [[API v3 Data Model]].
+
+## [2026-10-30] update | Account string id
+
+The Account model was still listed with `id: number` and no
+`currency`. Fixed [[Account]] and its `index.md` line.

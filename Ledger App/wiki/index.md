@@ -32,7 +32,7 @@ Schema/conventions: `../CLAUDE.md`.
 
 ## Domain (entity)
 
-- [[Account]] — untyped, server-owned balance, no editing yet.
+- [[Account]] — untyped, string id, per-account currency, server-owned balance.
 - [[Category]] — type (ANY/EXPENSE/INCOME/TRANSFER) filters the pickers.
 - [[Transaction]] — EXPENSE/INCOME/TRANSFER, sign convention, rules.
 - [[GraphQL API]] — API v2 (replaced by v3 on `feature/api-v3`): Postgraphile.

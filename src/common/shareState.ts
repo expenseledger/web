@@ -4,24 +4,20 @@ import type { NotificationProps } from "../components/bases/Notification";
 import type Account from "../service/model/Account";
 import type Category from "../service/model/Category";
 import type PageSetting from "../service/model/configs/PageSetting";
-import type { Currency } from "./../service/constants";
+import { sumBalancesByCurrency } from "../service/helper/accountHelper";
 
 export const accountsState = atom<Account[]>([]);
 
-export const totalAccountsBalanceState = atom<number>((get) => {
-    const accounts = get(accountsState);
-    return accounts.length === 0
-        ? 0
-        : (accounts.map((x) => x.balance).reduce((acc, current) => acc + current) ?? 0);
-});
+/** Account balances summed per currency; accounts in different currencies can't be added up. */
+export const totalBalancesByCurrencyState = atom((get) =>
+    sumBalancesByCurrency(get(accountsState))
+);
 
 export const categoriesState = atom<Category[]>([]);
 
 export const toastState = atom<NotificationProps[]>([]);
 
 export const isSignInState = atom<boolean>(false);
-
-export const currencyState = atomWithStorage<Currency>("currency", "฿");
 
 export const pageSettingState = atomWithStorage<PageSetting>("pageSetting", {
     isDarkTheme: false,

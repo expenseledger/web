@@ -2,9 +2,12 @@ import React, { useCallback, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { accountsState, categoriesState, currencyState } from "../common/shareState";
+import { accountsState, categoriesState } from "../common/shareState";
 import { toNumber } from "../common/utils";
 import dayjs from "../lib/dayjs";
+import { currencySymbols } from "../service/constants";
+import { replaceAccounts } from "../service/helper/accountHelper";
+import { categoriesFor } from "../service/helper/categoryHelper";
 import { useNotification } from "../service/helper/notificationHelper";
 import { AddExpenseRequest } from "../service/model/Requests";
 import { addExpense } from "../service/transactionService";
@@ -17,13 +20,14 @@ import { Box, Flex, Grid, Text } from "@radix-ui/themes";
 import { FileIcon, ListBulletIcon } from "@radix-ui/react-icons";
 import { color } from "../common/constants";
 import { BackToHomeParam, useBackToHome } from "./Layout";
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import AnimatedPage from "./AnimatedPage";
 import { Navigation, Pagination } from "swiper/modules";
+import { describeError } from "../service/helper/errorHelper";
 
 interface CurrentValue {
     accountIdx: number;
-    categoryIdx: number;
+    categoryId: string;
     amount: string;
     date: string;
     description: string;
@@ -44,18 +48,18 @@ const StyledMoreButton = styled(Button)`
 const Home: React.FC = () => {
     const initialState: CurrentValue = {
         accountIdx: 0,
-        categoryIdx: 0,
+        categoryId: undefined,
         amount: "",
         date: dayjs().format("YYYY-MM-DD"),
         description: "",
     };
     const [accounts, setAccounts] = useAtom(accountsState);
     const [categories] = useAtom(categoriesState);
+    const categoryOptions = categoriesFor(categories, "EXPENSE");
     const { addNotification } = useNotification();
     const [currentValue, setCurrentValue] = React.useState<CurrentValue>(initialState);
     const [isLoading, setIsLoading] = React.useState(false);
     const navigate = useNavigate();
-    const currency = useAtomValue(currencyState);
     const backToHomeParam = useLocation().state as BackToHomeParam;
     const { setBackToHomeParam } = useBackToHome();
 
@@ -71,15 +75,17 @@ const Home: React.FC = () => {
         (idx: number) => updateField("accountIdx", idx),
         [updateField]
     );
+    const selectedCategory =
+        categoryOptions.find((x) => x.id === currentValue.categoryId) ?? categoryOptions[0];
     const updateSelectedCategory = (value: string) => {
-        const idx = categories.findIndex((x) => x.name === value);
+        const category = categoryOptions.find((x) => x.name === value);
 
-        updateField("categoryIdx", idx);
+        updateField("categoryId", category?.id);
     };
     const updateExpense = (value: string) => updateField("amount", value);
 
     const addTransaction = async () => {
-        const { accountIdx, amount, date, categoryIdx, description } = currentValue;
+        const { accountIdx, amount, date, description } = currentValue;
 
         setIsLoading(true);
 
@@ -95,28 +101,19 @@ const Home: React.FC = () => {
                 setIsLoading(false);
                 return;
             }
+            const account = accounts[accountIdx];
             const request: AddExpenseRequest = {
-                amount: numberedAmount,
-                categoryId: categories[categoryIdx]?.id ?? 0,
-                fromAccountId: accounts[accountIdx]?.id ?? 0,
-                description: description === "" ? "-" : description,
+                amount: { amount: numberedAmount, currency: account.currency },
+                categoryId: selectedCategory?.id,
+                fromAccountId: account.id,
+                description,
                 date: dayjs(date).toDate(),
             };
 
             const response = await addExpense(request);
 
-            if (response) {
-                const tAccounts = accounts.map((a) => {
-                    if (a.name === response.transaction.fromAccount.name) {
-                        return {
-                            ...a,
-                            balance: response.transaction.fromAccount.balance,
-                        };
-                    }
-
-                    return a;
-                });
-                setAccounts(tAccounts);
+            if (response.transaction) {
+                setAccounts(replaceAccounts(accounts, [response.transaction.fromAccount]));
                 addNotification("AddExpense sucess", "success");
 
                 setCurrentValue({
@@ -128,7 +125,7 @@ const Home: React.FC = () => {
                 return;
             }
 
-            addNotification("AddExpense is failed", "danger");
+            addNotification(describeError(response.errorCode, "AddExpense failed"), "danger");
             setIsLoading(false);
         } catch {
             addNotification("Please add amount", "danger");
@@ -137,7 +134,7 @@ const Home: React.FC = () => {
     };
 
     const toMorePage = () => {
-        navigate("/more", { state: { ...currentValue } });
+        navigate("/more", { state: { ...currentValue, categoryId: selectedCategory?.id } });
     };
 
     const renderAccountCards = () => {
@@ -147,7 +144,7 @@ const Home: React.FC = () => {
                     key={idx}
                     id={idx}
                     balance={currentValue.accountIdx === idx ? x.balance : 0}
-                    currency={currency}
+                    currency={currencySymbols[x.currency]}
                     name={x.name}
                 />
             </SwiperSlide>
@@ -215,9 +212,13 @@ const Home: React.FC = () => {
                         <TextBox
                             updateValue={updateExpense}
                             name="expense"
+                            ariaLabel="Amount"
                             type="number"
                             value={currentValue.amount}
-                            addOn={{ text: currency, position: "front" }}
+                            addOn={{
+                                text: currencySymbols[accounts[currentValue.accountIdx]?.currency],
+                                position: "front",
+                            }}
                         />
                     </Box>
                 </Flex>
@@ -243,9 +244,8 @@ const Home: React.FC = () => {
                     </Box>
                     <Box>
                         <Dropdown
-                            options={categories
-                                .filter((c) => c.type === "ANY" || c.type === "EXPENSE")
-                                .map((c) => c.name)}
+                            options={categoryOptions.map((c) => c.name)}
+                            defaultValue={selectedCategory?.name}
                             updateSelectedValue={updateSelectedCategory}
                         />
                     </Box>

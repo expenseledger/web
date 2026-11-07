@@ -1,163 +1,112 @@
-import client from "../../lib/apollo";
 import {
     createCategory,
     deleteCategory,
     getAllCategories,
-    updateCategory,
+    patchCategory,
 } from "../../service/categoryService";
+import { getUserData } from "../../service/userService";
+import { mockClient, resetMockV3 } from "../mock/mockClient";
 
 jest.mock("../../lib/apollo", () => ({
     __esModule: true,
-    default: {
-        query: jest.fn(),
-        mutate: jest.fn(),
-    },
+    default: jest.requireActual("../mock/mockClient").mockClient,
 }));
 
 jest.mock("../../common/utils", () => ({
     log: jest.fn(),
 }));
 
-const mockClient = client as jest.Mocked<typeof client>;
+async function categoryNamed(name: string) {
+    return (await getAllCategories()).find((c) => c.name === name);
+}
 
 describe("categoryService", () => {
-    const serverCategory = { id: 1, name: "Food", type: "EXPENSE" };
-
-    beforeEach(() => {
-        jest.clearAllMocks();
+    beforeEach(async () => {
+        jest.restoreAllMocks();
+        await resetMockV3();
+        await getUserData();
     });
 
     describe("getAllCategories", () => {
-        it("returns categories on success", async () => {
-            mockClient.query.mockResolvedValue({
-                data: { categories: { nodes: [serverCategory] } },
-            } as never);
-
-            const result = await getAllCategories();
-
-            expect(result).toEqual([serverCategory]);
+        it("returns the seeded categories", async () => {
+            expect(await getAllCategories()).toHaveLength(7);
         });
 
-        it("returns empty array when response has error", async () => {
-            mockClient.query.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await getAllCategories();
-
-            expect(result).toEqual([]);
+        it("returns each category's type", async () => {
+            expect(await categoryNamed("Salary")).toEqual({
+                id: expect.any(String),
+                name: "Salary",
+                type: "INCOME",
+            });
         });
 
-        it("returns empty array on unexpected error", async () => {
-            mockClient.query.mockRejectedValue(new Error("network"));
+        it("returns no categories on an unexpected error", async () => {
+            jest.spyOn(mockClient, "query").mockRejectedValueOnce(new Error("network"));
 
-            const result = await getAllCategories();
-
-            expect(result).toEqual([]);
+            expect(await getAllCategories()).toEqual([]);
         });
     });
 
     describe("createCategory", () => {
-        it("returns created category on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { createCategoryV2: { category: serverCategory } },
-            } as never);
+        it("creates the category", async () => {
+            const result = await createCategory({ name: "Rent", type: "EXPENSE" });
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
-
-            expect(result.addedCategory).toEqual(serverCategory);
+            expect(result.addedCategory).toEqual({
+                id: expect.any(String),
+                name: "Rent",
+                type: "EXPENSE",
+            });
         });
 
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
+        it("returns the error code of a taken name", async () => {
+            const result = await createCategory({ name: "Food", type: "ANY" });
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
+            expect(result).toEqual({ addedCategory: null, errorCode: "NAME_TAKEN" });
+        });
+    });
 
-            expect(result.addedCategory).toBeNull();
+    describe("patchCategory", () => {
+        it("renames the category", async () => {
+            const food = await categoryNamed("Food");
+
+            const result = await patchCategory({ id: food.id, name: "Meals" });
+
+            expect(result.category).toEqual({ id: food.id, name: "Meals", type: "EXPENSE" });
         });
 
-        it("returns null on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
+        it("retypes the category", async () => {
+            const food = await categoryNamed("Food");
 
-            const result = await createCategory({ name: "Food", type: "EXPENSE" });
+            const result = await patchCategory({ id: food.id, type: "ANY" });
 
-            expect(result.addedCategory).toBeNull();
+            expect(result.category).toEqual({ id: food.id, name: "Food", type: "ANY" });
+        });
+
+        it("returns the error code of renaming Other", async () => {
+            const other = await categoryNamed("Other");
+
+            const result = await patchCategory({ id: other.id, name: "Misc" });
+
+            expect(result).toEqual({ category: null, errorCode: "CATEGORY_PROTECTED" });
         });
     });
 
     describe("deleteCategory", () => {
-        it("returns success on successful deletion", async () => {
-            mockClient.mutate.mockResolvedValue({ data: {} } as never);
+        it("deletes the category", async () => {
+            const food = await categoryNamed("Food");
 
-            const result = await deleteCategory({ id: 1 });
+            const result = await deleteCategory({ id: food.id });
 
             expect(result.isSuccess).toBe(true);
+            expect(await categoryNamed("Food")).toBeUndefined();
         });
 
-        it("returns failure when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
+        it("returns the error code of deleting Other", async () => {
+            const other = await categoryNamed("Other");
 
-            const result = await deleteCategory({ id: 1 });
+            const result = await deleteCategory({ id: other.id });
 
-            expect(result.isSuccess).toBe(false);
-        });
-
-        it("returns failure on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await deleteCategory({ id: 1 });
-
-            expect(result.isSuccess).toBe(false);
-        });
-    });
-
-    describe("updateCategory", () => {
-        it("returns updated category on success", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: { updateCategory: { category: serverCategory } },
-            } as never);
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toEqual(serverCategory);
-        });
-
-        it("returns null when mutation has error", async () => {
-            mockClient.mutate.mockResolvedValue({
-                data: null,
-                error: { message: "failed" },
-            } as never);
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toBeNull();
-        });
-
-        it("returns null on unexpected error", async () => {
-            mockClient.mutate.mockRejectedValue(new Error("network"));
-
-            const result = await updateCategory({
-                id: 1,
-                name: "Food",
-                type: "EXPENSE",
-            });
-
-            expect(result.updatedCategory).toBeNull();
+            expect(result).toEqual({ isSuccess: false, errorCode: "CATEGORY_PROTECTED" });
         });
     });
 });

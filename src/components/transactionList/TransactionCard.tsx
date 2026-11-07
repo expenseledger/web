@@ -1,6 +1,6 @@
 import React from "react";
 import dayjs from "../../lib/dayjs";
-import { TransactionType } from "../../service/constants";
+import { Currency, TransactionType } from "../../service/constants";
 import Category from "../../service/model/Category";
 import AmountTxt from "../bases/AmountTxt";
 import TransactionCardMessage from "./TransactionCardMessage";
@@ -15,7 +15,7 @@ interface TransactionCardItem {
     onDelete: () => Promise<void>;
     onUpdate: (
         amount: number,
-        categoryId: number,
+        categoryId: string,
         description: string,
         occuredAt: Date
     ) => Promise<void>;
@@ -23,6 +23,7 @@ interface TransactionCardItem {
 
 interface TransactionCardProps {
     date: Date;
+    currency: Currency;
     items: TransactionCardItem[];
 }
 
@@ -48,6 +49,7 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                     category={x.cateogry}
                     description={x.description}
                     amount={x.amount}
+                    currency={props.currency}
                     type={x.type}
                     onDelete={x.onDelete}
                     occurredAt={x.date}
@@ -63,7 +65,10 @@ export const TransactionCard: React.FC<TransactionCardProps> = (props: Transacti
                 <Text weight="bold" size="6">
                     {title}
                 </Text>
-                <AmountTxt amount={props.items.reduce((acc, cur) => acc + cur.amount, 0)} />
+                <AmountTxt
+                    amount={props.items.reduce((acc, cur) => acc + cur.amount, 0)}
+                    currency={props.currency}
+                />
             </Flex>
             {renderBody()}
         </Card>

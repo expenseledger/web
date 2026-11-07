@@ -1,10 +1,12 @@
 import React from "react";
 import styled from "styled-components";
+import { Currency } from "../../service/constants";
 import BalanceWithCurrency from "./BalanceWithCurrency";
 
 type TextAlign = "center" | "left" | "right";
 interface AmountTxtProps {
     amount: number;
+    currency: Currency;
     className?: string;
     textAlign?: TextAlign;
 }
@@ -22,7 +24,7 @@ const AmountBox = styled.div`
 
 const AmountTxt: React.FC<AmountTxtProps> = (props) => (
     <AmountBox className={props.className} textAlign={props.textAlign}>
-        <BalanceWithCurrency balance={props.amount} />
+        <BalanceWithCurrency balance={props.amount} currency={props.currency} />
     </AmountBox>
 );
 

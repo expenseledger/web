@@ -2,7 +2,7 @@ import React from "react";
 import { Outlet, useLocation, useNavigate, useOutletContext } from "react-router-dom";
 import styled from "styled-components";
 import pj from "../../package.json";
-import { accountsState, categoriesState, totalAccountsBalanceState } from "../common/shareState";
+import { accountsState, categoriesState, totalBalancesByCurrencyState } from "../common/shareState";
 import { log } from "../common/utils";
 import { auth } from "../lib/firebase";
 import { getUserData } from "../service/userService";
@@ -28,7 +28,7 @@ const Title = styled.div`
 `;
 
 export interface BackToHomeParam {
-    accountId: number;
+    accountId: string;
 }
 
 export type ContextType = {
@@ -42,7 +42,7 @@ export function useBackToHome() {
 const Layout: React.FC = () => {
     const [accounts, setAccounts] = useAtom(accountsState);
     const [, setCategories] = useAtom(categoriesState);
-    const totalAccountsBalance = useAtomValue(totalAccountsBalanceState);
+    const totalBalances = useAtomValue(totalBalancesByCurrencyState);
     const [isLoading, setIsLoading] = React.useState(true);
     const [isSignIn, redirectToSignIn, isSignInLoading] = useSignIn();
     const navigate = useNavigate();
@@ -107,7 +107,7 @@ const Layout: React.FC = () => {
             </Container>
             <Menu
                 accounts={accounts}
-                totalAccountBalance={totalAccountsBalance}
+                totalBalances={totalBalances}
                 signOutFunc={() => auth.signOut()}
                 version={pj.version}
             />

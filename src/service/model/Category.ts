@@ -1,6 +1,7 @@
-import type { CategoryType } from "./../constants";
+import { CategoryType } from "../constants";
+
 interface Category {
-    id: number;
+    id: string;
     name: string;
     type: CategoryType;
 }

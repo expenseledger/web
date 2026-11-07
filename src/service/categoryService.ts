@@ -1,67 +1,19 @@
 import { log } from "../common/utils";
 import client from "../lib/apollo";
-import { CategoryType } from "./constants";
-import { CategoryType as CategorytypeGql } from "./model/gql/graphql";
+import { getErrorCode } from "./helper/errorHelper";
+import { fetchAllPages, MAX_PAGE_SIZE } from "./helper/pagingHelper";
 import Category from "./model/Category";
 import { graphql } from "./model/gql";
-import { CreateCategoryRequest, DeleteCategoryRequest } from "./model/Requests";
-import { UpdateCategoryRequest } from "./model/Requests/index";
+import {
+    CreateCategoryRequest,
+    DeleteCategoryRequest,
+    PatchCategoryRequest,
+} from "./model/Requests";
 import {
     CreateCategoryResponse,
     DeleteCategoryResponse,
-    UpdateCategoryResponse,
+    PatchCategoryResponse,
 } from "./model/Responses/index";
-
-const CREATE_CATEGORY = graphql(`
-    mutation CreateCategory($name: String!, $type: CategoryType!) {
-        createCategoryV2(input: { name: $name, type: $type }) {
-            category {
-                id
-                name
-                type
-            }
-        }
-    }
-`);
-
-const DELETE_CATEGORY = graphql(`
-    mutation DeleteCategory($id: Int!) {
-        deleteCategory(input: { id: $id }) {
-            owner {
-                categories {
-                    nodes {
-                        id
-                        name
-                        type
-                    }
-                }
-            }
-        }
-    }
-`);
-const UPDATE_CATEGORY = graphql(`
-    mutation UpdateCategory($id: Int!, $name: String!, $type: CategoryType!) {
-        updateCategory(input: { id: $id, name: $name, type: $type }) {
-            category {
-                id
-                name
-                type
-            }
-        }
-    }
-`);
-
-const GET_ALL_CATEGORIES = graphql(`
-    query GetAllCategories {
-        categories {
-            nodes {
-                id
-                name
-                type
-            }
-        }
-    }
-`);
 
 export const categoryFragment = graphql(`
     fragment PlainCategory on Category {
@@ -71,23 +23,68 @@ export const categoryFragment = graphql(`
     }
 `);
 
-export async function getAllCategories(): Promise<Category[]> {
-    try {
+const CREATE_CATEGORY = graphql(`
+    mutation CreateCategory($name: String!, $type: CategoryType = ANY) {
+        createCategory(name: $name, type: $type) {
+            ...PlainCategory
+        }
+    }
+`);
+
+const PATCH_CATEGORY = graphql(`
+    mutation PatchCategory($id: ID!, $name: String, $type: CategoryType) {
+        patchCategory(id: $id, name: $name, type: $type) {
+            ...PlainCategory
+        }
+    }
+`);
+
+const DELETE_CATEGORY = graphql(`
+    mutation DeleteCategory($id: ID!) {
+        deleteCategory(id: $id)
+    }
+`);
+
+const GET_CATEGORIES_PAGE = graphql(`
+    query GetCategoriesPage($first: Int!, $after: String) {
+        categories(first: $first, after: $after, sort: [{ property: "name", direction: ASC }]) {
+            edges {
+                node {
+                    ...PlainCategory
+                }
+            }
+            pageInfo {
+                hasNextPage
+                endCursor
+            }
+        }
+    }
+`);
+
+/** Every category, sorted by name. Throws on failure. */
+export async function fetchAllCategories(): Promise<Category[]> {
+    const nodes = await fetchAllPages(async (after) => {
         const response = await client.query({
-            query: GET_ALL_CATEGORIES,
+            query: GET_CATEGORIES_PAGE,
+            variables: { first: MAX_PAGE_SIZE, after },
+            fetchPolicy: "network-only",
         });
 
         if (response.error) {
-            log("cannot get all categories", response.error);
-
-            return [];
+            throw response.error;
         }
 
-        const toReturn = response.data.categories.nodes as Category[];
+        return response.data.categories;
+    });
 
-        return toReturn;
+    return nodes.map((c) => ({ id: c.id, name: c.name, type: c.type }));
+}
+
+export async function getAllCategories(): Promise<Category[]> {
+    try {
+        return await fetchAllCategories();
     } catch (err) {
-        log("cannot get all categories, unexpected error", err);
+        log("cannot get all categories", err);
 
         return [];
     }
@@ -101,7 +98,7 @@ export async function createCategory(
             mutation: CREATE_CATEGORY,
             variables: {
                 name: request.name,
-                type: request.type as CategorytypeGql,
+                type: request.type,
             },
         });
 
@@ -110,20 +107,60 @@ export async function createCategory(
 
             return {
                 addedCategory: null,
+                errorCode: getErrorCode(response.error),
             };
         }
 
+        const { id, name, type } = response.data.createCategory;
+
         return {
-            addedCategory: response.data.createCategoryV2.category,
+            addedCategory: { id, name, type },
         };
     } catch (err) {
         log("cannot add category, unexpected error", err);
         return {
             addedCategory: null,
+            errorCode: getErrorCode(err),
         };
     }
 }
 
+export async function patchCategory(request: PatchCategoryRequest): Promise<PatchCategoryResponse> {
+    try {
+        const response = await client.mutate({
+            mutation: PATCH_CATEGORY,
+            variables: {
+                id: request.id,
+                name: request.name,
+                type: request.type,
+            },
+        });
+
+        if (response.error) {
+            log("cannot update category", response.error);
+
+            return {
+                category: null,
+                errorCode: getErrorCode(response.error),
+            };
+        }
+
+        const { id, name, type } = response.data.patchCategory;
+
+        return {
+            category: { id, name, type },
+        };
+    } catch (err) {
+        log("cannot update category, unexpected error", err);
+
+        return {
+            category: null,
+            errorCode: getErrorCode(err),
+        };
+    }
+}
+
+/** Deletes the category; its transactions move to "Other". */
 export async function deleteCategory(
     request: DeleteCategoryRequest
 ): Promise<DeleteCategoryResponse> {
@@ -140,6 +177,7 @@ export async function deleteCategory(
 
             return {
                 isSuccess: false,
+                errorCode: getErrorCode(response.error),
             };
         }
 
@@ -151,43 +189,7 @@ export async function deleteCategory(
 
         return {
             isSuccess: false,
-        };
-    }
-}
-
-export async function updateCategory(
-    request: UpdateCategoryRequest
-): Promise<UpdateCategoryResponse> {
-    try {
-        const response = await client.mutate({
-            mutation: UPDATE_CATEGORY,
-            variables: {
-                id: request.id,
-                name: request.name,
-                type: request.type as CategorytypeGql,
-            },
-        });
-
-        if (response.error) {
-            log("Cannot update category", response.error);
-
-            return {
-                updatedCategory: null,
-            };
-        }
-
-        return {
-            updatedCategory: {
-                id: response.data.updateCategory.category.id,
-                name: response.data.updateCategory.category.name,
-                type: response.data.updateCategory.category.type as CategoryType,
-            },
-        };
-    } catch (err) {
-        log("cannot update category, unexpected error", err);
-
-        return {
-            updatedCategory: null,
+            errorCode: getErrorCode(err),
         };
     }
 }

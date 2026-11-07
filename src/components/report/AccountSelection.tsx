@@ -12,7 +12,7 @@ interface AccountSelectionProps {
 }
 
 const AccountSelection: React.FC<AccountSelectionProps> = (props) => {
-    const onChangeHandler = (accountId: number, checked: boolean) => {
+    const onChangeHandler = (accountId: string, checked: boolean) => {
         const newAccounts: SelectableAccount[] = props.accounts.map((account) => {
             if (account.id === accountId) {
                 return {

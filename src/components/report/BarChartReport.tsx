@@ -11,6 +11,7 @@ import {
 } from "recharts";
 import styled from "styled-components";
 import dayjs from "../../lib/dayjs";
+import { Currency } from "../../service/constants";
 import Transaction from "../../service/model/Transaction";
 import BalanceWithCurrency from "../bases/BalanceWithCurrency";
 import { EXPENSE_COLOR, INCOME_COLOR, getAmount } from "./reportHelper";
@@ -19,6 +20,7 @@ import { groupBy } from "../../common/utils";
 
 export interface BarChartReportProps {
     transactions: Transaction[];
+    currency: Currency;
 }
 
 interface BarChartData {
@@ -106,6 +108,7 @@ const BarChartReport: React.FC<BarChartReportProps> = (props) => {
                         balance={data
                             .map((d) => d.income - d.expense)
                             .reduce((acc, current) => acc + current)}
+                        currency={props.currency}
                     />
                 </Text>
             </Flex>

@@ -7,6 +7,7 @@ interface DropdownProps {
     className?: string;
     variant?: DropdownVariant;
     defaultValue?: string;
+    ariaLabel?: string;
 }
 
 type DropdownVariant = "classic" | "surface" | "soft" | "ghost";
@@ -28,7 +29,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
     React.useEffect(() => {
         const isExist = props.options.includes(value);
 
-        if (!isExist) {
+        if (!isExist && props.options.length > 0) {
             setValue(props.options[0]);
             props.updateSelectedValue(props.options[0]);
         }
@@ -40,7 +41,7 @@ const Dropdown: React.FC<DropdownProps> = (props) => {
             defaultValue={props.defaultValue ?? props.options[0]}
             size="3"
             value={value}>
-            <Select.Trigger variant={props.variant ?? "surface"} />
+            <Select.Trigger variant={props.variant ?? "surface"} aria-label={props.ariaLabel} />
             <Select.Content className={props.className} position="popper" side="bottom">
                 {renderOptions(props.options)}
             </Select.Content>

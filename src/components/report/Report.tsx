@@ -32,17 +32,13 @@ const Report: React.FC = () => {
     const [selectableAccounts, setSelectableAccounts] =
         useState<SelectableAccount[]>(initalSelectedAccounts);
     const navigate = useNavigate();
+    const currency = selectableAccounts.find((a) => a.isSelected)?.currency ?? "THB";
 
     const backToHome = useCallback(() => {
         navigate("/");
     }, [navigate]);
 
     const selectableAccountsChangeHandler = (newAccount: SelectableAccount[]) => {
-        if (newAccount.filter((a) => a.isSelected).length === 0) {
-            setMonthYearList([]);
-            setTransactions([]);
-        }
-
         setSelectableAccounts(newAccount);
     };
 
@@ -50,15 +46,33 @@ const Report: React.FC = () => {
         const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
 
         if (selectedAccounts.length === 0) {
+            setMonthYearList([]);
+            setTransactions([]);
+            setIsLoading(false);
             return;
         }
 
+        let ignore = false;
+
         Promise.all(selectedAccounts.map((a) => getTransactionMonthYearList({ accountId: a.id })))
             .then((responses) => {
+                if (ignore) {
+                    return;
+                }
+
                 const monthYears = responses.map((response) => response.monthYears).flat();
                 setMonthYearList([...new Set(monthYears)].sort((a, b) => b.localeCompare(a)));
+
+                if (monthYears.length === 0) {
+                    setTransactions([]);
+                    setIsLoading(false);
+                }
             })
             .catch(backToHome);
+
+        return () => {
+            ignore = true;
+        };
     }, [backToHome, selectableAccounts]);
 
     useEffect(() => {
@@ -67,19 +81,23 @@ const Report: React.FC = () => {
         }
 
         const selectedAccounts = selectableAccounts.filter((a) => a.isSelected);
-        const from = dayjs(monthYearList[monthYearIdx]);
-        const until = from.add(1, "M");
+        const month = dayjs(monthYearList[monthYearIdx]);
+        let ignore = false;
 
         Promise.all(
             selectedAccounts.map((a) =>
                 listTransactions({
                     accountId: a.id,
-                    from: from.toDate(),
-                    until: until.toDate(),
+                    fromDate: month.toDate(),
+                    toDate: month.endOf("month").toDate(),
                 })
             )
         )
             .then((responses) => {
+                if (ignore) {
+                    return;
+                }
+
                 const transactions = responses
                     .map((response) => response.items)
                     .flat()
@@ -90,7 +108,11 @@ const Report: React.FC = () => {
                 setIsLoading(false);
             })
             .catch(backToHome);
-    }, [backToHome, monthYearIdx, monthYearList, navigate, selectableAccounts]);
+
+        return () => {
+            ignore = true;
+        };
+    }, [backToHome, monthYearIdx, monthYearList, selectableAccounts]);
 
     return isLoading ? (
         <Loading />
@@ -107,7 +129,7 @@ const Report: React.FC = () => {
                 />
             </Card>
             <Card mt="3" mb="5">
-                <BarChartReport transactions={transactions} />
+                <BarChartReport transactions={transactions} currency={currency} />
             </Card>
             <Card mt="3" mb="5">
                 <Grid
@@ -118,18 +140,26 @@ const Report: React.FC = () => {
                     mt="3"
                     mb="5">
                     <Box>
-                        <PieChartReport transactions={transactions} isExpense={false} />
+                        <PieChartReport
+                            transactions={transactions}
+                            isExpense={false}
+                            currency={currency}
+                        />
                     </Box>
                     <Box>
-                        <PieChartReport transactions={transactions} isExpense={true} />
+                        <PieChartReport
+                            transactions={transactions}
+                            isExpense={true}
+                            currency={currency}
+                        />
                     </Box>
                 </Grid>
             </Card>
             <Box mt="3" mb="5">
-                <TableReport transations={transactions} isExpense={false} />
+                <TableReport transations={transactions} isExpense={false} currency={currency} />
             </Box>
             <Box mt="3" mb="5">
-                <TableReport transations={transactions} isExpense={true} />
+                <TableReport transations={transactions} isExpense={true} currency={currency} />
             </Box>
         </AnimatedPage>
     );

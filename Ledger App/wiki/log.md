@@ -416,3 +416,36 @@ The Account model was still listed with `id: number` and no
 
 PR #131 review: `categoryTypeLabels` moved from `categoryHelper.ts` to
 `constants.ts`. Updated [[Service Layer]].
+
+## [2026-11-08] update | Radix sign-in with FirebaseUI core
+
+Replaced the legacy FirebaseUI widget with a Radix form and FirebaseUI v7
+core. Updated [[Authentication]], [[Sign In Screen]], [[Tech Stack]], and
+the index.
+
+## [2026-11-08] update | Email sign-up without a name
+
+Account creation asks for an email and password. Updated [[Authentication]].
+
+## [2026-11-08] update | Sign-in navigation links
+
+Added text links for sign-up and password reset. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Auth form focus and reset confirmation
+
+Moved focus to the email field after navigation and tied the reset
+confirmation to the submitted email. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Sign-in link placement
+
+Grouped password recovery with the password field and put the sign-up link
+below the sign-in options. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Auth contrast and mobile layout
+
+Increased button and field contrast and brought the main actions into view
+on short mobile screens. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Restore the original sign-in button color
+
+Restored the app's default primary button color. Updated [[Sign In Screen]].

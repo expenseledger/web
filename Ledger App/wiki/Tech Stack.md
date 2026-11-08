@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, tooling]
 sources: [package.json, eslint.config.js, vite.config.ts, babel.config.json, jest.config.json]
-updated: 2026-10-21
+updated: 2026-11-08
 ---
 
 # Tech Stack
@@ -20,7 +20,7 @@ updated: 2026-10-21
 | Data | `@apollo/client` 4 + `graphql` — see [[Apollo Client]] |
 | Codegen | `@graphql-codegen/cli` client preset — see [[GraphQL Codegen]] |
 | State | `jotai` 3 — see [[State Management]] |
-| Auth | `firebase` 12 + `react-firebaseui` — see [[Authentication]] |
+| Auth | `firebase` 12 + `@firebase-oss/ui-core` 7 — see [[Authentication]] |
 | Dates | `dayjs` with utc/timezone plugins (`src/lib/dayjs.ts`) |
 | Routing | `react-router-dom` 7 — see [[Routing and Layout]] |
 | Tests | Jest 30 + jsdom + Testing Library, Babel transform — see [[Build and Test]] |
@@ -34,9 +34,6 @@ Notes:
   `styled-components` changes class hashes and breaks the `AccountCard`
   snapshot).
 - Peer-dependency fixes made for npm, kept under yarn:
-  - `react-firebaseui` (and `firebaseui`) have no release for React 19
-    or Firebase 12; yarn only warns (YN0060). Unsupported: check it
-    first if sign-in misbehaves.
   - TypeScript 7 has no API, so `typescript` is aliased to
     `@typescript/typescript6` for typescript-eslint, and
     `@typescript/native` (TS 7) provides `tsc`.

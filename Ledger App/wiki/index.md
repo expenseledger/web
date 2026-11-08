@@ -1,7 +1,7 @@
 ---
 type: meta
 tags: [index]
-updated: 2026-10-23
+updated: 2026-11-08
 ---
 
 # Index
@@ -48,7 +48,7 @@ Schema/conventions: `../CLAUDE.md`.
 - [[Transaction List Screen]] — month swiper, edit/delete, paid-only.
 - [[Report Screen]] — weekly bar, category pies/tables.
 - [[Settings Screens]] — account, category, page settings.
-- [[Sign In Screen]] — FirebaseUI.
+- [[Sign In Screen]] — Radix form with FirebaseUI core.
 - [[Bottom Menu]] — floating nav, balances drawer, settings drawer.
 
 ## Ops

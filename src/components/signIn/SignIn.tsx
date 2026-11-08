@@ -23,6 +23,7 @@ import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
 import Logo from "../../assets/pics/logo.svg";
 import app, { auth } from "../../lib/firebase";
 import { useNotification } from "../../service/helper/notificationHelper";
+import "./SignIn.css";
 
 class GoogleAccountConflict extends Error {
     constructor(
@@ -188,12 +189,19 @@ const SignIn: React.FC = () => {
     const resetting = mode === "reset";
 
     return (
-        <Flex justify="center" align="center" direction="column" gap="5" pt="9" pb="6" px="6">
-            <img src={Logo} alt="" />
-            <Heading as="h1" align="center" size="8">
+        <Flex
+            justify="center"
+            align="center"
+            direction="column"
+            gap={{ initial: "4", xs: "5" }}
+            pt={{ initial: "5", xs: "9" }}
+            pb="6"
+            px="6">
+            <img className="sign-in-logo" src={Logo} alt="" width="144" height="166" />
+            <Heading as="h1" align="center" size={{ initial: "6", xs: "8" }}>
                 Welcome to Expense Ledger
             </Heading>
-            <Box p="5" width="100%" maxWidth="26rem">
+            <Box p={{ initial: "0", xs: "5" }} width="100%" maxWidth="26rem">
                 <Flex direction="column" gap="4">
                     {mode !== "signIn" && (
                         <Heading as="h2" size="5">
@@ -215,6 +223,7 @@ const SignIn: React.FC = () => {
                                     Email
                                 </Text>
                                 <TextField.Root
+                                    className="sign-in-field"
                                     ref={emailInput}
                                     id="auth-email"
                                     name="email"
@@ -234,6 +243,7 @@ const SignIn: React.FC = () => {
                                         Password
                                     </Text>
                                     <TextField.Root
+                                        className="sign-in-field"
                                         id="auth-password"
                                         name="password"
                                         type={showPassword ? "text" : "password"}
@@ -291,6 +301,7 @@ const SignIn: React.FC = () => {
                             <Button
                                 type="submit"
                                 size="3"
+                                highContrast
                                 disabled={busy}
                                 loading={pending === mode}>
                                 {resetting ? "Send reset link" : titles[mode]}

@@ -440,3 +440,8 @@ confirmation to the submitted email. Updated [[Sign In Screen]].
 
 Grouped password recovery with the password field and put the sign-up link
 below the sign-in options. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Auth contrast and mobile layout
+
+Increased button and field contrast and brought the main actions into view
+on short mobile screens. Updated [[Sign In Screen]].

@@ -1,9 +1,13 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "module": "ESNext",
+    "noEmit": true,
+    "target": "ESNext",
+    "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "allowImportingTsExtensions": true,
+    "skipLibCheck": true,
+    "strictNullChecks": false,
     "allowSyntheticDefaultImports": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["vite.config.ts", "src/mock/mockV3.ts", "src/service/constants.ts"]
 }

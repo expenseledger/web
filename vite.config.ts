@@ -1,11 +1,11 @@
 import react from "@vitejs/plugin-react";
 import { readFileSync } from "node:fs";
 import { graphql } from "graphql";
-import { defineConfig, loadEnv, Plugin, ProxyOptions } from "vite";
+import { defineConfig, loadEnv, type Plugin, type ProxyOptions } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import svgrPlugin from "vite-plugin-svgr";
 import babel from "@rolldown/plugin-babel";
-import { createMockV3 } from "./src/mock/mockV3";
+import { createMockV3 } from "./src/mock/mockV3.ts";
 
 /**
  * Serves the in-memory API v3 at /mock/graphql in `npm start`, seeded

@@ -1,4 +1,4 @@
-import { buildSchema, GraphQLError, GraphQLSchema } from "graphql";
+import { buildSchema, GraphQLError, type GraphQLSchema } from "graphql";
 import { currencyDecimals } from "../service/constants";
 
 /**

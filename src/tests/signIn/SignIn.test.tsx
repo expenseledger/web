@@ -100,6 +100,7 @@ test("creates an account with only an email and password", async () => {
     const createAccount = screen.getByRole("link", { name: "Create account" });
     expect(createAccount).toHaveAttribute("href", "/?mode=sign-up");
     fireEvent.click(createAccount);
+    expect(screen.queryByRole("heading", { name: "Create account" })).toBeNull();
     expect(screen.queryByLabelText("Name", { exact: true })).toBeNull();
     fireEvent.change(screen.getByLabelText("Email"), { target: { value: "new@example.com" } });
     fireEvent.change(screen.getByLabelText("Password"), { target: { value: "test-password" } });
@@ -126,7 +127,8 @@ test("opens password reset from a link and carries over the email", () => {
     const forgotPassword = screen.getByRole("link", { name: "Forgot password?" });
     expect(forgotPassword).toHaveAttribute("href", "/signIn?mode=reset");
     fireEvent.click(forgotPassword);
-    expect(screen.getByRole("heading", { name: "Reset password" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Send reset link" })).toBeVisible();
+    expect(screen.queryByRole("heading", { name: "Reset password" })).toBeNull();
     expect(screen.getByLabelText("Email")).toHaveValue("user@example.com");
     expect(screen.getByLabelText("Email")).toHaveFocus();
 

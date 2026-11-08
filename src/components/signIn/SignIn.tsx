@@ -59,8 +59,8 @@ const googlePopup: Behavior<"providerSignInStrategy"> = {
 };
 
 const authUI = initializeUI({ app, auth, behaviors: [googlePopup] });
-const titles = { signIn: "Sign in", signUp: "Create account", reset: "Reset password" };
-type Mode = keyof typeof titles;
+const submitLabels = { signIn: "Sign in", signUp: "Create account", reset: "Send reset link" };
+type Mode = keyof typeof submitLabels;
 type Action = Mode | "google";
 type Feedback = { view: string; error?: string; resetEmail?: string };
 
@@ -205,11 +205,6 @@ const SignIn: React.FC = () => {
             </Heading>
             <Box p={{ initial: "0", xs: "5" }} width="100%" maxWidth="26rem">
                 <Flex direction="column" gap="4">
-                    {mode !== "signIn" && (
-                        <Heading as="h2" size="5">
-                            {titles[mode]}
-                        </Heading>
-                    )}
                     {conflict && (
                         <Callout.Root role="status">
                             <Callout.Text>{conflict.message}</Callout.Text>
@@ -303,7 +298,7 @@ const SignIn: React.FC = () => {
                                 size="3"
                                 disabled={busy}
                                 loading={pending === mode}>
-                                {resetting ? "Send reset link" : titles[mode]}
+                                {submitLabels[mode]}
                             </Button>
                         </Flex>
                     </form>

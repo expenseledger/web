@@ -445,3 +445,7 @@ below the sign-in options. Updated [[Sign In Screen]].
 
 Increased button and field contrast and brought the main actions into view
 on short mobile screens. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Restore the original sign-in button color
+
+Restored the app's default primary button color. Updated [[Sign In Screen]].

@@ -301,7 +301,6 @@ const SignIn: React.FC = () => {
                             <Button
                                 type="submit"
                                 size="3"
-                                highContrast
                                 disabled={busy}
                                 loading={pending === mode}>
                                 {resetting ? "Send reset link" : titles[mode]}

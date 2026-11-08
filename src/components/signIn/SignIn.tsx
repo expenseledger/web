@@ -8,7 +8,7 @@ import {
     type Behavior,
 } from "@firebase-oss/ui-core";
 import googleLogo from "@firebase-oss/ui-core/brands/google/logo.svg";
-import { Box, Button, Callout, Card, Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
+import { Box, Button, Callout, Flex, Heading, Link, Text, TextField } from "@radix-ui/themes";
 import { FirebaseError } from "firebase/app";
 import {
     GoogleAuthProvider,
@@ -193,7 +193,7 @@ const SignIn: React.FC = () => {
             <Heading as="h1" align="center" size="8">
                 Welcome to Expense Ledger
             </Heading>
-            <Card size="3" style={{ width: "100%", maxWidth: "26rem" }}>
+            <Box p="5" width="100%" maxWidth="26rem">
                 <Flex direction="column" gap="4">
                     {mode !== "signIn" && (
                         <Heading as="h2" size="5">
@@ -345,7 +345,7 @@ const SignIn: React.FC = () => {
                         </Flex>
                     )}
                 </Flex>
-            </Card>
+            </Box>
         </Flex>
     );
 };

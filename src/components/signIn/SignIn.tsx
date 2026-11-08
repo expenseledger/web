@@ -25,18 +25,6 @@ import Logo from "../../assets/pics/logo.svg";
 import app, { auth } from "../../lib/firebase";
 import { useNotification } from "../../service/helper/notificationHelper";
 
-const SignInField = styled(TextField.Root)`
-    && {
-        --text-field-focus-color: var(--focus-9);
-        box-shadow: inset 0 0 0 1px var(--gray-a9);
-
-        @media (forced-colors: active) {
-            border: 1px solid CanvasText;
-            padding: 0;
-        }
-    }
-`;
-
 class GoogleAccountConflict extends Error {
     constructor(
         readonly email: string,
@@ -236,7 +224,7 @@ const SignIn: React.FC = () => {
                                 <Text as="label" htmlFor="auth-email" size="2" weight="bold">
                                     Email
                                 </Text>
-                                <SignInField
+                                <TextField.Root
                                     ref={emailInput}
                                     id="auth-email"
                                     name="email"
@@ -255,7 +243,7 @@ const SignIn: React.FC = () => {
                                     <Text as="label" htmlFor="auth-password" size="2" weight="bold">
                                         Password
                                     </Text>
-                                    <SignInField
+                                    <TextField.Root
                                         id="auth-password"
                                         name="password"
                                         type={showPassword ? "text" : "password"}
@@ -277,7 +265,7 @@ const SignIn: React.FC = () => {
                                                 {showPassword ? "Hide" : "Show"}
                                             </Button>
                                         </TextField.Slot>
-                                    </SignInField>
+                                    </TextField.Root>
                                     {mode === "signIn" && (
                                         <Flex justify="end" mt="2">
                                             <Link

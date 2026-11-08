@@ -260,6 +260,18 @@ const SignIn: React.FC = () => {
                                             </Button>
                                         </TextField.Slot>
                                     </TextField.Root>
+                                    {mode === "signIn" && (
+                                        <Flex justify="end" mt="2">
+                                            <Link asChild color="gray" size="2" underline="always">
+                                                <RouterLink
+                                                    to="?mode=reset"
+                                                    aria-disabled={busy}
+                                                    onClick={followAuthLink}>
+                                                    Forgot password?
+                                                </RouterLink>
+                                            </Link>
+                                        </Flex>
+                                    )}
                                 </Box>
                             )}
                             {currentFeedback?.error && (
@@ -282,18 +294,6 @@ const SignIn: React.FC = () => {
                                 loading={pending === mode}>
                                 {resetting ? "Send reset link" : titles[mode]}
                             </Button>
-                            {mode === "signIn" && (
-                                <Flex justify="center">
-                                    <Link asChild size="2" underline="always">
-                                        <RouterLink
-                                            to="?mode=reset"
-                                            aria-disabled={busy}
-                                            onClick={followAuthLink}>
-                                            Forgot password?
-                                        </RouterLink>
-                                    </Link>
-                                </Flex>
-                            )}
                         </Flex>
                     </form>
                     {mode === "signIn" && !conflict && (
@@ -327,8 +327,13 @@ const SignIn: React.FC = () => {
                             Use a different account
                         </Button>
                     ) : (
-                        <Flex justify="center">
-                            <Link asChild size="2" underline="always">
+                        <Flex justify="center" align="baseline" gap="2" wrap="wrap">
+                            {mode === "signIn" && (
+                                <Text size="2" color="gray">
+                                    New to Expense Ledger?
+                                </Text>
+                            )}
+                            <Link asChild size="2" weight="medium" underline="always">
                                 <RouterLink
                                     to={{ search: mode === "signIn" ? "?mode=sign-up" : "" }}
                                     aria-disabled={busy}

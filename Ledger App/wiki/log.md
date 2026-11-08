@@ -435,3 +435,8 @@ Added text links for sign-up and password reset. Updated [[Sign In Screen]].
 
 Moved focus to the email field after navigation and tied the reset
 confirmation to the submitted email. Updated [[Sign In Screen]].
+
+## [2026-11-08] update | Sign-in link placement
+
+Grouped password recovery with the password field and put the sign-up link
+below the sign-in options. Updated [[Sign In Screen]].

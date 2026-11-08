@@ -2,7 +2,7 @@
 type: concept
 tags: [architecture, auth]
 sources: [src/lib/firebase.ts, src/components/hoc/WithAuthProtection.tsx, src/components/signIn/SignIn.tsx, src/lib/apollo.ts]
-updated: 2026-10-21
+updated: 2026-11-08
 ---
 
 # Authentication
@@ -14,10 +14,13 @@ env vars ([[Environment Variables]]). Only `apiKey`, `authDomain`,
 
 ## Sign-in
 
-[[Sign In Screen]] uses `react-firebaseui` (`StyledFirebaseAuth`) with
-Email and Google providers, popup flow. It doesn't support React 19 or
-Firebase 12; yarn installs it with a peer warning. `onAuthStateChanged` navigates to
-`/` once a user exists.
+[[Sign In Screen]] uses Radix Themes for the form and `@firebase-oss/ui-core`
+v7 for Firebase Auth operations. It supports email/password sign-in, email
+sign-up with email and password, password reset, and Google sign-in by popup.
+A Google credential from a provider conflict is kept in memory for that email.
+After a successful password sign-in to the matching account, the screen links
+the credential to the existing Firebase UID. The auth observer redirects to
+`/` after the active operation finishes.
 
 ## Guarding routes
 

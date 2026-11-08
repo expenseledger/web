@@ -211,7 +211,7 @@ const SignIn: React.FC = () => {
                         onSubmit={submit}>
                         <Flex direction="column" gap="4">
                             <Box>
-                                <Text as="label" htmlFor="auth-email" size="2" weight="medium">
+                                <Text as="label" htmlFor="auth-email" size="2" weight="bold">
                                     Email
                                 </Text>
                                 <TextField.Root
@@ -230,11 +230,7 @@ const SignIn: React.FC = () => {
                             </Box>
                             {!resetting && (
                                 <Box>
-                                    <Text
-                                        as="label"
-                                        htmlFor="auth-password"
-                                        size="2"
-                                        weight="medium">
+                                    <Text as="label" htmlFor="auth-password" size="2" weight="bold">
                                         Password
                                     </Text>
                                     <TextField.Root
@@ -262,7 +258,12 @@ const SignIn: React.FC = () => {
                                     </TextField.Root>
                                     {mode === "signIn" && (
                                         <Flex justify="end" mt="2">
-                                            <Link asChild color="gray" size="2" underline="always">
+                                            <Link
+                                                asChild
+                                                color="gray"
+                                                size="2"
+                                                weight="bold"
+                                                underline="always">
                                                 <RouterLink
                                                     to="?mode=reset"
                                                     aria-disabled={busy}

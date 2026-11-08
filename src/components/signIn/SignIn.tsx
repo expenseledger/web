@@ -20,10 +20,22 @@ import {
 } from "firebase/auth";
 import React from "react";
 import { Link as RouterLink, useLocation, useNavigate } from "react-router-dom";
+import styled from "styled-components";
 import Logo from "../../assets/pics/logo.svg";
 import app, { auth } from "../../lib/firebase";
 import { useNotification } from "../../service/helper/notificationHelper";
-import "./SignIn.css";
+
+const SignInField = styled(TextField.Root)`
+    && {
+        --text-field-focus-color: var(--focus-9);
+        box-shadow: inset 0 0 0 1px var(--gray-a9);
+
+        @media (forced-colors: active) {
+            border: 1px solid CanvasText;
+            padding: 0;
+        }
+    }
+`;
 
 class GoogleAccountConflict extends Error {
     constructor(
@@ -197,7 +209,9 @@ const SignIn: React.FC = () => {
             pt={{ initial: "5", xs: "9" }}
             pb="6"
             px="6">
-            <img className="sign-in-logo" src={Logo} alt="" width="144" height="166" />
+            <Box asChild width="clamp(5rem, 24vw, 9rem)" height="auto">
+                <img src={Logo} alt="" width="144" height="166" />
+            </Box>
             <Heading as="h1" align="center" size={{ initial: "6", xs: "8" }}>
                 Welcome to Expense Ledger
             </Heading>
@@ -222,8 +236,7 @@ const SignIn: React.FC = () => {
                                 <Text as="label" htmlFor="auth-email" size="2" weight="bold">
                                     Email
                                 </Text>
-                                <TextField.Root
-                                    className="sign-in-field"
+                                <SignInField
                                     ref={emailInput}
                                     id="auth-email"
                                     name="email"
@@ -242,8 +255,7 @@ const SignIn: React.FC = () => {
                                     <Text as="label" htmlFor="auth-password" size="2" weight="bold">
                                         Password
                                     </Text>
-                                    <TextField.Root
-                                        className="sign-in-field"
+                                    <SignInField
                                         id="auth-password"
                                         name="password"
                                         type={showPassword ? "text" : "password"}
@@ -265,7 +277,7 @@ const SignIn: React.FC = () => {
                                                 {showPassword ? "Hide" : "Show"}
                                             </Button>
                                         </TextField.Slot>
-                                    </TextField.Root>
+                                    </SignInField>
                                     {mode === "signIn" && (
                                         <Flex justify="end" mt="2">
                                             <Link
